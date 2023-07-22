@@ -20,5 +20,7 @@
         return () => subscription.unsubscribe();
     });
 </script>
-  
-<slot />
+
+<div class="font-lato">
+    <slot />
+</div>

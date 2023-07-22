@@ -9,9 +9,12 @@ export default {
         tertiary: "#8a65e7",
         accent: "#fd966d",
         highlight: "#dafd81"
-      }
+      },
+      fontFamily: {
+        lato: ["Lato", "sans-serif"],
+      },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [],
 }
 
