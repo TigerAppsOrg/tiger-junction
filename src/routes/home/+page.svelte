@@ -29,7 +29,9 @@
 
     const handleCourseClick = async (course: Course) => {
         currentCourse = course;        
-
+        let rawPrograms = await fetch("/api/search/course?id=1");
+        let programs = await rawPrograms.json();
+        console.log(programs);
     }
 
     onMount(async () => {
