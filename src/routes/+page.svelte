@@ -1,7 +1,7 @@
 <script lang="ts">
     export let data;
 
-    const handleLogin = async () => {
+    const handleLogin = async () => { 
         await data.supabase.auth.signInWithOAuth({
             provider: "google",
             options: {

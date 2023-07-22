@@ -5,8 +5,9 @@ export const GET = async ({ locals, params }) => {
     if (!session) throw error(401, { message: "Unauthorized" });
 
     const { data, error: supabaseError } = await locals.supabase
-        .from(params.category)
-        .select("name");
+        .from("programs")
+        .select("name")
+        .eq("category", params.category);
     
     if (supabaseError) 
         throw error(500, { message: supabaseError.message });
