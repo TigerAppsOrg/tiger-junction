@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+    export let data;
+
+    const handleLogin = async () => {
+        await data.supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: "http://localhost:5173/auth/callback"
+            }
+        });
+    }
+</script>
+
+<button class="btn btn-primary"
+on:click={handleLogin}>
+    Login
+</button>
