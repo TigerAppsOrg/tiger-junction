@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { Course } from "$lib/dbTypes";
+    import type { Course, Program } from "$lib/dbTypes";
 
     let courses: Course[] = [];
     let searchList: Course[] = [];
 
     let currentCourse: Course = { id: 0, name: "" };
-    let currentCertificates: string[] = [];
-    let currentMajors: string[] = [];
+    let currentMajors: Program[] = [];
+    let currentCertificates: Program[] = [];
 
     let prevLength = 0;
 
@@ -28,10 +28,15 @@
     }
 
     const handleCourseClick = async (course: Course) => {
-        currentCourse = course;        
         let rawPrograms = await fetch("/api/search/course?id=1");
-        let programs = await rawPrograms.json();
-        console.log(programs);
+        let programs: Program[] = await rawPrograms.json();
+
+        currentMajors = programs.filter(program => 
+            program.category === "major");
+        currentCertificates = programs.filter(program => 
+            program.category === "certificate");
+
+        currentCourse = course;        
     }
 
     onMount(async () => {
@@ -41,7 +46,7 @@
     });
 </script>
 
-<div>
+<div id="searchComplete">
     <div>
         <input type="text" placeholder="Enter a course"
         class="input input-bordered"
@@ -59,3 +64,27 @@
         {/each}
     </div>
 </div>
+
+{#if currentCourse.name !== ""}
+<div id="results" class="bg-sky-500">
+    <div>
+        <h3>{currentCourse.name}</h3>
+    </div>
+    <div>
+        <h4>Majors</h4>
+        {#each currentMajors as major}
+            <div>{major.name}</div>
+        {:else}
+            <div>No majors</div>
+        {/each}
+    </div>
+    <div>
+        <h4>Certificates</h4>
+        {#each currentCertificates as certificate}
+            <div>{certificate.name}</div>
+        {:else}
+            <div>No certificates</div>
+        {/each}
+    </div>
+</div>
+{/if}

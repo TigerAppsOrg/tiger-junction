@@ -3,21 +3,21 @@ type Course = {
     name: string;
 }
 
-type Category = {
+type Program = {
     id: number;
     name: string;
-    type: string;
+    category: string;
 }
 
-type Subcategory = {
+type Requirement = {
     id: number;
     major_id: number;
     name: string;
 }
 
-type CourseSubcategoryAssociation = {
+type CourseRequirementAssociation = {
     course_id: number;
     subcategory_id: number;
 }
 
-export type { Course, Category, Subcategory, CourseSubcategoryAssociation };
+export type { Course, Program, Requirement, CourseRequirementAssociation };
