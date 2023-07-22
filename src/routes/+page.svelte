@@ -11,12 +11,15 @@
     }
 </script>
 
-<div class="h-screen w-screen bg-secondary">
-    <nav class="flex justify-between itesm-center">
+<div class="h-screen w-screen bg-secondary px-20">
+    <nav class="flex justify-between items-center text-xl">
         <div id="left">
-
+            <a href="/">
+                <img src="tjlogolarge.png" alt="Tiger Junction logo"
+                class="w-16 h-16">
+            </a>
         </div>
-        <div id="right">
+        <div id="right" class="space-x-6">
             <a href="#about">
                 About
             </a>
@@ -27,15 +30,15 @@
         </div>
     </nav>
     <main>
-        <div>
-            <p>
+        <div class="space-y-4">
+            <p class="text-xl">
                 TigerJunction
             </p>
-            <h1 class="text-6xl">
+            <h1 class="text-5xl">
                 NEXT GENERATION COURSE PLANNING
             </h1>
             <button on:click={handleLogin}
-            class="bg-accent rounded-md py-2 px-4">
+            class="bg-accent rounded-md py-2 px-4 text-xl">
                 Get Started
             </button>
         </div>
