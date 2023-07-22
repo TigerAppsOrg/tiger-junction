@@ -52,11 +52,11 @@
         class="input input-bordered"
         on:input={handleInput}>
     </div>
-    <div class="flex flex-col border-2 border-red-500">
+    <div class="flex flex-col border-2 border-accent">
         {#each searchList as course}
             <button 
             on:click={() => handleCourseClick(course)} 
-            class="bg-blue-200 border-2 border-red-500">
+            class="bg-secondary border-2 border-accent">
                 {course.name}
             </button>
         {:else}
@@ -66,7 +66,7 @@
 </div>
 
 {#if currentCourse.name !== ""}
-<div id="results" class="bg-sky-500">
+<div id="results" class="bg-primary">
     <div>
         <h3>{currentCourse.name}</h3>
     </div>

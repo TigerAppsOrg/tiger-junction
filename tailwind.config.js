@@ -2,7 +2,15 @@
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#6485fd",
+        secondary: "#72c7e9",
+        tertiary: "#8a65e7",
+        accent: "#fd966d",
+        highlight: "#dafd81"
+      }
+    },
   },
   plugins: [require("daisyui")],
 }
