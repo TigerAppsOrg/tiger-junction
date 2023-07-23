@@ -1,15 +1,23 @@
+import { convertTermToId } from "$lib/convertTerm.js";
 import { json, error } from "@sveltejs/kit";
 
+/**
+ * 
+ * @returns 
+ */
 export const GET = async ({ locals, url }) => {
     const session = await locals.getSession();
     if (!session) throw error(401, { message: "Unauthorized" });
 
-    if (url.searchParams.get("all") === "true") 
+    const termParam = url.searchParams.get("term");
+
+    if (termParam === "all") 
         return json(await getAllCourses(locals));
-    else 
-        return json(await getCurrentCourses(locals));
+
+    return json(await getCourses(locals, convertTermToId(termParam)));
 }
 
+// Helper method to get all courses
 const getAllCourses = async (locals: App.Locals) => {
     const { data, error: supabaseError } = await locals.supabase
         .from("courses")
@@ -21,11 +29,12 @@ const getAllCourses = async (locals: App.Locals) => {
     return data;
 }
 
-const getCurrentCourses = async (locals: App.Locals) => {
+// Helper method to get courses for a specific term
+const getCourses = async (locals: App.Locals, term: string) => {
     const { data, error: supabaseError } = await locals.supabase
         .from("courses")
         .select("id, name")
-        .eq("is_current", true);
+        .eq("term", term);
 
     if (supabaseError) 
         throw error(500, { message: supabaseError.message });

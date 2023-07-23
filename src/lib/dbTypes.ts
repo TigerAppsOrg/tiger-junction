@@ -1,4 +1,10 @@
-type Course = {
+type CourseSU = {
+    id: number;
+    name: string;
+    terms: string[];
+}
+
+type CourseBASIC = {
     id: number;
     name: string;
 }
@@ -20,4 +26,10 @@ type CourseRequirementAssociation = {
     subcategory_id: number;
 }
 
-export type { Course, Program, Requirement, CourseRequirementAssociation };
+export type { 
+    CourseSU, 
+    CourseBASIC, 
+    Program, 
+    Requirement, 
+    CourseRequirementAssociation 
+};
