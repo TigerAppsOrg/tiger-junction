@@ -1,7 +1,15 @@
 <script lang="ts">
+    import { goto } from '$app/navigation';
+
     export let data;
 
     const handleLogin = async () => { 
+
+        if ((await data.supabase.auth.getUser()).data.user) {
+            goto("/home");
+            return;
+        }
+
         await data.supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
@@ -14,9 +22,10 @@
 <div class="h-screen w-screen bg-secondary px-20">
     <nav class="flex justify-between items-center text-xl">
         <div id="left">
-            <a href="/">
+            <a href="/" class="flex items-center">
                 <img src="tjlogolarge.png" alt="Tiger Junction logo"
                 class="w-16 h-16">
+                <span>TigerJunction</span>
             </a>
         </div>
         <div id="right" class="space-x-6">
