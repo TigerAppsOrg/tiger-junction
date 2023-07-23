@@ -21,6 +21,10 @@
     });
 </script>
 
+<svelte:head>
+    <title>TigerJunction</title>
+</svelte:head>
+
 <div class="font-lato">
     <slot />
 </div>

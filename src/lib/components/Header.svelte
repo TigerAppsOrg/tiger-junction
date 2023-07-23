@@ -16,7 +16,7 @@
             <a href="/home" class="flex items-center">
                 <img src="tjlogolarge.png" alt="Tiger Junction logo"
                 class="w-16 h-16">
-                <span>TigerJunction</span>
+                <span class="text-xl">TigerJunction</span>
             </a>
         </div>
         <div id="right" class="space-x-6">
@@ -26,7 +26,7 @@
             <a href="/certificates">
                 Certificates
             </a>
-            <button class="btn btn-primary"
+            <button class="bg-accent rounded-md py-2 px-4"
             on:click={handleLogout}>
                 Logout
             </button>
