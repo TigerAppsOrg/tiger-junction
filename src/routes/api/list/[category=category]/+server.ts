@@ -15,5 +15,7 @@ export const GET = async ({ locals, params }) => {
     if (supabaseError) 
         throw error(500, { message: supabaseError.message });
 
-    return json(data);
+    let programs: string[] = data.map(x => x.name);
+
+    return json(programs);
 }

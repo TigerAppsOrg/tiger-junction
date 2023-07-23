@@ -19,7 +19,7 @@ type Program = {
 
 type Requirement = {
     id: number;
-    major_id: number;
+    group_id: number;
     name: string;
 }
 
@@ -28,10 +28,33 @@ type CourseRequirementAssociation = {
     subcategory_id: number;
 }
 
+type ProgramInput = {
+    name: string;
+    category: string;
+    link: string;
+    ind_work: boolean;
+    requirement_groups: RequirementGroup[]; 
+}
+
+type RequirementGroup = {
+    name: string;
+    requirements: RequirementPartial[];
+}
+
+type RequirementPartial = {
+    name: string;
+    count: number;
+    courses: string[];
+}
+
+
 export type { 
     Course, 
     CoursePartial,
     Program, 
     Requirement, 
-    CourseRequirementAssociation
+    CourseRequirementAssociation,
+    ProgramInput,
+    RequirementGroup,
+    RequirementPartial
 };

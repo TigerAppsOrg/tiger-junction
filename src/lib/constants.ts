@@ -1,5 +1,5 @@
 // Database
-const CATEGORIES = ["majors", "certificates"];
+const CATEGORIES = ["major", "certificate"];
 
 // Registrar API
 const REGISTRAR_AUTH_BEARER = "Bearer OGNjNjA2OTMtOGU3Ni0zOGJjLWIwZTAtNzI2YTA0NzdiZDk0OnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
