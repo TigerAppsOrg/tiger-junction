@@ -5,7 +5,7 @@
     let courses: Course[] = [];
     let searchList: Course[] = [];
 
-    let currentCourse: Course = { id: 0, name: "" };
+    let currentCourse: Course = { id: -1, name: "", term: "", registrar_id: "-1" };
     let currentMajors: Program[] = [];
     let currentCertificates: Program[] = [];
 

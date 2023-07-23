@@ -20,7 +20,7 @@ export const GET = async ({ locals, url }) => {
 const getAllCourses = async (locals: App.Locals) => {
     const { data, error: supabaseError } = await locals.supabase
         .from("courses")
-        .select("id, name");
+        .select("id, name, registrar_id");
 
     if (supabaseError) 
         throw error(500, { message: supabaseError.message });
@@ -32,7 +32,7 @@ const getAllCourses = async (locals: App.Locals) => {
 const getCourses = async (locals: App.Locals, term: string) => {
     const { data, error: supabaseError } = await locals.supabase
         .from("courses")
-        .select("id, name")
+        .select("id, name, registrar_id")
         .eq("term", term);
 
     if (supabaseError) 

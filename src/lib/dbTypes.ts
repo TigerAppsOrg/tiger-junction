@@ -1,12 +1,14 @@
-type CourseSU = {
+type Course = {
     id: number;
     name: string;
-    terms: string[];
+    term: string;
+    registrar_id: string;
 }
 
-type CourseBASIC = {
-    id: number;
+type CoursePartial = {
     name: string;
+    term: string;
+    registrar_id: string;
 }
 
 type Program = {
@@ -27,9 +29,9 @@ type CourseRequirementAssociation = {
 }
 
 export type { 
-    CourseSU, 
-    CourseBASIC, 
+    Course, 
+    CoursePartial,
     Program, 
     Requirement, 
-    CourseRequirementAssociation 
+    CourseRequirementAssociation
 };

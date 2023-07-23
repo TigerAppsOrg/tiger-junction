@@ -14,7 +14,7 @@ export const actions: Actions = {
     /**
      * @returns course list for a specific term from the registrar API
      */
-    getTerm: async ({ request })=> {
+    getTerm: async ({ request }) => {
         const data = await request.formData();
         const term = data.get("term");
 
@@ -22,5 +22,37 @@ export const actions: Actions = {
 
         let res = await scrapeCourses(termId);
         return { body: { res } };
+    },
+    /**
+     * 
+     */
+    postTerm: async ({ request, locals }) => {
+        const data = await request.formData();
+        const term = data.get("term");
+
+        let termId = convertTermToId(term as string).toUpperCase();
+
+        let res = await scrapeCourses(termId);
+
+        let { data: currentCourses, error: currentError} = await locals.supabase
+            .from("courses")
+            .select("*")
+            .eq("term", termId);
+
+        if (currentError) 
+            throw new Error(currentError.message);
+
+        for (let i = 0; i < res.length; i++) {
+            
+        }
+
+        return { body: { currentCourses } };
+    },
+    /**
+     * 
+     */
+    postAll: async ({ locals }) => {
+
     }
 };
+

@@ -1,10 +1,10 @@
 import { REGISTRAR_AUTH_BEARER, TERM_URL } from "$lib/constants"
-import type { CourseBASIC } from "$lib/dbTypes";
+import type { CoursePartial } from "$lib/dbTypes";
 
 /**
  * Gets and formats the courses for the given term
  * @param term 
- * @returns Course[] for the given term
+ * @returns CoursePartial[] for the given term
  */
 const scrapeCourses = async (term: string) => {
     const res = await fetch(TERM_URL + term, {
@@ -15,31 +15,35 @@ const scrapeCourses = async (term: string) => {
     return removeDuplicateCourses(formatCourses(data.classes.class, term));
 }
 
-// Format courses to Course[] and remove closed courses
+// Format courses to CoursePartial[] and remove closed courses
 const formatCourses = (rawCourses: any[], term: string) => {
-    let courses: CourseBASIC[] = [];
+    let courses: CoursePartial[] = [];
 
     for (let i = 0; i < rawCourses.length; i++) {
         let ele = rawCourses[i];
         if (ele.calculated_status === "Canceled") continue;
 
-        let id = parseInt(ele.course_id);
         let name = ele.crosslistings.replace(/\s/g, "") + " " + ele.long_title;
         if (ele.topic_title) name += ": " + ele.topic_title;
-        courses.push({ id, name });
+
+        courses.push({ 
+            name,
+            term,
+            registrar_id: ele.course_id
+          });
     }
     return courses;
 }
 
 // Remove duplicate courses
-const removeDuplicateCourses = (courses: CourseBASIC[]) => {
-    let ids = new Set<number>();
-    let res: CourseBASIC[] = [];
+const removeDuplicateCourses = (courses: CoursePartial[]) => {
+    let ids = new Set<string>();
+    let res: CoursePartial[] = [];
 
     for (let i = 0; i < courses.length; i++) {
         let ele = courses[i];
-        if (!ids.has(ele.id)) {
-            ids.add(ele.id);
+        if (!ids.has(ele.registrar_id)) {
+            ids.add(ele.registrar_id);
             res.push(ele);
         }
     }
