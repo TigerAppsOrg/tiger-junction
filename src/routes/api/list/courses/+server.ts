@@ -2,8 +2,7 @@ import { convertTermToId } from "$lib/convertTerm.js";
 import { json, error } from "@sveltejs/kit";
 
 /**
- * 
- * @returns 
+ * @returns all courses or courses for a specific term
  */
 export const GET = async ({ locals, url }) => {
     const session = await locals.getSession();

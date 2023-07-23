@@ -1,6 +1,5 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import { scrapeCourses } from "$lib/populate/courses";
 
     export let form;
     $: console.log(form);

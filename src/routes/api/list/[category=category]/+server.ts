@@ -1,5 +1,8 @@
 import { json, error } from "@sveltejs/kit";
 
+/**
+ * @returns programs for a specific category
+ */
 export const GET = async ({ locals, params }) => {
     const session = await locals.getSession();
     if (!session) throw error(401, { message: "Unauthorized" });
