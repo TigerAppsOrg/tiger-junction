@@ -34,25 +34,52 @@ export const actions: Actions = {
 
         let res = await scrapeCourses(termId);
 
-        let { data: currentCourses, error: currentError} = await locals.supabase
+        let { data: cur, error: currentError} = await locals.supabase
             .from("courses")
-            .select("*")
+            .select("registrar_id")
             .eq("term", termId);
 
-        if (currentError) 
-            throw new Error(currentError.message);
+        if (currentError) throw new Error(currentError.message);
+        if (!cur) cur = [];
 
-        for (let i = 0; i < res.length; i++) {
-            
+        let currentCourses: string[] = cur.map(x => x.registrar_id);
+
+        // Upload all from term if term doesn't exist
+        if (currentCourses.length === 0) {
+            let { error: uploadError } = await locals.supabase
+                .from("courses")
+                .insert(res);
+
+            if (uploadError)
+                throw new Error(uploadError.message);
+        } else {
+            // Update all from term if term exists
+            for (let i = 0; i < res.length; i++) {
+                if (currentCourses.find(x => x === res[i].registrar_id)) continue;
+                else {
+                    let { error: uploadError } = await locals.supabase
+                        .from("courses")
+                        .insert(res[i]);
+
+                    if (uploadError)
+                        throw new Error(uploadError.message);
+                }
+            }
+            for (let i = 0; i < currentCourses.length; i++) {
+                if (res.find(x => x.registrar_id === currentCourses[i])) continue;
+                else {
+                    let { error: deleteError } = await locals.supabase
+                        .from("courses")
+                        .delete()
+                        .eq("registrar_id", currentCourses[i]);
+
+                    if (deleteError)
+                        throw new Error(deleteError.message);
+                }
+            }
         }
-
-        return { body: { currentCourses } };
-    },
-    /**
-     * 
-     */
-    postAll: async ({ locals }) => {
-
+        
+        return { body: { message: "Success!"} };
     }
 };
 

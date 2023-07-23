@@ -16,7 +16,6 @@
             <div class="space-x-2">
                 <button type="submit" class="btn bg-primary">Get</button>
                 <button formaction="?/postTerm" class="btn bg-accent">Post</button>
-                <button formaction="?/postAll" class="btn bg-red-500">Post All</button>
             </div>
         </form>
     </div>
