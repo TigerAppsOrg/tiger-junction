@@ -67,19 +67,20 @@
 
 
 <Header supabase={data.supabase} />
-<div id="bento" class="flex gap-2">
-    <div id="searchComplete" class="card">
+<div id="bento" class="flex gap-2 h-screen pt-20 pb-4 px-4">
+    <div id="searchComplete" class="card w-1/3">
         <div>
             <input type="text" placeholder="Enter a course"
-            class="input input-bordered"
+            class="w-full rounded-lg p-2 border-none mb-2"
             on:input={handleInput}>
         </div>
         {#if prevLength > 2}
-        <div class="flex flex-col border-2 ">
+        <div class="flex flex-col border-2 max-h-[80vh] overflow-scroll 
+        text-left space-y-1">
             {#each searchList as course}
                 <button 
                 on:click={() => handleCourseClick(course)} 
-                class="">
+                class="bg-secondary rounded-lg">
                     {course.name}
                 </button>
             {:else}
