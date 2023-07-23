@@ -1,5 +1,6 @@
 <script lang="ts">
+    import List from '$lib/components/List.svelte';
     export let data;
-
-    $: console.log(data.certificateList);
 </script>
+
+<List listData={data.certificateList} />
