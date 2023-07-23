@@ -3,4 +3,4 @@
     export let data;
 </script>
 
-<List listData={data.certificateList} />
+<List listData={data.certificateList} url="/certificates/" />

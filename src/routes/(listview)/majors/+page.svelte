@@ -3,4 +3,4 @@
     export let data;
 </script>
 
-<List listData={data.majorList} />
+<List listData={data.majorList} url="/majors/" />
