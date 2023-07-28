@@ -8,7 +8,7 @@ export default {
         secondary: "#72c7e9",
         tertiary: "#8a65e7",
         accent: "#ff9f00",
-        highlight: "#dafd81"
+        highlight: "#dafd81",
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
@@ -16,5 +16,6 @@ export default {
     },
   },
   plugins: [],
+  darkMode: "class",
 }
 

@@ -67,7 +67,6 @@
 
 
 
-<Header supabase={data.supabase} />
 <div id="bento" class="flex gap-2 h-screen pt-20 pb-4 px-4">
     <div id="searchComplete" class="card w-1/3">
         <div>
