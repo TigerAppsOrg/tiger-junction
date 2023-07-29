@@ -25,7 +25,7 @@ const getAllCourses = async (termId: string) => {
 
 const getCourseData = async (courseId: string, termId: string) => {
     const res = await fetch(
-        `${COURSE_URL}term=${termId}&courseid=${courseId}`, {
+        `${COURSE_URL}term=${termId}&course_id=${courseId}`, {
             method: "GET",
             headers: {
                 "Authorization": REGISTRAR_AUTH_BEARER
@@ -34,7 +34,7 @@ const getCourseData = async (courseId: string, termId: string) => {
     );
 
     const raw = await res.json();
-    const course = raw.course_details.course_detail;
+    const course = raw.course_details.course_detail[0];
 
     let returnDict: Record<string, any> = {};
 
@@ -50,7 +50,14 @@ const getCourseData = async (courseId: string, termId: string) => {
     returnDict["basis"] = course.grading_basis;
     returnDict["dists"] = course.distribution_area_short.split(" or ");
 
-    let instructors = course.course_instructors.course_instructor
+    let instructors = course.course_instructors.course_instructor.map((x: any) => {
+        return {
+            "netid": x.netid,
+            "name": x.name
+        }
+    });
+
+    return { returnDict, instructors };
 }
 
 const getCourseIds = async (termId: string) => {

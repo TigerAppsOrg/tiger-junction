@@ -2,7 +2,7 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { ADMIN_ID } from "$env/static/private";
 import { scrapeCourses } from "$lib/scripts/courses";
 import { convertTermToId } from "$lib/scripts/convert";
-import { getAllCourseEvaluations, getCourseEvaluation, getCourseIds } from "$lib/scripts/scraper.js";
+import { getAllCourseEvaluations, getCourseData, getCourseEvaluation, getCourseIds } from "$lib/scripts/scraper.js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -17,11 +17,9 @@ export const actions: Actions = {
      */
     getTerm: async ({ request }) => {
         const data = await request.formData();
-        const term = data.get("term");
+        const termId = data.get("term") as string;
 
-        let termId = convertTermToId(term as string).toUpperCase();
-
-        let res = await scrapeCourses(termId);
+        let res = await getCourseData("013693" ,termId);
         return { body: { res } };
     },
     /**
