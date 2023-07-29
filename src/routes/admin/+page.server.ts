@@ -1,8 +1,8 @@
 import { redirect, type Actions } from "@sveltejs/kit";
 import { ADMIN_ID } from "$env/static/private";
-import { scrapeCourses } from "$lib/populate/courses.js";
-import { convertTermToId } from "$lib/convertTerm.js";
-import { getCourseEvaluation } from "$lib/populate/scraper.js";
+import { scrapeCourses } from "$lib/scripts/courses";
+import { convertTermToId } from "$lib/scripts/convert";
+import { getAllCourseEvaluations, getCourseEvaluation, getCourseIds } from "$lib/scripts/scraper.js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -81,12 +81,17 @@ export const actions: Actions = {
         }
         return { body: { message: "Success!"} };
     },
-    getEvaluation: async ({ request, locals }) => {
-        const data = await getCourseEvaluation("013693", "1214");
-        return { body: { data } };
+    getEvaluations: async ({ request }) => {
+        const formData = await request.formData();
+        const termId = formData.get("term") as string;
+
+        const courseIds = await getCourseIds(termId);
+        const evaluations = await getAllCourseEvaluations(courseIds, termId);
+
+        return { body: { evaluations, courseIds } };
     },
     pushEvaluations: async ({ request, locals }) => {
-        
+
     }
 };
 

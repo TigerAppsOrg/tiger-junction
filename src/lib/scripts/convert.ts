@@ -1,4 +1,4 @@
-import { CURRENT_TERM_NAME, CURRENT_TERM_ID, TERM_MAP } from "./constants";
+import { CURRENT_TERM_NAME, CURRENT_TERM_ID, TERM_MAP } from "../constants";
 
 /**
  * Converts a term id to a term name, or returns the current term name

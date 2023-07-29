@@ -1,5 +1,5 @@
 import { REGISTRAR_AUTH_BEARER, TERM_URL } from "$lib/constants"
-import type { CoursePartial } from "$lib/dbTypes";
+import type { CoursePartial } from "$lib/types/dbTypesOLD";
 
 /**
  * Gets and formats the courses for the given term

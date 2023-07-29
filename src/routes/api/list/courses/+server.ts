@@ -1,4 +1,4 @@
-import { convertTermToId } from "$lib/convertTerm.js";
+import { convertTermToId } from "$lib/scripts/convertTerm.js";
 import { json, error } from "@sveltejs/kit";
 
 /**

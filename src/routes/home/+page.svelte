@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { Course, Program } from "$lib/dbTypes";
+    import type { Course, Program } from "$lib/types/dbTypesOLD.js";
     import Header from "$lib/components/Header.svelte";
 
     export let data;

@@ -47,11 +47,11 @@
                     <hr class="my-2" />
 
                     <!-- Evaluations -->
-                    <button formaction="?/getEvaluation" 
+                    <button formaction="?/getEvaluations" 
                     class="btn bg-green-400 hover:bg-green-600 duration-150">
                         Get Term Course Evaluations
                     </button>
-                    <button formaction="?/getEvaluation" 
+                    <button formaction="?/pushEvaluations" 
                     class="btn bg-green-400 hover:bg-green-600 duration-150">
                         Post Term Course Evaluations to Supabase
                     </button>
