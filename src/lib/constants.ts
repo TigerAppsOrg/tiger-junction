@@ -5,6 +5,7 @@ const CATEGORIES = ["major", "certificate"];
 const REGISTRAR_AUTH_BEARER = "Bearer OGNjNjA2OTMtOGU3Ni0zOGJjLWIwZTAtNzI2YTA0NzdiZDk0OnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
 const TERM_URL = 'https://api.princeton.edu/registrar/course-offerings/classes/';
 const COURSE_URL = 'https://api.princeton.edu/registrar/course-offerings/course-details?'
+const EVALUATION_URL = "https://registrarapps.princeton.edu/course-evaluation?";
 
 // Terms
 const TERM_MAP = {
@@ -25,6 +26,7 @@ export {
     REGISTRAR_AUTH_BEARER, 
     TERM_URL,
     COURSE_URL,
+    EVALUATION_URL,
     TERM_MAP,
     CURRENT_TERM_NAME,
     CURRENT_TERM_ID

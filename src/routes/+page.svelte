@@ -39,10 +39,10 @@
             </a>
         </div>
         <div id="right" class="space-x-6">
-            <a href="#about">
+            <a href="#about" class="hover:text-gray-500 duration-150">
                 About
             </a>
-            <button class="btn btn-primary"
+            <button class="btn-cool"
             on:click={handleLogin}>
                 Login
             </button>
@@ -152,6 +152,6 @@ py-4">
     }
 
     .link {
-        @apply underline;
+        @apply underline hover:text-gray-200 duration-150;
     }
 </style>
