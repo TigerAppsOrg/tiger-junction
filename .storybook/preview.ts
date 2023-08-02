@@ -1,3 +1,4 @@
+import "../src/app.pcss";
 import type { Preview } from "@storybook/svelte";
 
 const preview: Preview = {
