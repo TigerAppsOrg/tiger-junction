@@ -2,7 +2,7 @@
 const CATEGORIES = ["major", "certificate"];
 
 // Registrar API
-const REGISTRAR_AUTH_BEARER = "Bearer MDk2NzllNjctNGRiNC0zY2YxLWFjNDEtODk4NDk0ZTc5MTQzOnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
+const REGISTRAR_AUTH_BEARER = "Bearer NmQ0YTczMzQtNWEwMi0zMmY4LTk1M2QtYWU2NDUxYmM1MzIzOnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
 const TERM_URL = 'https://api.princeton.edu/registrar/course-offerings/classes/';
 const COURSE_URL = 'https://api.princeton.edu/registrar/course-offerings/1.0.1/course-details?'
 const EVALUATION_URL = "https://registrarapps.princeton.edu/course-evaluation?";

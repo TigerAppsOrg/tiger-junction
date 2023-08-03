@@ -35,6 +35,10 @@
                     <hr class="my-2" />
 
                     <!-- Courses -->
+                    <button formaction="?/getIds"
+                    class="btn bg-orange-400 hover:bg-orange-600 duration-150">
+                        Get Term Ids
+                    </button>
                     <button type="submit" 
                     class="btn bg-orange-400 hover:bg-orange-600 duration-150">
                         Get Term Courselist
@@ -42,6 +46,10 @@
                     <button formaction="?/postTerm"
                     class="btn bg-orange-400 hover:bg-orange-600 duration-150">
                         Post Term Courselist to Supabase
+                    </button>
+                    <button formaction="?/pushListings"
+                    class="btn bg-red-400 hover:bg-red-600 duration-150">
+                        Post Term Listings to Supabase
                     </button>
 
                     <hr class="my-2" />

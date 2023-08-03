@@ -60,7 +60,13 @@ const getCourseData = async (courseId: string, termId: string) => {
     return { returnDict, instructors };
 }
 
+/**
+ * 
+ * @param termId 
+ * @returns 
+ */
 const getCourseIds = async (termId: string) => {
+    // Fetch course Ids
     const res = await fetch(`${TERM_URL}${termId}`, {
         method: "GET",
         headers: {
@@ -70,7 +76,10 @@ const getCourseIds = async (termId: string) => {
 
     const data = await res.json();
     const courses = data.classes.class;
-    return courses.map((x: any) => x.course_id);
+    const ids = courses.map((x: any) => x.course_id);
+
+    // Remove duplicate course Ids and return
+    return Array.from(new Set<string>(ids));
 }
 
 //----------------------------------------------------------------------
