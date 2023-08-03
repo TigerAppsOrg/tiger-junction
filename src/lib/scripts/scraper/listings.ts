@@ -32,7 +32,7 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
     // Format course data
     const data = await res.json();
     const courses = data.classes.class;
-    const formatted = courses.map((x: any) => { 
+    let formatted = courses.map((x: any) => { 
         return {
             id: x.course_id,
             code: x.crosslistings,
@@ -54,7 +54,7 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
     }
 
     // Limit entries 
-    formatted.splice(0, 20);
+    formatted = formatted.slice(0, 20);
 
     // Fetch current listings
     let { data: currentListings, error: listFetchError } = await supabase
