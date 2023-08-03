@@ -41,14 +41,14 @@ CREATE TABLE themes (
 );
 
 CREATE TABLE listings (
-  id INTEGER UNIQUE NOT NULL,
+  id TEXT UNIQUE NOT NULL,
   code VARCHAR(6) UNIQUE NOT NULL,
   PRIMARY KEY(id)
 );
 
 CREATE TABLE courses (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
-  listing_id INTEGER REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
   term INTEGER NOT NULL,
   code VARCHAR(100) NOT NULL,
   title TEXT NOT NULL,
@@ -57,6 +57,7 @@ CREATE TABLE courses (
   is_open BOOLEAN,
   basis VARCHAR(100),
   dists VARCHAR(2)[],
+  rating REAL,
   PRIMARY KEY(id)
 );
 
@@ -85,7 +86,8 @@ CREATE TABLE section_data (
 
 CREATE TABLE evaluations (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
-  listing_id INTEGER REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
   term INTEGER NOT NULL,
   rating REAL NOT NULL,
   metadata JSONB,
@@ -93,14 +95,14 @@ CREATE TABLE evaluations (
 );
 
 CREATE TABLE prereqs (
-  course_id INTEGER REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
-  prereq_id INTEGER REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  course_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  prereq_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY(course_id, prereq_id)
 );
 
 CREATE TABLE instructors (
   netid varchar(100) UNIQUE NOT NULL,
-  name text NOT NULL,
+  name TEXT NOT NULL,
   rating real,
   PRIMARY KEY(netid)
 );
@@ -180,7 +182,7 @@ CREATE TABLE schedule_courselist_associations (
 
 
 CREATE TABLE listing_courselist_associations (
-  listing_id INTEGER REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
+  listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
   courselist_id INTEGER REFERENCES public.courselists(id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY (listing_id, courselist_id)  
 );

@@ -1,26 +1,30 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { REGISTRAR_AUTH_BEARER, TERM_MAP, TERM_URL } from "$lib/constants";
+import type { Listing } from "$lib/types/dbTypes";
 
 const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
 
 /**
- * 
+ * Pushes all listings for all terms to the database.
  * @param supabase 
+ * @returns success or failure message
  */
-export const populateAllListings = async (supabase: SupabaseClient) => {
+const populateAllListings = async (supabase: SupabaseClient) => {
     for (let term in TERM_MAP) {
-        await populateListings(supabase, term);
+        let result = await populateListings(supabase, term);
+        if (result !== SUCCESS_MESSAGE + term) return result;
     }
+    return SUCCESS_MESSAGE + "all terms";
 }
 
 /**
- * 
+ * Pushes all listings for a given term to the database.
  * @param supabase 
  * @param term 
- * @returns 
+ * @returns success or failure message
  */
-export const populateListings = async (supabase: SupabaseClient, term: string) => {
+const populateListings = async (supabase: SupabaseClient, term: string) => {
     // Fetch course data for term
     const res = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
@@ -32,7 +36,7 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
     // Format course data
     const data = await res.json();
     const courses = data.classes.class;
-    let formatted = courses.map((x: any) => { 
+    let formatted: Listing[] = courses.map((x: any) => { 
         return {
             id: x.course_id,
             code: x.crosslistings,
@@ -66,7 +70,7 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
         return "Error fetching listings";
     }
 
-    // Insert listings
+    // Directly insert listings if none exist
     if (!currentListings || currentListings.length === 0) {
         let { error } = await supabase
             .from("listings")
@@ -77,13 +81,16 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
     };
 
     for (let i = 0; i < formatted.length; i++) {
-        let index: number = currentListings.findIndex(x => x.id === formatted[i].id);
-        if (currentListings?.find(x => x.id === formatted[i].id) === undefined) {
-            // Insert listing if it doesn't exist
+        let index = currentListings.findIndex(x => x.id === formatted[i].id);
+
+        // Insert listing if it doesn't exist
+        if (index === -1) {
             let error = await supabase
                 .from("listings")
                 .insert(formatted[i]);
             if (error) return FAILURE_MESSAGE + term;
+
+        // Update listing if it does exist
         } else {
             // Handle aka field
             formatted[i].aka = currentListings[index].aka;
@@ -91,7 +98,7 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
                 if (formatted[i].aka === null) 
                     formatted[i].aka = [currentListings[index].title];
                 else 
-                    formatted[i].aka.push(currentListings[index].title);
+                    formatted[i].aka?.push(currentListings[index].title);
             }
             // Update listing
             let { error } = await supabase
@@ -104,3 +111,4 @@ export const populateListings = async (supabase: SupabaseClient, term: string) =
     return SUCCESS_MESSAGE + term;
 }
 
+export { populateAllListings, populateListings };
