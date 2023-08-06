@@ -58,7 +58,7 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
     }
 
     // Limit entries 
-    formatted = formatted.slice(0, 20);
+    formatted = formatted.slice(0, 30);
 
     // Fetch current listings
     let { data: currentListings, error: listFetchError } = await supabase
@@ -77,38 +77,58 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
             .insert(formatted);
 
         if (error) return FAILURE_MESSAGE + term;
-        return SUCCESS_MESSAGE + term;
+        return SUCCESS_MESSAGE + term 
+            + "[" + formatted.length + " inserts]";
     };
 
+    let insertCount = 0;
+    let updateCount = 0;
+    let unchangedCount = 0;
+    
     for (let i = 0; i < formatted.length; i++) {
         let index = currentListings.findIndex(x => x.id === formatted[i].id);
 
         // Insert listing if it doesn't exist
         if (index === -1) {
-            let error = await supabase
+            let { error } = await supabase
                 .from("listings")
                 .insert(formatted[i]);
-            if (error) return FAILURE_MESSAGE + term;
+            if (error) return FAILURE_MESSAGE + term 
+                + " [" + error.message + "]";
+            insertCount++;
 
-        // Update listing if it does exist
+        // Update or continue if it does exist
         } else {
-            // Handle aka field
+
+            // Check if aka should be updated
             formatted[i].aka = currentListings[index].aka;
+
+            // Change
             if (currentListings[index].title !== formatted[i].title) {
+                // Update aka
                 if (formatted[i].aka === null) 
                     formatted[i].aka = [currentListings[index].title];
                 else 
                     formatted[i].aka?.push(currentListings[index].title);
-            }
-            // Update listing
-            let { error } = await supabase
-                .from("listings")
-                .update(formatted[i])
-                .eq("id", formatted[i].id);
-            if (error) return FAILURE_MESSAGE + term;
+            
+                // Update listing
+                let { error } = await supabase
+                    .from("listings")
+                    .update(formatted[i])
+                    .eq("id", formatted[i].id);
+
+                if (error) return FAILURE_MESSAGE + term 
+                    + " [" + error.message + "]";
+                updateCount++;
+
+            // No change
+            } else unchangedCount++;
         }
     }
-    return SUCCESS_MESSAGE + term;
+    return SUCCESS_MESSAGE + term + " [" 
+        + insertCount + " inserts, " 
+        + updateCount + " updates, " 
+        + unchangedCount + " unchanged]";
 }
 
 export { populateAllListings, populateListings };

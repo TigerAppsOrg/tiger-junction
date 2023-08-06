@@ -42,7 +42,11 @@ CREATE TABLE themes (
 
 CREATE TABLE listings (
   id TEXT UNIQUE NOT NULL,
-  code VARCHAR(6) UNIQUE NOT NULL,
+  code TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  aka TEXT[],
+  ult_term integer,
+  pen_term integer,
   PRIMARY KEY(id)
 );
 
@@ -50,7 +54,7 @@ CREATE TABLE courses (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
   term INTEGER NOT NULL,
-  code VARCHAR(100) NOT NULL,
+  code TEXT NOT NULL,
   title TEXT NOT NULL,
   description TEXT,
   assignments TEXT,
@@ -65,8 +69,8 @@ CREATE TABLE sections (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   course_id INTEGER REFERENCES public.courses(id) on DELETE CASCADE NOT NULL,
   num INTEGER NOT NULL,
-  building VARCHAR(100),
-  room VARCHAR(100),
+  building TEXT,
+  room TEXT,
   tot INTEGER,
   cap INTEGER,
   days BIT(5),
@@ -101,7 +105,7 @@ CREATE TABLE prereqs (
 );
 
 CREATE TABLE instructors (
-  netid varchar(100) UNIQUE NOT NULL,
+  netid TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   rating real,
   PRIMARY KEY(netid)
@@ -109,7 +113,7 @@ CREATE TABLE instructors (
 
 CREATE TABLE course_instructor_associations (
   course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
-  instructor_id VARCHAR(100) REFERENCES public.instructors(netid) ON DELETE CASCADE NOT NULL,
+  instructor_id TEXT REFERENCES public.instructors(netid) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY(course_id, instructor_id)
 );
 
@@ -190,8 +194,8 @@ CREATE TABLE listing_courselist_associations (
 CREATE TABLE programs (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   title TEXT NOT NULL,
-  abv VARCHAR(5) NOT NULL,
-  category VARCHAR(100) NOT NULL,
+  abv TEXT NOT NULL,
+  category TEXT NOT NULL,
   is_ind boolean DEFAULT TRUE,
   description TEXT,
   website TEXT,

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
     import { goto } from "$app/navigation";
+    import { TERM_MAP } from "$lib/constants.js";
 
     export let data;
     export let form;
@@ -12,8 +13,8 @@
     }
 </script>
 
-<main>
-    <div class="bg-black text-white py-2 px-10 flex justify-between
+<main class="h-screen bg-gradient-to-br from-purple-100 to-blue-100">
+    <div class="bg-primary text-white py-2 px-10 flex justify-between
     items-center">
         <h1 class="text-xl">TigerJunction Admin Dashboard</h1>
         <button class="bg-white text-black p-1 rounded-lg
@@ -22,11 +23,11 @@
             Logout
         </button>
     </div>
-    <div class="flex justify-between">
-        <div class="area mx-10 mt-10">
+    <div class="flex mt-10">
+        <div class="area mx-10 border-accent">
             <h2 class="text-xl text-center mb-4">Static DB Management</h2>
             <form action="?/getTerm" method="POST" use:enhance>
-                <div class="mb-4">
+                <div class="mb-4 space-x-2">
                     <label for="term">Term: </label>
                     <input type="text" name="term" id="term" 
                     class="border-2 border-primary rounded-md p-1">
@@ -66,6 +67,22 @@
                 </div>
             </form>
         </div>
+        <div class="area mr-10 border-secondary">
+            <h2 class="text-xl text-center mb-4">Term Codes</h2>
+            <div class="space-y-2">
+                {#each Object.keys(TERM_MAP) as term}
+                    <div class="space-x-2">
+                        <span>
+                            {term.split("_")[0].slice(0, 1) 
+                            + term.split("_")[0].slice(1).toLowerCase() 
+                            + " " 
+                            + term.split("_")[1]}:
+                        </span>
+                        <span class="font-bold">{TERM_MAP[term]}</span>
+                    </div>
+                {/each}
+            </div>
+        </div>
     </div>
 </main>
 
@@ -75,6 +92,6 @@
     }
 
     .area {
-        @apply bg-slate-100 w-fit p-6 rounded-xl border-2 border-gray-300;
+        @apply bg-white w-fit p-6 rounded-xl border-2;
     }
 </style>
