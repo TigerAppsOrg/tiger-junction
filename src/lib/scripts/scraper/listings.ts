@@ -44,6 +44,8 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
                     x.long_title : 
                     x.long_title + ": " + x.topic_title,
             aka: null,
+            ult_term: null,
+            pen_term: null
         };
     });
 
@@ -84,7 +86,7 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
     let insertCount = 0;
     let updateCount = 0;
     let unchangedCount = 0;
-    
+
     for (let i = 0; i < formatted.length; i++) {
         let index = currentListings.findIndex(x => x.id === formatted[i].id);
 
@@ -103,32 +105,42 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
             // Check if aka should be updated
             formatted[i].aka = currentListings[index].aka;
 
-            // Change
-            if (currentListings[index].title !== formatted[i].title) {
-                // Update aka
-                if (formatted[i].aka === null) 
-                    formatted[i].aka = [currentListings[index].title];
-                else 
-                    formatted[i].aka?.push(currentListings[index].title);
+            const termCodes = Object.values(TERM_MAP);
+            const newIndex = termCodes.indexOf(term);
+            const newAka = currentListings[index].title !== formatted[i].title;
+
+            // Term is most recent
+            if (newIndex < termCodes.indexOf(currentListings[index].ult_term)) {
+                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
+                formatted[i].ult_term = term;
+                formatted[i].pen_term = currentListings[index].ult_term;
             
-                // Update listing
-                let { error } = await supabase
-                    .from("listings")
-                    .update(formatted[i])
-                    .eq("id", formatted[i].id);
+            // Term is penultimate
+            } else if (newIndex < termCodes.indexOf(currentListings[index].pen_term)) {
+                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
+                formatted[i].title = currentListings[index].title;
+                formatted[i].pen_term = term;
 
-                if (error) return FAILURE_MESSAGE + term 
-                    + " [" + error.message + "]";
-                updateCount++;
-
-            // No change
-            } else unchangedCount++;
+            // Term is older
+            } else {    
+                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
+                formatted[i].title = currentListings[index].title;
+            }
         }
     }
     return SUCCESS_MESSAGE + term + " [" 
         + insertCount + " inserts, " 
         + updateCount + " updates, " 
         + unchangedCount + " unchanged]";
+}
+
+// Helper function to add a new aka to a listing
+const addNewAka = (aka: string[] | null, title: string) => {
+    if (aka === null) return [title];
+    if (aka.includes(title)) return aka;
+
+    aka.push(title);
+    return aka.sort();
 }
 
 export { populateAllListings, populateListings };

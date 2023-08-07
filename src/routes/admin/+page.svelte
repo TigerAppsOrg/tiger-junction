@@ -13,7 +13,7 @@
     }
 </script>
 
-<main class="h-screen bg-gradient-to-br from-purple-100 to-blue-100">
+<main class="h-screen bg-slate-100">
     <div class="bg-primary text-white py-2 px-10 flex justify-between
     items-center">
         <h1 class="text-xl">TigerJunction Admin Dashboard</h1>
