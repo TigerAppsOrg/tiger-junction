@@ -44,7 +44,7 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
                     x.long_title : 
                     x.long_title + ": " + x.topic_title,
             aka: null,
-            ult_term: null,
+            ult_term: term,
             pen_term: null
         };
     });
@@ -109,25 +109,48 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
             const newIndex = termCodes.indexOf(term);
             const newAka = currentListings[index].title !== formatted[i].title;
 
+            
+            // Term has already been uploaded
+            if (newIndex === termCodes.indexOf(currentListings[index].ult_term 
+            || newIndex === termCodes.indexOf(currentListings[index].pen_term))) {
+                unchangedCount++;
+                continue;
+
             // Term is most recent
-            if (newIndex < termCodes.indexOf(currentListings[index].ult_term)) {
+            } else if (newIndex < termCodes.indexOf(currentListings[index].ult_term)) {
                 if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
                 formatted[i].ult_term = term;
                 formatted[i].pen_term = currentListings[index].ult_term;
+                unchangedCount++;
             
             // Term is penultimate
-            } else if (newIndex < termCodes.indexOf(currentListings[index].pen_term)) {
+            } else if (newIndex < termCodes.indexOf(currentListings[index].pen_term) 
+            || currentListings[index].pen_term === null) {
                 if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
                 formatted[i].title = currentListings[index].title;
+                formatted[i].ult_term = currentListings[index].ult_term;
                 formatted[i].pen_term = term;
 
             // Term is older
             } else {    
                 if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
                 formatted[i].title = currentListings[index].title;
+                formatted[i].ult_term = currentListings[index].ult_term;
+                formatted[i].pen_term = currentListings[index].pen_term;
             }
+
+            let { error } = await supabase
+                .from("listings")
+                .update(formatted[i])
+                .eq("id", formatted[i].id);
+
+            if (error) return FAILURE_MESSAGE + term 
+                + " [" + error.message + "]";
+
+            updateCount++;
         }
     }
+
     return SUCCESS_MESSAGE + term + " [" 
         + insertCount + " inserts, " 
         + updateCount + " updates, " 

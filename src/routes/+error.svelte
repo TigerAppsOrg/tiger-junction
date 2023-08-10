@@ -1,3 +1,7 @@
+<script lang="ts">
+import { page } from "$app/stores";
+</script>
+
 <h1>
-    You've hit a 404!
+    {$page.status} {$page.error?.message}
 </h1>

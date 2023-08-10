@@ -1,4 +1,5 @@
 -- Associations
+DROP TABLE IF EXISTS snatches;
 DROP TABLE IF EXISTS course_instructor_associations;
 DROP TABLE IF EXISTS cb_schedule_associations;
 DROP TABLE IF EXISTS course_schedule_associations;
@@ -45,15 +46,15 @@ CREATE TABLE listings (
   code TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   aka TEXT[],
-  ult_term integer,
-  pen_term integer,
+  ult_term SMALLINT,
+  pen_term SMALLINT,
   PRIMARY KEY(id)
 );
 
 CREATE TABLE courses (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
-  term INTEGER NOT NULL,
+  term SMALLINT NOT NULL,
   code TEXT NOT NULL,
   title TEXT NOT NULL,
   description TEXT,
@@ -71,11 +72,11 @@ CREATE TABLE sections (
   num INTEGER NOT NULL,
   building TEXT,
   room TEXT,
-  tot INTEGER,
-  cap INTEGER,
+  tot SMALLINT,
+  cap SMALLINT,
   days BIT(5),
-  start_time INTEGER,
-  end_time INTEGER,
+  start_time SMALLINT,
+  end_time SMALLINT,
   PRIMARY KEY(id)
 );
 
@@ -83,8 +84,8 @@ CREATE TABLE section_data (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   section_id INTEGER REFERENCES public.sections(id) on DELETE CASCADE NOT NULL,
   recorded_at TIMESTAMP,
-  tot INTEGER,
-  cap INTEGER,
+  tot SMALLINT,
+  cap SMALLINT,
   PRIMARY KEY(id)
 );
 
@@ -92,7 +93,7 @@ CREATE TABLE evaluations (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
   course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
-  term INTEGER NOT NULL,
+  term SMALLINT NOT NULL,
   rating REAL NOT NULL,
   metadata JSONB,
   PRIMARY KEY(id)
@@ -130,8 +131,8 @@ CREATE TABLE cb_times (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   cb_id INTEGER REFERENCES public.custom_blocks(id) on DELETE CASCADE NOT NULL,
   days BIT(5) NOT NULL,
-  start_time INTEGER NOT NULL,
-  end_time INTEGER NOT NULL,
+  start_time SMALLINT NOT NULL,
+  end_time SMALLINT NOT NULL,
   PRIMARY KEY(id)
 );
 
@@ -139,7 +140,7 @@ CREATE TABLE schedules (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   user_id UUID REFERENCES public.profiles(id) on DELETE CASCADE NOT NULL,
   title VARCHAR(100) NOT NULL,
-  term INTEGER NOT NULL,
+  term SMALLINT NOT NULL,
   is_public BOOLEAN DEFAULT false,
   PRIMARY KEY(id)
 );
@@ -173,7 +174,7 @@ CREATE TABLE courselists (
   plan_id integer REFERENCES public.plans (id) on DELETE CASCADE NOT NULL,
   title VARCHAR(100) NOT NULL,
   is_public boolean DEFAULT false,
-  term integer,
+  term SMALLINT,
   slot SMALLINT,
   PRIMARY KEY(id)
 );
@@ -207,4 +208,10 @@ CREATE TABLE courselist_program_associations (
   courselist_id INTEGER REFERENCES public.courselists(id) ON DELETE CASCADE NOT NULL,
   program_id INTEGER REFERENCES public.programs(id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY(courselist_id, program_id)
+);
+
+CREATE TABLE snatches (
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
+  PRIMARY KEY(user_id, course_id)
 );
