@@ -32,6 +32,7 @@ const handleLogout = async () => {
                 term = "";
                 loading = true;
                 console.log("loading...");
+
                 return async ({ result }) => {
                     loading = false;
                     console.log(result);
