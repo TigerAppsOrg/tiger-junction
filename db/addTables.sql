@@ -43,7 +43,7 @@ CREATE TABLE themes (
 
 CREATE TABLE listings (
   id TEXT UNIQUE NOT NULL,
-  code TEXT UNIQUE NOT NULL,
+  code TEXT NOT NULL,
   title TEXT NOT NULL,
   aka TEXT[],
   ult_term SMALLINT,
