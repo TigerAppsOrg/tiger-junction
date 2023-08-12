@@ -36,9 +36,8 @@ export const actions: Actions = {
      */
     postTerm: async ({ request, locals }) => {
         const data = await request.formData();
-        const term = data.get("term");
-
-        let termId = convertTermToId(term as string).toUpperCase();
+        const term = data.get("term") as string;
+        const termId = parseInt(term);
 
         let res = await scrapeCourses(termId);
 
@@ -109,7 +108,8 @@ export const actions: Actions = {
     },
     pushListings: async ({ request, locals }) => {
         const formData = await request.formData();
-        const termId = formData.get("term") as string;
+        const term = formData.get("term") as string;
+        const termId: number = parseInt(term);
 
         let message = await populateListings(locals.supabase, termId);
         return { body: { message } };

@@ -11,11 +11,14 @@ const FAILURE_MESSAGE = "Failed to populate listings for term ";
  * @returns success or failure message
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
-    for (let term in TERM_MAP) {
-        let result = await populateListings(supabase, term);
+    for (let term in Object.values(TERM_MAP)) {
+        let termId = parseInt(term)
+        let result = await populateListings(supabase, termId);
         if (result !== SUCCESS_MESSAGE + term) return result;
     }
-    return SUCCESS_MESSAGE + "all terms";
+    return {
+        message: SUCCESS_MESSAGE + "all terms",
+    };
 }
 
 /**
@@ -24,7 +27,7 @@ const populateAllListings = async (supabase: SupabaseClient) => {
  * @param term 
  * @returns success or failure message
  */
-const populateListings = async (supabase: SupabaseClient, term: string) => {
+const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Fetch course data for term
     const res = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
@@ -60,7 +63,7 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
     }
 
     // Limit entries 
-    formatted = formatted.slice(0, 30);
+    // formatted = formatted.slice(0, 30);
 
     // Fetch current listings
     let { data: currentListings, error: listFetchError } = await supabase
@@ -78,14 +81,21 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
             .from("listings")
             .insert(formatted);
 
-        if (error) return FAILURE_MESSAGE + term;
-        return SUCCESS_MESSAGE + term 
-            + "[" + formatted.length + " inserts]";
+        if (error) return {
+            message: FAILURE_MESSAGE + term,
+        };
+
+        return {
+            message: SUCCESS_MESSAGE + term,
+            insertCount: formatted.length,
+        };
     };
 
     let insertCount = 0;
     let updateCount = 0;
     let unchangedCount = 0;
+
+    let indices: Object[] = [];
 
     for (let i = 0; i < formatted.length; i++) {
         let index = currentListings.findIndex(x => x.id === formatted[i].id);
@@ -95,8 +105,12 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
             let { error } = await supabase
                 .from("listings")
                 .insert(formatted[i]);
-            if (error) return FAILURE_MESSAGE + term 
-                + " [" + error.message + "]";
+
+            if (error) return {
+                message: FAILURE_MESSAGE + term 
+                    + " [" + error.message + "]"
+            };
+            
             insertCount++;
 
         // Update or continue if it does exist
@@ -107,36 +121,51 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
 
             const termCodes = Object.values(TERM_MAP);
             const newIndex = termCodes.indexOf(term);
+            const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
+            const penIndex = termCodes.indexOf(currentListings[index].pen_term);
             const newAka = currentListings[index].title !== formatted[i].title;
 
-            
-            // Term has already been uploaded
-            if (newIndex === termCodes.indexOf(currentListings[index].ult_term 
-            || newIndex === termCodes.indexOf(currentListings[index].pen_term))) {
+            indices.push({ ultIndex, penIndex, newIndex, newAka });
+
+            const checkAka = () => {
+                if (currentListings && newAka) 
+                    formatted[i].aka = addNewAka(
+                            formatted[i].aka, 
+                            currentListings[index].title);
+            }
+
+            // Term is the same as current ultimate term
+            if (newIndex === ultIndex) {
                 unchangedCount++;
                 continue;
 
-            // Term is most recent
-            } else if (newIndex < termCodes.indexOf(currentListings[index].ult_term)) {
-                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
-                formatted[i].ult_term = term;
+            // Term is more recent than current ultimate term
+            } else if (newIndex < ultIndex) {
+                checkAka();
                 formatted[i].pen_term = currentListings[index].ult_term;
-                unchangedCount++;
-            
-            // Term is penultimate
-            } else if (newIndex < termCodes.indexOf(currentListings[index].pen_term) 
-            || currentListings[index].pen_term === null) {
-                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
-                formatted[i].title = currentListings[index].title;
-                formatted[i].ult_term = currentListings[index].ult_term;
-                formatted[i].pen_term = term;
 
-            // Term is older
-            } else {    
-                if (newAka) addNewAka(formatted[i].aka, currentListings[index].title);
-                formatted[i].title = currentListings[index].title;
-                formatted[i].ult_term = currentListings[index].ult_term;
-                formatted[i].pen_term = currentListings[index].pen_term;
+            // Term is older than current ultimate term
+            } else {
+
+                // Penultimate term is null
+                if (penIndex === -1) {
+                    checkAka();
+                    formatted[i].ult_term = currentListings[index].ult_term;
+                    formatted[i].pen_term = term;
+
+                // Term is the same as current penultimate term
+                } else if (newIndex === penIndex) {
+                    unchangedCount++;
+                    continue;
+
+                // Term is more recent than current penultimate term
+                } else if (newIndex < penIndex) {
+                    checkAka();
+                    formatted[i].ult_term = currentListings[index].ult_term;
+                    formatted[i].pen_term = currentListings[index].pen_term;
+
+                // Term is older than current penultimate term
+                } else checkAka();
             }
 
             let { error } = await supabase
@@ -144,17 +173,22 @@ const populateListings = async (supabase: SupabaseClient, term: string) => {
                 .update(formatted[i])
                 .eq("id", formatted[i].id);
 
-            if (error) return FAILURE_MESSAGE + term 
-                + " [" + error.message + "]";
-
+            if (error) return {
+                message: FAILURE_MESSAGE + term 
+                    + " [" + error.message + "]"
+            };
+            
             updateCount++;
         }
     }
 
-    return SUCCESS_MESSAGE + term + " [" 
-        + insertCount + " inserts, " 
-        + updateCount + " updates, " 
-        + unchangedCount + " unchanged]";
+    return {
+        message: SUCCESS_MESSAGE + term,
+        inserts: insertCount,
+        updates: updateCount,
+        unchanged: unchangedCount,
+        indices
+    };
 }
 
 // Helper function to add a new aka to a listing

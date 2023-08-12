@@ -6,7 +6,7 @@ import type { CoursePartial } from "$lib/types/dbTypesOLD";
  * @param term 
  * @returns CoursePartial[] for the given term
  */
-const scrapeCourses = async (term: string) => {
+const scrapeCourses = async (term: number) => {
     const res = await fetch(TERM_URL + term, {
         headers: { Authorization: REGISTRAR_AUTH_BEARER }
     });
@@ -16,8 +16,8 @@ const scrapeCourses = async (term: string) => {
 }
 
 // Format courses to CoursePartial[] and remove closed courses
-const formatCourses = (rawCourses: any[], term: string) => {
-    let courses: CoursePartial[] = [];
+const formatCourses = (rawCourses: any[], term: number) => {
+    let courses: any[] = [];
 
     for (let i = 0; i < rawCourses.length; i++) {
         let ele = rawCourses[i];
