@@ -1,5 +1,5 @@
 // Database
-const CATEGORIES = ["major", "certificate"];
+const CATEGORIES = ["ab", "bse", "certificate", "minor"];
 
 // Registrar API
 const REGISTRAR_AUTH_BEARER = "Bearer NTY1Y2E3NDgtNTNlZC0zZDIwLWE1YWYtODk4ZGJmYjg5YTQ2OnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
@@ -23,7 +23,7 @@ const TERM_MAP: Record<string, number> = {
 }
 
 const CURRENT_TERM_NAME = "FALL_2023";
-const CURRENT_TERM_ID = "1242";
+const CURRENT_TERM_ID = 1242;
 
 export { 
     CATEGORIES, 
