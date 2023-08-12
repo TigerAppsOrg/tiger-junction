@@ -82,7 +82,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             .insert(formatted);
 
         if (error) return {
-            message: FAILURE_MESSAGE + term,
+            message: FAILURE_MESSAGE + term 
+            + " [" + error.message + "]",
         };
 
         return {
@@ -106,7 +107,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
             if (error) return {
                 message: FAILURE_MESSAGE + term 
-                    + " [" + error.message + "]"
+                    + " [" + error.message + "]",
+                course: formatted[i],
             };
             
             insertCount++;
@@ -169,10 +171,11 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 .update(formatted[i])
                 .eq("id", formatted[i].id);
 
-            if (error) return {
-                message: FAILURE_MESSAGE + term 
-                    + " [" + error.message + "]"
-            };
+                if (error) return {
+                    message: FAILURE_MESSAGE + term 
+                        + " [" + error.message + "]",
+                    course: formatted[i],
+                };
             
             updateCount++;
         }
