@@ -112,7 +112,7 @@ export const actions: Actions = {
         const termId: number = parseInt(term);
 
         let message = await populateListings(locals.supabase, termId);
-        return { body: { message } };
+        return message;
     }
 };
 

@@ -1,21 +1,22 @@
 <script lang="ts">
-    import { enhance } from "$app/forms";
-    import { goto } from "$app/navigation";
-    import { TERM_MAP } from "$lib/constants.js";
+import { enhance } from "$app/forms";
+import { goto } from "$app/navigation";
+import { TERM_MAP } from "$lib/constants.js";
 
-    export let data;
-    export let form;
-    $: console.log(form);
+export let data;
 
-    const handleLogout = async () => { 
-        const { error } = await data.supabase.auth.signOut();
-        if (!error) goto("/");
-    }
+let term: string = "";
+let loading: boolean = false;
+
+const handleLogout = async () => { 
+    const { error } = await data.supabase.auth.signOut();
+    if (!error) goto("/");
+}
 </script>
 
 <main class="h-screen bg-slate-100">
-    <div class="bg-primary text-white py-2 px-10 flex justify-between
-    items-center">
+    <div class="text-white py-2 px-10 flex justify-between
+    items-center {loading ? "bg-tertiary" : "bg-primary"}">
         <h1 class="text-xl">TigerJunction Admin Dashboard</h1>
         <button class="bg-white text-black p-1 rounded-lg
         hover:bg-gray-200 duration-150"
@@ -26,10 +27,19 @@
     <div class="flex mt-10">
         <div class="area mx-10 border-accent">
             <h2 class="text-xl text-center mb-4">Static DB Management</h2>
-            <form action="?/getTerm" method="POST" use:enhance>
+            <form action="?/getTerm" method="POST"
+            use:enhance={() => {
+                term = "";
+                loading = true;
+                console.log("loading...");
+                return async ({ result }) => {
+                    loading = false;
+                    console.log(result);
+                }
+            }}>
                 <div class="mb-4 space-x-2">
                     <label for="term">Term: </label>
-                    <input type="text" name="term" id="term" 
+                    <input type="text" name="term" id="term" bind:value={term}
                     class="border-2 border-primary rounded-md p-1">
                 </div>
                 <div class="flex flex-col gap-1">
@@ -49,7 +59,8 @@
                         Post Term Courselist to Supabase
                     </button>
                     <button formaction="?/pushListings"
-                    class="btn bg-red-400 hover:bg-red-600 duration-150">
+                    class="btn bg-red-400 hover:bg-red-600 duration-150"
+                    >
                         Post Term Listings to Supabase
                     </button>
 

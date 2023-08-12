@@ -68,7 +68,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Fetch current listings
     let { data: currentListings, error: listFetchError } = await supabase
         .from("listings")
-        .select("*");
+        .select("id, title, aka, ult_term, pen_term");
     
     if (listFetchError) {
         console.error(listFetchError);
@@ -94,8 +94,6 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     let insertCount = 0;
     let updateCount = 0;
     let unchangedCount = 0;
-
-    let indices: Object[] = [];
 
     for (let i = 0; i < formatted.length; i++) {
         let index = currentListings.findIndex(x => x.id === formatted[i].id);
@@ -124,8 +122,6 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
             const penIndex = termCodes.indexOf(currentListings[index].pen_term);
             const newAka = currentListings[index].title !== formatted[i].title;
-
-            indices.push({ ultIndex, penIndex, newIndex, newAka });
 
             const checkAka = () => {
                 if (currentListings && newAka) 
@@ -187,7 +183,6 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
         inserts: insertCount,
         updates: updateCount,
         unchanged: unchangedCount,
-        indices
     };
 }
 
