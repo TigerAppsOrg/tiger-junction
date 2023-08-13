@@ -1,28 +1,66 @@
 -- General RLS
 
-ALTER TABLE themes
-  ENABLE ROW LEVEL SECURITY;
+-- themes
+DROP POLICY IF EXISTS "View: auth is_public" ON public.themes;
+CREATE POLICY "View: auth is_public" ON public.themes
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+  USING (is_public = true);
 
-ALTER TABLE listings
-  ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Interact: user" ON public.themes;
+CREATE POLICY "Interact: user" ON public.themes
+  FOR ALL
+  TO authenticated
+  USING (auth.uid() = author_id)
+  WITH CHECK (auth.uid() = author_id);
 
-ALTER TABLE courses
-  ENABLE ROW LEVEL SECURITY;
+-- listings
+DROP POLICY IF EXISTS "View: auth" ON public.listings;
+CREATE POLICY "View: auth" ON public.listings
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
 
-ALTER TABLE sections
-  ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE section_data
-  ENABLE ROW LEVEL SECURITY;
+-- courses
+DROP POLICY IF EXISTS "View: auth" ON public.courses;
+CREATE POLICY "View: auth" ON public.courses
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
 
-ALTER TABLE evaluations
-  ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE prereqs
-  ENABLE ROW LEVEL SECURITY;
+-- sections
+DROP POLICY IF EXISTS "View: auth" ON public.sections;
+CREATE POLICY "View: auth" ON public.sections
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
 
-ALTER TABLE instructors
-  ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE course_instructor_associations
-  ENABLE ROW LEVEL SECURITY;
+-- evaluations
+DROP POLICY IF EXISTS "View: auth" ON public.evaluations;
+CREATE POLICY "View: auth" ON public.evaluations
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+
+
+-- prereqs
+DROP POLICY IF EXISTS "View: auth" ON public.prereqs;
+CREATE POLICY "View: auth" ON public.prereqs
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+
+
+-- instructors
+DROP POLICY IF EXISTS "View: auth" ON public.instructors;
+CREATE POLICY "View: auth" ON public.instructors
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+
+
+-- course_instructor_associations
+DROP POLICY IF EXISTS "View: auth" ON public.course_instructor_associations;
+CREATE POLICY "View: auth" ON public.course_instructor_associations
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+
+
+-- section_data (admin only)

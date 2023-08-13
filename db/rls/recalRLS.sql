@@ -1,16 +1,11 @@
 -- ReCal+ RLS
 
-ALTER TABLE custom_blocks
-  ENABLE ROW LEVEL SECURITY;
+-- custom_blocks
 
-ALTER TABLE cb_times
-  ENABLE ROW LEVEL SECURITY;
+-- cb_times
 
-ALTER TABLE schedules
-  ENABLE ROW LEVEL SECURITY;
+-- schedules
 
-ALTER TABLE cb_schedule_associations
-  ENABLE ROW LEVEL SECURITY;
+-- cb_schedule_associations
 
-ALTER TABLE course_schedule_associations
-  ENABLE ROW LEVEL SECURITY;
+-- course_schedule_associations

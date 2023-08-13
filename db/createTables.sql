@@ -200,6 +200,7 @@ CREATE TABLE programs (
   abv TEXT NOT NULL,
   category TEXT NOT NULL,
   is_ind boolean DEFAULT TRUE,
+  is_active boolean DEFAULT TRUE,
   description TEXT,
   website TEXT,
   requirements JSONB,

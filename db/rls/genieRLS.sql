@@ -1,10 +1,8 @@
 -- CourseGenie RLS
 
-ALTER TABLE plans
-  ENABLE ROW LEVEL SECURITY;
-
+-- plans
 DROP POLICY IF EXISTS "View: auth is_public" ON public.plans;
-CREATE POLICY "Authenticated users can view public plans" ON public.plans
+CREATE POLICY "View: auth is_public" ON public.plans
   AS PERMISSIVE FOR SELECT
   TO authenticated
   USING (is_public = true);
@@ -17,9 +15,7 @@ CREATE POLICY "Interact: user" ON public.plans
   WITH CHECK (auth.uid() = user_id);
 
 
-ALTER TABLE courselists
-  ENABLE ROW LEVEL SECURITY;
-
+-- courselists
 DROP POLICY IF EXISTS "View: auth is_public" ON public.courselists;
 CREATE POLICY "View: auth is_public" ON public.courselists
   AS PERMISSIVE FOR SELECT
@@ -42,25 +38,22 @@ CREATE POLICY "Interact: user" ON public.courselists
   ));
 
 
-ALTER TABLE schedule_courselist_associations
-  ENABLE ROW LEVEL SECURITY;
+-- schedule_courselist_associations
 
 
-ALTER TABLE listing_courselist_associations
-  ENABLE ROW LEVEL SECURITY;
+-- listing_courselist_associations
 
 
-ALTER TABLE programs
-  ENABLE ROW LEVEL SECURITY;
+-- programs
+DROP POLICY IF EXISTS "View: auth" ON public.programs;
+CREATE POLICY "View: auth" ON public.programs
+  AS PERMISSIVE FOR SELECT
+  TO authenticated
+
+-- courselist_program_associations
 
 
-ALTER TABLE courselist_program_associations
-  ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE snatches
-  ENABLE ROW LEVEL SECURITY;
-
+-- snatches
 DROP POLICY IF EXISTS "Interact: user" ON public.snatches;
 CREATE POLICY "Interact: user" ON public.snatches
   FOR ALL
