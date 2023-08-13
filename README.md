@@ -12,7 +12,9 @@
 
 🔔 **Real-Time Notifications:** Stay informed with instant notifications about course updates, registration deadlines, and important announcements, ensuring you never miss a beat.
 
-📊 **Data-Driven Insights:** Leverage the power of data and analytics to make informed decisions. Get access to historical course data, grade distributions, and student reviews.
+📊 **Data-Driven Insights:** Leverage the power of data and analytics to make informed decisions. Get access to historical course data and course evaluations.
+
+📱 **Mobile App:** An enhanced mobile app for TigerJunction is on the horizon! Take the power of TigerJunction with you wherever you go, allowing you to plan and manage your courses on-the-go. Stay tuned for updates on its release.
 
 ## Technologies
 
