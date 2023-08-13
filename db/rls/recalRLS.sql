@@ -1,4 +1,5 @@
 -- ReCal+ RLS
+
 ALTER TABLE custom_blocks
   ENABLE ROW LEVEL SECURITY;
 

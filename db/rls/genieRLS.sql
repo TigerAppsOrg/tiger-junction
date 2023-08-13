@@ -1,4 +1,5 @@
 -- CourseGenie RLS
+
 ALTER TABLE plans
   ENABLE ROW LEVEL SECURITY;
 

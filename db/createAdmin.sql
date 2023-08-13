@@ -1,3 +1,5 @@
+-- Create admin user (with private_profiles table)
+
 DROP TABLE IF EXISTS private_profiles;
 
 CREATE TABLE private_profiles (

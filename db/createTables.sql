@@ -1,3 +1,5 @@
+-- Create public DB tables
+
 -- Associations
 DROP TABLE IF EXISTS snatches;
 DROP TABLE IF EXISTS course_instructor_associations;

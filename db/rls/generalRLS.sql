@@ -1,4 +1,5 @@
 -- General RLS
+
 ALTER TABLE themes
   ENABLE ROW LEVEL SECURITY;
 
