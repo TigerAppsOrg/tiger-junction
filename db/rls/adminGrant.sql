@@ -1,0 +1,1 @@
+-- Grant admins interact permissions on all tables
