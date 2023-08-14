@@ -1,0 +1,11 @@
+{
+    "title": "Complicated Computer Science",
+    "abv": "CCS",
+    "category": "bse",
+    "iw": true,
+    "requirements": 
+    {
+        "and": "few"
+    }
+    
+}
