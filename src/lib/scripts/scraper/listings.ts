@@ -42,7 +42,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     let formatted: Listing[] = courses.map((x: any) => { 
         return {
             id: x.course_id,
-            code: x.crosslistings,
+            code: x.subject + x.catnum,
             title: x.topic_title === null ? 
                     x.long_title : 
                     x.long_title + ": " + x.topic_title,
@@ -63,7 +63,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     }
 
     // Limit entries 
-    // formatted = formatted.slice(0, 30);
+    formatted = formatted.slice(0, 30);
 
     // Fetch current listings
     let { data: currentListings, error: listFetchError } = await supabase
@@ -116,20 +116,19 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
         // Update or continue if it does exist
         } else {
 
-            // Check if aka should be updated
             formatted[i].aka = currentListings[index].aka;
 
             const termCodes = Object.values(TERM_MAP);
             const newIndex = termCodes.indexOf(term);
             const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
             const penIndex = termCodes.indexOf(currentListings[index].pen_term);
-            const newAka = currentListings[index].title !== formatted[i].title;
+            let newTitle: string = formatted[i].title;
 
             const checkAka = () => {
-                if (currentListings && newAka) 
+                if (currentListings && newTitle !== currentListings[index].title) 
                     formatted[i].aka = addNewAka(
                             formatted[i].aka, 
-                            currentListings[index].title);
+                            newTitle);
             }
 
             // Term is the same as current ultimate term
@@ -144,6 +143,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
             // Term is older than current ultimate term
             } else {
+                formatted[i].title = currentListings[index].title;
 
                 // Penultimate term is null
                 if (penIndex === -1) {
