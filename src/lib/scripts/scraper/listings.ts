@@ -65,21 +65,20 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Limit entries 
     // formatted = formatted.slice(0, 30);
 
+    let { data: currentListings, error: listFetchError } = await supabase
+        .from("listings")
+        .select("id, title, aka, ult_term, pen_term")
+
+    if (listFetchError) {
+        console.error(listFetchError);
+        return "Error fetching listings";
+    }
+
     let insertCount = 0;
     let updateCount = 0;
     let unchangedCount = 0;
 
     for (let i = 0; i < formatted.length; i++) {
-        let { data: currentListings, error: listFetchError } = await supabase
-            .from("listings")
-            .select("id, title, aka, ult_term, pen_term")
-            .eq("id", formatted[i].id);
-    
-        if (listFetchError) {
-            console.error(listFetchError);
-            return "Error fetching listings";
-        }
-
         // Insert listing if it doesn't exist
         if (!currentListings || currentListings.length === 0) {
             let { error } = await supabase
@@ -96,17 +95,32 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
         // Update or continue if it does exist
         } else {
-            let current = currentListings[0];
-            formatted[i].aka = current.aka;
+            // let current = currentListings[0];
+            let index = currentListings.findIndex(x => x.id === formatted[i].id);
+
+            if (index === -1) {
+                let { error } = await supabase
+                    .from("listings")
+                    .insert(formatted[i]);
+
+                if (error) return {
+                    message: FAILURE_MESSAGE + term
+                        + " [" + error.message + "]",
+                    course: formatted[i],
+                };
+                continue;
+            }
+
+            formatted[i].aka = currentListings[index].aka;
 
             const termCodes = Object.values(TERM_MAP);
             const newIndex = termCodes.indexOf(term);
-            const ultIndex = termCodes.indexOf(current.ult_term);
-            const penIndex = termCodes.indexOf(current.pen_term);
+            const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
+            const penIndex = termCodes.indexOf(currentListings[index].pen_term);
             let newTitle: string = formatted[i].title;
 
             const checkAka = () => {
-                if (currentListings && newTitle !== current.title) 
+                if (currentListings && newTitle !== currentListings[index].title) 
                     formatted[i].aka = addNewAka(
                             formatted[i].aka, 
                             newTitle);
@@ -120,17 +134,17 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             // Term is more recent than current ultimate term
             } else if (newIndex < ultIndex) {
                 checkAka();
-                formatted[i].pen_term = current.ult_term;
+                formatted[i].pen_term = currentListings[index].ult_term;
 
             // Term is older than current ultimate term
             } else {
-                formatted[i].title = current.title;
+                formatted[i].title = currentListings[index].title;
 
                 // Penultimate term is null 
                 // or is more recent than current penultimate term
                 if (penIndex === -1 || newIndex < penIndex) {
                     checkAka();
-                    formatted[i].ult_term = current.ult_term;
+                    formatted[i].ult_term = currentListings[index].ult_term;
                     formatted[i].pen_term = term;
 
                 // Term is the same as current penultimate term
@@ -141,8 +155,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 // Term is older than current penultimate term
                 } else {
                     checkAka();
-                    formatted[i].ult_term = current.ult_term;
-                    formatted[i].pen_term = current.pen_term;   
+                    formatted[i].ult_term = currentListings[index].ult_term;
+                    formatted[i].pen_term = currentListings[index].pen_term;   
                 }
             }
 
