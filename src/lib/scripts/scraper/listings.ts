@@ -21,6 +21,7 @@ const populateAllListings = async (supabase: SupabaseClient) => {
     };
 }
 
+// TODO - fetch course one by one instead of all at once
 /**
  * Pushes all listings for a given term to the database.
  * @param supabase 
@@ -145,8 +146,9 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             } else {
                 formatted[i].title = currentListings[index].title;
 
-                // Penultimate term is null
-                if (penIndex === -1) {
+                // Penultimate term is null 
+                // or is more recent than current penultimate term
+                if (penIndex === -1 || newIndex < penIndex) {
                     checkAka();
                     formatted[i].ult_term = currentListings[index].ult_term;
                     formatted[i].pen_term = term;
@@ -156,14 +158,12 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                     unchangedCount++;
                     continue;
 
-                // Term is more recent than current penultimate term
-                } else if (newIndex < penIndex) {
+                // Term is older than current penultimate term
+                } else {
                     checkAka();
                     formatted[i].ult_term = currentListings[index].ult_term;
-                    formatted[i].pen_term = currentListings[index].pen_term;
-
-                // Term is older than current penultimate term
-                } else checkAka();
+                    formatted[i].pen_term = currentListings[index].pen_term;   
+                }
             }
 
             let { error } = await supabase
