@@ -14,7 +14,7 @@ BEGIN
                       row.tablename);
     EXECUTE format('CREATE POLICY "Interact: admin" ON %I 
                       TO authenticated
-                      WITH CHECK (get_is_admin());', row.tablename); 
+                      USING (get_is_admin());', row.tablename); 
   END LOOP;
 END;
 $$;

@@ -1,7 +1,5 @@
 import { redirect, type Actions } from "@sveltejs/kit";
-import { ADMIN_ID } from "$env/static/private";
 import { scrapeCourses } from "$lib/scripts/courses"
-import { convertTermToId } from "$lib/scripts/convert";
 import { getAllCourseEvaluations, getCourseData, getCourseEvaluation, getCourseIds } from "$lib/scripts/scraper/reg.js";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 
@@ -113,6 +111,16 @@ export const actions: Actions = {
 
         let message = await populateListings(locals.supabase, termId);
         return message;
+    },
+    // ! Deletions
+    deleteAllListings: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("listings")
+            .delete()
+            .neq("id", "0");
+
+        if (error) throw new Error(error.message);
+        return { body: { message: "Successfully deleted all listings" } };
     }
 };
 

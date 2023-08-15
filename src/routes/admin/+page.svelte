@@ -79,6 +79,28 @@ const handleLogout = async () => {
                 </div>
             </form>
         </div>
+        <div class="area border-red-500 mr-10">
+            <h2 class="text-xl text-center mb-4">Mass Deletions</h2>
+            <div class="flex flex-col gap-1">
+                <form action="?/getTerm" method="POST"
+                use:enhance={() => {
+                    term = "";
+                    loading = true;
+                    console.log("loading...");
+    
+                    return async ({ result }) => {
+                        loading = false;
+                        console.log(result);
+                    }
+                }}>
+                    <!-- Courses -->
+                    <button formaction="?/deleteAllListings"
+                    class="btn bg-red-500 hover:bg-red-700 duration-150">
+                        Delete All Listings
+                    </button>
+                </form>
+            </div>
+        </div>
         <div class="area mr-10 border-secondary">
             <h2 class="text-xl text-center mb-4">Term Codes</h2>
             <div class="space-y-2">
