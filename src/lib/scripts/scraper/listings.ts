@@ -6,22 +6,21 @@ const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
 
 /**
- * Pushes all listings for all terms to the database.
+ * @deprecated
+ * @description Pushes all listings for all terms to the database.
  * @param supabase 
  * @returns success or failure message
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
+    let resultMessage: Record<number, any> = {};
     for (let term in Object.values(TERM_MAP)) {
         let termId = parseInt(term)
         let result = await populateListings(supabase, termId);
-        if (result !== SUCCESS_MESSAGE + term) return result;
+        resultMessage[termId] = result;
     }
-    return {
-        message: SUCCESS_MESSAGE + "all terms",
-    };
+    return resultMessage;
 }
 
-// TODO - fetch course one by one instead of all at once
 /**
  * Pushes all listings for a given term to the database.
  * @param supabase 
@@ -66,42 +65,23 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Limit entries 
     formatted = formatted.slice(0, 30);
 
-    // Fetch current listings
-    let { data: currentListings, error: listFetchError } = await supabase
-        .from("listings")
-        .select("id, title, aka, ult_term, pen_term");
-    
-    if (listFetchError) {
-        console.error(listFetchError);
-        return "Error fetching listings";
-    }
-
-    // Directly insert listings if none exist
-    if (!currentListings || currentListings.length === 0) {
-        let { error } = await supabase
-            .from("listings")
-            .insert(formatted);
-
-        if (error) return {
-            message: FAILURE_MESSAGE + term 
-            + " [" + error.message + "]",
-        };
-
-        return {
-            message: SUCCESS_MESSAGE + term,
-            insertCount: formatted.length,
-        };
-    };
-
     let insertCount = 0;
     let updateCount = 0;
     let unchangedCount = 0;
 
     for (let i = 0; i < formatted.length; i++) {
-        let index = currentListings.findIndex(x => x.id === formatted[i].id);
+        let { data: currentListings, error: listFetchError } = await supabase
+            .from("listings")
+            .select("id, title, aka, ult_term, pen_term")
+            .eq("id", formatted[i].id);
+    
+        if (listFetchError) {
+            console.error(listFetchError);
+            return "Error fetching listings";
+        }
 
         // Insert listing if it doesn't exist
-        if (index === -1) {
+        if (!currentListings || currentListings.length === 0) {
             let { error } = await supabase
                 .from("listings")
                 .insert(formatted[i]);
@@ -116,17 +96,17 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
         // Update or continue if it does exist
         } else {
-
-            formatted[i].aka = currentListings[index].aka;
+            let current = currentListings[0];
+            formatted[i].aka = current.aka;
 
             const termCodes = Object.values(TERM_MAP);
             const newIndex = termCodes.indexOf(term);
-            const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
-            const penIndex = termCodes.indexOf(currentListings[index].pen_term);
+            const ultIndex = termCodes.indexOf(current.ult_term);
+            const penIndex = termCodes.indexOf(current.pen_term);
             let newTitle: string = formatted[i].title;
 
             const checkAka = () => {
-                if (currentListings && newTitle !== currentListings[index].title) 
+                if (currentListings && newTitle !== current.title) 
                     formatted[i].aka = addNewAka(
                             formatted[i].aka, 
                             newTitle);
@@ -140,17 +120,17 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             // Term is more recent than current ultimate term
             } else if (newIndex < ultIndex) {
                 checkAka();
-                formatted[i].pen_term = currentListings[index].ult_term;
+                formatted[i].pen_term = current.ult_term;
 
             // Term is older than current ultimate term
             } else {
-                formatted[i].title = currentListings[index].title;
+                formatted[i].title = current.title;
 
                 // Penultimate term is null 
                 // or is more recent than current penultimate term
                 if (penIndex === -1 || newIndex < penIndex) {
                     checkAka();
-                    formatted[i].ult_term = currentListings[index].ult_term;
+                    formatted[i].ult_term = current.ult_term;
                     formatted[i].pen_term = term;
 
                 // Term is the same as current penultimate term
@@ -161,8 +141,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 // Term is older than current penultimate term
                 } else {
                     checkAka();
-                    formatted[i].ult_term = currentListings[index].ult_term;
-                    formatted[i].pen_term = currentListings[index].pen_term;   
+                    formatted[i].ult_term = current.ult_term;
+                    formatted[i].pen_term = current.pen_term;   
                 }
             }
 
