@@ -63,7 +63,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     }
 
     // Limit entries 
-    formatted = formatted.slice(0, 30);
+    // formatted = formatted.slice(0, 30);
 
     let insertCount = 0;
     let updateCount = 0;
