@@ -1,5 +1,5 @@
 import { REGISTRAR_AUTH_BEARER, TERM_URL, COURSE_URL, EVALUATION_URL } from "$lib/constants";
-import { PRIVATE_COOKIE } from "$env/static/private"
+// import { PRIVATE_COOKIE } from "$env/static/private"
 import { JSDOM } from "jsdom";
 
 //----------------------------------------------------------------------
@@ -65,7 +65,7 @@ const getCourseData = async (courseId: string, termId: string) => {
  * @param termId 
  * @returns 
  */
-const getCourseIds = async (termId: string) => {
+const getCourseIds = async (termId: number) => {
     // Fetch course Ids
     const res = await fetch(`${TERM_URL}${termId}`, {
         method: "GET",
@@ -93,29 +93,29 @@ const getCourseIds = async (termId: string) => {
  * @returns formatted course evaluation data
  */
 const getCourseEvaluation = async (courseId: string, termId: string) => {
-    const res = await fetch(
-        `${EVALUATION_URL}courseinfo=${courseId}&terminfo=${termId}`, {
-            method: "GET",
-            headers: {
-                "Cookie": PRIVATE_COOKIE
-            }
-        }
-    );
+    // const res = await fetch(
+    //     `${EVALUATION_URL}courseinfo=${courseId}&terminfo=${termId}`, {
+    //         method: "GET",
+    //         headers: {
+    //             "Cookie": PRIVATE_COOKIE
+    //         }
+    //     }
+    // );
 
-    const dom = new JSDOM(await res.text());
+    // const dom = new JSDOM(await res.text());
 
-    if (dom.window.document.querySelectorAll("tr").length === 0) return null;
+    // if (dom.window.document.querySelectorAll("tr").length === 0) return null;
     
-    const evalLabels = dom.window.document.querySelectorAll("tr")[0].querySelectorAll("th");
-    const evalRatings = dom.window.document.querySelectorAll("tr")[1].querySelectorAll("td");
-    const comments = dom.window.document.querySelectorAll(".comment");
+    // const evalLabels = dom.window.document.querySelectorAll("tr")[0].querySelectorAll("th");
+    // const evalRatings = dom.window.document.querySelectorAll("tr")[1].querySelectorAll("td");
+    // const comments = dom.window.document.querySelectorAll(".comment");
 
-    let returnDict: Record<string, any> = {};
-    for (let i = 0; i < evalLabels.length; i++) {
-        returnDict[evalLabels[i].textContent as string] = evalRatings[i].textContent;
-        returnDict["comments"] = [...comments].map(x => x.textContent);
-    }
-    return returnDict;
+    // let returnDict: Record<string, any> = {};
+    // for (let i = 0; i < evalLabels.length; i++) {
+    //     returnDict[evalLabels[i].textContent as string] = evalRatings[i].textContent;
+    //     returnDict["comments"] = [...comments].map(x => x.textContent);
+    // }
+    // return returnDict;
 }
 
 /**

@@ -76,7 +76,7 @@ CREATE TABLE sections (
   room TEXT,
   tot SMALLINT,
   cap SMALLINT,
-  days BIT(5),
+  days SMALLINT,
   start_time SMALLINT,
   end_time SMALLINT,
   PRIMARY KEY(id)
@@ -132,7 +132,7 @@ CREATE TABLE custom_blocks (
 CREATE TABLE cb_times (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   cb_id INTEGER REFERENCES public.custom_blocks(id) on DELETE CASCADE NOT NULL,
-  days BIT(5) NOT NULL,
+  days SMALLINT NOT NULL,
   start_time SMALLINT NOT NULL,
   end_time SMALLINT NOT NULL,
   PRIMARY KEY(id)

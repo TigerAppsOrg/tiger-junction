@@ -27,8 +27,7 @@ const handleLogout = async () => {
     <div class="flex mt-10">
         <div class="area mx-10 border-accent">
             <h2 class="text-xl text-center mb-4">Static DB Management</h2>
-            <form action="?/getTerm" method="POST"
-            use:enhance={() => {
+            <form method="POST" use:enhance={() => {
                 term = "";
                 loading = true;
                 console.log("loading...");
@@ -47,34 +46,13 @@ const handleLogout = async () => {
                     <hr class="my-2" />
 
                     <!-- Courses -->
-                    <button formaction="?/getIds"
-                    class="btn bg-orange-400 hover:bg-orange-600 duration-150">
-                        Get Term Ids
-                    </button>
-                    <button type="submit" 
-                    class="btn bg-orange-400 hover:bg-orange-600 duration-150">
-                        Get Term Courselist
-                    </button>
-                    <button formaction="?/postTerm"
-                    class="btn bg-orange-400 hover:bg-orange-600 duration-150">
-                        Post Term Courselist to Supabase
-                    </button>
                     <button formaction="?/pushListings"
-                    class="btn bg-red-400 hover:bg-red-600 duration-150"
-                    >
+                    class="btn bg-blue-400 hover:bg-blue-600 duration-150">
                         Post Term Listings to Supabase
                     </button>
-
-                    <hr class="my-2" />
-
-                    <!-- Evaluations -->
-                    <button formaction="?/getEvaluations" 
-                    class="btn bg-green-400 hover:bg-green-600 duration-150">
-                        Get Term Course Evaluations
-                    </button>
-                    <button formaction="?/pushEvaluations" 
-                    class="btn bg-green-400 hover:bg-green-600 duration-150">
-                        Post Term Course Evaluations to Supabase
+                    <button formaction="?/pushCourses"
+                    class="btn bg-blue-400 hover:bg-blue-600 duration-150">
+                        Post Term Courses to Supabase
                     </button>
                 </div>
             </form>
@@ -82,7 +60,8 @@ const handleLogout = async () => {
         <div class="area border-red-500 mr-10">
             <h2 class="text-xl text-center mb-4">Mass Deletions</h2>
             <div class="flex flex-col gap-1">
-                <form action="?/getTerm" method="POST"
+                <form action="?/getTerm" method="POST" 
+                class="flex flex-col gap-1"
                 use:enhance={() => {
                     term = "";
                     loading = true;
@@ -97,6 +76,14 @@ const handleLogout = async () => {
                     <button formaction="?/deleteAllListings"
                     class="btn bg-red-500 hover:bg-red-700 duration-150">
                         Delete All Listings
+                    </button>
+                    <button formaction="?/deleteAllCourses"
+                    class="btn bg-red-500 hover:bg-red-700 duration-150">
+                        Delete All Courses
+                    </button>
+                    <button formaction="?/deleteAllInstructors"
+                    class="btn bg-red-500 hover:bg-red-700 duration-150">
+                        Delete All Instructors
                     </button>
                 </form>
             </div>
