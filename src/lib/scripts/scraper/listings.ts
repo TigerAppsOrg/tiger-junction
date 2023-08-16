@@ -5,6 +5,8 @@ import type { Listing } from "$lib/types/dbTypes";
 const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
 
+// TODO - Stop waiting for fetches sequentially
+
 /**
  * @deprecated
  * @description Pushes all listings for all terms to the database.

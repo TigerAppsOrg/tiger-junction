@@ -71,6 +71,8 @@ CREATE TABLE courses (
 CREATE TABLE sections (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   course_id INTEGER REFERENCES public.courses(id) on DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  category VARCHAR(1) NOT NULL,
   num INTEGER NOT NULL,
   building TEXT,
   room TEXT,

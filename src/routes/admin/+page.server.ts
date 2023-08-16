@@ -77,6 +77,37 @@ export const actions: Actions = {
             message: "Successfully deleted all listings" 
         };
     },
+    // ! Tests
+    test: async () => {
+        // Import Tests
+        const { testTimeToValue } = await import("$lib/scripts/convert.js");
+
+        // Initialize successes and failures (for return message)
+        let successes = 0;
+        let failures = 0;
+
+        // Add tests here
+        const testList = [
+            // * Time Tests
+            testTimeToValue
+        ];
+
+        // Runs a test and increments successes or failures
+        const runT = (test: () => boolean) => {
+            test() ? successes++ : failures++;
+            console.log(" ")
+        }
+        
+        // Run tests
+        console.log("Testing...");
+        for (let test of testList) 
+            runT(test);
+        console.log(`Testing complete. ${successes} successes, ${failures} failures.`)
+        
+        return {
+            message: `Testing complete. ${successes} successes, ${failures} failures.`
+        };
+    }
 };
 
 // ! Helpers

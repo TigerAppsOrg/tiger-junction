@@ -6,6 +6,12 @@ import { timeToValue } from "../convert";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
 
+// TODO - Debug time conversion
+// TODO - Handle duplicate courses
+// TODO - Calculate is_open value
+// TODO - Stall response and give feedback
+// TODO - Add other course fields (later addition)
+
 /**
  * Pushes all courses for a given term to the database
  * @param supabase 
@@ -92,6 +98,8 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                             if (res.data.length === 0) {
                                 let formattedSection = {
                                     course_id,
+                                    title: section.section,
+                                    category: section.section[0],
                                     num: section.class_number,
                                     building: section.building ? 
                                         section.building + " " + section.room :
@@ -118,7 +126,8 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                                             null,
                                         tot: section.enrl_tot,
                                         cap: section.enrl_cap,
-                                    }).then(res => {
+                                    })
+                                    .then(res => {
                                         if (res.error) throw new Error(res.error.message);
                                     });
                             }    

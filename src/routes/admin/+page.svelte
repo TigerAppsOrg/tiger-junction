@@ -54,6 +54,10 @@ const handleLogout = async () => {
                     class="btn bg-blue-400 hover:bg-blue-600 duration-150">
                         Post Term Courses to Supabase
                     </button>
+                    <button formaction="?/test"
+                    class="btn bg-green-400 hover:bg-green-600 duration-150">
+                        Run Tests
+                    </button>
                 </div>
             </form>
         </div>
