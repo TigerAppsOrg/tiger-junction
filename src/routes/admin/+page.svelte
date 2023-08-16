@@ -110,7 +110,7 @@ const handleLogout = async () => {
         </div> <!-- * End Static DB Management -->
 
         <div class="area">
-            <h2 class="text-xl text-center mb-4">Mass Deletions</h2>
+            <h2 class="text-xl text-center mb-4">Mass Deletion</h2>
             <div class="flex flex-col gap-1">
                 <form method="POST"
                 class="flex flex-col gap-1"
