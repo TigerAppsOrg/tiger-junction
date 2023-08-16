@@ -10,11 +10,29 @@ let loading: boolean = false;
 
 // Safety on mass deletions
 let enableMassDelete: boolean = false;
+let massDeleteTimeout: NodeJS.Timeout;
 
+// Toggle mass delete and handle timeout for auto-disable
+const toggleMassDelete = () => {
+    enableMassDelete = !enableMassDelete;
+    if (enableMassDelete) {
+        alert("WARNING: Mass deletion enabled!");
+
+        // Disable mass delete after 15 seconds
+        massDeleteTimeout = setTimeout(() => {
+            enableMassDelete = false;
+        }, 5000);
+    } else {
+        clearTimeout(massDeleteTimeout);
+    }
+}
+
+// Logout the user
 const handleLogout = async () => { 
     const { error } = await data.supabase.auth.signOut();
     if (!error) goto("/");
 }
+
 </script>
 
 <main class="h-screen flex flex-col">
@@ -40,7 +58,14 @@ const handleLogout = async () => {
     <div class="container">
         <div class="area">
             <h2 class="text-xl text-center mb-4">Static DB Management</h2>
-            <form method="POST" use:enhance={() => {
+            <form method="POST" use:enhance={({ cancel }) => {
+                // Validate term code
+                if (!Object.values(TERM_MAP).includes(parseInt(term))) {
+                    alert("Invalid term code!");
+                    cancel();
+                    return;
+                }
+
                 term = "";
                 loading = true;
                 console.log("loading...");
@@ -69,12 +94,18 @@ const handleLogout = async () => {
                     </button>
 
                     <hr class="my-2 border-slate-400" />
-
-                    <button formaction="?/test"
-                    class="btn btn-green">
-                        Run Tests
-                    </button>
                 </div>
+            </form>
+
+            <!-- * Testing -->
+            <form action="?/test" method="POST" use:enhance={() => {
+                return async ({ result }) => {
+                    console.log(result);
+                } 
+            }}>
+                <button class="btn btn-green w-full">
+                    Run Tests
+                </button>
             </form>
         </div> <!-- * End Static DB Management -->
 
@@ -119,7 +150,7 @@ const handleLogout = async () => {
                 <button
                 class="btn 
                 {enableMassDelete ? "btn-danger": "btn-green"}" 
-                on:click={() => enableMassDelete = !enableMassDelete}>
+                on:click={toggleMassDelete}>
                     {#if enableMassDelete}
                         Disable Mass Delete
                     {:else}
