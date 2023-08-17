@@ -58,7 +58,11 @@
                 COURSE PLANNING
             </h1>
             <p class="mb-6 font-light text-xl">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus excepturi itaque dolore iusto, id tenetur blanditiis eveniet amet possimus illo architecto natus velit ab aperiam consequuntur, corrupti, in assumenda dignissimos!
+                Your All-in-One Solution for Effortless Course 
+                Planning at Princeton University. Experience a 
+                seamless blend of modern design and integrated features, 
+                simplifying your academic journey. Explore, plan, and 
+                succeed.
             </p>
             <button on:click={handleLogin}
             class="btn-cool text-xl">
@@ -77,7 +81,7 @@
             Three apps, <span class="rainbow">one platform</span>
         </h1>
         <h2 class="text-xl font-light">    
-            Integrated to seamlessly plan your courses
+            Effortlessly plan your courses with seamless integration
         </h2>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 max-w-6xl gap-6 mx-auto">
@@ -86,9 +90,23 @@
             <img slot="image" src={CalendarPic} alt="Calendar 3d model">
             <span slot="title">ReCal+</span>
             <span slot="description">
-                Inspired by 
-                <a href="https://recal.io/" target="_blank" class="link">
-                    ReCal</a>.
+                <div class="mb-2">
+                    Your ultimate semester planning companion, ReCal+
+                    empowers you to 
+                    effortlessly design your ideal academic calendar, 
+                    explore multiple schedules, and pinpoint classes that 
+                    match your time and requirements with powerful 
+                    advanced search capabilities, all while ensuring 
+                    your classes never clash with custom blocks for 
+                    non-course events. Stay updated with notifications 
+                    for class slot openings, while the customizable 
+                    interface simplifies academic scheduling. 
+                </div>
+                <div class="italic">
+                    Inspired by 
+                    <a href="https://recal.io/" target="_blank" class="link">
+                        ReCal</a>.
+                </div>
             </span>
         </ViewCard>
         <ViewCard 
@@ -96,9 +114,27 @@
             <img slot="image" src={CertificatePic} alt="Certificate 3d model">
             <span slot="title">CourseGenie</span>
             <span slot="description">
-                Inspired by
-                <a href="https://www.tigerpath.io/" target="_blank" class="link">
-                    TigerPath</a>.
+                <div class="mb-2">
+                    With CourseGenie, you can embark on an enriched 
+                    academic journey. Seamlessly chart all four years, 
+                    matching your aspirations with major, minor, and 
+                    certificate requirements, presented in clear 
+                    and comprehensive layouts. Experience data-driven 
+                    insights as you explore course ratings, historical
+                    trends, and other statistics.
+                    Elevate your choices with an AI-driven course 
+                    suggestor, ensuring a personalized and successful 
+                    academic path. 
+                </div>
+                <div class="italic">
+                    Inspired by
+                    <a href="https://www.tigerpath.io/" target="_blank" class="link">
+                        TigerPath</a>, 
+                    <a href="https://www.princetoncourses.com/" target="_blank" class="link">
+                        PrincetonCourses</a>, and 
+                    <a href="https://tigersnatch.com/" target="_blank" class="link">
+                        TigerSnatch</a>.
+                </div>
             </span>
         </ViewCard>
         <ViewCard 
@@ -106,10 +142,24 @@
             <img slot="image" src={TreePic} alt="Tree 3d model">
             <span slot="title">ReqTree</span>
             <span slot="description">
-                
-                Inspired by 
-                <a href="https://tigermap.tigerapps.org/" target=_blank class="link">
-                TigerMap</a>.
+                <div class="mb-2">
+                    A visually dynamic app that transforms prerequisites 
+                    into technology trees
+                    (found in games like Civilization), 
+                    ReqTree visually maps out the intricate relationships 
+                    between class prerequisites, allowing you to navigate 
+                    through your academic journey with clarity and foresight. 
+                    Through its intuitive interface, you can easily 
+                    explore the progression of course requirements, 
+                    revealing a comprehensive view of the academic 
+                    landscape and enabling you to make informed 
+                    decisions about your path. 
+                </div>
+                <div class="italic">
+                    Inspired by 
+                    <a href="https://tigermap.tigerapps.org/" target=_blank class="link">
+                    TigerMap</a>.
+                </div>
             </span>
         </ViewCard>
     </div>
