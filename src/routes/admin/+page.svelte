@@ -102,27 +102,27 @@ const handleLogout = async () => {
                     <!-- Courses -->
                     <button formaction="?/pushListings"
                     class="btn btn-blue">
-                        Post Term Listings to Supabase
+                        Post Term Listings 
                     </button>
                     <button formaction="?/pushCourses"
                     class="btn btn-blue">
-                        Post Term Courses to Supabase
+                        Post Term Courses 
                     </button>
                     <button formaction="?/pushEvaluations"
                     class="btn btn-blue">
-                        Post Term Evaluations to Supabase
+                        Post Term Evaluations
                     </button>
                     <button formaction="?/pushRatings"
                     class="btn btn-blue">
-                        Post Course Ratings to Supabase
+                        Post Course Ratings
                     </button>
                     <button formaction="?/pushPrograms"
                     class="btn btn-blue">
-                        Post Programs to Supabase
+                        Post Programs 
                     </button>
                     <button formaction="?/pushPrereqs"
                     class="btn btn-blue">
-                        Post Prereqs to Supabase
+                        Post Prereqs
                     </button>
                     <hr class="mt-2 mb-3 border-slate-400" />
                 </div>
