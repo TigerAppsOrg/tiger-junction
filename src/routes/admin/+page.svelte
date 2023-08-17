@@ -18,10 +18,10 @@ const toggleMassDelete = () => {
     if (enableMassDelete) {
         alert("WARNING: Mass deletion enabled!");
 
-        // Disable mass delete after 15 seconds
+        // Disable mass delete after 10 seconds
         massDeleteTimeout = setTimeout(() => {
             enableMassDelete = false;
-        }, 5000);
+        }, 10000);
     } else {
         clearTimeout(massDeleteTimeout);
     }
@@ -38,7 +38,7 @@ const handleLogout = async () => {
 <main class="h-screen flex flex-col">
     <div class="text-white px-10 flex justify-between items-center 
     {loading ? "bg-red-500" : 
-    "bg-gradient-to-tl from-primary to-tertiary"}">
+    "bg-synth-dark"}">
         <div class="flex items-center gap-2">
             <img src="tjlogolarge.png" alt="Tiger Junction logo"
             class="w-16 h-16">
@@ -55,8 +55,24 @@ const handleLogout = async () => {
         </button>
     </div> <!-- * End Navbar -->
 
-    <div class="container">
-        <div class="area">
+    <div class="w-screen px-12">
+    <div class="colored-container">
+        <div class="area bg-purple-400">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+        </div>
+        <div class="area bg-pink-400">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+        </div>
+        <div class="area bg-blue-400">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+        </div>
+        <div class="area bg-green-400">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+        </div>
+    </div> <!-- * End Colored Data -->
+
+    <div class="cont">
+        <div class="area area-std">
             <h2 class="text-xl text-center mb-4">Static DB Management</h2>
             <form method="POST" use:enhance={({ cancel }) => {
                 // Validate term code
@@ -109,7 +125,7 @@ const handleLogout = async () => {
             </form>
         </div> <!-- * End Static DB Management -->
 
-        <div class="area">
+        <div class="area area-std">
             <h2 class="text-xl text-center mb-4">Mass Deletion</h2>
             <div class="flex flex-col gap-1">
                 <form method="POST"
@@ -160,7 +176,7 @@ const handleLogout = async () => {
             </div>
         </div> <!-- * End Mass Deletions-->
 
-        <div class="area">
+        <div class="area area-std">
             <h2 class="text-xl text-center mb-4">Term Codes</h2>
             <div class="space-y-2 col grid-cols-2 columns-2">
                 {#each Object.keys(TERM_MAP) as term}
@@ -177,25 +193,32 @@ const handleLogout = async () => {
             </div>
         </div> <!-- * End Term Codes -->
     </div> <!-- * End Container -->
+    </div>
 </main>
 
 <style lang="postcss">
+.colored-container {
+    @apply grid gap-4 pt-4;
+    margin: 0 auto;
+    grid-template-columns: 1fr;
+}
+
 .btn {
     @apply py-2 px-4 rounded-full duration-150 border-2 border-solid;
 }
 
 .btn-danger {
-    @apply bg-red-500/20 border-red-500/30 
-    hover:bg-red-500/40 hover:border-red-500/60;
+    @apply bg-red-500/40 border-red-500/50 
+    hover:bg-red-500/80 hover:border-red-500/90;
 }
 
 .btn-protected {
-    @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed;
+    @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed text-gray-400;
 }
 
 .btn-blue {
-    @apply bg-blue-500/20 border-blue-500/30 
-    hover:bg-blue-500/40 hover:border-blue-500/60;
+    @apply bg-blue-500/40 border-blue-500/50 
+    hover:bg-blue-500/80 hover:border-blue-500/90;
 }
 
 .btn-blue:hover {
@@ -203,27 +226,39 @@ const handleLogout = async () => {
 }
 
 .btn-green {
-    @apply bg-green-500/20 border-green-500/30 
-    hover:bg-green-500/40 hover:border-green-500/60;
+    @apply bg-green-500/40 border-green-500/50 
+    hover:bg-green-500/80 hover:border-green-500/90;
 }
 
 .btn-green:hover {
     box-shadow: rgba(34, 197, 94) 0px 0px 3px 0px;
 }
 
-.container {
+.cont {
     @apply grid gap-4 pt-4;
     margin: 0 auto; 
     grid-template-columns: 1fr;
 }
 
 .area {
-    @apply bg-slate-200 p-6 rounded-xl;
+    @apply p-6 rounded-xl;
+}
+
+.area-std {
+    @apply bg-synth-light text-white;
 }
 
 @media (min-width: 768px) {
-    .container {
+    .cont {
         grid-template-columns: repeat(3, 1fr); 
     }
+
+    .colored-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+:root {
+    @apply bg-synth-medium;
 }
 </style>
