@@ -55,15 +55,15 @@ const handleLogout = async () => {
         </button>
     </div> <!-- * End Navbar -->
 
-    <div class="w-screen px-12">
+    <div class="w-screen px-12 pb-4">
     <div class="colored-container">
-        <div class="area bg-purple-400">
+        <div class="area bg-yellow-300">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
         </div>
         <div class="area bg-pink-400">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
         </div>
-        <div class="area bg-blue-400">
+        <div class="area bg-cyan-400">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
         </div>
         <div class="area bg-green-400">
@@ -73,7 +73,7 @@ const handleLogout = async () => {
 
     <div class="cont">
         <div class="area area-std">
-            <h2 class="text-xl text-center mb-4">Static DB Management</h2>
+            <h2 class="text-2xl font-bold mb-4">DB Management</h2>
             <form method="POST" use:enhance={({ cancel }) => {
                 // Validate term code
                 if (!Object.values(TERM_MAP).includes(parseInt(term))) {
@@ -91,12 +91,12 @@ const handleLogout = async () => {
                     console.log(result);
                 } 
             }}>
-                <div class="mb-4 space-x-2">
-                    <label for="term">Term: </label>
+                <div class="mb-4 space-x-2 flex items-center">
+                    <label class="text-lg" for="term">Term: </label>
                     <input type="text" name="term" id="term" bind:value={term}
-                    class="border-2 border-primary rounded-md p-1">
+                    class="rounded-xl p-2 flex-1 bg-synth-medium">
                 </div>
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-2">
                     <hr class="my-2" />
 
                     <!-- Courses -->
@@ -108,8 +108,23 @@ const handleLogout = async () => {
                     class="btn btn-blue">
                         Post Term Courses to Supabase
                     </button>
-
-                    <hr class="my-2 border-slate-400" />
+                    <button formaction="?/pushEvaluations"
+                    class="btn btn-blue">
+                        Post Term Evaluations to Supabase
+                    </button>
+                    <button formaction="?/pushRatings"
+                    class="btn btn-blue">
+                        Post Course Ratings to Supabase
+                    </button>
+                    <button formaction="?/pushPrograms"
+                    class="btn btn-blue">
+                        Post Programs to Supabase
+                    </button>
+                    <button formaction="?/pushPrereqs"
+                    class="btn btn-blue">
+                        Post Prereqs to Supabase
+                    </button>
+                    <hr class="mt-2 mb-3 border-slate-400" />
                 </div>
             </form>
 
@@ -126,10 +141,10 @@ const handleLogout = async () => {
         </div> <!-- * End Static DB Management -->
 
         <div class="area area-std">
-            <h2 class="text-xl text-center mb-4">Mass Deletion</h2>
+            <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>
             <div class="flex flex-col gap-1">
                 <form method="POST"
-                class="flex flex-col gap-1"
+                class="flex flex-col gap-2"
                 use:enhance={() => {
                     term = "";
                     loading = true;
@@ -159,6 +174,24 @@ const handleLogout = async () => {
                     disabled={!enableMassDelete}>
                         Delete All Instructors
                     </button>
+                    <button formaction="?/deleteAllEvaluations"
+                    class="btn
+                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
+                    disabled={!enableMassDelete}>
+                        Delete All Evaluations
+                    </button>
+                    <button formaction="?/deleteAllPrograms"
+                    class="btn
+                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
+                    disabled={!enableMassDelete}>
+                        Delete All Programs
+                    </button>
+                    <button formaction="?/deleteAllPrereqs"
+                    class="btn
+                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
+                    disabled={!enableMassDelete}>
+                        Delete All Prereqs
+                    </button>
                 </form>
                 
                 <hr class="my-2 border-slate-400" />
@@ -177,7 +210,8 @@ const handleLogout = async () => {
         </div> <!-- * End Mass Deletions-->
 
         <div class="area area-std">
-            <h2 class="text-xl text-center mb-4">Term Codes</h2>
+            <h2 class="text-2xl font-bold mb-4">Information</h2>
+            <h3 class="text-xl font-bold mb-2">Term Codes</h3>
             <div class="space-y-2 col grid-cols-2 columns-2">
                 {#each Object.keys(TERM_MAP) as term}
                     <div class="space-x-2">
@@ -190,8 +224,12 @@ const handleLogout = async () => {
                         <span class="font-bold">{TERM_MAP[term]}</span>
                     </div>
                 {/each}
-            </div>
-        </div> <!-- * End Term Codes -->
+            </div> <!-- * End Term Codes -->
+            <h3 class="text-xl font-bold mt-8 mb-2">Notes</h3>
+            <p>
+                Random notes go here
+            </p>
+        </div> <!-- * End Information -->
     </div> <!-- * End Container -->
     </div>
 </main>

@@ -42,6 +42,18 @@ export const actions: Actions = {
         let message = await populateCourses(locals.supabase, termId);
         return message;
     },
+    pushEvaluations: async ({ request, locals }) => {
+        const termId = await parseTermId(request);
+    },
+    pushRatings: async ({ request, locals }) => {
+        const termId = await parseTermId(request);
+    },
+    pushPrograms: async ({ locals }) => {
+
+    },
+    pushPrereqs: async ({ request, locals }) => {
+        const termId = await parseTermId(request);
+    },
 
     // ! Deleters (Be aware of cascades)
     deleteAllListings: async ({ locals }) => {
@@ -75,6 +87,39 @@ export const actions: Actions = {
         if (error) throw new Error(error.message);
         return { 
             message: "Successfully deleted all listings" 
+        };
+    },
+    deleteAllEvaluations: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("evaluations")
+            .delete()
+            .neq("id", "0");
+        
+        if (error) throw new Error(error.message);
+        return {    
+            message: "Successfully deleted all evaluations"
+        };
+    },
+    deleteAllPrograms: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("programs")
+            .delete()
+            .neq("id", "0");
+
+        if (error) throw new Error(error.message);
+        return {    
+            message: "Successfully deleted all programs"
+        };
+    },
+    deleteAllPrereqs: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("prereqs")
+            .delete()
+            .neq("course_id", "0");
+        
+        if (error) throw new Error(error.message);
+        return {
+            message: "Successfully deleted all prereqs"
         };
     },
     // ! Tests
