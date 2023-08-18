@@ -9,9 +9,6 @@ const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
 const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
-// TODO - Calculate is_open value
-// TODO - Output data to console
-
 /**
  * Pushes all courses for a given term to the database
  * @param supabase 
