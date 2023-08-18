@@ -252,7 +252,7 @@ const parseBuilding = (section: RegSection) => {
 }
 
 /**
- * 
+ * Update instructors for a given course
  * @param supabase 
  * @param course_id 
  * @param instructors 
@@ -291,7 +291,7 @@ course_id: number, instructors: InstructorInsert[]) => {
 }
 
 /**
- * 
+ * Update sections for a given course
  * @param supabase 
  * @param course_id 
  * @param sections 
