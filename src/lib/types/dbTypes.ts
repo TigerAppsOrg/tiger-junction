@@ -1,3 +1,5 @@
+// Types relating to database fetching and insertion
+
 type Listing = {
     id: string,
     code: string,

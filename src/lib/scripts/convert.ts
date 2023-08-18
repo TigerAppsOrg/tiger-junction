@@ -1,3 +1,9 @@
+import type { WeekDays } from "$lib/types/regTypes";
+
+//----------------------------------------------------------------------
+// Time Conversion Functions
+//----------------------------------------------------------------------
+
 // Time Conversion Constants 
 const TIME_CONVERSION: Record<string, number> = {
     "ZERO_ADJUST": 48,      
@@ -99,8 +105,6 @@ const valuesToTimeLabel = (start: number, end: number) => {
     return `${startTime} - ${endTime}`;
 }
 
-// ! Tests
-
 /**
  * Tests timeToValue() function
  */
@@ -149,5 +153,33 @@ const testTimeToValue = () => {
     }
 }
 
-export { timeToValue, militaryToValue, valueToMilitary, valuesToTimeLabel, testTimeToValue }
+//----------------------------------------------------------------------
+// Day Conversion Functions
+//----------------------------------------------------------------------
+
+/**
+ * Converts a section's days to a value
+ * @param section with days in format { mon: "Y", tues: "Y", ... }
+ * @returns value between 0 and 31
+ */
+const daysToValue = (section: WeekDays) => {
+    let days = 0;
+    if (section.mon === "Y") days += 1;
+    if (section.tues === "Y") days += 2;
+    if (section.wed === "Y") days += 4;
+    if (section.thurs === "Y") days += 8;
+    if (section.fri === "Y") days += 16;
+    return days;
+}
+
+//----------------------------------------------------------------------
+
+export { 
+    timeToValue, 
+    militaryToValue, 
+    valueToMilitary, 
+    valuesToTimeLabel, 
+    testTimeToValue,
+    daysToValue
+}
 

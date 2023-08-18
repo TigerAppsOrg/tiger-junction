@@ -75,7 +75,7 @@ export const actions: Actions = {
         
         if (error) throw new Error(error.message);
         return { 
-            message: "Successfully deleted all listings" 
+            message: "Successfully deleted all courses" 
         };    
     },
     deleteAllInstructors: async ({ locals }) => {
@@ -86,7 +86,7 @@ export const actions: Actions = {
         
         if (error) throw new Error(error.message);
         return { 
-            message: "Successfully deleted all listings" 
+            message: "Successfully deleted all instructors" 
         };
     },
     deleteAllEvaluations: async ({ locals }) => {
@@ -145,12 +145,16 @@ export const actions: Actions = {
         
         // Run tests
         console.log("Testing...");
-        for (let test of testList) 
-            runT(test);
-        console.log(`Testing complete. ${successes} successes, ${failures} failures.`)
+        for (let test of testList) runT(test);
+
+        const returnMessage = `Testing complete. 
+                                ${successes} successes,
+                                ${failures} failures.`;
+
+        console.log(returnMessage);
         
         return {
-            message: `Testing complete. ${successes} successes, ${failures} failures.`
+            message: returnMessage
         };
     }
 };
