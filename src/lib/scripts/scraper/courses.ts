@@ -54,7 +54,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
     // Limit number of courses
     // courselist = courselist.slice(0, 100);
 
-    const processNextCourse = (index: number) => {
+    const processNextCourse = async (index: number) => {
         if (index >= courselist.length) return;
         console.log("Sending request: " + index);
 
@@ -147,7 +147,6 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                             throw new Error(res.error.message);
                         }
                         
-
                         updateCourseDependencies(
                             supabase,
                             res.data[0].id,

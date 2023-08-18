@@ -24,6 +24,20 @@ const TERM_MAP: Record<string, number> = {
     "FALL_2018": 1192,
 }
 
+const EVALS_TERM_MAP: Record<number, string> = {
+    1242: "2023-2024 Fall Course Evaluation Results",
+    1234: "2022-2023 Spring Course Evaluation Results",
+    1232: "2022-2023 Fall Course Evaluation Results",
+    1224: "2021-2022 Spring Course Evaluation Results",
+    1222: "2021-2022 Fall Course Evaluation Results",
+    1214: "2020-2021 Spring Course Evaluation Results",
+    1212: "2020-2021 Fall Course Evaluation Results",
+    1204: "2019-2020 Spring Course Evaluation Results",
+    1202: "2019-2020 Fall Course Evaluation Results",
+    1194: "2018-2019 Spring Course Evaluation Results",
+    1192: "2018-2019 Fall Course Evaluation Results",
+}
+
 const CURRENT_TERM_NAME = "FALL_2023";
 const CURRENT_TERM_ID = 1242;
 
@@ -63,6 +77,7 @@ export {
     COURSE_URL,
     EVALUATION_URL,
     TERM_MAP,
+    EVALS_TERM_MAP,
     CURRENT_TERM_NAME,
     CURRENT_TERM_ID,
     GENERIC_GRADING_INFO,

@@ -2,6 +2,7 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { getCourseData } from "$lib/scripts/scraper/reg.js";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 import { populateCourses } from "$lib/scripts/scraper/courses.js";
+import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -44,6 +45,8 @@ export const actions: Actions = {
     },
     pushEvaluations: async ({ request, locals }) => {
         const termId = await parseTermId(request);
+        let message = await populateEvaluations(locals.supabase, termId);
+        return message;
     },
     pushRatings: async ({ request, locals }) => {
         const termId = await parseTermId(request);
@@ -93,7 +96,7 @@ export const actions: Actions = {
         let { error } = await locals.supabase
             .from("evaluations")
             .delete()
-            .neq("id", "0");
+            .neq("course_id", "0");
         
         if (error) throw new Error(error.message);
         return {    
@@ -120,6 +123,17 @@ export const actions: Actions = {
         if (error) throw new Error(error.message);
         return {
             message: "Successfully deleted all prereqs"
+        };
+    },
+    deleteAllSectionData: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("section_data")
+            .delete()
+            .neq("id", "0");
+        
+        if (error) throw new Error(error.message);
+        return {
+            message: "Successfully deleted all section data"
         };
     },
     // ! Tests

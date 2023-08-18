@@ -95,13 +95,11 @@ CREATE TABLE section_data (
 );
 
 CREATE TABLE evaluations (
-  id INTEGER GENERATED ALWAYS AS IDENTITY,
+  course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE UNIQUE NOT NULL,
   listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
-  course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
-  term SMALLINT NOT NULL,
   rating REAL NOT NULL,
   metadata JSONB,
-  PRIMARY KEY(id)
+  PRIMARY KEY(course_id)
 );
 
 CREATE TABLE prereqs (

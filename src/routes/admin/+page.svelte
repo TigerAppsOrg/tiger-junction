@@ -79,6 +79,7 @@ const handleLogout = async () => {
                 if (!Object.values(TERM_MAP).includes(parseInt(term))) {
                     alert("Invalid term code!");
                     cancel();
+                    term = "";
                     return;
                 }
 
@@ -191,6 +192,12 @@ const handleLogout = async () => {
                     {enableMassDelete ? "btn-danger" : "btn-protected"}" 
                     disabled={!enableMassDelete}>
                         Delete All Prereqs
+                    </button>
+                    <button formaction="?/deleteAllSectionData"
+                    class="btn
+                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
+                    disabled={!enableMassDelete}>
+                        Delete All Section Data
                     </button>
                 </form>
                 
