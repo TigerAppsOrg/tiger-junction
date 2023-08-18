@@ -80,8 +80,8 @@ CREATE TABLE sections (
   tot SMALLINT,
   cap SMALLINT,
   days SMALLINT,
-  start_time SMALLINT,
-  end_time SMALLINT,
+  start_time REAL,
+  end_time REAL,
   PRIMARY KEY(id)
 );
 
@@ -136,8 +136,8 @@ CREATE TABLE cb_times (
   id INTEGER GENERATED ALWAYS AS IDENTITY,
   cb_id INTEGER REFERENCES public.custom_blocks(id) on DELETE CASCADE NOT NULL,
   days SMALLINT NOT NULL,
-  start_time SMALLINT NOT NULL,
-  end_time SMALLINT NOT NULL,
+  start_time REAL NOT NULL,
+  end_time REAL NOT NULL,
   PRIMARY KEY(id)
 );
 
