@@ -3,13 +3,12 @@ import { getCourseIds } from "$lib/scripts/scraper/reg";
 import { REGISTRAR_AUTH_BEARER, COURSE_URL } from "$lib/constants";
 import type { CourseInsert, InstructorInsert } from "$lib/types/dbTypes";
 import { daysToValue, timeToValue } from "../convert";
-import type { RegSection } from "$lib/types/regTypes";
+import type { GradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
-const RATE = 10; // Number of milliseconds between requests
+const RATE = 0; // Number of milliseconds between requests
 
 // TODO - Calculate is_open value
-// TODO - Add other course fields (later addition)
 
 /**
  * Pushes all courses for a given term to the database
@@ -46,7 +45,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                 throw new Error(raw);
             }
 
-            let data = raw.course_details.course_detail[0];
+            let data: RegCourse = raw.course_details.course_detail[0];
 
             console.log(data.crosslistings);
             console.log(data.course_instructors.course_instructor);
@@ -54,13 +53,13 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
             // Format course data
             let course: CourseInsert = {
                 listing_id: data.course_id,
-                term: data.term,
+                term: parseInt(data.term),
                 code: data.crosslistings.replace(/\s/g, ""),
                 title: data.topic_title === null ? 
                     data.long_title : 
                     data.long_title + ": " + data.topic_title,
-                description: data.description,
-                assignments: data.reading_writing_assignment,
+                grading_info: parseGradingInfo(data),
+                course_info: parseCourseInfo(data),
                 is_open: true,
                 basis: data.grading_basis,
                 dists: data.distribution_area_short ?  
@@ -138,11 +137,64 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
     }
 
     processNextCourse(0);
-
+    
     return {
         message: SUCCESS_MESSAGE + term,
         ids
     };
+}
+
+
+// Parse grading info from registrar data
+const parseGradingInfo = (data: RegCourse) => {
+    let gradingInfo: Record<string, string> = {};
+
+    const genericGradingInfo: GradingInfo = {
+        grading_design_projects: "Design Projects",
+        grading_final_exam: "Final Exam",
+        grading_home_final_exam: "Home Final Exam",
+        grading_home_mid_exam: "Home Mid Exam",
+        grading_lab_reports: "Lab Reports",
+        grading_mid_exam: "Mid Exam",
+        grading_oral_pres: "Oral Presentation",
+        grading_other: "Other",
+        grading_other_exam: "Other Exam",
+        grading_paper_final_exam: "Paper Final Exam",
+        grading_paper_mid_exam: "Paper Mid Exam",
+        grading_papers: "Papers",
+        grading_precept_part: "Precept Participation",
+        grading_prob_sets: "Problem Sets",
+        grading_prog_assign: "Programming Assignments",
+        grading_quizzes: "Quizzes",
+        grading_term_paper: "Term Paper",
+    };
+
+    for (let key in genericGradingInfo) 
+        if (data[key] && data[key] !== "0")
+            gradingInfo[genericGradingInfo[key as keyof GradingInfo]] 
+        = data[key];
+    
+    return gradingInfo;
+}
+
+// Parse course info from registrar data
+const parseCourseInfo = (data: RegCourse) => {
+    let courseInfo: Record<string, string | RegSeatReservation> = {};
+
+    if (data.description)
+        courseInfo["Description"] = data.description;
+    if (data.reading_writing_assignment)
+        courseInfo["Assignments"] = data.reading_writing_assignment;
+    if (data.other_information)
+        courseInfo["Information"] = data.other_information;
+    if (data.other_requirements)
+        courseInfo["Requirements"] = data.other_requirements;
+    if (data.other_restrictions)
+        courseInfo["Restrictions"] = data.other_restrictions;
+    if (Object.keys(data.seat_reservations).length === 0)
+        courseInfo["Reservations"] = data.seat_reservations;
+
+    return courseInfo;
 }
 
 /**

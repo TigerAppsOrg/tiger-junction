@@ -59,12 +59,12 @@ CREATE TABLE courses (
   term SMALLINT NOT NULL,
   code TEXT NOT NULL,
   title TEXT NOT NULL,
-  description TEXT,
-  assignments TEXT,
   is_open BOOLEAN,
   basis VARCHAR(100),
   dists VARCHAR(2)[],
   rating REAL,
+  grading_info JSONB,
+  course_info JSONB,
   PRIMARY KEY(id)
 );
 

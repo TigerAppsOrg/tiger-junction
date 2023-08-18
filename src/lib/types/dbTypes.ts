@@ -1,5 +1,7 @@
 // Types relating to database fetching and insertion
 
+import type { RegSeatReservation } from "./regTypes"
+
 type Listing = {
     id: string,
     code: string,
@@ -14,8 +16,8 @@ type CourseInsert = {
     term: number,
     code: string,
     title: string,
-    description: string,
-    assignments: string,
+    grading_info: Record<string, string>,
+    course_info: Record<string, string | RegSeatReservation>,
     is_open: boolean,
     basis: string,
     dists: string[] | null,
