@@ -1,14 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCourseIds } from "$lib/scripts/scraper/reg";
-import { REGISTRAR_AUTH_BEARER, COURSE_URL } from "$lib/constants";
+import { REGISTRAR_AUTH_BEARER, COURSE_URL, GENERIC_GRADING_INFO } from "$lib/constants";
 import type { CourseInsert, InstructorInsert } from "$lib/types/dbTypes";
 import { daysToValue, timeToValue } from "../convert";
-import type { GradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
+import type { RegGradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
+const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
 // TODO - Calculate is_open value
+// TODO - Output data to console
 
 /**
  * Pushes all courses for a given term to the database
@@ -25,6 +27,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
 
     const processNextCourse = (index: number) => {
         if (index >= ids.length) return;
+        console.log("Sending request: " + index);
 
         // Fetch course data for id
         fetch(
@@ -47,9 +50,6 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
 
             let data: RegCourse = raw.course_details.course_detail[0];
 
-            console.log(data.crosslistings);
-            console.log(data.course_instructors.course_instructor);
-
             // Format course data
             let course: CourseInsert = {
                 listing_id: data.course_id,
@@ -60,6 +60,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                     data.long_title + ": " + data.topic_title,
                 grading_info: parseGradingInfo(data),
                 course_info: parseCourseInfo(data),
+                reading_info: parseReadingInfo(data),
                 is_open: true,
                 basis: data.grading_basis,
                 dists: data.distribution_area_short ?  
@@ -101,8 +102,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                         );
 
                         setTimeout(() => {
-                            console.log("Sent request: " + index);
-                            processNextCourse(index + 1);
+                            processNextCourse(index + PARALLEL_REQUESTS);
                         }, RATE);
                     });
                 } else {
@@ -127,8 +127,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                         );
 
                         setTimeout(() => {
-                            console.log("Sent request: " + index);
-                            processNextCourse(index + 1);
+                            processNextCourse(index + PARALLEL_REQUESTS);
                         }, RATE);
                     });
                 }
@@ -136,8 +135,11 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
         }); 
     }
 
-    processNextCourse(0);
+    // Begin sending requests
+    for (let i = 0; i < PARALLEL_REQUESTS; i++) processNextCourse(i);
     
+    // Confirm requests sent
+    console.log("Began all initial requests");
     return {
         message: SUCCESS_MESSAGE + term,
         ids
@@ -148,30 +150,9 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
 // Parse grading info from registrar data
 const parseGradingInfo = (data: RegCourse) => {
     let gradingInfo: Record<string, string> = {};
-
-    const genericGradingInfo: GradingInfo = {
-        grading_design_projects: "Design Projects",
-        grading_final_exam: "Final Exam",
-        grading_home_final_exam: "Home Final Exam",
-        grading_home_mid_exam: "Home Mid Exam",
-        grading_lab_reports: "Lab Reports",
-        grading_mid_exam: "Mid Exam",
-        grading_oral_pres: "Oral Presentation",
-        grading_other: "Other",
-        grading_other_exam: "Other Exam",
-        grading_paper_final_exam: "Paper Final Exam",
-        grading_paper_mid_exam: "Paper Mid Exam",
-        grading_papers: "Papers",
-        grading_precept_part: "Precept Participation",
-        grading_prob_sets: "Problem Sets",
-        grading_prog_assign: "Programming Assignments",
-        grading_quizzes: "Quizzes",
-        grading_term_paper: "Term Paper",
-    };
-
-    for (let key in genericGradingInfo) 
+    for (let key in GENERIC_GRADING_INFO) 
         if (data[key] && data[key] !== "0")
-            gradingInfo[genericGradingInfo[key as keyof GradingInfo]] 
+            gradingInfo[GENERIC_GRADING_INFO[key as keyof RegGradingInfo]] 
         = data[key];
     
     return gradingInfo;
@@ -179,7 +160,7 @@ const parseGradingInfo = (data: RegCourse) => {
 
 // Parse course info from registrar data
 const parseCourseInfo = (data: RegCourse) => {
-    let courseInfo: Record<string, string | RegSeatReservation> = {};
+    let courseInfo: Record<string, string | RegSeatReservation[]> = {};
 
     if (data.description)
         courseInfo["Description"] = data.description;
@@ -191,10 +172,41 @@ const parseCourseInfo = (data: RegCourse) => {
         courseInfo["Requirements"] = data.other_requirements;
     if (data.other_restrictions)
         courseInfo["Restrictions"] = data.other_restrictions;
-    if (Object.keys(data.seat_reservations).length === 0)
-        courseInfo["Reservations"] = data.seat_reservations;
+    if (Object.keys(data.seat_reservations).length !== 0)
+        courseInfo["Reservations"] = data.seat_reservations.seat_reservation;
 
     return courseInfo;
+}
+
+// Parse course reading info from registrar data
+const parseReadingInfo = (data: RegCourse) => {
+    const MAX_READINGS = 6;
+
+    let readingInfo: Record<string, string> = {};
+    let flag = false;
+
+    for (let i = 1; i <= MAX_READINGS; i++) {
+        if (data["reading_list_title_" + i] !== " ") {
+            flag = true;
+            readingInfo["T" + i] = data["reading_list_title_" + i];
+        }
+
+        if (data["reading_list_author_" + i] !== " ") {
+            flag = true;
+            readingInfo["A" + i] = data["reading_list_author_" + i];
+        }
+    }
+
+    return flag ? readingInfo : null;
+}
+
+// Parse building and room from registrar data and handle edge case
+const parseBuilding = (section: RegSection) => {
+    if (!section.building_name 
+        || section.building_name === "No Room Required")
+        return null;
+    else
+        return section.building_name + " " + section.room 
 }
 
 /**
@@ -265,9 +277,7 @@ course_id: number, sections: RegSection[]) => {
                         title: section.section,
                         category: section.section[0],
                         num: section.class_number,
-                        building: section.building ? 
-                            section.building + " " + section.room :
-                            null,
+                        room: parseBuilding(section),
                         tot: section.enrl_tot,
                         cap: section.enrl_cap,
                         days: daysToValue(section),
@@ -291,9 +301,7 @@ course_id: number, sections: RegSection[]) => {
                 } else {
                     supabase.from("sections")
                         .update({
-                            building: section.building ?
-                                section.building + " " + section.room :
-                                null,
+                            room: parseBuilding(section),
                             tot: section.enrl_tot,
                             cap: section.enrl_cap,
                         })

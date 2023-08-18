@@ -61,10 +61,11 @@ CREATE TABLE courses (
   title TEXT NOT NULL,
   is_open BOOLEAN,
   basis VARCHAR(100),
-  dists VARCHAR(2)[],
+  dists VARCHAR(3)[],
   rating REAL,
   grading_info JSONB,
   course_info JSONB,
+  reading_info JSONB,
   PRIMARY KEY(id)
 );
 

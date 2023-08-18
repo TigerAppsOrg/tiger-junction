@@ -1,3 +1,5 @@
+import type { RegGradingInfo } from "./types/regTypes";
+
 // Database
 const CATEGORIES = ["ab", "bse", "certificate", "minor"];
 
@@ -25,6 +27,28 @@ const TERM_MAP: Record<string, number> = {
 const CURRENT_TERM_NAME = "FALL_2023";
 const CURRENT_TERM_ID = 1242;
 
+const GENERIC_GRADING_INFO: RegGradingInfo = {
+    grading_design_projects: "Design Project", 
+    grading_final_exam: "Final Scheduled Exam",
+    grading_home_final_exam: "Take Home Final Exam",
+    grading_home_mid_exam: "Take Home Midterm Exam", 
+    grading_lab_reports: "Lab Reports",
+    grading_mid_exam: "Midterm Exam",
+    grading_oral_pres: "Presentation or Performance",
+    grading_other: "Other", 
+    grading_other_exam: "Exam(s) Given During Term",
+    grading_paper_final_exam: "Final Paper or Project",
+    grading_paper_mid_exam: "Midterm Paper or Project", 
+    grading_papers: "Papers/Writing Assignments",
+    grading_precept_part: "Participation",
+    grading_prob_sets: "Problem Sets",
+    grading_prog_assign: "Programming Assignments",
+    grading_quizzes: "Quizzes", 
+    grading_term_papers: "Term Paper(s)", 
+    pu_pres_final_exam: "Final presentation or Performance",
+    pu_projects: "Project(s)",
+};
+
 export { 
     CATEGORIES, 
     REGISTRAR_AUTH_BEARER, 
@@ -33,5 +57,6 @@ export {
     EVALUATION_URL,
     TERM_MAP,
     CURRENT_TERM_NAME,
-    CURRENT_TERM_ID
+    CURRENT_TERM_ID,
+    GENERIC_GRADING_INFO
 };

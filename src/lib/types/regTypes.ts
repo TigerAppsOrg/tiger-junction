@@ -21,7 +21,22 @@ type RegSection = WeekDays & {
     [key: string]: any,
 };
 
-type GradingInfo = {
+type RegReadingInfo = {
+    reading_list_title_1: string,
+    reading_list_author_1: string,
+    reading_list_title_2: string,
+    reading_list_author_2: string,
+    reading_list_title_3: string,
+    reading_list_author_3: string,
+    reading_list_title_4: string,
+    reading_list_author_4: string,
+    reading_list_title_5: string,
+    reading_list_author_5: string,
+    reading_list_title_6: string,
+    reading_list_author_6: string,
+}
+
+type RegGradingInfo = {
     grading_design_projects: string,
     grading_final_exam: string,
     grading_home_final_exam: string,
@@ -38,18 +53,18 @@ type GradingInfo = {
     grading_prob_sets: string,
     grading_prog_assign: string,
     grading_quizzes: string,
-    grading_term_paper: string,
+    grading_term_papers: string,
+    pu_projects: string,
+    pu_pres_final_exam: string,
 }
 
 type RegSeatReservation = {
-    seat_reservation: {
-        class_section: string,
-        description: string,
-        enrl_cap: string,
-    }[],
+    class_section: string,
+    description: string,
+    enrl_cap: string,
 }
 
-type RegCourse = GradingInfo & {
+type RegCourse = RegGradingInfo & RegReadingInfo & {
     catnum: string,
     course_equivalents: any,
     course_id: string,
@@ -66,11 +81,13 @@ type RegCourse = GradingInfo & {
     other_requirements: string,
     other_restrictions: string,
     reading_writing_assignment: string,
-    seat_reservations: RegSeatReservation,
+    seat_reservations: {
+        seat_reservation: RegSeatReservation[],
+    },
     subject: string,
     term: string,
     topic_title: string,
     [key: string]: any,
 }
 
-export type { WeekDays, RegSection, GradingInfo, RegSeatReservation, RegCourse }
+export type { WeekDays, RegSection, RegReadingInfo, RegGradingInfo, RegSeatReservation, RegCourse }
