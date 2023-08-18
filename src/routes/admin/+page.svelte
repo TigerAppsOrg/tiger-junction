@@ -58,16 +58,16 @@ const handleLogout = async () => {
     <div class="w-screen px-12 pb-4">
     <div class="colored-container">
         <div class="area bg-yellow-300">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+            "Study without desire spoils the memory, and it retains nothing that it takes in." - Leonardo da Vinci
         </div>
         <div class="area bg-pink-400">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+            "Dwell on the beauty of life. Watch the stars, and see yourself running with them." - Marcus Aurelius
         </div>
         <div class="area bg-cyan-400">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+            "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected." - Steve Jobs
         </div>
         <div class="area bg-green-400">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta repellendus odio repellat non eius sunt, nobis quae culpa. Aperiam consectetur aliquid amet aliquam dolores eius debitis ipsa fuga. Error, vitae?
+            "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
         </div>
     </div> <!-- * End Colored Data -->
 
@@ -234,7 +234,7 @@ const handleLogout = async () => {
             </div> <!-- * End Term Codes -->
             <h3 class="text-xl font-bold mt-8 mb-2">Notes</h3>
             <p>
-                Random notes go here
+                Evaluations go to Fall 2020 
             </p>
         </div> <!-- * End Information -->
     </div> <!-- * End Container -->
