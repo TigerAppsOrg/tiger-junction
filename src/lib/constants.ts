@@ -49,6 +49,13 @@ const GENERIC_GRADING_INFO: RegGradingInfo = {
     pu_projects: "Project(s)",
 };
 
+const STATUS_MAP: Record<string, number> = {
+    "Open": 0,
+    "Closed": 1,
+    "Canceled": 2,
+    "Other": 3,
+}
+
 export { 
     CATEGORIES, 
     REGISTRAR_AUTH_BEARER, 
@@ -58,5 +65,6 @@ export {
     TERM_MAP,
     CURRENT_TERM_NAME,
     CURRENT_TERM_ID,
-    GENERIC_GRADING_INFO
+    GENERIC_GRADING_INFO,
+    STATUS_MAP,
 };

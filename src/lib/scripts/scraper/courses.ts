@@ -1,6 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { getCourseIds } from "$lib/scripts/scraper/reg";
-import { REGISTRAR_AUTH_BEARER, COURSE_URL, GENERIC_GRADING_INFO } from "$lib/constants";
+import { REGISTRAR_AUTH_BEARER, COURSE_URL, GENERIC_GRADING_INFO, TERM_URL } from "$lib/constants";
 import type { CourseInsert, InstructorInsert } from "$lib/types/dbTypes";
 import { daysToValue, timeToValue } from "../convert";
 import type { RegGradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
@@ -16,19 +15,52 @@ const RATE = 0; // Number of milliseconds between requests
  * @returns success or failure message
  */
 const populateCourses = async (supabase: SupabaseClient, term: number) => {
-    // Fetch all course ids for the given term
-    let ids = await getCourseIds(term);
+    // Fetch all course ids and open status for the given term
+    const rawCourselist = await fetch(`${TERM_URL}${term}`, {
+        method: "GET",
+        headers: {
+            "Authorization": REGISTRAR_AUTH_BEARER
+        }
+    });
+
+    type IdStatus = {
+        id: string,
+        status: number
+    }
+
+    const jsonCourselist = await rawCourselist.json();
+    let courselist: IdStatus[] = jsonCourselist.classes.class.map((x: any) => {
+        return {
+            id: x.course_id,
+            status: calculateStatus(x.calculated_status)
+        }
+    });
+
+    // Remove duplicate course ids from courselist
+    const removeDup = (arr: IdStatus[]) => {
+        let ids: string[] = [];
+        let toReturn: {id: string, status: number}[] = [];
+        for (let course of arr) {
+            if (!ids.includes(course.id)) {
+                ids.push(course.id);
+                toReturn.push(course);
+            }
+        }
+        return toReturn;
+    }
+
+    courselist = removeDup(courselist);
 
     // Limit number of courses
-    ids = ids.slice(0, 100);
+    // courselist = courselist.slice(0, 100);
 
     const processNextCourse = (index: number) => {
-        if (index >= ids.length) return;
+        if (index >= courselist.length) return;
         console.log("Sending request: " + index);
 
         // Fetch course data for id
         fetch(
-            `${COURSE_URL}term=${term}&course_id=${ids[index]}`, {
+            `${COURSE_URL}term=${term}&course_id=${courselist[index].id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": REGISTRAR_AUTH_BEARER
@@ -58,7 +90,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                 grading_info: parseGradingInfo(data),
                 course_info: parseCourseInfo(data),
                 reading_info: parseReadingInfo(data),
-                is_open: true,
+                status: courselist[index].status,
                 basis: data.grading_basis,
                 dists: data.distribution_area_short ?  
                 data.distribution_area_short.split(" or ").sort() :
@@ -139,10 +171,23 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
     console.log("Began all initial requests");
     return {
         message: SUCCESS_MESSAGE + term,
-        ids
+        ids: courselist.map(x => x.id)
     };
 }
 
+// Calculate course status
+const calculateStatus = (status: string) => {
+    switch (status) {
+        case "Open":
+            return 0;
+        case "Closed":
+            return 1;
+        case "Canceled":
+            return 2;
+        default:
+            return 3;
+    }
+}
 
 // Parse grading info from registrar data
 const parseGradingInfo = (data: RegCourse) => {
