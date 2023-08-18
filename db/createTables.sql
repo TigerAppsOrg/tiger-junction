@@ -59,7 +59,7 @@ CREATE TABLE courses (
   term SMALLINT NOT NULL,
   code TEXT NOT NULL,
   title TEXT NOT NULL,
-  is_open BOOLEAN,
+  status SMALLINT,
   basis VARCHAR(100),
   dists VARCHAR(3)[],
   rating REAL,
