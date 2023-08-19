@@ -83,6 +83,14 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
                 "Quality of Course",                // General
                 "Overall Quality of the Course",    // Some grad courses
                 "Overall Course Quality Rating",    // FRS
+                "Quality of the Seminar",           // Seminar Edge Case
+                "Quality of Lectures",              // Lecture Edge Case
+                "Quality of Precepts",              // Precept Edge Case
+                "Quality of Laboratories",          // Lab Edge Case
+                "Reccomend to Other Students",      // Edge Case
+                "Quality of Readings",              // Fallback
+                "Quality of Written Assignments",   // Fallback
+
             ];
 
             for (let i = 0; i < categories.length; i++) 
