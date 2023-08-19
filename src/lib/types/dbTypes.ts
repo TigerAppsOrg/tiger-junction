@@ -39,4 +39,16 @@ type CourseInstructorAssociation = {
     instructor_id: string,
 }
 
-export type { Listing, CourseInsert, Course, InstructorInsert, CourseInstructorAssociation };
+type DualId = {
+    listing_id: string,
+    id: number
+}
+
+export type { 
+    Listing, 
+    CourseInsert, 
+    Course, 
+    InstructorInsert, 
+    CourseInstructorAssociation,
+    DualId
+};

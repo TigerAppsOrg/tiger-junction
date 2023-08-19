@@ -1,7 +1,9 @@
 import { PRIVATE_COOKIE } from "$env/static/private";
 import { EVALS_TERM_MAP, EVALUATION_URL } from "$lib/constants";
+import type { DualId } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { JSDOM } from "jsdom";
+import { getCourseDualIds } from "./reg";
 
 const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
@@ -13,30 +15,8 @@ const RATE = 0; // Number of milliseconds between requests
  * @returns success message
  */ 
 const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
-    // Fetch all courses for the given term from the database
-    let { data, error } = await supabase.from("courses")
-        .select("listing_id, id")
-        .eq("term", term);
-
-    if (error) {
-        console.log("Error fetching courses from database");
-        throw new Error(error.message);
-    }
-
-    if (data === null) {
-        console.log("No courses found in database");
-        throw new Error("No courses found in database");
-    }
-
-    type DualId = {
-        listing_id: string,
-        id: number
-    }
-
-    let ids: DualId[] = data.map(x => { return {
-        listing_id: x.listing_id,
-        id: x.id
-    }})
+    
+    let ids: DualId[] = await getCourseDualIds(supabase, term);
 
     // Limit the number of evaluations fetched
     // ids = ids.slice(0, 10);
@@ -58,10 +38,10 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
             }
         );
 
+        // Logic for processing the next evaluation
         const nextRequest = async () => {
             // Wait RATE milliseconds before sending the next request
             await new Promise(resolve => setTimeout(resolve, RATE));
-
             console.log(`Finished request ${index + 1} of ${ids.length}`)
 
             // Recurse

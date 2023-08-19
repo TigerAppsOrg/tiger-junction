@@ -1,8 +1,9 @@
 import { redirect, type Actions } from "@sveltejs/kit";
-import { getCourseData } from "$lib/scripts/scraper/reg.js";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 import { populateCourses } from "$lib/scripts/scraper/courses.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
+import { populateRatings } from "$lib/scripts/scraper/ratings";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -20,42 +21,24 @@ export const load = async ({ locals }) => {
 }
 
 export const actions: Actions = {
-    // ! Getters
-    /**
-     * @returns course list for a specific term from the registrar API
-     */
-    getTerm: async ({ request }) => {
-        const data = await request.formData();
-        const termId = data.get("term") as string;
-
-        let res = await getCourseData("013693" ,termId);
-        return { body: { res } };
-    },
-
     // ! Pushers
     pushListings: async ({ request, locals }) => {
-        const termId = await parseTermId(request);
-        let message = await populateListings(locals.supabase, termId);
-        return message;
+        return await populateField(request, locals, populateListings);
     },
     pushCourses: async ({ request, locals }) => {
-        const termId = await parseTermId(request);
-        let message = await populateCourses(locals.supabase, termId);
-        return message;
+        return await populateField(request, locals, populateCourses);
     },
     pushEvaluations: async ({ request, locals }) => {
-        const termId = await parseTermId(request);
-        let message = await populateEvaluations(locals.supabase, termId);
-        return message;
+        return await populateField(request, locals, populateEvaluations);
     },
     pushRatings: async ({ request, locals }) => {
-        const termId = await parseTermId(request);
+        return await populateField(request, locals, populateRatings);
     },
     pushPrograms: async ({ locals }) => {
 
     },
     pushPrereqs: async ({ request, locals }) => {
-        const termId = await parseTermId(request);
+
     },
 
     // ! Deleters (Be aware of cascades)
@@ -173,11 +156,12 @@ export const actions: Actions = {
     }
 };
 
-// ! Helpers
+// Populates a field in the database based on given function
+const populateField = async (request: Request, locals: App.Locals,
+popFunc: (supabase: SupabaseClient, termId: number) => Promise<any>) => {
 
-// Parses the term id from the request
-const parseTermId = async (request: Request) => {
     const formData = await request.formData();
     const term = formData.get("term") as string;
-    return parseInt(term);
+    let message = await popFunc(locals.supabase, parseInt(term));
+    return message;
 }
