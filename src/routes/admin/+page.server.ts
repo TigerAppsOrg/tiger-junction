@@ -86,6 +86,17 @@ export const actions: Actions = {
             message: "Successfully deleted all evaluations"
         };
     },
+    resetAllRatings: async ({ locals }) => {
+        let { error } = await locals.supabase
+            .from("courses")
+            .update({ rating: null })
+            .neq("id", "0");
+        
+        if (error) throw new Error(error.message);
+        return {
+            message: "Successfully reset all ratings to null"
+        };
+    },
     deleteAllPrograms: async ({ locals }) => {
         let { error } = await locals.supabase
             .from("programs")

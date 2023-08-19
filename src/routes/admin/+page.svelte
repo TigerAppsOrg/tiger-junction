@@ -181,6 +181,12 @@ const handleLogout = async () => {
                     disabled={!enableMassDelete}>
                         Delete All Evaluations
                     </button>
+                    <button formaction="?/resetAllRatings"
+                    class="btn
+                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
+                    disabled={!enableMassDelete}>
+                        Reset all Ratings
+                    </button>
                     <button formaction="?/deleteAllPrograms"
                     class="btn
                     {enableMassDelete ? "btn-danger" : "btn-protected"}" 
