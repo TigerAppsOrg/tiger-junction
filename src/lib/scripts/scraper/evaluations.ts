@@ -80,8 +80,9 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
         const findRating = () => {
             // Categories in order of priority
             const categories = [
-                "Quality of Course",
-                "Overall Quality of the Course",
+                "Quality of Course",                // General
+                "Overall Quality of the Course",    // Some grad courses
+                "Overall Course Quality Rating",    // FRS
             ];
 
             for (let i = 0; i < categories.length; i++) 
