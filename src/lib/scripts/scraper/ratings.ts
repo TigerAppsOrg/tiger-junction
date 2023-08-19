@@ -114,10 +114,12 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
                     throw new Error(err3.message);
                 }
 
-                if (data3 && data3.length > 0 && data3[0].evaluations) {
-                    type AppeaseTS = {
-                        rating: number | null,
-                    }
+                type AppeaseTS = {
+                    rating: number | null,
+                }
+
+                if (data3 && data3.length > 0 && data3[0].evaluations
+                && (data3[0].evaluations as unknown as AppeaseTS).rating !== null) {
 
                     // Check for most recent rating
                     if (!mostRecentRating) 

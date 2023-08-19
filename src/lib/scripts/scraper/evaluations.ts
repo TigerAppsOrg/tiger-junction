@@ -87,7 +87,7 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
                 "Quality of Lectures",              // Lecture Edge Case
                 "Quality of Precepts",              // Precept Edge Case
                 "Quality of Laboratories",          // Lab Edge Case
-                "Reccomend to Other Students",      // Edge Case
+                "Recommend to Other Students",      // Edge Case
                 "Quality of Readings",              // Fallback
                 "Quality of Written Assignments",   // Fallback
 
@@ -97,7 +97,7 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
                 if (returnDict.hasOwnProperty(categories[i]))
                     return returnDict[categories[i]];
             
-            return -1;
+            return null;
         }
 
         let { error: err1 } = await supabase.from("evaluations")
