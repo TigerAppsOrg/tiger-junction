@@ -52,7 +52,8 @@ export let show = false;
     </nav>
 {:else}
     <div transition:fly={{ x: -250, opacity: 1 }}
-    class="fixed top-0 left-0 h-full w-20 bg-synth-dark">
+    class="fixed top-0 left-0 h-full w-20 
+    bg-slate-200 dark:bg-synth-dark">
         <div class="flex flex-col justify-between items-center">
             <div class="flex flex-col justify-start items-center">
 

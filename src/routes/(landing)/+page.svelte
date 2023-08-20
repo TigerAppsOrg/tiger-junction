@@ -10,8 +10,6 @@
 
     export let data;
 
-    $: dark = $darkTheme;
-
     const handleLogin = async () => { 
 
         if ((await data.supabase.auth.getUser()).data.user) {
@@ -28,7 +26,6 @@
     }
 </script>
 
-<div class:dark>
 <div class="h-screen area">
     <nav class="flex justify-between items-center text-xl h-[10vh]">
         <div id="left">
@@ -175,7 +172,6 @@ py-4">
         3d PNGs by Vecteezy
     </a>
 </footer>
-</div>
 
 <style lang="postcss">
     .rainbow {
