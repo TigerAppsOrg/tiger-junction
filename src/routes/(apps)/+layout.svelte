@@ -7,7 +7,9 @@
     let sidebar_show = false;
 </script>
 
-<div class="h-screen w-screen bg-white dark:bg-synth-light">
-    <Sidebar bind:show={sidebar_show} {currentApp} />
+<div class="h-screen w-screen flex bg-slate-100 dark:bg-synth-medium">
+    <div class="my-2">
+        <Sidebar bind:show={sidebar_show} {currentApp} />
+    </div>
     <slot />
 </div>

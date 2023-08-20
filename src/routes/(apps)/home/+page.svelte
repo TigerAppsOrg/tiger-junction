@@ -2,6 +2,9 @@
     
 </script>
 
+<svelte:head>
+    <title>TigerJunction</title>
+</svelte:head>
 
 <div class="h-screen w-screen bg-blue-500">
 

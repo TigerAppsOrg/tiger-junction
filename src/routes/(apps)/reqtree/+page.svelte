@@ -2,7 +2,9 @@
 
 </script>
 
-
+<svelte:head>
+    <title>TigerJunction | ReqTree</title>
+</svelte:head>
 
 <style lang='postcss'>
 

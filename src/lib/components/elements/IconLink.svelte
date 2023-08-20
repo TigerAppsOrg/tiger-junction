@@ -16,21 +16,21 @@ class="aspect-square w-full justify-center items-center flex border-l-4">
 </a>
 
 <style lang="postcss">
-    .selected {
-        @apply dark:border-white border-primary;
-    }
+.selected {
+    @apply dark:border-white border-primary;
+}
 
-    .unselected {
-        @apply dark:border-synth-dark border-slate-200;
-    }
+.unselected {
+    @apply dark:border-synth-dark border-slate-300;
+}
 
-    /* Utilizes: https://codepen.io/sosuke/pen/Pjoqqp */
-    .bright {
-        @apply dark:invert;
-        filter: invert(47%) sepia(91%) saturate(1892%) hue-rotate(207deg) brightness(100%) contrast(99%);
-    }
+/* Utilizes: https://codepen.io/sosuke/pen/Pjoqqp */
+.bright {
+    @apply dark:invert;
+    filter: invert(47%) sepia(91%) saturate(1892%) hue-rotate(207deg) brightness(100%) contrast(99%);
+}
 
-    .dim {
-        @apply dark:invert-[.60] invert-[.40]
-    }
+.dim {
+    @apply dark:invert-[.60] invert-[.40]
+}
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { enhance } from "$app/forms";
 import { goto } from "$app/navigation";
+    import LightButton from "$lib/components/general/LightButton.svelte";
 import { TERM_MAP } from "$lib/constants.js";
 
 export let data;
@@ -35,24 +36,31 @@ const handleLogout = async () => {
 
 </script>
 
-<main class="h-screen flex flex-col">
-    <div class="text-white px-10 flex justify-between items-center 
+<svelte:head>
+    <title>TigerJunction Admin Dashboard</title>
+</svelte:head>
+
+<main class="h-screen flex flex-col bg-slate-100 dark:bg-synth-medium">
+    <div class="px-4 flex justify-between items-center 
     {loading ? "bg-red-500" : 
-    "bg-synth-dark"}">
+    "bg-slate-300 text-black dark:text-white dark:bg-synth-dark"} rounded-xl mx-12 mt-4">
         <div class="flex items-center gap-2">
             <img src="tjlogolarge.png" alt="Tiger Junction logo"
             class="w-16 h-16">
             <h1 class="text-xl">TigerJunction Admin Dashboard</h1>
         </div>
-        <button class="hover:text-gray-200 duration-150 text-xl
-        flex items-center gap-1"
-        on:click={handleLogout}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-            class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>          
-            Logout
-        </button>
+        <div class="flex gap-4">
+            <button class="hover:text-gray-200 duration-150 text-xl
+            flex items-center gap-1"
+            on:click={handleLogout}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>          
+                Logout
+            </button>
+            <LightButton></LightButton>
+        </div>
     </div> <!-- * End Navbar -->
 
     <div class="w-screen px-12 pb-4">
@@ -95,7 +103,8 @@ const handleLogout = async () => {
                 <div class="mb-4 space-x-2 flex items-center">
                     <label class="text-lg" for="term">Term: </label>
                     <input type="text" name="term" id="term" bind:value={term}
-                    class="rounded-xl p-2 flex-1 bg-synth-medium">
+                    class="rounded-xl p-2 flex-1 
+                    bg-slate-300 dark:bg-synth-medium">
                 </div>
                 <div class="flex flex-col gap-2">
                     <hr class="my-2" />
@@ -249,7 +258,7 @@ const handleLogout = async () => {
 
 <style lang="postcss">
 .colored-container {
-    @apply grid gap-4 pt-4;
+    @apply grid gap-4 pt-4 text-sm;
     margin: 0 auto;
     grid-template-columns: 1fr;
 }
@@ -296,7 +305,8 @@ const handleLogout = async () => {
 }
 
 .area-std {
-    @apply bg-synth-light text-white;
+    @apply dark:bg-synth-light dark:text-white
+    bg-white text-black;
 }
 
 @media (min-width: 768px) {
@@ -307,9 +317,5 @@ const handleLogout = async () => {
     .colored-container {
         grid-template-columns: repeat(4, 1fr);
     }
-}
-
-:root {
-    @apply bg-synth-medium;
 }
 </style>
