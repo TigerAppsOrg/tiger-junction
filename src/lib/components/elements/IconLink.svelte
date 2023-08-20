@@ -4,13 +4,14 @@ export let href: string;
 export let src: string;
 export let alt: string;
 export let selected: boolean = false;
+export let size: string = "h-8";
 
 </script>
 
 <a {href} class:selected class:unselected={!selected}
 class="aspect-square w-full justify-center items-center flex border-l-4">
     <img {src} {alt}
-    class="h-10 mr-1"
+    class="{size} mr-1"
     class:bright={selected} class:dim={!selected}>
 </a>
 
