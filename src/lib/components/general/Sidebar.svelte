@@ -1,22 +1,26 @@
 <script lang="ts">
 import { fly } from "svelte/transition";
-import { createEventDispatcher } from "svelte";
 import NavButton from "../elements/NavButton.svelte";
 
 import homeIcon from "$lib/img/icons/homeicon.svg";
-import aboutIcon from "$lib/img/icons/abouticon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import lightbulbIcon from "$lib/img/icons/lightbulbicon.svg";
 import treeIcon from "$lib/img/icons/treeicon.svg";
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
+import lineIcon from "$lib/img/icons/subtractionicon.svg";
 
-type SidebarEvent = {
-    backdrop: MouseEvent;
-    sidebar: MouseEvent;
-};
-const dispatch = createEventDispatcher<SidebarEvent>();
+import { darkTheme } from "$lib/stores/state";
+import IconLink from "../elements/IconLink.svelte";
+    import LightButton from "./LightButton.svelte";
+    import Icon from "../elements/Icon.svelte";
+
+
 
 export let show = false;
+
+const toggleSidebar = () => {
+    show = !show;
+}
 
 </script>
 
@@ -52,36 +56,31 @@ export let show = false;
     </nav>
 {:else}
     <div transition:fly={{ x: -250, opacity: 1 }}
-    class="fixed top-0 left-0 h-full w-20 
+    class="fixed top-0 left-0 h-full w-16
     bg-slate-200 dark:bg-synth-dark">
-        <div class="flex flex-col justify-between items-center">
-            <div class="flex flex-col justify-start items-center">
+        <div class="flex flex-col justify-between items-center h-full">
+            <div class="flex flex-col justify-start items-center w-full">
 
-                <img src="tjlogolarge.png" alt="Tiger Junction Logo"
-                class="w-16 h-16 mb-6">
+                <button class="bg-slate-300 dark:bg-slate-950
+                w-full flex items-center justify-center aspect-square"
+                on:click={toggleSidebar}>
+                    <img src="tjlogolarge.png" alt="Tiger Junction Logo"
+                    class="w-14 h-14">
+                </button>
 
-                <a href="/recalplus">
-                    <img src={calendarIcon} alt="ReCal+ Icon"
-                    class="logolink">
-                </a>
+                <LightButton />
 
-                <a href="/coursegenie">
-                    <img src={lightbulbIcon} alt="CourseGenie Icon"
-                    class="logolink">
-                </a>
+                <IconLink href="/home" src={homeIcon} alt="Home Icon" />
+                <Icon src={lineIcon} alt="Horizontal Line" />
 
-                <a href="/reqtree">
-                    <img src={treeIcon} alt="ReqTree Icon"
-                    class="logolink">
-                </a>
-            </div>
+                <IconLink href="/recalplus" src={calendarIcon} alt="ReCal+ Icon" />
+                <IconLink href="/coursegenie" src={lightbulbIcon} alt="CourseGenie Icon" />
+                <IconLink href="/reqtree" src={treeIcon} alt="ReqTree Icon" />
+            </div> <!-- * End Top -->
 
+            <div class="flex flex-col justify-end items-center w-full">
+                <IconLink href="/settings" src={settingsIcon} alt="Settings Icon" />    
+            </div> <!-- * End Bottom -->
         </div>       
     </div>
 {/if}
-
-<style lang="postcss">
-.logolink {
-    @apply dark:invert;
-}
-</style>
