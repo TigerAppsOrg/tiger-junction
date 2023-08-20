@@ -9,13 +9,12 @@ import treeIcon from "$lib/img/icons/treeicon.svg";
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import lineIcon from "$lib/img/icons/subtractionicon.svg";
 
-import { darkTheme } from "$lib/stores/state";
 import IconLink from "../elements/IconLink.svelte";
-    import LightButton from "./LightButton.svelte";
-    import Icon from "../elements/Icon.svelte";
+import LightButton from "./LightButton.svelte";
+import Icon from "../elements/Icon.svelte";
 
 
-
+export let currentApp: string;
 export let show = false;
 
 const toggleSidebar = () => {
@@ -70,16 +69,29 @@ const toggleSidebar = () => {
 
                 <LightButton />
 
-                <IconLink href="/home" src={homeIcon} alt="Home Icon" />
+                <IconLink href="/home" 
+                src={homeIcon} alt="Home Icon"
+                selected={currentApp === "home"} />
+
                 <Icon src={lineIcon} alt="Horizontal Line" />
 
-                <IconLink href="/recalplus" src={calendarIcon} alt="ReCal+ Icon" />
-                <IconLink href="/coursegenie" src={lightbulbIcon} alt="CourseGenie Icon" />
-                <IconLink href="/reqtree" src={treeIcon} alt="ReqTree Icon" />
+                <IconLink href="/recalplus"
+                src={calendarIcon} alt="ReCal+ Icon"
+                selected={currentApp === "recalplus"} />
+
+                <IconLink href="/coursegenie" 
+                src={lightbulbIcon} alt="CourseGenie Icon" 
+                selected={currentApp === "coursegenie"} />
+
+                <IconLink href="/reqtree" 
+                src={treeIcon} alt="ReqTree Icon"
+                selected={currentApp === "reqtree"} />
             </div> <!-- * End Top -->
 
             <div class="flex flex-col justify-end items-center w-full">
-                <IconLink href="/settings" src={settingsIcon} alt="Settings Icon" />    
+                <IconLink href="/settings" 
+                src={settingsIcon} alt="Settings Icon"
+                selected={currentApp === "settings"} />    
             </div> <!-- * End Bottom -->
         </div>       
     </div>
