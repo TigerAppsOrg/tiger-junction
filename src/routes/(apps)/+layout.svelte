@@ -1,7 +1,7 @@
 <script lang='ts'>
     import Sidebar from "$lib/components/general/Sidebar.svelte";
 
-    let sidebar_show = true;
+    let sidebar_show = false;
 </script>
 
 <div class="h-screen w-screen">
