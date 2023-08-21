@@ -30,7 +30,7 @@ class="h-12 w-full justify-center items-center flex border-l-4">
     }
 
     .unselected {
-        @apply dark:border-synth-dark border-slate-200
+        @apply dark:border-synth-dark border-slate-300
         dark:text-slate-400 text-slate-600;
     }
 

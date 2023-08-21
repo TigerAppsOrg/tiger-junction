@@ -27,7 +27,7 @@ const toggleSidebar = () => {
 
 {#if show}
     <nav 
-    class="top-0 left-0 h-full w-56
+    class="top-0 left-0 h-full w-56 rounded-xl overflow-hidden ml-2
     bg-slate-300 dark:bg-synth-dark">
         <div class="flex flex-col justify-between items-center h-full">
             <div class="flex flex-col justify-start items-start w-full">
