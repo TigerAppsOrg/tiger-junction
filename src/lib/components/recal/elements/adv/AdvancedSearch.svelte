@@ -6,8 +6,10 @@ export let showModal: boolean = false;
 </script>
 
 <Modal {showModal}>
-    Hello World
-    <button on:click={() => console.log(modalStore.getQueue())}>
-        fe
-    </button>
+    <div>
+        Hello World
+        <button on:click={() => console.log(modalStore.getQueue())}>
+            fe
+        </button>
+    </div>
 </Modal>

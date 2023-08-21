@@ -27,8 +27,7 @@ const toggleSidebar = () => {
 
 {#if show}
     <nav 
-    class="top-0 left-0 h-full w-56 rounded-xl overflow-hidden ml-2
-    bg-slate-300 dark:bg-synth-dark">
+    class="top-0 left-0 h-full w-56 rounded-xl overflow-hidden ml-2">
         <div class="flex flex-col justify-between items-center h-full">
             <div class="flex flex-col justify-start items-start w-full">
 
@@ -91,8 +90,7 @@ const toggleSidebar = () => {
     </nav>
 {:else}
     <nav 
-    class="top-0 left-0 h-full w-12 rounded-xl ml-2
-    bg-slate-300 dark:bg-synth-dark overflow-hidden">
+    class="top-0 left-0 h-full w-12 rounded-xl ml-2 overflow-hidden">
         <div class="flex flex-col justify-between items-center h-full">
             <div class="flex flex-col justify-start items-start w-full">
 
@@ -136,3 +134,9 @@ const toggleSidebar = () => {
         </div>       
     </nav>
 {/if}
+
+<style lang="postcss">
+nav {
+    @apply dark:bg-synth-dark bg-slate-300;
+}
+</style>

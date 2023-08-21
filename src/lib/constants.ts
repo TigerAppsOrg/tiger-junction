@@ -70,6 +70,8 @@ const STATUS_MAP: Record<string, number> = {
     "Other": 3,
 }
 
+export const RED = "#FF0000";
+
 export { 
     CATEGORIES, 
     REGISTRAR_AUTH_BEARER, 
