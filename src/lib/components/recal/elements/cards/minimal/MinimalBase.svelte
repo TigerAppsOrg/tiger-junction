@@ -7,7 +7,7 @@ import { fly } from "svelte/transition";
 
 <div transition:fly="{{ duration: 300, x: -150}}"
 class="text-sm p-1 mb-1 cursor-pointer relative duration-150">
-    <div class="w-[85%]">
+    <div class="w-[85%] bg-red-500">
         <p class="mb-[2px] font-normal">
             
         </p>
