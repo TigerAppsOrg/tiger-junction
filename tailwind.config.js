@@ -13,7 +13,8 @@ export default {
           light: "#3d2d52",
           submedium: "#2B203A",
           medium: "#241B31",
-          dark: "#171520"
+          dark: "#171520",
+          accent: "#FF8F00"
         },
       },
       fontFamily: {

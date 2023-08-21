@@ -3,3 +3,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.std-area {
+    @apply rounded-xl overflow-hidden
+    focus:outline-primary dark:focus:outline-synth-accent
+    bg-white dark:bg-synth-light 
+    text-slate-900 dark:text-white
+    border-2 border-slate-600/30 dark:border-slate-200/30;
+}

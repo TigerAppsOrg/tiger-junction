@@ -2,7 +2,7 @@
 
 </script>
 
-<div class="h-32 bg-white dark:bg-synth-light rounded-xl mt-2">
+<div class="h-32 std-area mt-2">
     <div>
 
     </div> <!-- * Semester Select -->

@@ -6,21 +6,21 @@ import { modalStore } from "$lib/stores/modal";
 
 <div>
     <div class="flex gap-2">
-        <input type="text" placeholder="Search" class="search-input">
-        <button class="adv-search"
+        <input type="text" placeholder="Search" class="search-input std-area">
+        <button class="adv-search std-area"
         on:click={() => modalStore.open("adv")}>
-            <img src={settingsIcon} alt="Settings Icon" class="w-6 h-6">
+            <img src={settingsIcon} alt="Settings Icon" 
+            class="w-6 h-6 dark:invert">
         </button>
     </div>
 </div>
 
 <style lang="postcss">
 .search-input {
-    @apply rounded-xl flex-1 p-2 h-10 w-20
-    focus:outline-primary;
+    @apply flex-1 p-2 h-10 w-20;
 }
 
 .adv-search {
-    @apply rounded-xl bg-white h-10 w-10 flex justify-center items-center;
+    @apply h-10 w-10 flex justify-center items-center;
 }
 </style>

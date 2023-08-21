@@ -2,7 +2,6 @@
 import { modalStore } from "$lib/stores/modal";
 
 export let showModal: boolean;
-export let bgColor: string = "bg-white dark:bg-synth-light dark:text-white";
 export let style: string = "";
 
 let dialog: HTMLDialogElement;
@@ -11,7 +10,7 @@ $: if (dialog && showModal) dialog.showModal();
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-<dialog class="{bgColor} {style}"
+<dialog class="{style} std-area"
 	bind:this={dialog}
 	on:close={() => modalStore.close()}
 	on:click|self={() => dialog.close()}
@@ -22,10 +21,9 @@ $: if (dialog && showModal) dialog.showModal();
 	</div>
 </dialog>
 
-<style>
+<style lang="postcss">
 dialog {
-    max-width: 32em;
-    border-radius: 0.2em;
+    @apply rounded-xl;
     border: none;
     padding: 0;
 }
