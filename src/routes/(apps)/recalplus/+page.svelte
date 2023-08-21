@@ -9,6 +9,7 @@ import Top from "$lib/components/recal/Top.svelte";
     <title>TigerJunction | ReCal+</title>
 </svelte:head>
 
+
 <div class="h-screen flex flex-col flex-1 max-w-[1400px] mx-auto">
     <div class="mx-2">
         <Top />

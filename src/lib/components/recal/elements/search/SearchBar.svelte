@@ -1,9 +1,6 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
-
-const handleAdvancedSearch = () => {
-    console.log("Advanced Search");
-} 
+import { modalStore } from "$lib/stores/modal";
 
 </script>
 
@@ -11,7 +8,7 @@ const handleAdvancedSearch = () => {
     <div class="flex gap-2">
         <input type="text" placeholder="Search" class="search-input">
         <button class="adv-search"
-        on:click={handleAdvancedSearch}>
+        on:click={() => modalStore.open("adv")}>
             <img src={settingsIcon} alt="Settings Icon" class="w-6 h-6">
         </button>
     </div>
