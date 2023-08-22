@@ -9,7 +9,7 @@ import Sidebar from "$lib/components/general/Sidebar.svelte";
 </script>
 
 <ModalLib />
-<div class="h-screen w-screen flex bg-slate-200 dark:bg-synth-medium">
+<div class="h-screen w-screen flex bg-white dark:bg-synth-medium">
     <div class="my-2">
         <Sidebar bind:show={sidebar_show} {currentApp} />
     </div>

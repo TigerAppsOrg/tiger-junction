@@ -44,11 +44,31 @@ type DualId = {
     id: number
 }
 
+type CourseData = {
+    id: number,
+    listing_id: string,
+    code: string,
+    title: string,
+    status: number,
+    basis: string,
+    dists: string[],
+    rating: number,
+    grading_info: Record<string, string>,
+}
+
+type RawCourseData = {
+    1242: CourseData[] | null
+    1234: CourseData[] | null
+    1232: CourseData[] | null
+}
+
 export type { 
     Listing, 
     CourseInsert, 
     Course, 
     InstructorInsert, 
     CourseInstructorAssociation,
-    DualId
+    DualId,
+    CourseData,
+    RawCourseData,
 };
