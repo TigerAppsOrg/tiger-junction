@@ -8,7 +8,7 @@ import { modalStore } from "$lib/stores/modal";
     <div class="flex gap-2">
         <input type="text" placeholder="Search" class="search-input std-area">
         <button class="adv-search std-area"
-        on:click={() => modalStore.open("adv")}>
+        on:click={() => modalStore.open("adv", { clear: true })}>
             <img src={settingsIcon} alt="Settings Icon" 
             class="w-6 h-6 dark:invert invert-[0.5]">
         </button>

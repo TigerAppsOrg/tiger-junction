@@ -6,6 +6,7 @@ import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
 import customizeIcon from "$lib/img/icons/paletteicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
+    import { modalStore } from "$lib/stores/modal";
 
 export let supabase: SupabaseClient;
 
@@ -33,22 +34,21 @@ const handleTermChange = (term: number) => {
             Fall 2023
         </button>
     </div> <!-- * Semester Select -->
-    <div class="">
-        <button class="btn-circ">
+    <div class="flex gap-2">
+        <button class="btn-circ"
+        on:click={() => modalStore.open("shareCal", { clear: true})}>
             <img src={shareIcon} alt="Custom Block Icon"
-            class="h-6 w-6 invert-[.5]">
+            class="btn-icon">
         </button>
-        <button class="btn-circ">
+        <button class="btn-circ"
+        on:click={() => modalStore.open("exportCal", { clear: true})}>
             <img src={calendarIcon} alt="Custom Block Icon"
-            class="h-6 w-6 invert-[.5]">
+            class="btn-icon">
         </button>
-        <!-- <button class="btn-circ">
-            <img src={customizeIcon} alt="Custom Block Icon"
-            class="h-6 w-6 invert-[.5]">
-        </button> -->
-        <button class="btn-circ">
+        <button class="btn-circ"
+        on:click={() => modalStore.open("manageCb", { clear: true })}>
             <img src={customBlockIcon} alt="Custom Block Icon"
-            class="h-6 w-6 invert-[.5]">
+            class="btn-icon">
         </button>
     </div> <!-- * Icon Buttons -->
 </div>
@@ -73,5 +73,9 @@ const handleTermChange = (term: number) => {
 
 .btn-circ:hover {
     @apply bg-slate-100 border-slate-600/40;
+}
+
+.btn-icon {
+    @apply h-6 w-6 invert-[.5];
 }
 </style>

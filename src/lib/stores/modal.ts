@@ -23,7 +23,10 @@ const modalStore = {
      */
     open: (name: string, settings?: ModalSettings) => {
         const { front, force, clear, current } = settings || {};
-        if (clear) queue = [];
+        if (clear) {
+            queue = [];
+            currentModal = undefined;
+        };
         
         // Push the current modal to the queue
         if (current && currentModal) queue.push(currentModal)
