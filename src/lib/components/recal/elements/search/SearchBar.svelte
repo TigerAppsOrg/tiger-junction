@@ -10,7 +10,7 @@ import { modalStore } from "$lib/stores/modal";
         <button class="adv-search std-area"
         on:click={() => modalStore.open("adv")}>
             <img src={settingsIcon} alt="Settings Icon" 
-            class="w-6 h-6 dark:invert">
+            class="w-6 h-6 dark:invert invert-[0.5]">
         </button>
     </div>
 </div>
@@ -21,6 +21,10 @@ import { modalStore } from "$lib/stores/modal";
 }
 
 .adv-search {
-    @apply h-10 w-10 flex justify-center items-center;
+    @apply h-10 w-10 flex justify-center items-center duration-150;
+}
+
+.adv-search:hover {
+    @apply bg-slate-100 dark:bg-synth-light border-slate-600/40;
 }
 </style>

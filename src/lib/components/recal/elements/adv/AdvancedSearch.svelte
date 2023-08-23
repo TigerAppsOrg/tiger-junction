@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Checkpill from "$lib/components/elements/Checkpill.svelte";
+import Checkpill from "$lib/components/elements/Checkpill.svelte";
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { searchSettings } from "$lib/stores/recal";
@@ -32,13 +32,14 @@ const saveSettings = () => {
             </div>
         </div> <!-- * End Container -->
         <div class="flex gap-2 border-t-2 mt-2 pt-2">
-            <button class="btn border-2 border-slate-600/30 flex-1" 
+            <!-- <button class="btn border-2 border-slate-600/30 flex-1" 
             on:click={() => modalStore.close()}>
                 Cancel
-            </button>
-            <button class="btn flex-1 bg-black text-white"
+            </button> -->
+            <button class="btn flex-1 bg-gradient-to-r 
+            from-blue-500 to-purple-500 text-white"
             on:click={saveSettings}>
-                Save Changes
+                Close
             </button>
         </div> <!-- * End Nav -->
     </div>
