@@ -8,29 +8,26 @@ export let size: string = "h-8";
 
 </script>
 
-<a {href} class:selected class:unselected={!selected}
-class="aspect-square w-full justify-center items-center flex border-l-4">
-    <img {src} {alt}
-    class="{size} mr-1"
-    class:bright={selected} class:dim={!selected}>
+<a {href} class="aspect-square w-full justify-center items-center flex">
+    <div class:selected 
+    class="w-[80%] h-[80%] flex justify-center items-center">
+        <img {src} {alt}
+        class="{size}"
+        class:bright={selected} class:dim={!selected}>
+    </div>
 </a>
 
 <style lang="postcss">
-.selected {
-    @apply dark:border-white border-primary;
-}
-
-.unselected {
-    @apply dark:border-synth-dark border-slate-300;
-}
-
 /* Utilizes: https://codepen.io/sosuke/pen/Pjoqqp */
-.bright {
-    @apply dark:invert;
-    filter: invert(47%) sepia(91%) saturate(1892%) hue-rotate(207deg) brightness(100%) contrast(99%);
+/* .bright {
+    @apply ;
+} */
+
+.selected {
+    @apply bg-white rounded-full;
 }
 
 .dim {
-    @apply dark:invert-[.60] invert-[.40]
+    @apply dark:invert-[.60] invert;
 }
 </style>

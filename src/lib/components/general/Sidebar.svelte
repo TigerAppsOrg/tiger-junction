@@ -31,7 +31,7 @@ const toggleSidebar = () => {
         <div class="flex flex-col justify-between items-center h-full">
             <div class="flex flex-col justify-start items-start w-full">
 
-                <button class="bg-slate-300 dark:bg-slate-950
+                <button class="
                 w-full flex items-center justify-between h-12
                 text-slate-800
                 dark:text-slate-200 text-lg"
@@ -92,10 +92,10 @@ const toggleSidebar = () => {
     <nav 
     class="top-0 left-0 h-full w-12 rounded-xl ml-2 overflow-hidden">
         <div class="flex flex-col justify-between items-center h-full">
-            <div class="flex flex-col justify-start items-start w-full">
+            <div class="flex flex-col justify-start items-center w-full">
 
                 <!-- * Site Utilities -->
-                <button class="bg-slate-300 dark:bg-slate-950
+                <button class="
                 w-full flex items-center justify-center aspect-square"
                 on:click={toggleSidebar}>
                     <img src="tjlogolarge.png" alt="Tiger Junction Logo"
@@ -137,6 +137,7 @@ const toggleSidebar = () => {
 
 <style lang="postcss">
 nav {
-    @apply dark:bg-synth-dark bg-slate-300;
+    @apply dark:from-blue-700 dark:to-purple-700
+    bg-gradient-to-b from-blue-500 to-purple-500;
 }
 </style>
