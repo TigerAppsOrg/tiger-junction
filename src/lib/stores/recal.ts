@@ -139,6 +139,7 @@ export const rawCourseData = {
 type SearchSettings = {
     options: Record<string, boolean>,
     filters: Record<string, any>,
+    style: Record<string, boolean>,
 }
 
 export const searchSettings: Writable<SearchSettings> = writable({
@@ -191,5 +192,8 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "No Cancelled": {
             "enabled": false,
         },
+    },
+    "style": {
+        "Original Style": false,
     }
 })
