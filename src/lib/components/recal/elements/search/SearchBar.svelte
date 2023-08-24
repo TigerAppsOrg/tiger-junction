@@ -1,12 +1,20 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
+import { searchSettings, searchResults, rawCourseData, currentTerm } from "$lib/stores/recal";
 
+const handleInput = (event: Event) => {
+    let input = (event.target as HTMLInputElement).value;
+    searchResults.search(input, $currentTerm, $searchSettings);
+    console.log($searchResults);
+}
 </script>
 
 <div>
     <div class="flex gap-2">
-        <input type="text" placeholder="Search" class="search-input std-area">
+        <input type="text" placeholder="Search" 
+        class="search-input std-area"
+        on:input={handleInput}>
         <button class="adv-search std-area"
         on:click={() => modalStore.open("adv", { clear: true })}>
             <img src={settingsIcon} alt="Settings Icon" 

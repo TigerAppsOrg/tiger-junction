@@ -173,6 +173,19 @@ const daysToValue = (section: WeekDays) => {
 }
 
 //----------------------------------------------------------------------
+// Text Functions
+//----------------------------------------------------------------------
+
+/**
+ * Normalize text for searching
+ * @param text 
+ * @returns normalized text
+ */
+const normalizeText = (text: string) => {
+    return text.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+//----------------------------------------------------------------------
 
 export { 
     timeToValue, 
@@ -180,6 +193,7 @@ export {
     valueToMilitary, 
     valuesToTimeLabel, 
     testTimeToValue,
-    daysToValue
+    daysToValue,
+    normalizeText,
 }
 

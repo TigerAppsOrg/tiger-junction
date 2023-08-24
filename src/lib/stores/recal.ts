@@ -1,3 +1,4 @@
+import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
 
@@ -5,7 +6,91 @@ import { writable, type Writable } from "svelte/store";
 export const currentTerm: Writable<number> = writable(1242);
 
 // Current schedule index
-export const currentSchedule: Writable<number> = writable(0);
+const currentSchedule: Writable<number> = writable(0);
+
+//----------------------------------------------------------------------
+
+const { set: setRes, update: updateRes, subscribe: subscribeRes }:
+Writable<CourseData[]> = writable([]);
+
+export const searchResults = {
+    set: setRes,
+    update: updateRes,
+    subscribe: subscribeRes,
+
+    /**
+     * Filter the search results
+     * @param query input
+     * @param term id of the term
+     */
+    search: (query: string, term: number, settings: SearchSettings): void => {
+        let data: CourseData[] = [];
+        rawCourseData.subscribe((x) => (
+            data = x[term as keyof RawCourseData] ?? []
+        ))();
+
+        //--------------------------------------------------------------
+        // Filter by settings
+        //--------------------------------------------------------------
+
+        // * Distribution requirements
+        if (settings.filters["Dists"].enabled) {
+            data = data.filter(x => {
+                let enabled: boolean = false;
+                for (let dist of x.dists) {
+                    if (settings.filters["Dists"].values[dist]) {
+                        enabled = true;
+                        break;
+                    }
+                }
+                return enabled;
+            });
+        }
+
+        // * Open Only
+        if (settings.filters["Open Only"].enabled) {
+            data = data.filter(x => x.status === 0);
+        }
+
+        // * No Cancelled
+        if (settings.filters["No Cancelled"].enabled) {
+            data = data.filter(x => x.status !== 2);
+        }
+
+        // * Levels 
+        if (settings.filters["Levels"].enabled) {
+            data = data.filter(x => 
+                settings.filters["Levels"]
+                    .values[x.code.charAt(4)]
+            );
+        }
+
+        //--------------------------------------------------------------
+        // Filter by search query
+        //--------------------------------------------------------------
+
+        if (query.length < 3 && !settings.options["All"])
+             searchResults.set([]);
+
+        else if (query.length === 3 && !settings.options["All"]) 
+            searchResults.set(data.filter(x => {
+                return normalizeText(x.code).includes(normalizeText(query))
+            }));
+        
+        else searchResults.set(data.filter((x) => {
+            let title: boolean = settings.options["Title"] && (
+                normalizeText(x.title).includes(normalizeText(query))
+            );
+            let code: boolean = settings.options["Code"] && (
+                normalizeText(x.code).includes(normalizeText(query))
+            );
+            let all: boolean = settings.options["All"] && (
+                title || code 
+            );
+            return title || code || all;
+        }));
+    },
+}
 
 //----------------------------------------------------------------------
 
@@ -80,29 +165,31 @@ export const searchSettings: Writable<SearchSettings> = writable({
                 "No Dist": true,
             }
         },
-        "Days": {
-            "enabled": false,
-            "values": {
-                "Monday": true,
-                "Tuesday": true,
-                "Wednesday": true,
-                "Thursday": true,
-                "Friday": true,
-            }
-        },
+        // "Days": {
+        //     "enabled": false,
+        //     "values": {
+        //         "Monday": true,
+        //         "Tuesday": true,
+        //         "Wednesday": true,
+        //         "Thursday": true,
+        //         "Friday": true,
+        //     }
+        // },
         "Levels": {
             "enabled": false,
             "values": {
-                "100": true,
-                "200": true,
-                "300": true,
-                "400": true,
-                "500": true,
-                "1000": true,
+                "1": true,
+                "2": true,
+                "3": true,
+                "4": true,
+                "5": true,
             }
         },
         "Open Only": {
             "enabled": false,
-        }
+        },
+        "No Cancelled": {
+            "enabled": false,
+        },
     }
 })
