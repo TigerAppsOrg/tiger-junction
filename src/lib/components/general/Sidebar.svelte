@@ -20,7 +20,8 @@ export let show = false;
 
 
 const toggleSidebar = () => {
-    show = !show;
+    console.log("Expanded sidebar will be avaliable in a future update.");
+    // show = !show;
 }
 
 </script>
@@ -137,7 +138,7 @@ const toggleSidebar = () => {
 
 <style lang="postcss">
 nav {
-    @apply dark:from-blue-700 dark:to-purple-700
-    bg-gradient-to-b from-deepblue-light to-deepblue-dark;
+    @apply bg-gradient-to-b from-deepblue-light to-deepblue-dark
+    shadow-xl;
 }
 </style>

@@ -8,9 +8,7 @@ import { onMount } from "svelte";
 export let data;
 
 onMount(() => {
-    fetchRawCourseData(data.supabase, 1242).then((res) => {
-        console.log(res);
-    })
+    fetchRawCourseData(data.supabase, 1242);
 });
 
 </script>
@@ -21,12 +19,12 @@ onMount(() => {
 
 
 <div class="h-screen flex flex-col flex-1 max-w-[1400px] mx-auto
-bg-white dark:bg-synth-medium">
+bg-white dark:bg-black">
     <div class="mx-2">
         <Top supabase={data.supabase} />
     </div>
     <div class="flex flex-1">
-        <div class="w-1/4 min-w-[200px]">
+        <div class="w-1/4 min-w-[200px] mr-2">
             <Left />
         </div>
         <div class="flex-1 min-w-[400px]">

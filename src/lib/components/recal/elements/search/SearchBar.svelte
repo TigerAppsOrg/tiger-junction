@@ -1,7 +1,7 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, rawCourseData, currentTerm } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm } from "$lib/stores/recal";
 
 const handleInput = (event: Event) => {
     let input = (event.target as HTMLInputElement).value;
@@ -15,10 +15,10 @@ const handleInput = (event: Event) => {
         <input type="text" placeholder="Search" 
         class="search-input std-area"
         on:input={handleInput}>
-        <button class="adv-search std-area"
+        <button class="adv-search"
         on:click={() => modalStore.open("adv", { clear: true })}>
             <img src={settingsIcon} alt="Settings Icon" 
-            class="w-6 h-6 dark:invert invert-[0.5]">
+            class="w-6 h-6 dark:invert-[.7] invert-[.5]">
         </button>
     </div>
 </div>
@@ -29,10 +29,12 @@ const handleInput = (event: Event) => {
 }
 
 .adv-search {
-    @apply h-10 w-10 flex justify-center items-center duration-150;
+    @apply h-10 w-10 flex justify-center items-center duration-150
+    border-slate-600/30 border-2 dark:border-slate-200/60 rounded-xl;
 }
 
 .adv-search:hover {
-    @apply bg-slate-100 dark:bg-synth-light border-slate-600/40;
+    @apply bg-slate-100 border-slate-600/40
+    dark:bg-slate-700 dark:border-slate-200/90;
 }
 </style>

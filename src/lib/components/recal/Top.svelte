@@ -12,15 +12,14 @@ export let supabase: SupabaseClient;
 
 const handleTermChange = (term: number) => {
     currentTerm.set(term);
-    fetchRawCourseData(supabase, term).then((res) => {
-        console.log(res);
-    });
+    fetchRawCourseData(supabase, term);
 }
 
 </script>
 
 <div class="h-16 std-area mt-2 flex justify-between p-2">
-    <div class="bg-slate-100 flex gap-2 w-fit p-2 rounded-md">
+    <div class="bg-slate-100 dark:bg-slate-800
+     flex gap-2 w-fit p-2 rounded-md">
         <button class="termchoice" class:selected={$currentTerm === 1232}
         on:click={() => handleTermChange(1232)}>
             Fall 2022
@@ -60,7 +59,7 @@ const handleTermChange = (term: number) => {
 }
 
 .termchoice:hover {
-    @apply bg-slate-200;
+    @apply bg-slate-200 dark:bg-slate-700;
 }
 
 .selected {
@@ -68,14 +67,16 @@ const handleTermChange = (term: number) => {
 }
 
 .btn-circ {
-    @apply rounded-full p-2 border-slate-600/30 border-2 duration-150;
+    @apply rounded-full p-2 border-slate-600/30 border-2 duration-150
+    dark:border-slate-200/60;
 }
 
 .btn-circ:hover {
-    @apply bg-slate-100 border-slate-600/40;
+    @apply bg-slate-100 border-slate-600/40
+    dark:bg-slate-700 dark:border-slate-200/90;
 }
 
 .btn-icon {
-    @apply h-6 w-6 invert-[.5];
+    @apply h-6 w-6 invert-[.5] dark:invert-[.7];
 }
 </style>

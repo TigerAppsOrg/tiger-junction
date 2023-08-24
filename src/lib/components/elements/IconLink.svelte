@@ -28,6 +28,6 @@ export let size: string = "h-8";
 }
 
 .dim {
-    @apply dark:invert-[.60] invert;
+    @apply invert;
 }
 </style>

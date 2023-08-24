@@ -8,5 +8,5 @@ export let size: string = "h-8";
 
 <div class="aspect-square w-full justify-center items-center flex">
     <img {src} {alt}
-    class="dark:invert {size} invert-[.10]">
+    class="{size} invert">
 </div>

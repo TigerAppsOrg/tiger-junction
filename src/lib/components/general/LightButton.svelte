@@ -5,7 +5,7 @@ import { darkTheme } from "$lib/stores/state";
 </script>
 
 <button on:click={() => $darkTheme = !$darkTheme}
-class="bg-synth-accent dark:bg-synth-light aspect-square
+class="bg-yellow-300 dark:bg-synth-light aspect-square
 dark:text-white rounded-full m-2">
     {#if $darkTheme}
         <img src={moonIcon} alt="Dark Mode Icon" 
