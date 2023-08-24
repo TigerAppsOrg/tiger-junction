@@ -16,6 +16,10 @@ export default {
           dark: "#171520",
           accent: "#FF8F00"
         },
+        deepblue: {
+          dark: "#6157FF",  // "#000428",
+          light: "#EE49FD", // "#004E92",
+        }
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],

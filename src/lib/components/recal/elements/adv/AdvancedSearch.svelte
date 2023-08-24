@@ -37,7 +37,7 @@ const saveSettings = () => {
                 Cancel
             </button> -->
             <button class="btn flex-1 bg-gradient-to-r 
-            from-blue-500 to-purple-500 text-white"
+            from-deepblue-light to-deepblue-dark text-white"
             on:click={saveSettings}>
                 Close
             </button>

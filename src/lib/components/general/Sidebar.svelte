@@ -138,6 +138,6 @@ const toggleSidebar = () => {
 <style lang="postcss">
 nav {
     @apply dark:from-blue-700 dark:to-purple-700
-    bg-gradient-to-b from-blue-500 to-purple-500;
+    bg-gradient-to-b from-deepblue-light to-deepblue-dark;
 }
 </style>

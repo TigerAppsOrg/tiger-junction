@@ -175,7 +175,7 @@ py-4">
 
 <style lang="postcss">
     .rainbow {
-        @apply bg-gradient-to-r from-blue-500 to-purple-500;
+        @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -189,7 +189,7 @@ py-4">
     }
 
     .btn-cool {
-        @apply bg-gradient-to-r from-blue-500 to-purple-500
+        @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
         text-white rounded-full px-4 py-2;
     }
 

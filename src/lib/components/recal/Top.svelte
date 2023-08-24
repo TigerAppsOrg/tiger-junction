@@ -64,7 +64,7 @@ const handleTermChange = (term: number) => {
 }
 
 .selected {
-    @apply bg-gradient-to-r from-blue-500 to-purple-500 text-white;
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark text-white;
 }
 
 .btn-circ {

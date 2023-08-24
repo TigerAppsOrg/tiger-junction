@@ -18,14 +18,14 @@ import { page } from "$app/stores";
 
 <style lang="postcss">
 .gradient-text {
-    @apply bg-gradient-to-r from-primary to-tertiary;
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
     -webkit-background-clip: text; /* For Safari */
     background-clip: text;
     color: transparent;
 }
 
 .btn-cool {
-    @apply bg-gradient-to-r from-blue-500 to-purple-500
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
     text-white rounded-full px-4 py-2;
 }
 
