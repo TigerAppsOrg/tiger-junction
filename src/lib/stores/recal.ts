@@ -61,7 +61,7 @@ export const searchResults = {
         if (settings.filters["Levels"].enabled) {
             data = data.filter(x => 
                 settings.filters["Levels"]
-                    .values[x.code.charAt(4)]
+                .values[x.code.charAt(3)]
             );
         }
 
@@ -136,9 +136,14 @@ export const rawCourseData = {
 
 //----------------------------------------------------------------------
 
-type SearchSettings = {
+type Filter = {
+    enabled: boolean,
+    [key: string]: any,
+}
+
+export type SearchSettings = {
     options: Record<string, boolean>,
-    filters: Record<string, any>,
+    filters: Record<string, Filter>,
     style: Record<string, boolean>,
 }
 
@@ -146,7 +151,7 @@ export const searchSettings: Writable<SearchSettings> = writable({
     "options": {
         "Title": true,
         "Code": true,
-        "Instructor": true,
+        // "Instructor": true,
         "All": false,
         // "Smart Search": false,
     }, 

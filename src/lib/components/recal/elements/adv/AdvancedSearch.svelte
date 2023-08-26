@@ -20,15 +20,25 @@ const saveSettings = () => {
                 <h2 class="text-lg font-bold mb-2">Search By</h2>
                 <div class="flex flex-wrap gap-2">
                     {#each Object.keys($searchSettings.options) as option}
-                        <Checkpill name={option} />
+                        <Checkpill name={option} category="options" />
                     {/each}
                 </div>
             </div>
             <div class="settings-area" id="filters">
-
+                <h2 class="text-lg font-bold mb-2">Filters</h2>
+                <div class="flex flex-wrap gap-2">
+                    {#each Object.keys($searchSettings.filters) as filter}
+                        <Checkpill name={filter} category="filters" />
+                    {/each}
+                </div>
             </div>
-            <div class="settings-area" id="time">
-
+            <div class="settings-area" id="style">
+                <h2 class="text-lg font-bold mb-2">Style</h2>
+                <div class="flex flex-wrap gap-2">
+                    {#each Object.keys($searchSettings.style) as style}
+                        <Checkpill name={style} category="style" />
+                    {/each}
+                </div>
             </div>
         </div> <!-- * End Container -->
         <div class="flex gap-2 border-t-2 mt-2 pt-2">

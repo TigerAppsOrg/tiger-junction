@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { CourseData } from "$lib/types/dbTypes";
 import infoIcon from "$lib/img/icons/infoicon.svg";
+    import { slide } from "svelte/transition";
 
 export let course: CourseData;
 
@@ -10,7 +11,8 @@ let title = course.title;
 
 </script>
 
-<button class="border-b-[1px] p-1 flex items-center">
+<button transition:slide="{{ duration: 150, axis: "y" }}"
+class="border-b-[1px] p-1 flex items-center">
     <div class="text-sm font-light text-left w-[80%]">
         <div>
             {code}

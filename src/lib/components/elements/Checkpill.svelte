@@ -1,9 +1,21 @@
 <script lang="ts">
+import { searchSettings } from "$lib/stores/recal";
 export let name: string = "";
+export let category: string;
+
 </script>
 
 <label for={name}>
-    <input type="checkbox" name={name} id={name}>
+    {#if category === "filters"}
+        <input type="checkbox" name={name} id={name}
+        bind:checked={$searchSettings.filters[name].enabled}>
+    {:else if category === "options"}
+        <input type="checkbox" name={name} id={name}
+        bind:checked={$searchSettings.options[name]}>
+    {:else if category === "style"}
+        <input type="checkbox" name={name} id={name}
+        bind:checked={$searchSettings.style[name]}>
+    {/if}
     <span class="info flex items-center gap-1">
         <span>
             {name}
