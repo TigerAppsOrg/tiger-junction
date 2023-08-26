@@ -1,4 +1,5 @@
 <script lang="ts">
+import { pinCourseFromSearch, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import type { CourseData } from "$lib/types/dbTypes";
 
@@ -55,7 +56,7 @@ id="cont">
         <div class="cardlink">
             <!-- Pin -->
             <button class="cardbutton bg-yellow-400 dark:bg-yellow-700" 
-            on:click={() => console.log("Pin")}>
+            on:click={() => pinCourseFromSearch(course)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                 class="icon">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
@@ -66,7 +67,7 @@ id="cont">
         <div class="cardlink">
             <!-- Add -->
             <button class="cardbutton bg-green-400 dark:bg-green-700" 
-            on:click={() => console.log("Add")}>
+            on:click={() => saveCourseFromSearch(course)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                 class="icon">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

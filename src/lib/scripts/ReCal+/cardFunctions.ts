@@ -9,7 +9,7 @@ import type { CourseData } from "$lib/types/dbTypes";
  * 
  * @param course 
  */
-const addCourseFromSearch = (course: CourseData) => {
+const saveCourseFromSearch = (course: CourseData) => {
 
 }
 
@@ -66,7 +66,7 @@ const removeCourseFromPinned = (course: CourseData) => {
 //----------------------------------------------------------------------
 
 export {
-    addCourseFromSearch,
+    saveCourseFromSearch,
     pinCourseFromSearch,
     pinCourseFromSaved,
     removeCourseFromSaved,
