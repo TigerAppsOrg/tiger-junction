@@ -1,13 +1,13 @@
 <script lang="ts">
-import Search from "./elements/search/Search.svelte";
 import Saved from "./elements/save/Saved.svelte";
 import Pinned from "./elements/save/Pinned.svelte";
 import SearchResults from "./elements/search/SearchResults.svelte";
+import SearchBar from "./elements/search/SearchBar.svelte";
 </script>
 
-<div class="h-full max-h-screen w-full pt-2 flex flex-col">
+<div class="h-full max-h-full w-full pt-2 flex flex-col">
     <div>
-        <Search />
+        <SearchBar />
     </div>
     <div>
         <Saved />
@@ -15,7 +15,7 @@ import SearchResults from "./elements/search/SearchResults.svelte";
     <div>
         <Pinned />
     </div>
-    <div>
+    <div class="flex-1">
         <SearchResults />
     </div>
 </div>

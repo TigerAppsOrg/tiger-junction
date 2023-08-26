@@ -194,6 +194,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         },
     },
     "style": {
-        "Original Style": true,
+        "Original Style": false,
     }
 })

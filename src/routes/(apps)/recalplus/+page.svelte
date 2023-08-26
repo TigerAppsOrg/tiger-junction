@@ -19,12 +19,12 @@ onMount(() => {
 
 
 <div class="h-screen flex flex-col flex-1 max-w-[1400px] mx-auto
-bg-white dark:bg-black">
+bg-white dark:bg-black max-h-screen">
     <div class="mx-2">
         <Top supabase={data.supabase} />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
-    <div class="flex flex-1 mx-2">
+    <div class="flex flex-1 mx-2 max-h-[calc(100vh-80px)]">
         <div class="w-1/4 min-w-[200px]">
             <Left />
         </div>
