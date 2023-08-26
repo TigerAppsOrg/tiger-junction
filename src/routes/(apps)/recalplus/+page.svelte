@@ -23,8 +23,9 @@ bg-white dark:bg-black">
     <div class="mx-2">
         <Top supabase={data.supabase} />
     </div>
-    <div class="flex flex-1">
-        <div class="w-1/4 min-w-[200px] mr-2">
+    <!-- Fills bottom area does not cause page scroll -->
+    <div class="flex flex-1 mx-2">
+        <div class="w-1/4 min-w-[200px]">
             <Left />
         </div>
         <div class="flex-1 min-w-[400px]">

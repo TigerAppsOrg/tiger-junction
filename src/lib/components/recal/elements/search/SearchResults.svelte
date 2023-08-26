@@ -5,11 +5,11 @@ import MinimalSearch from "../cards/minimal/MinimalSearch.svelte";
 
 </script>
 
-<div>
+<div class="max-h-full">
     <div>
         
     </div> <!-- * End Head -->
-    <div>
+    <div class="flex flex-col overflow-scroll">
         {#each $searchResults as course}
             {#if $searchSettings.style["Original Style"]}
                 <ClassicSearch {course} />
