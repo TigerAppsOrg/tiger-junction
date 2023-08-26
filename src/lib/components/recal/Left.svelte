@@ -5,7 +5,7 @@ import SearchResults from "./elements/search/SearchResults.svelte";
 import SearchBar from "./elements/search/SearchBar.svelte";
 </script>
 
-<div class="h-full max-h-full w-full pt-2 flex flex-col">
+<div class="h-full max-h-full w-full flex flex-col">
     <div>
         <SearchBar />
     </div>

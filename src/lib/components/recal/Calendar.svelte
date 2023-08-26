@@ -3,7 +3,7 @@
 </script>
 
 
-<div class="h-full p-2">
+<div class="h-full">
     <div class=" h-full w-full std-area">
         <div class="grid grid-cols-5 w-full h-[4%] text-center 
         font-semibold">
