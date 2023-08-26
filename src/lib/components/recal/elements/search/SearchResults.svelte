@@ -7,7 +7,7 @@ import MinimalSearch from "../cards/minimal/MinimalSearch.svelte";
 
 {#if $searchResults.length > 0}
 <div class="max-h-full">
-    <div class="text-lg font-normal">
+    <div class="text-lg font-normal dark:text-white">
         {$searchResults.length} Search Results
     </div> <!-- * End Head -->
 

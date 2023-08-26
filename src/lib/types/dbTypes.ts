@@ -47,6 +47,7 @@ type DualId = {
 type CourseData = {
     id: number,
     listing_id: string,
+    term: number,
     code: string,
     title: string,
     status: number,
@@ -62,6 +63,12 @@ type RawCourseData = {
     1232: CourseData[] | null
 }
 
+type CourseLinks = {
+    registrar: string,
+    tigersnatch: string,
+    princetoncourses: string,
+}
+
 export type { 
     Listing, 
     CourseInsert, 
@@ -71,4 +78,5 @@ export type {
     DualId,
     CourseData,
     RawCourseData,
+    CourseLinks,
 };
