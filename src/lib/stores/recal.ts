@@ -1,13 +1,97 @@
+// Stores for ReCal+ app
+
 import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
-import { writable, type Writable } from "svelte/store";
+import { writable, type Subscriber, type Writable, type Invalidator, type Unsubscriber } from "svelte/store";
+
+//----------------------------------------------------------------------
+// Current Term/Schedule
+//----------------------------------------------------------------------
 
 // Current term id
 export const currentTerm: Writable<number> = writable(1242);
 
 // Current schedule index
-const currentSchedule: Writable<number> = writable(0);
+export const currentSchedule: Writable<number> = writable(0);
 
+//----------------------------------------------------------------------
+// Saved and Pinned (Course Pools)
+//----------------------------------------------------------------------
+
+type CoursePool = {
+    set: (this: void, value: CourseData[]) => void,
+    update: (this: void, updater: (value: CourseData[]) => CourseData[]) => void,
+    subscribe: (this: void, run: Subscriber<CourseData[]>, invalidate?: Invalidator<CourseData[]>) => Unsubscriber,
+    add: (course: CourseData) => void,
+    remove: (course: CourseData) => void,
+    clear: () => void,
+}
+
+const { set: setSave, update: updateSave, subscribe: subscribeSave }: 
+Writable<CourseData[]> = writable([]);
+
+export const savedCourses: CoursePool = {
+    set: setSave,
+    update: updateSave,
+    subscribe: subscribeSave,
+
+    /**
+     * Add a course to saved courses
+     * @param course 
+     */
+    add: (course: CourseData): void => {
+
+    },
+
+    /**
+     * Remove a course from saved courses
+     * @param course 
+     */
+    remove: (course: CourseData): void => {
+    },
+
+    /**
+     * Clear the saved courses
+     */
+    clear: (): void => {
+        savedCourses.set([]);
+    }
+}
+
+const { set: setPin, update: updatePin, subscribe: subscribePin }: 
+Writable<CourseData[]> = writable([]);
+
+export const pinnedCourses: CoursePool = {
+    set: setPin,
+    update: updatePin,
+    subscribe: subscribePin,
+
+    /**
+     * Add a course to pinned courses
+     * @param course 
+     */
+    add: (course: CourseData): void => {
+
+    },
+
+    /**
+     * Remove a course from pinned courses
+     * @param course 
+     */
+    remove: (course: CourseData): void => {
+    },
+
+    /**
+     * Clear the pinned courses
+     */
+    clear: (): void => {
+        savedCourses.set([]);
+    }
+}
+
+
+//----------------------------------------------------------------------
+// Search Results
 //----------------------------------------------------------------------
 
 const { set: setRes, update: updateRes, subscribe: subscribeRes }:
@@ -93,6 +177,8 @@ export const searchResults = {
 }
 
 //----------------------------------------------------------------------
+// Raw Course Data
+//----------------------------------------------------------------------
 
 const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
 Writable<RawCourseData> = writable({
@@ -134,6 +220,8 @@ export const rawCourseData = {
     }
 }
 
+//----------------------------------------------------------------------
+// Search Settings
 //----------------------------------------------------------------------
 
 type Filter = {
