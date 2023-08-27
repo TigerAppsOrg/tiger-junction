@@ -8,13 +8,13 @@ import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import logoutIcon from "$lib/img/icons/deleteicon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
+    import Loader from "../elements/Loader.svelte";
 
 export let supabase: SupabaseClient;
 
 const handleTermChange = async (term: number) => {
     currentTerm.set(term);
     await fetchRawCourseData(supabase, term);
-    await fetchUserSchedules(supabase, term);
     await populatePools(supabase, term);
 }
 
@@ -69,13 +69,17 @@ const handleLogout = async () => {
 
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
     p-1 rounded-md h-8 font-light">
-        {#key $schedules[$currentTerm]}
-        {#each $schedules[$currentTerm] as schedule}
-            <button class="termchoice">
-                {schedule.title}
-            </button>
-        {/each}
-        {/key}
+        {#await fetchUserSchedules(supabase, $currentTerm)}
+            <Loader />
+        {:then}
+            {#key $schedules[$currentTerm]}
+            {#each $schedules[$currentTerm] as schedule}
+                <button class="termchoice">
+                    {schedule.title}
+                </button>
+            {/each}
+            {/key}
+        {/await}
     </div> <!-- * Schedule Select -->
 </div>
 

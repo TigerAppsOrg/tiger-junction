@@ -9,12 +9,14 @@ import { onMount } from "svelte";
 export let data;
 
 onMount(async () => {
+    // await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
-    await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
+    // await fetchUserSchedules(data.supabase, 1234);
+    // await fetchUserSchedules(data.supabase, 1232);
 });
-
 </script>
+
 
 <svelte:head>
     <title>TigerJunction | ReCal+</title>
