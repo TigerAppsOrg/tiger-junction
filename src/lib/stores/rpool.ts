@@ -13,8 +13,10 @@ type CoursePool = {
     subscribe: (this: void, run: Subscriber<Record<number, CourseData[]>>, 
         invalidate?: Invalidator<Record<number, CourseData[]>>) 
         => Unsubscriber,
-    add: (supabase: SupabaseClient, scheduleId: number, course: CourseData) => void,
-    remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData) => void,
+    add: (supabase: SupabaseClient, scheduleId: number, course: CourseData) 
+        => void,
+    remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData) 
+        => void,
     clear: (supabase: SupabaseClient, scheduleId: number) => void,
 }
 
@@ -23,7 +25,8 @@ type CoursePool = {
 //----------------------------------------------------------------------
 
 // Get the current pool of courses
-const getCurrentPool = (pool: CoursePool, scheduleId: number): CourseData[] => {
+const getCurrentPool = (pool: CoursePool, scheduleId: number): 
+CourseData[] => {
     let data: CourseData[] = [];
     pool.subscribe((x) => {
         if (x.hasOwnProperty(scheduleId)) data = x[scheduleId];
@@ -32,9 +35,42 @@ const getCurrentPool = (pool: CoursePool, scheduleId: number): CourseData[] => {
     return data;
 }
 
+// Add a course to a pool
+const addCourse = (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number, course: CourseData, isPinned: boolean): void => {
+    // Get current pool courses
+    let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
+
+    // Update store
+    pool.update(x => {
+        if (currentPool.length === 0) x[scheduleId] = [course];
+        else x[scheduleId] = [...x[scheduleId], course];
+        return x;
+    });
+
+    // Update course-schedule-associations table
+    supabase.from("course_schedule_associations")
+        .insert({
+            course_id: course.id,
+            schedule_id: scheduleId,
+            is_pinned: isPinned
+        })
+    .then(res => {
+        // Revert if error
+        if (res.error) {
+            console.log(res.error);
+            pool.update(x => {
+                x[scheduleId] = currentPool;
+                return x;
+            });
+        }
+    });
+}
+
 // Remove a course from a pool
-const removeCourse = (supabase: SupabaseClient, pool: CoursePool, scheduleId: number, course: CourseData): void => {
-    // Get current saved courses
+const removeCourse = (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number, course: CourseData): void => {
+    // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
     if (currentPool.length === 0) return;
@@ -53,10 +89,36 @@ const removeCourse = (supabase: SupabaseClient, pool: CoursePool, scheduleId: nu
     .then(res => {
         // Revert if error
         if (res.error) {
-            updateSave(x => {
+            console.log(res.error);
+            pool.update(x => {
                 x[scheduleId] = currentPool;
                 return x;
             });
+        }
+    });
+}
+
+// Clear a pool
+const clearPool = (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number): void => {
+    // Get current pool courses
+    let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
+
+    // Update store
+    pool.set([]);
+
+    // Update course-schedule-associations table
+    supabase.from("course_schedule_associations")
+        .delete()
+        .eq("schedule_id", scheduleId)
+    .then(res => {
+        // Revert if error
+        if (res.error) {
+            console.log(res.error);
+            pool.update(x => {
+                x[scheduleId] = currentPool
+                return x;
+            })
         }
     });
 }
@@ -74,47 +136,34 @@ export const savedCourses: CoursePool = {
     subscribe: subscribeSave,
 
     /**
-     * Add a course to saved courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      * @param course 
      */
-    add: (supabase: SupabaseClient, scheduleId: number, course: CourseData): void => {
-        // Get current saved courses
-        let saved: CourseData[] = getCurrentPool(savedCourses, scheduleId);
-
-        // Update store
-        updateSave(x => [...x, course]);
-
-        // Update course-schedule-associations table
-
-
-        // Revert if error
-        
-
+    add: (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): void => {
+        addCourse(supabase, savedCourses, scheduleId, course, false);
     },
 
     /**
-     * Remove a course from saved courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      * @param course 
      */
-    remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData): void => {
+    remove: (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): void => {
         removeCourse(supabase, savedCourses, scheduleId, course);
     },
 
     /**
-     * Clear the saved courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      */
     clear: (supabase: SupabaseClient, scheduleId: number): void => {
-        // Get current saved courses
-        let saved: CourseData[] = getCurrentPool(savedCourses, scheduleId);
-
-        // Update store
-        savedCourses.set([]);
-
-        // Update course-schedule-associations table
-
-
-        // Revert if error
-
+        clearPool(supabase, savedCourses, scheduleId);
     }
 }
 
@@ -123,7 +172,7 @@ export const savedCourses: CoursePool = {
 //----------------------------------------------------------------------
 
 const { set: setPin, update: updatePin, subscribe: subscribePin }: 
-Writable<CourseData[]> = writable([]);
+Writable<Record<number, CourseData[]>> = writable([]);
 
 export const pinnedCourses: CoursePool = {
     set: setPin,
@@ -131,44 +180,33 @@ export const pinnedCourses: CoursePool = {
     subscribe: subscribePin,
 
     /**
-     * Add a course to pinned courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      * @param course 
      */
-    add: (supabase: SupabaseClient, scheduleId: number, course: CourseData): void => {
-        // Get current saved courses
-        let pinned: CourseData[] = getCurrentPool(pinnedCourses, scheduleId);
-
-        // Update store
-        updatePin(x => [...x, course]);
-
-        // Update course-schedule-associations table
-
-
-        // Revert if error
-        
+    add: (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): void => {
+        addCourse(supabase, pinnedCourses, scheduleId, course, true);
     },
 
     /**
-     * Remove a course from pinned courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      * @param course 
      */
-    remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData): void => {
+    remove: (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): void => {
         removeCourse(supabase, pinnedCourses, scheduleId, course);
     },
 
     /**
-     * Clear the pinned courses
+     * 
+     * @param supabase 
+     * @param scheduleId 
      */
     clear: (supabase: SupabaseClient, scheduleId: number): void => {
-        // Get current saved courses
-        let pinned: CourseData[] = getCurrentPool(pinnedCourses, scheduleId);
-
-        // Update store
-        pinnedCourses.set([]);
-
-        // Update course-schedule-associations table
-
-
-        // Revert if error
+        clearPool(supabase, pinnedCourses, scheduleId);
     }
 }
