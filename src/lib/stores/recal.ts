@@ -2,6 +2,7 @@
 
 import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { writable, type Subscriber, type Writable, type Invalidator, type Unsubscriber } from "svelte/store";
 
 //----------------------------------------------------------------------
@@ -22,9 +23,9 @@ type CoursePool = {
     set: (this: void, value: CourseData[]) => void,
     update: (this: void, updater: (value: CourseData[]) => CourseData[]) => void,
     subscribe: (this: void, run: Subscriber<CourseData[]>, invalidate?: Invalidator<CourseData[]>) => Unsubscriber,
-    add: (course: CourseData) => void,
-    remove: (course: CourseData) => void,
-    clear: () => void,
+    add: (supabase: SupabaseClient, course: CourseData) => void,
+    remove: (supabase: SupabaseClient, course: CourseData) => void,
+    clear: (supabase: SupabaseClient) => void,
 }
 
 const { set: setSave, update: updateSave, subscribe: subscribeSave }: 
@@ -39,7 +40,21 @@ export const savedCourses: CoursePool = {
      * Add a course to saved courses
      * @param course 
      */
-    add: (course: CourseData): void => {
+    add: (supabase: SupabaseClient, course: CourseData): void => {
+        // Get current saved courses
+        let saved: CourseData[] = [];
+        savedCourses.subscribe((x) => (
+            saved = x
+        ))();
+
+        // Update store
+        updateSave(x => [...x, course]);
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
+        
 
     },
 
@@ -47,14 +62,41 @@ export const savedCourses: CoursePool = {
      * Remove a course from saved courses
      * @param course 
      */
-    remove: (course: CourseData): void => {
+    remove: (supabase: SupabaseClient, course: CourseData): void => {
+        // Get current saved courses
+        let saved: CourseData[] = [];
+        savedCourses.subscribe((x) => (
+            saved = x
+        ))();
+
+        // Update store
+        updateSave(x => x.filter(y => y.id !== course.id));
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
+
     },
 
     /**
      * Clear the saved courses
      */
-    clear: (): void => {
+    clear: (supabase: SupabaseClient): void => {
+        // Get current saved courses
+        let saved: CourseData[] = [];
+        savedCourses.subscribe((x) => (
+            saved = x
+        ))();
+
+        // Update store
         savedCourses.set([]);
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
+
     }
 }
 
@@ -70,22 +112,60 @@ export const pinnedCourses: CoursePool = {
      * Add a course to pinned courses
      * @param course 
      */
-    add: (course: CourseData): void => {
+    add: (supabase: SupabaseClient, course: CourseData): void => {
+        // Get current saved courses
+        let pinned: CourseData[] = [];
+        pinnedCourses.subscribe((x) => (
+            pinned = x
+        ))();
 
+        // Update store
+        updatePin(x => [...x, course]);
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
+        
     },
 
     /**
      * Remove a course from pinned courses
      * @param course 
      */
-    remove: (course: CourseData): void => {
+    remove: (supabase: SupabaseClient, course: CourseData): void => {
+        // Get current saved courses
+        let pinned: CourseData[] = [];
+        pinnedCourses.subscribe((x) => (
+            pinned = x
+        ))();
+
+        // Update store
+        updatePin(x => x.filter(y => y.id !== course.id));
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
     },
 
     /**
      * Clear the pinned courses
      */
-    clear: (): void => {
-        savedCourses.set([]);
+    clear: (supabase: SupabaseClient): void => {
+        // Get current saved courses
+        let pinned: CourseData[] = [];
+        pinnedCourses.subscribe((x) => (
+            pinned = x
+        ))();
+
+        // Update store
+        pinnedCourses.set([]);
+
+        // Update course-schedule-associations table
+
+
+        // Revert if error
     }
 }
 

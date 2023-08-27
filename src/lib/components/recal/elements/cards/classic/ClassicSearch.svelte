@@ -1,15 +1,25 @@
 <script lang="ts">
 import { pinCourseFromSearch, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
+    import { searchSettings } from "$lib/stores/recal";
 import type { CourseData } from "$lib/types/dbTypes";
 
 export let course: CourseData;
 
 const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
+let color: string = "";
+if (course.rating) {
+    if (course.rating >= 4.5) color = "bg-green-400 dark:bg-green-700";
+    else if (course.rating >= 4.0) color = "bg-blue-400 dark:bg-blue-700"
+    else if (course.rating >= 3.5) color = "bg-yellow-400 dark:bg-yellow-700";
+    else if (course.rating >= 3.0) color = "bg-orange-400 dark:bg-orange-700";
+    else color = "bg-red-400 dark:bg-red-700";
+}
 </script>
 
-<div class="border-b-[1px] flex justify-between" 
+<div class="border-b-[1px] flex justify-between 
+{$searchSettings.style["Color by Rating"] && color}" 
 id="cont">
     <div class="text-sm font-light dark:text-white w-[58%]">
         <div class="mb-[2px] font-normal">
