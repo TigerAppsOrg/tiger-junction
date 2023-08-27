@@ -2,18 +2,15 @@
 import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
-import { CURRENT_TERM_ID } from "$lib/constants.js";
-import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb.js";
+import { CURRENT_TERM_ID } from "$lib/constants";
+import { fetchRawCourseData, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { onMount } from "svelte";
 
 export let data;
 
 onMount(async () => {
-    // await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
-    // await fetchUserSchedules(data.supabase, 1234);
-    // await fetchUserSchedules(data.supabase, 1232);
 });
 </script>
 
@@ -30,7 +27,7 @@ bg-white dark:bg-black max-h-screen">
     </div>
     <!-- Fills bottom area does not cause page scroll -->
     <div class="flex flex-1 m-2 max-h-[calc(100vh-80px)]">
-        <div class="w-1/4 min-w-[200px]">
+        <div class="w-1/5 min-w-[200px]">
             <Left />
         </div>
         <div class="flex-1 min-w-[400px] ml-2">

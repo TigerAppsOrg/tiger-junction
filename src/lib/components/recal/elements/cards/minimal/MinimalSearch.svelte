@@ -23,23 +23,23 @@ if (course.rating) {
 </script>
 
 <button transition:slide="{{ duration: 150, axis: "y" }}"
-class="border-b-[1px] p-1 flex items-center 
+class="border-b-[1px] p-1 flex items-center justify-between
 {$searchSettings.style["Color by Rating"] && color}"
 on:click={() => saveCourseFromSearch(course)}>
     <div class="text-sm font-light text-left w-[80%] dark:text-white">
-        <div>
+        <div class="font-normal">
             {code}
         </div>
         <div>
             {title}
         </div>
         {#if $searchSettings.style["Show Rating"]}
-            <div class="text-xs font-light">
+            <div class="text-xs italic">
                 Rating: {course.rating ? course.rating : "N/A"}
             </div>
         {/if}
     </div>
-    <div class="w-[20%]">
+    <div class="w-[15%]">
         <button class="w-7 invert-[.4]">
             <img src={infoIcon} alt="Info Icon" class="btn-icon">
         </button>

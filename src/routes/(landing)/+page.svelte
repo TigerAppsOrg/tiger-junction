@@ -1,7 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import ViewCard from '$lib/components/elements/ViewCard.svelte';
-    import { darkTheme } from '$lib/stores/state.js';
 
     import CalendarPic from "$lib/img/calendar.png";
     import TreePic from "$lib/img/tree.png";

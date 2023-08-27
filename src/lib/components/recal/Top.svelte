@@ -8,7 +8,7 @@ import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import logoutIcon from "$lib/img/icons/deleteicon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
-    import Loader from "../elements/Loader.svelte";
+import Loader from "../elements/Loader.svelte";
 
 export let supabase: SupabaseClient;
 
