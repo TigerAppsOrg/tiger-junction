@@ -2,7 +2,7 @@
 import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
-import { fetchRawCourseData } from "$lib/scripts/ReCal+/fetchRawCourse.js";
+import { fetchRawCourseData } from "$lib/scripts/ReCal+/fetchDb.js";
 import { onMount } from "svelte";
 
 export let data;

@@ -29,4 +29,8 @@ const fetchRawCourseData = async (supabase: SupabaseClient, term: number): Promi
     return true;
 }
 
+const fetchUserSchedules = async (supabase: SupabaseClient, term: number): Promise<boolean | null> => {
+
+}
+
 export { fetchRawCourseData };
