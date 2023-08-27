@@ -14,6 +14,16 @@ export const currentTerm: Writable<number> = writable(1242);
 // Current schedule id
 export const currentSchedule: Writable<number> = writable(0);
 
+// User schedules
+export const schedules: Writable<Record<keyof RawCourseData, {
+    id: number,
+    title: string,
+}[]>> = writable({
+    1242: [],
+    1234: [],
+    1232: []
+})
+
 //----------------------------------------------------------------------
 // Search Results
 //----------------------------------------------------------------------
@@ -32,10 +42,13 @@ export const searchResults = {
      * @param term id of the term
      */
     search: (query: string, term: number, settings: SearchSettings): void => {
-        let data: CourseData[] = [];
-        rawCourseData.subscribe((x) => (
-            data = x[term as keyof RawCourseData] ?? []
-        ))();
+        // Current current search data
+        if (!searchCourseData.get(term)) {
+            searchCourseData.resetAll();
+            return;
+        }
+        
+        let data: CourseData[] = searchCourseData.get(term) as CourseData[];
 
         //--------------------------------------------------------------
         // Filter by settings
@@ -103,12 +116,16 @@ export const searchResults = {
 //----------------------------------------------------------------------
 // Raw Course Data
 //----------------------------------------------------------------------
+/* Note: Raw course data is data for all courses from db, while
+search course data is data for all courses excluding those that
+are pinned or saved. This speeds up search results when there
+are many pinned/saved courses. */
 
 const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
 Writable<RawCourseData> = writable({
-    1242: null,
-    1234: null,
-    1232: null
+    1242: [],
+    1234: [],
+    1232: []
 });
 
 export const rawCourseData = {
@@ -117,14 +134,30 @@ export const rawCourseData = {
     subscribe: subscribeRaw,
 
     /**
-     * Get the raw course data for a given term
+     * Get a deep copy of the raw course data for a given term
      * @param term id of the term
      * @returns raw course data for the given term
      */
-    get: (term: number): CourseData[] | null => {
-        let data: CourseData[] | null = null;
+    get: (term: number): CourseData[] => {
+        let data: CourseData[] = [];
         rawCourseData.subscribe((x) => (
-            data = x[term as keyof RawCourseData]
+            data = [...x[term as keyof RawCourseData]]
+        ))();
+        return data;
+    },
+
+    /**
+     * Get a deep copy of the raw course data for all terms
+     * @returns raw course data for all terms
+     */
+    getAll: (): RawCourseData => {
+        let data: RawCourseData = {
+            1242: [],
+            1234: [],
+            1232: []
+        };
+        rawCourseData.subscribe((x) => (
+            data = JSON.parse(JSON.stringify(x))
         ))();
         return data;
     },
@@ -136,11 +169,108 @@ export const rawCourseData = {
      */
     check: (term: number): boolean => {
         let data: boolean  = false;
-        let unsub = rawCourseData.subscribe((x) => (
-            data = x[term as keyof RawCourseData] !== null
-        ));
-        unsub();
+        rawCourseData.subscribe((x) => (
+            data = x[term as keyof RawCourseData].length > 0
+        ))();
         return data;
+    }
+}
+
+//----------------------------------------------------------------------
+// Search Course Data
+//----------------------------------------------------------------------
+
+const { set: setSearch, update: updateSearch, subscribe: subscribeSearch }:
+Writable<RawCourseData> = writable({
+    1242: [],
+    1234: [],
+    1232: []
+});
+
+export const searchCourseData = {
+    set: setSearch,
+    update: updateSearch,
+    subscribe: subscribeSearch,
+
+    /**
+     * Get search course data for a given term
+     * @param term 
+     * @returns search course data for the given term
+     */
+    get: (term: number): CourseData[] => {
+        let data: CourseData[] = [];
+        searchCourseData.subscribe((x) => (
+            data = x[term as keyof RawCourseData]
+        ))();
+        return data;
+    },
+
+    /**
+     * Get search course data for all terms
+     * @returns search course data for all terms
+     */
+    getAll: (): RawCourseData => {
+        let data: RawCourseData = {
+            1242: [],
+            1234: [],
+            1232: []
+        };
+        searchCourseData.subscribe((x) => (
+            data = x
+        ))();
+        return data;
+    },
+
+    /**
+     * Remove course(s) from search course data
+     * @param term 
+     * @param course 
+     */
+    remove: (term: number, courses: CourseData[]): void => {
+        for (let i = 0; i < courses.length; i++) {
+            // Remove if in search course data
+            searchCourseData.update(x => {
+                x[term as keyof RawCourseData] = x[term as keyof RawCourseData]
+                    .filter(y => (y.id !== courses[i].id));
+                return x;
+            });
+        }
+    },
+
+    /**
+     * Add course(s) to search course data
+     * @param term 
+     * @param course 
+     */
+    add: (term: number, courses: CourseData[]): void => {
+        for (let i = 0; i < courses.length; i++) {
+            searchCourseData.update(x => {
+
+                // Push if not already in search course data
+                if (!x[term as keyof RawCourseData].includes(courses[i])) {
+                    x[term as keyof RawCourseData].push(courses[i]);
+                }
+                return x;
+            })
+        }
+    },
+
+    /**
+     * Reset search course data to raw course data for a given term
+     * @param term 
+     */
+    reset: (term: number): void => {
+        searchCourseData.update((x) => {
+            x[term as keyof RawCourseData] = rawCourseData.get(term);
+            return x;
+        });
+    },
+
+    /**
+     * Reset search course data to raw course data for all terms
+     */
+    resetAll: () => {
+        searchCourseData.set(rawCourseData.getAll());
     }
 }
 

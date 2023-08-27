@@ -2,13 +2,16 @@
 import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
-import { fetchRawCourseData } from "$lib/scripts/ReCal+/fetchDb.js";
+import { CURRENT_TERM_ID } from "$lib/constants.js";
+import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb.js";
 import { onMount } from "svelte";
 
 export let data;
 
-onMount(() => {
-    fetchRawCourseData(data.supabase, 1242);
+onMount(async () => {
+    await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
+    await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
+    await populatePools(data.supabase, CURRENT_TERM_ID);
 });
 
 </script>
