@@ -15,7 +15,7 @@ export const currentTerm: Writable<number> = writable(1242);
 export const currentSchedule: Writable<number> = writable(0);
 
 // User schedules
-export const schedules: Writable<Record<keyof RawCourseData, {
+export const schedules: Writable<Record<number, {
     id: number,
     title: string,
 }[]>> = writable({

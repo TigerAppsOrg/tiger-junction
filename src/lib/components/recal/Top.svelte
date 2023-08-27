@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentTerm } from "$lib/stores/recal";
+import { currentTerm, schedules } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
@@ -69,9 +69,13 @@ const handleLogout = async () => {
 
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
     p-1 rounded-md h-8 font-light">
-        <button class="termchoice">
-            My Schedule
-        </button>
+        {#key $schedules[$currentTerm]}
+        {#each $schedules[$currentTerm] as schedule}
+            <button class="termchoice">
+                {schedule.title}
+            </button>
+        {/each}
+        {/key}
     </div> <!-- * Schedule Select -->
 </div>
 
