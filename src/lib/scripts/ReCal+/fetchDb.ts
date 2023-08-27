@@ -43,16 +43,16 @@ Promise<boolean | null> => {
  */
 const fetchUserSchedules = async (supabase: SupabaseClient, term: number): 
 Promise<boolean | null> => {
-    // Check if user is logged in
-    const user = await supabase.auth.getUser();
-    if (!user || !user.data || !user.data.user) return false;
-
     // Check if schedules for the given term are already loaded
     let loaded = false;
     schedules.subscribe((x) => {
         if (x[term as keyof RawCourseData].length > 0) loaded = true;
     })();
     if (loaded) return null;
+
+    // Check if user is logged in
+    const user = await supabase.auth.getUser();
+    if (!user || !user.data || !user.data.user) return false;
 
     // Fetch schedules
     const { data, error } = await supabase
@@ -87,7 +87,6 @@ Promise<boolean | null> => {
  * @param term 
  */
 const populatePools = (supabase: SupabaseClient, term: number): void => {
-    
     // Get raw course data and schedule ids
     const rawCourses = rawCourseData.get(term);
     let scheduleIds: number[] = [];
@@ -96,7 +95,16 @@ const populatePools = (supabase: SupabaseClient, term: number): void => {
     })();
 
     scheduleIds.forEach(id => {
-
+        // Check if pools are already populated
+        let loaded = false;
+        savedCourses.subscribe(x => {
+            if (x.hasOwnProperty(id) && x[id].length > 0) loaded = true;
+        })();
+        pinnedCourses.subscribe(x => {
+            if (x.hasOwnProperty(id) && x[id].length > 0) loaded = true;
+        })();
+        if (loaded) return;
+        
         // Fetch course-schedule-associations
         supabase.from("course_schedule_associations")
             .select("course_id, is_pinned")
@@ -107,10 +115,6 @@ const populatePools = (supabase: SupabaseClient, term: number): void => {
                 return;
             }
 
-            // Clear pools
-            savedCourses.clear(supabase, id);
-            pinnedCourses.clear(supabase, id);
-
             // Populate pools
             res.data.forEach(x => {
                 let pool = x.is_pinned ? pinnedCourses : savedCourses;
@@ -119,7 +123,7 @@ const populatePools = (supabase: SupabaseClient, term: number): void => {
                 pool.add(supabase, id, cur);
             });
         });
-    })
+    });
 }
 
 export { fetchRawCourseData, fetchUserSchedules, populatePools };

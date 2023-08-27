@@ -1,17 +1,27 @@
 <script lang="ts">
-import { fetchRawCourseData } from "$lib/scripts/ReCal+/fetchDb";
+import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { currentTerm } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
+import logoutIcon from "$lib/img/icons/deleteicon.svg";
 import { modalStore } from "$lib/stores/modal";
+import { goto } from "$app/navigation";
 
 export let supabase: SupabaseClient;
 
-const handleTermChange = (term: number) => {
+const handleTermChange = async (term: number) => {
     currentTerm.set(term);
-    fetchRawCourseData(supabase, term);
+    await fetchRawCourseData(supabase, term);
+    await fetchUserSchedules(supabase, term);
+    await populatePools(supabase, term);
+}
+
+// Logout the user
+const handleLogout = async () => { 
+    const { error } = await supabase.auth.signOut();
+    if (!error) goto("/");
 }
 
 </script>
@@ -47,6 +57,11 @@ const handleTermChange = (term: number) => {
             <button class="btn-circ"
             on:click={() => modalStore.open("manageCb", { clear: true })}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
+                class="btn-icon">
+            </button>
+            <button class="btn-circ"
+            on:click={handleLogout}>
+                <img src={logoutIcon} alt="Logout Icon"
                 class="btn-icon">
             </button>
         </div> <!-- * Icon Buttons -->

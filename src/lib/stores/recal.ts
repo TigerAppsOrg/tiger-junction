@@ -43,10 +43,8 @@ export const searchResults = {
      */
     search: (query: string, term: number, settings: SearchSettings): void => {
         // Current current search data
-        if (!searchCourseData.get(term)) {
-            searchCourseData.resetAll();
-            return;
-        }
+        if (!searchCourseData.get(term)) 
+            searchCourseData.reset(term);
         
         let data: CourseData[] = searchCourseData.get(term) as CourseData[];
 
