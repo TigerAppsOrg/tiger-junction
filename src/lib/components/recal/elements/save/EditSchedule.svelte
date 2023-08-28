@@ -16,10 +16,100 @@ onMount(() => {
     if (schedule) input = schedule.title;
 })
 
-// Save schedule and close modal
-const saveSchedule = () => {
+// Duplicate schedule and close modal
+const duplicateSchedule = async () => {
+    // Get User
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) {
+        console.log("User not logged in");
+        return;
+    };
 
+    // Upload to database
+    supabase.from("schedules")
+        .insert({ 
+            title: input, 
+            term: $currentTerm,
+            user_id: user.id,
+        })
+        .select("id, title")
+    .then(res => {
+        if (res.error) {
+            console.log(res.error);
+            return;
+        }
+
+        // Update schedule store
+        schedules.update(x => {
+            x[$currentTerm] = [...x[$currentTerm], res.data[0]];
+            return x;
+        });
+
+        // Update current schedule
+        currentSchedule.set(res.data[0].id);
+    });
 }
+
+// Delete schedule and close modal
+const deleteSchedule = async () => {
+    // Update database
+    supabase.from("schedules")
+        .delete()
+        .match({ id: $currentSchedule })
+    .then(res => {
+        if (res.error) {
+            console.log(res.error);
+            return;
+        }
+
+        // Update schedule store
+        schedules.update(x => {
+            x[$currentTerm] = x[$currentTerm].filter(x => 
+                x.id !== $currentSchedule);
+            return x;
+        });
+
+        // Update current schedule
+        currentSchedule.set($schedules[$currentTerm][0].id);
+    });
+}
+
+// Save schedule and close modal
+const saveSchedule = async () => {
+    // Get User
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) {
+        console.log("User not logged in");
+        return;
+    };
+
+    // Update database
+    supabase.from("schedules")
+        .update({ 
+            title: input, 
+        })
+        .match({ id: $currentSchedule })
+        .select("id, title")
+    .then(res => {
+        if (res.error) {
+            console.log(res.error);
+            return;
+        }
+
+        // Update schedule store
+        schedules.update(x => {
+            let index = x[$currentTerm].findIndex(x => 
+                x.id === $currentSchedule);
+            x[$currentTerm][index] = res.data[0];
+            return x;
+        });
+    });
+
+    // Clean Up and Close
+    input = "";
+    modalStore.close();
+}
+
 </script>
 
 <Modal {showModal}>
@@ -39,12 +129,31 @@ const saveSchedule = () => {
                 on:click={() => modalStore.close()}>
                     Cancel
                 </button>
+                <button class="btn flex-1 bg-red-500 text-white"
+                on:click={deleteSchedule}>
+                    Delete
+                </button>
+                <button class="btn flex-1 bg-blue-500 text-white"
+                on:click={duplicateSchedule}>
+                    Duplicate
+                </button>
                 <button class="btn flex-1 bg-gradient-to-r 
                 from-deepblue-light to-deepblue-dark text-white"
                 on:click={saveSchedule}>
-                    Create
+                    Save
                 </button>
             </div> <!-- * End Nav -->
         </form>
     </div>
 </Modal>
+
+<style lang="postcss">
+    .settings-area {
+        @apply p-4 border-t-2
+        border-slate-600/30 dark:border-slate-200/30;
+    }
+    
+    .btn {
+        @apply rounded-md py-2 text-center;
+    }
+    </style>
