@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
-import logoutIcon from "$lib/img/icons/deleteicon.svg";
+import logoutIcon from "$lib/img/icons/logouticon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
@@ -44,21 +44,21 @@ const handleLogout = async () => {
             </button>
         </div> <!-- * Semester Select -->
         <div class="flex gap-2">
-            <button class="btn-circ"
+            <!-- <button class="btn-circ"
             on:click={() => modalStore.open("shareCal", { clear: true})}>
                 <img src={shareIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button>
+            </button> -->
             <button class="btn-circ"
             on:click={() => modalStore.open("exportCal", { clear: true})}>
                 <img src={calendarIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button>
-            <button class="btn-circ"
+            <!-- <button class="btn-circ"
             on:click={() => modalStore.open("manageCb", { clear: true })}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button>
+            </button> -->
             <button class="btn-circ"
             on:click={handleLogout}>
                 <img src={logoutIcon} alt="Logout Icon"

@@ -4,9 +4,9 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { pinCourseFromSaved, pinCourseFromSearch, removeCourseFromPinned, removeCourseFromSaved, saveCourseFromPinned, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
 import { searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
+import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -17,13 +17,23 @@ let title = course.title;
 
 const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
-let color: string = "bg-slate-300 dark:bg-slate-500";
-if (course.rating) {
-    if (course.rating >= 4.5) color = "bg-green-400 dark:bg-green-700";
+// Determine color of card
+let color: string = "";
+
+// Color by rating
+if (category === "search" || category === "pinned") {
+    if (!course.rating) color = "bg-slate-300 dark:bg-slate-500";
+    else if (course.rating >= 4.5) color = "bg-green-400 dark:bg-green-700";
     else if (course.rating >= 4.0) color = "bg-blue-400 dark:bg-blue-700"
     else if (course.rating >= 3.5) color = "bg-yellow-400 dark:bg-yellow-700";
     else if (course.rating >= 3.0) color = "bg-orange-400 dark:bg-orange-700";
     else color = "bg-red-400 dark:bg-red-700";
+
+// Dynamic color (saved courses)
+} else {
+
+    // ! Placeholder
+    color = "bg-slate-300 dark:bg-slate-500";
 }
 
 let flipped: boolean = false;
@@ -57,7 +67,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => pinCourseFromSaved(course)}>
+                on:click={() => cf.pinCourseFromSaved(course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -65,7 +75,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => removeCourseFromSaved(course)}>
+                on:click={() => cf.removeCourseFromSaved(course)}>
                     <img src={removeIcon} alt="Remove" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -74,7 +84,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => removeCourseFromPinned(course)}>
+                on:click={() => cf.removeCourseFromPinned(course)}>
                     <img src={removeIcon} alt="Remove" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -82,7 +92,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => saveCourseFromPinned(course)}>
+                on:click={() => cf.saveCourseFromPinned(course)}>
                     <img src={plusIcon} alt="Save" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -91,7 +101,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => pinCourseFromSearch(course)}>
+                on:click={() => cf.pinCourseFromSearch(course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -99,7 +109,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => saveCourseFromSearch(course)}>
+                on:click={() => cf.saveCourseFromSearch(course)}>
                     <img src={plusIcon} alt="Add" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
