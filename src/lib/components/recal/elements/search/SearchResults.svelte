@@ -1,7 +1,7 @@
 <script lang="ts">
 import { searchResults, searchSettings } from "$lib/stores/recal";
-import ClassicSearch from "../cards/classic/ClassicSearch.svelte";
-import MinimalSearch from "../cards/minimal/MinimalSearch.svelte";
+import ClassicSearch from "../cards/ClassicSearch.svelte";
+import MinimalBase from "../cards/MinimalBase.svelte";
 
 </script>
 
@@ -17,7 +17,7 @@ import MinimalSearch from "../cards/minimal/MinimalSearch.svelte";
             {#if $searchSettings.style["Original Style"]}
                 <ClassicSearch {course} />
             {:else}
-                <MinimalSearch {course} />
+                <MinimalBase {course} />
             {/if}
         {/each}
         {/key}

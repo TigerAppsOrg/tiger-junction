@@ -2,12 +2,14 @@
 import type { CourseData } from "$lib/types/dbTypes";
 import plusIcon from "$lib/img/icons/addicon.svg"
 import pinIcon from "$lib/img/icons/pinicon.svg"
+import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { pinCourseFromSearch, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
+import { pinCourseFromSaved, pinCourseFromSearch, removeCourseFromPinned, removeCourseFromSaved, saveCourseFromPinned, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
 import { searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 
 export let course: CourseData;
+export let category: string = "search";
 
 // Course code with spaces before and after all slashes
 let code = course.code.replace(/\//g, " / ");
@@ -48,21 +50,60 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
         {/if}
         </button>
 
+        <!-- TODO: Refactor, super messy! -->
+
         <div class="w-[25%] flex justify-evenly">
-            <button class="pin-button
-            z-50 h-full w-full flex items-center justify-center
-            duration-100"
-            on:click={() => pinCourseFromSearch(course)}>
-                <img src={pinIcon} alt="Pin" 
-                class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
-            </button>
-            <button class="add-button
-            z-50 h-full w-full flex items-center justify-center
-            duration-100"
-            on:click={() => saveCourseFromSearch(course)}>
-                <img src={plusIcon} alt="Add" 
-                class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
-            </button>
+            {#if category === "saved"}
+                <button class="pin-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => pinCourseFromSaved(course)}>
+                    <img src={pinIcon} alt="Pin" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+
+                <button class="remove-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => removeCourseFromSaved(course)}>
+                    <img src={removeIcon} alt="Remove" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+
+            {:else if category === "pinned"}
+                <button class="remove-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => removeCourseFromPinned(course)}>
+                    <img src={removeIcon} alt="Remove" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+
+                <button class="add-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => saveCourseFromPinned(course)}>
+                    <img src={plusIcon} alt="Save" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+
+            {:else}
+                <button class="pin-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => pinCourseFromSearch(course)}>
+                    <img src={pinIcon} alt="Pin" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+
+                <button class="add-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => saveCourseFromSearch(course)}>
+                    <img src={plusIcon} alt="Add" 
+                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                </button>
+            {/if}
         </div> 
 
     {:else}
@@ -103,29 +144,6 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                     </svg>
                 </button>
             </a>
-
-            <div class="cardlink">
-                <!-- Pin -->
-                <button class="cardbutton bg-yellow-400 dark:bg-yellow-700" 
-                on:click={() => pinCourseFromSearch(course)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"
-                    class="icon invert">
-                        <path d="m634-448 86 77v60H510v241l-30 30-30-30v-241H240v-60l80-77v-332h-50v-60h414v60h-50v332Zm-313 77h312l-59-55v-354H380v354l-59 55Zm156 0Z"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="cardlink">
-                <!-- Add -->
-                <button class="cardbutton bg-green-400 dark:bg-green-700" 
-                on:click={() => saveCourseFromSearch(course)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                </button>
-            </div>
-
         </div> <!-- * End Buttons -->
     </div>
     {/if}  
@@ -136,24 +154,36 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
     @apply bg-slate-100 dark:bg-slate-700;
 }
 
-.add-button:hover {
-    @apply bg-green-500 dark:bg-green-700;
-}
+/* !-- Refactor --! */
 
-.add-button:hover img {
-    @apply invert;
-}
+    .add-button:hover {
+        @apply bg-green-500 dark:bg-green-700;
+    }
 
-.pin-button:hover {
-    @apply bg-blue-500 dark:bg-blue-700;
-}
+    .add-button:hover img {
+        @apply invert;
+    }
 
-.pin-button:hover img {
-    @apply invert;
-}
+    .pin-button:hover {
+        @apply bg-blue-500 dark:bg-blue-700;
+    }
+
+    .pin-button:hover img {
+        @apply invert;
+    }
+
+    .remove-button:hover {
+        @apply bg-red-500 dark:bg-red-700;
+    }
+
+    .remove-button:hover img {
+        @apply invert;
+    }
+
+/* !-- --! */
 
 .cardlink {
-    @apply w-1/5 m-0 px-0;  
+    @apply w-1/3 m-0 px-0;  
 }
 
 .cardbutton {
