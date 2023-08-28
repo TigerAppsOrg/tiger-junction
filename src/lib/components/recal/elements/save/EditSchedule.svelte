@@ -48,6 +48,10 @@ const duplicateSchedule = async () => {
         // Update current schedule
         currentSchedule.set(res.data[0].id);
     });
+
+    // Clean Up and Close
+    input = "";
+    modalStore.close();
 }
 
 // Delete schedule and close modal
@@ -72,6 +76,10 @@ const deleteSchedule = async () => {
         // Update current schedule
         currentSchedule.set($schedules[$currentTerm][0].id);
     });
+
+    // Clean Up and Close
+    input = "";
+    modalStore.close();
 }
 
 // Save schedule and close modal
@@ -115,7 +123,7 @@ const saveSchedule = async () => {
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl">
         <h1 class="text-xl font-bold mb-2">Edit Schedule</h1>
-        <form on:submit|preventDefault={saveSchedule}>        
+        <form on:submit|preventDefault>        
             <div class="flex flex-col gap-2">
                 <div class="settings-area" id="name">
                     <h2 class="text-lg font-bold mb-2">Title</h2>
@@ -125,19 +133,29 @@ const saveSchedule = async () => {
                 </div>
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
-                <button class="btn border-2 border-slate-600/30 flex-1" 
+                <button type="button"
+                class="btn border-2 border-slate-600/30 flex-1" 
                 on:click={() => modalStore.close()}>
                     Cancel
                 </button>
-                <button class="btn flex-1 bg-red-500 text-white"
+
+                <!-- Hidden Button for Enter Submission -->
+                <button type="submit" class="default" 
+                on:click={saveSchedule}>
+                </button>
+                
+                <button type="submit"
+                class="btn flex-1 bg-red-500 text-white"
                 on:click={deleteSchedule}>
                     Delete
                 </button>
-                <button class="btn flex-1 bg-blue-500 text-white"
+                <button type="submit"
+                class="btn flex-1 bg-blue-500 text-white"
                 on:click={duplicateSchedule}>
                     Duplicate
                 </button>
-                <button class="btn flex-1 bg-gradient-to-r 
+                <button type="submit"
+                class="btn flex-1 bg-gradient-to-r 
                 from-deepblue-light to-deepblue-dark text-white"
                 on:click={saveSchedule}>
                     Save
@@ -148,12 +166,17 @@ const saveSchedule = async () => {
 </Modal>
 
 <style lang="postcss">
-    .settings-area {
-        @apply p-4 border-t-2
-        border-slate-600/30 dark:border-slate-200/30;
-    }
-    
-    .btn {
-        @apply rounded-md py-2 text-center;
-    }
-    </style>
+.settings-area {
+    @apply p-4 border-t-2
+    border-slate-600/30 dark:border-slate-200/30;
+}
+
+.btn {
+    @apply rounded-md py-2 text-center;
+}
+
+.default {
+    position: absolute;
+    left: -100%;
+}
+</style>
