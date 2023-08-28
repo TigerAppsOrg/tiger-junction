@@ -10,19 +10,21 @@ export let supabase: SupabaseClient;
 
 let input: string = "";
 
+onMount(() => {
+    let schedule = $schedules[$currentTerm].find(x => 
+        x.id === $currentSchedule);
+    if (schedule) input = schedule.title;
+})
+
 // Save schedule and close modal
 const saveSchedule = () => {
 
 }
-
-onMount(() => {
-    input = $schedules[$currentTerm][$currentSchedule].title;
-})
 </script>
 
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl">
-        <h1 class="text-xl font-bold mb-2">Create New Schedule</h1>
+        <h1 class="text-xl font-bold mb-2">Edit Schedule</h1>
         <form on:submit|preventDefault={saveSchedule}>        
             <div class="flex flex-col gap-2">
                 <div class="settings-area" id="name">

@@ -12,10 +12,30 @@ import EditSchedule from "../recal/elements/save/EditSchedule.svelte";
 export let supabase: SupabaseClient;
 </script>
 
+{#if $modalStore === "adv"}
 <AdvancedSearch showModal={$modalStore === "adv"} />
+{/if}
+
+{#if $modalStore === "manageCb"}
 <ManageCb showModal={$modalStore === "manageCb"} />
+{/if}
+
+{#if $modalStore === "editCb"}
 <EditCb showModal={$modalStore === "editCb"} />
+{/if}
+
+{#if $modalStore === "shareCal"}
 <ShareCal showModal={$modalStore === "shareCal"} />
+{/if}
+
+{#if $modalStore === "exportCal"}
 <ExportCal showModal={$modalStore === "exportCal"} />
+{/if}
+
+{#if $modalStore === "addSchedule"}
 <AddSchedule showModal={$modalStore === "addSchedule"} {supabase} />
+{/if}
+
+{#if $modalStore === "editSchedule"}
 <EditSchedule showModal={$modalStore === "editSchedule"} {supabase} />
+{/if}

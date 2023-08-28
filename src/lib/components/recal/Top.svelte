@@ -20,7 +20,9 @@ const handleTermChange = async (term: number) => {
     currentTerm.set(term);
     await fetchRawCourseData(supabase, term);
     await populatePools(supabase, term);
-    currentSchedule.set($schedules[term][0].id);
+
+    if ($schedules[term].length > 0)
+        currentSchedule.set($schedules[term][0].id);
 }
 
 const handleScheduleChange = (scheduleId: number) => {
