@@ -1,9 +1,10 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentTerm, schedules } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
+import addIcon from "$lib/img/icons/addicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import logoutIcon from "$lib/img/icons/logouticon.svg";
 import { modalStore } from "$lib/stores/modal";
@@ -74,11 +75,22 @@ const handleLogout = async () => {
         {:then}
             {#key $schedules[$currentTerm]}
             {#each $schedules[$currentTerm] as schedule}
-                <button class="termchoice">
+
+                <button class="termchoice" 
+                class:selected={$currentSchedule === schedule.id}>
                     {schedule.title}
                 </button>
             {/each}
+                <button class="termchoice"
+                on:click={() => modalStore.open("addSchedule", { clear: true })}>
+                    <img src={addIcon} alt="Add Icon"
+                    class="btn-icon">
+                </button>
             {/key}
+        {:catch error}
+            <div class="text-red-500">
+                {error.message}
+            </div>
         {/await}
     </div> <!-- * Schedule Select -->
 </div>
