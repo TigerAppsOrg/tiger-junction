@@ -1,5 +1,7 @@
 <script lang="ts">
+import type { SupabaseClient } from "@supabase/supabase-js";
 
+export let supabase: SupabaseClient;
 </script>
 
 

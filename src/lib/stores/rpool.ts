@@ -14,10 +14,10 @@ type CoursePool = {
         invalidate?: Invalidator<Record<number, CourseData[]>>) 
         => Unsubscriber,
     add: (supabase: SupabaseClient, scheduleId: number, course: CourseData) 
-        => void,
+        => Promise<boolean>,
     remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData) 
-        => void,
-    clear: (supabase: SupabaseClient, scheduleId: number) => void,
+        => Promise<boolean>,
+    clear: (supabase: SupabaseClient, scheduleId: number) => Promise<boolean>,
 }
 
 //----------------------------------------------------------------------
@@ -36,8 +36,8 @@ CourseData[] => {
 }
 
 // Add a course to a pool
-const addCourse = (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number, course: CourseData, isPinned: boolean): void => {
+const addCourse = async (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number, course: CourseData, isPinned: boolean): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
@@ -49,31 +49,33 @@ scheduleId: number, course: CourseData, isPinned: boolean): void => {
     });
 
     // Update course-schedule-associations table
-    supabase.from("course_schedule_associations")
+    const { error } = await supabase
+        .from("course_schedule_associations")
         .insert({
             course_id: course.id,
             schedule_id: scheduleId,
             is_pinned: isPinned
-        })
-    .then(res => {
-        // Revert if error
-        if (res.error) {
-            console.log(res.error);
-            pool.update(x => {
-                x[scheduleId] = currentPool;
-                return x;
-            });
-        }
-    });
+        });
+
+    // Revert if error
+    if (error) {
+        console.log(error);
+        pool.update(x => {
+            x[scheduleId] = currentPool;
+            return x;
+        });
+        return false;
+    }
+    return true;
 }
 
 // Remove a course from a pool
-const removeCourse = (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number, course: CourseData): void => {
+const removeCourse = async (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number, course: CourseData): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
-    if (currentPool.length === 0) return;
+    if (currentPool.length === 0) return false;
 
     // Update store
     pool.update(x => {
@@ -82,45 +84,50 @@ scheduleId: number, course: CourseData): void => {
     });
 
     // Update course-schedule-associations table
-    supabase.from("course_schedule_associations")
+    const { error } = await supabase.from("course_schedule_associations")
         .delete()
         .eq("course_id", course.id)
         .eq("schedule_id", scheduleId)
-    .then(res => {
-        // Revert if error
-        if (res.error) {
-            console.log(res.error);
-            pool.update(x => {
-                x[scheduleId] = currentPool;
-                return x;
-            });
-        }
-    });
+
+    // Revert if error
+    if (error) {
+        console.log(error)
+        pool.update(x => {
+            x[scheduleId] = currentPool;
+            return x;
+        });
+        return false;
+    }
+    return true;
 }
 
 // Clear a pool
-const clearPool = (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number): void => {
+const clearPool = async (supabase: SupabaseClient, pool: CoursePool, 
+scheduleId: number): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
     // Update store
-    pool.set([]);
+    pool.update(x => {
+        x[scheduleId] = [];
+        return x;
+    });
 
     // Update course-schedule-associations table
-    supabase.from("course_schedule_associations")
+    const { error } = await supabase.from("course_schedule_associations")
         .delete()
         .eq("schedule_id", scheduleId)
-    .then(res => {
-        // Revert if error
-        if (res.error) {
-            console.log(res.error);
-            pool.update(x => {
-                x[scheduleId] = currentPool
-                return x;
-            })
-        }
-    });
+
+    // Revert if error
+    if (error) {
+        console.log(error);
+        pool.update(x => {
+            x[scheduleId] = currentPool;
+            return x;
+        });
+        return false;
+    }
+    return true;
 }
 
 //----------------------------------------------------------------------
@@ -141,9 +148,9 @@ export const savedCourses: CoursePool = {
      * @param scheduleId 
      * @param course 
      */
-    add: (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData): void => {
-        addCourse(supabase, savedCourses, scheduleId, course, false);
+    add: async (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): Promise<boolean> => {
+        return await addCourse(supabase, savedCourses, scheduleId, course, false);
     },
 
     /**
@@ -152,9 +159,9 @@ export const savedCourses: CoursePool = {
      * @param scheduleId 
      * @param course 
      */
-    remove: (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData): void => {
-        removeCourse(supabase, savedCourses, scheduleId, course);
+    remove: async (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): Promise<boolean> => {
+        return await removeCourse(supabase, savedCourses, scheduleId, course);
     },
 
     /**
@@ -162,8 +169,8 @@ export const savedCourses: CoursePool = {
      * @param supabase 
      * @param scheduleId 
      */
-    clear: (supabase: SupabaseClient, scheduleId: number): void => {
-        clearPool(supabase, savedCourses, scheduleId);
+    clear: async (supabase: SupabaseClient, scheduleId: number): Promise<boolean> => {
+        return await clearPool(supabase, savedCourses, scheduleId);
     }
 }
 
@@ -185,9 +192,9 @@ export const pinnedCourses: CoursePool = {
      * @param scheduleId 
      * @param course 
      */
-    add: (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData): void => {
-        addCourse(supabase, pinnedCourses, scheduleId, course, true);
+    add: async (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): Promise<boolean> => {
+        return await addCourse(supabase, pinnedCourses, scheduleId, course, true);
     },
 
     /**
@@ -196,9 +203,9 @@ export const pinnedCourses: CoursePool = {
      * @param scheduleId 
      * @param course 
      */
-    remove: (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData): void => {
-        removeCourse(supabase, pinnedCourses, scheduleId, course);
+    remove: async (supabase: SupabaseClient, scheduleId: number, 
+    course: CourseData): Promise<boolean> => {
+        return await removeCourse(supabase, pinnedCourses, scheduleId, course);
     },
 
     /**
@@ -206,7 +213,7 @@ export const pinnedCourses: CoursePool = {
      * @param supabase 
      * @param scheduleId 
      */
-    clear: (supabase: SupabaseClient, scheduleId: number): void => {
-        clearPool(supabase, pinnedCourses, scheduleId);
+    clear: async (supabase: SupabaseClient, scheduleId: number): Promise<boolean> => {
+        return await clearPool(supabase, pinnedCourses, scheduleId);
     }
 }

@@ -28,10 +28,10 @@ bg-white dark:bg-black max-h-screen">
     <!-- Fills bottom area does not cause page scroll -->
     <div class="flex flex-1 m-2 max-h-[calc(100vh-80px)]">
         <div class="w-1/5 min-w-[200px]">
-            <Left />
+            <Left supabase={data.supabase} />
         </div>
         <div class="flex-1 min-w-[400px] ml-2">
-            <Calendar />
+            <Calendar supabase={data.supabase} />
         </div>
     </div>
 </div>

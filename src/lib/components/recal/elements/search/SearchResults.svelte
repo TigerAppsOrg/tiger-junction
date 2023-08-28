@@ -1,8 +1,10 @@
 <script lang="ts">
 import { searchResults, searchSettings } from "$lib/stores/recal";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 
+export let supabase: SupabaseClient;
 </script>
 
 {#if $searchResults.length > 0}
@@ -17,7 +19,7 @@ import MinimalBase from "../cards/MinimalBase.svelte";
             {#if $searchSettings.style["Original Style"]}
                 <ClassicSearch {course} />
             {:else}
-                <MinimalBase {course} />
+                <MinimalBase {supabase} {course} />
             {/if}
         {/each}
         {/key}

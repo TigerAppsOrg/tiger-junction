@@ -3,6 +3,9 @@ import Saved from "./elements/save/Saved.svelte";
 import Pinned from "./elements/save/Pinned.svelte";
 import SearchResults from "./elements/search/SearchResults.svelte";
 import SearchBar from "./elements/search/SearchBar.svelte";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export let supabase: SupabaseClient;
 </script>
 
 <div class="h-full max-h-full w-full flex flex-col">
@@ -16,6 +19,6 @@ import SearchBar from "./elements/search/SearchBar.svelte";
         <Pinned />
     </div>
     <div class="flex-1">
-        <SearchResults />
+        <SearchResults {supabase} />
     </div>
 </div>

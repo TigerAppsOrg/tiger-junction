@@ -7,9 +7,11 @@ import { slide } from "svelte/transition";
 import { searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let course: CourseData;
 export let category: string = "search";
+export let supabase: SupabaseClient;
 
 // Course code with spaces before and after all slashes
 let code = course.code.replace(/\//g, " / ");
@@ -67,7 +69,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.pinCourseFromSaved(course)}>
+                on:click={() => cf.pinCourseFromSaved(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -75,7 +77,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.removeCourseFromSaved(course)}>
+                on:click={() => cf.removeCourseFromSaved(supabase, course)}>
                     <img src={removeIcon} alt="Remove" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -84,7 +86,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.removeCourseFromPinned(course)}>
+                on:click={() => cf.removeCourseFromPinned(supabase, course)}>
                     <img src={removeIcon} alt="Remove" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -92,7 +94,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.saveCourseFromPinned(course)}>
+                on:click={() => cf.saveCourseFromPinned(supabase, course)}>
                     <img src={plusIcon} alt="Save" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -101,7 +103,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.pinCourseFromSearch(course)}>
+                on:click={() => cf.pinCourseFromSearch(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
@@ -109,7 +111,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.saveCourseFromSearch(course)}>
+                on:click={() => cf.saveCourseFromSearch(supabase, course)}>
                     <img src={plusIcon} alt="Add" 
                     class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
                 </button>
