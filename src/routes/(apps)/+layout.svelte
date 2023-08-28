@@ -1,14 +1,14 @@
 <script lang='ts'>
-    import ModalLib from "$lib/components/general/ModalLib.svelte";
+import ModalLib from "$lib/components/general/ModalLib.svelte";
 import Sidebar from "$lib/components/general/Sidebar.svelte";
 
-    export let data;
-    $: currentApp = data.currentApp || "";
+export let data;
+$: currentApp = data.currentApp || "";
 
-    let sidebar_show = false;
+let sidebar_show = false;
 </script>
 
-<ModalLib />
+<ModalLib supabase={data.supabase} />
 <div class="h-screen w-screen flex bg-white dark:bg-black">
     <div class="my-2">
         <Sidebar bind:show={sidebar_show} {currentApp} />
