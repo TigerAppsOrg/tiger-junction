@@ -1,9 +1,48 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
+import { modalStore } from "$lib/stores/modal";
+import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { onMount } from "svelte";
 
 export let showModal: boolean = false;
+export let supabase: SupabaseClient;
+
+let input: string = "";
+
+// Save schedule and close modal
+const saveSchedule = () => {
+
+}
+
+onMount(() => {
+    input = $schedules[$currentTerm][$currentSchedule].title;
+})
 </script>
 
 <Modal {showModal}>
-    
+    <div class="p-6 w-[80vw] max-w-2xl">
+        <h1 class="text-xl font-bold mb-2">Create New Schedule</h1>
+        <form on:submit|preventDefault={saveSchedule}>        
+            <div class="flex flex-col gap-2">
+                <div class="settings-area" id="name">
+                    <h2 class="text-lg font-bold mb-2">Title</h2>
+                    <input bind:value={input}
+                    type="text" placeholder="Search" name="title"
+                    class="flex-1 p-2 h-10 w-full std-area">
+                </div>
+            </div> <!-- * End Container -->
+            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+                <button class="btn border-2 border-slate-600/30 flex-1" 
+                on:click={() => modalStore.close()}>
+                    Cancel
+                </button>
+                <button class="btn flex-1 bg-gradient-to-r 
+                from-deepblue-light to-deepblue-dark text-white"
+                on:click={saveSchedule}>
+                    Create
+                </button>
+            </div> <!-- * End Nav -->
+        </form>
+    </div>
 </Modal>

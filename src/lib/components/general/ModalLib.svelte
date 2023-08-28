@@ -18,4 +18,4 @@ export let supabase: SupabaseClient;
 <ShareCal showModal={$modalStore === "shareCal"} />
 <ExportCal showModal={$modalStore === "exportCal"} />
 <AddSchedule showModal={$modalStore === "addSchedule"} {supabase} />
-<EditSchedule showModal={$modalStore === "editSchedule"} />
+<EditSchedule showModal={$modalStore === "editSchedule"} {supabase} />

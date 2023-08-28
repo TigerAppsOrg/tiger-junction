@@ -1,4 +1,4 @@
-import { rawCourseData, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, rawCourseData, schedules, searchCourseData } from "$lib/stores/recal";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -76,6 +76,8 @@ Promise<boolean | null> => {
         x[term as keyof RawCourseData] = ids;
         return x;
     });
+
+    currentSchedule.set(ids[0].id);
 
     return true;
 }

@@ -12,7 +12,7 @@ import { writable, type Writable } from "svelte/store";
 export const currentTerm: Writable<number> = writable(1242);
 
 // Current schedule id
-export const currentSchedule: Writable<number> = writable(0);
+export const currentSchedule: Writable<number> = writable();
 
 // User schedules
 export const schedules: Writable<Record<number, {

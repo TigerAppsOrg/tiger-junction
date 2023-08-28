@@ -2,10 +2,13 @@
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
+
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
 import addIcon from "$lib/img/icons/addicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
+import editIcon from "$lib/img/icons/editicon.svg"
+
 import logoutIcon from "$lib/img/icons/logouticon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
@@ -17,6 +20,11 @@ const handleTermChange = async (term: number) => {
     currentTerm.set(term);
     await fetchRawCourseData(supabase, term);
     await populatePools(supabase, term);
+    currentSchedule.set($schedules[term][0].id);
+}
+
+const handleScheduleChange = (scheduleId: number) => {
+    currentSchedule.set(scheduleId);
 }
 
 // Logout the user
@@ -31,15 +39,18 @@ const handleLogout = async () => {
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
-            <button class="termchoice" class:selected={$currentTerm === 1232}
+            <button class="termchoice" 
+            class:selected={$currentTerm === 1232}
             on:click={() => handleTermChange(1232)}>
                 Fall 2022
             </button>
-            <button class="termchoice" class:selected={$currentTerm === 1234}
+            <button class="termchoice" 
+            class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
                 Spring 2022
             </button>
-            <button class="termchoice" class:selected={$currentTerm === 1242}
+            <button class="termchoice" 
+            class:selected={$currentTerm === 1242}
             on:click={() => handleTermChange(1242)}>
                 Fall 2023
             </button>
@@ -76,13 +87,27 @@ const handleLogout = async () => {
             {#key $schedules[$currentTerm]}
             {#each $schedules[$currentTerm] as schedule}
 
+            {#if $currentSchedule === schedule.id}
+                <button class="termchoice flex items-center gap-2" 
+                class:selected={$currentSchedule === schedule.id}
+                on:click={() => 
+                modalStore.open("editSchedule", { clear: true })}>
+                    <span>{schedule.title}</span>
+                    <img src={editIcon} alt="Edit Icon" 
+                    class="w-4 h-4 invert">
+                </button>
+            {:else}
                 <button class="termchoice" 
-                class:selected={$currentSchedule === schedule.id}>
+                class:selected={$currentSchedule === schedule.id}
+                on:click={() => handleScheduleChange(schedule.id)}>
                     {schedule.title}
                 </button>
+            {/if}
+
             {/each}
                 <button class="termchoice"
-                on:click={() => modalStore.open("addSchedule", { clear: true })}>
+                on:click={() => 
+                modalStore.open("addSchedule", { clear: true })}>
                     <img src={addIcon} alt="Add Icon"
                     class="btn-icon">
                 </button>
@@ -105,7 +130,8 @@ const handleLogout = async () => {
 }
 
 .selected {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark text-white;
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
+    text-white;
 }
 
 .btn-circ {
