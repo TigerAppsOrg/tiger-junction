@@ -51,7 +51,7 @@ const saveSchedule = async () => {
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl">
         <h1 class="text-xl font-bold mb-2">Create New Schedule</h1>
-        <form on:submit|preventDefault={saveSchedule}>        
+        <form on:submit|preventDefault>        
             <div class="flex flex-col gap-2">
                 <div class="settings-area" id="name">
                     <h2 class="text-lg font-bold mb-2">Title</h2>
@@ -62,11 +62,13 @@ const saveSchedule = async () => {
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
                 <button class="btn border-2 border-slate-600/30 flex-1" 
+                type="button"
                 on:click={() => modalStore.close()}>
                     Cancel
                 </button>
                 <button class="btn flex-1 bg-gradient-to-r 
                 from-deepblue-light to-deepblue-dark text-white"
+                type="submit"
                 on:click={saveSchedule}>
                     Create
                 </button>
