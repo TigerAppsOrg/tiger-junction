@@ -1,7 +1,7 @@
 <script lang="ts">
 import { pinCourseFromSearch, saveCourseFromSearch } from "$lib/scripts/ReCal+/cardFunctions";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
-    import { searchSettings } from "$lib/stores/recal";
+import { searchSettings } from "$lib/stores/recal";
 import type { CourseData } from "$lib/types/dbTypes";
 
 export let course: CourseData;
