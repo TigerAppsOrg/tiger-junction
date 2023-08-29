@@ -17,16 +17,23 @@ $: pinned = $pinnedCourses[$currentSchedule];
         {pinned.length} Pinned Courses
     </div> <!-- * End Head -->
 
-    <div class="flex flex-col overflow-auto border-2 rounded-xl">
-        {#key pinned}
-        {#each pinned as course}
-            {#if $searchSettings.style["Original Style"]}
-                <ClassicSearch {course} />
-            {:else}
-                <MinimalBase {supabase} {course} category="saved" />
-            {/if}
-        {/each}
-        {/key}
+    <div class="flex flex-col overflow-hidden border-2 rounded-xl 
+    max-h-[30vh]">
+        <div class="overflow-y-scroll">
+            {#key pinned}
+            {#each pinned as course}
+                {#if $searchSettings.style["Original Style"]}
+                    <ClassicSearch {course} />
+                {:else}
+                    <MinimalBase {supabase} {course} category="saved" />
+                {/if}
+            {/each}
+            {/key}
+        </div>
     </div> <!-- * End Results -->
 </div>
 {/if}
+
+<style lang="postcss">
+
+</style>
