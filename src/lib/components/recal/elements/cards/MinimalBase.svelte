@@ -56,7 +56,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
             {title}
         </div>
         {#if $searchSettings.style["Show Rating"]}
-            <div class="text-xs italic">
+            <div class="text-xs italic font-light">
                 Rating: {course.rating ? course.rating : "N/A"}
             </div>
         {/if}

@@ -9,7 +9,7 @@ export let supabase: SupabaseClient;
 
 {#if $searchResults.length > 0}
 <div class="max-h-full">
-    <div class="text-lg font-normal dark:text-white ml-1">
+    <div class="text-base font-normal dark:text-white ml-1">
         {$searchResults.length} Search Results
     </div> <!-- * End Head -->
 

@@ -13,10 +13,10 @@ export let supabase: SupabaseClient;
         <SearchBar />
     </div>
     <div>
-        <Saved />
+        <Saved {supabase} />
     </div>
     <div>
-        <Pinned />
+        <Pinned {supabase} />
     </div>
     <div class="flex-1">
         <SearchResults {supabase} />
