@@ -16,7 +16,6 @@ import { getCurrentSchedule } from "./getters";
  */
 const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
     await savedCourses.add(supabase, getCurrentSchedule(), course, true);
-    // searchCourseData.remove(getCurrentTerm(), [course]);
 }
 
 
@@ -27,7 +26,6 @@ const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData
  */
 const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
     await pinnedCourses.add(supabase, getCurrentSchedule(), course, true);
-    // searchCourseData.remove(getCurrentTerm(), [course]);
 }
 
 //----------------------------------------------------------------------
@@ -40,8 +38,42 @@ const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData)
  * @param course 
  */
 const pinCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) => {
-    let r1 = await pinnedCourses.add(supabase, getCurrentSchedule(), course);
-    if (r1) await savedCourses.remove(supabase, getCurrentSchedule(), course);
+    // Update pools
+    savedCourses.update(x => {
+        if (!x.hasOwnProperty(getCurrentSchedule())) 
+            x[getCurrentSchedule()] = [];
+        x[getCurrentSchedule()] = x[getCurrentSchedule()]
+            .filter(x => x.id !== course.id);
+        return x;
+    });
+    
+    pinnedCourses.update(x => {
+        if (!x.hasOwnProperty(getCurrentSchedule())) 
+            x[getCurrentSchedule()] = [];
+        x[getCurrentSchedule()].push(course);
+        return x;
+    });
+
+    // Update the course schedule association
+    const { error } = await supabase
+        .from("course_schedule_associations")
+        .update({is_pinned: true})
+        .eq("course_id", course.id)
+        .eq("schedule_id", getCurrentSchedule());
+
+    // Revert if error
+    if (error) {
+        console.log(error);
+        pinnedCourses.update(x => {
+            x[getCurrentSchedule()] = x[getCurrentSchedule()]
+                .filter(x => x.id !== course.id);
+            return x;
+        });
+        savedCourses.update(x => {
+            x[getCurrentSchedule()].push(course);
+            return x;
+        });
+    }
 }
 
 /**
@@ -51,7 +83,6 @@ const pinCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) 
  */
 const removeCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) => {
     await savedCourses.remove(supabase, getCurrentSchedule(), course, true);
-    // searchCourseData.add(getCurrentTerm(), [course]);
 }
 
 //----------------------------------------------------------------------
@@ -64,8 +95,43 @@ const removeCourseFromSaved = async (supabase: SupabaseClient, course: CourseDat
  * @param course 
  */
 const saveCourseFromPinned = async (supabase: SupabaseClient, course: CourseData) => {
-    let r1 = await savedCourses.add(supabase, getCurrentSchedule(), course);
-    if (r1) await pinnedCourses.remove(supabase, getCurrentSchedule(), course);
+    // Update pools
+    pinnedCourses.update(x => {
+        if (!x.hasOwnProperty(getCurrentSchedule())) 
+            x[getCurrentSchedule()] = [];
+        x[getCurrentSchedule()] = x[getCurrentSchedule()]
+            .filter(x => x.id !== course.id);
+        return x;
+    });
+
+    savedCourses.update(x => {
+        if (!x.hasOwnProperty(getCurrentSchedule())) 
+            x[getCurrentSchedule()] = [];
+        x[getCurrentSchedule()].push(course);
+        return x;
+    });
+
+    // Update the course schedule association
+    const { error } = await supabase
+        .from("course_schedule_associations")
+        .update({is_pinned: false})
+        .eq("course_id", course.id)
+        .eq("schedule_id", getCurrentSchedule());
+
+    // Revert if error
+    if (error) {
+        console.log(error);
+        savedCourses.update(x => {
+            x[getCurrentSchedule()] = x[getCurrentSchedule()]
+                .filter(x => x.id !== course.id);
+            return x;
+        });
+
+        pinnedCourses.update(x => {
+            x[getCurrentSchedule()].push(course);
+            return x;
+        });
+    }
 }
 
 /**
@@ -75,7 +141,6 @@ const saveCourseFromPinned = async (supabase: SupabaseClient, course: CourseData
  */
 const removeCourseFromPinned = async (supabase: SupabaseClient, course: CourseData) => {
     await pinnedCourses.remove(supabase, getCurrentSchedule(), course, true);
-    // searchCourseData.add(getCurrentTerm(), [course]);
 }
 
 

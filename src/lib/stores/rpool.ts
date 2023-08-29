@@ -127,7 +127,7 @@ Promise<boolean> => {
 const removeCourse = async (supabase: SupabaseClient, pool: CoursePool, 
 scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
     // Get current pool courses
-    let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
+    let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     if (currentPool.length === 0) return false;
 
@@ -137,7 +137,7 @@ scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
         return x;
     });
 
-    if (SCD) searchCourseData.remove(getCurrentTerm(), [course]);
+    if (SCD) searchCourseData.add(getCurrentTerm(), [course]);
 
     // Update course-schedule-associations table
     const { error } = await supabase.from("course_schedule_associations")
@@ -152,7 +152,7 @@ scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
             x[scheduleId] = currentPool;
             return x;
         });
-        if (SCD) searchCourseData.add(getCurrentTerm(), [course]);
+        if (SCD) searchCourseData.remove(getCurrentTerm(), [course]);
         return false;
     }
     return true;

@@ -25,7 +25,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
                 {#if $searchSettings.style["Original Style"]}
                     <ClassicSearch {course} />
                 {:else}
-                    <MinimalBase {supabase} {course} category="saved" />
+                    <MinimalBase {supabase} {course} category="pinned" />
                 {/if}
             {/each}
             {/key}
@@ -33,7 +33,3 @@ $: pinned = $pinnedCourses[$currentSchedule];
     </div> <!-- * End Results -->
 </div>
 {/if}
-
-<style lang="postcss">
-
-</style>
