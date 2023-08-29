@@ -4,10 +4,11 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { searchSettings } from "$lib/stores/recal";
+import { currentTerm, searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";
+    import { sectionData } from "$lib/stores/rsections";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -40,11 +41,25 @@ if (category === "search" || category === "pinned") {
 
 let flipped: boolean = false;
 
+const handleHover = async () => {
+    // Measure time from start of function to end
+
+    let start = performance.now();
+
+    await sectionData.add(supabase, $currentTerm, course.id)
+
+    let end = performance.now();
+    console.log(end - start);
+    console.log($sectionData);
+}
+
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
 class="border-b-[1px] flex justify-between items-stretch duration-100
-{$searchSettings.style["Color by Rating"] && color}">
+{$searchSettings.style["Color by Rating"] && color}" 
+on:mouseenter={handleHover}>
     {#if !flipped}
     <button 
     class="text-xs font-light text-left w-[75%] dark:text-white p-1"
