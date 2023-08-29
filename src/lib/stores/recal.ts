@@ -59,6 +59,13 @@ export const searchResults = {
         if (settings.filters["Dists"].enabled) {
             data = data.filter(x => {
                 let enabled: boolean = false;
+
+                // If no dists, check if "No Dist" is enabled
+                if ((!x.dists || x.dists.length === 0 
+                    && settings.filters["Dists"].values["No Dist"]))
+                    return true;
+
+                // Check if any dist is enabled
                 for (let dist of x.dists) {
                     if (settings.filters["Dists"].values[dist]) {
                         enabled = true;
@@ -327,10 +334,10 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "Levels": {
             "enabled": false,
             "values": {
-                "1": true,
-                "2": true,
-                "3": true,
-                "4": true,
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
                 "5": true,
             }
         },
