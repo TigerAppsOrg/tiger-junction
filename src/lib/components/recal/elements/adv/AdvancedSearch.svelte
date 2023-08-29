@@ -33,17 +33,23 @@ const saveSettings = () => {
                 </div>
 
                 <!-- * Filter Specifications -->
-                <div>
+                <div class="mt-4">
                     {#each Object.keys($searchSettings.filters) as filter}
                     {#if $searchSettings.filters[filter].enabled 
                     && $searchSettings.filters[filter].hasOwnProperty("values")}
-                        <div class="flex flex-wrap gap-2 border-2">
-                            {#each Object.keys($searchSettings.filters[filter].values) 
-                            as value}
-                                <Checkpill 
-                                name={value} 
-                                category={filter} />
-                            {/each}
+                        <div class="border-slate-600/30 mx-8 p-2
+                        dark:border-slate-200/30 border-t-2 mt-2">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">{filter}</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                {#each Object.keys($searchSettings.filters[filter].values) 
+                                as value}
+                                    <Checkpill 
+                                    name={value} 
+                                    category={filter} />
+                                {/each}
+                            </div>
                         </div>
                     {/if}
                     {/each}
