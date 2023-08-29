@@ -12,8 +12,6 @@ import IconLink from "../elements/IconLink.svelte";
 import LightButton from "./LightButton.svelte";
 import Icon from "../elements/Icon.svelte";
 
-const TRANSITION_TIME = 1000;
-
 export let currentApp: string;
 export let show = false;
 
