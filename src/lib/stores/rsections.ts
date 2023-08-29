@@ -11,7 +11,7 @@ type SectionMap = {
     [key: string]: SectionData[]
 }
 
-type SectionData = {
+export type SectionData = {
     cap: number,
     category: string,
     course_id: number,

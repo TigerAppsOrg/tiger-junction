@@ -27,6 +27,46 @@ type CoursePool = {
 // Helpers
 //----------------------------------------------------------------------
 
+// Handle metadata
+export const addCourseMetadata = (course: CourseData, scheduleId: number) => {
+    course.meta = {};
+
+    // Handle color
+    // Get other saved course colors
+    let otherColors: number[] = [];
+    savedCourses.subscribe(x => {
+        otherColors = x[scheduleId].map(y => y.meta.color);
+    })();
+
+    let colorMap: Record<number, number> = {};
+    for (const o of otherColors) {
+        if (colorMap.hasOwnProperty(o)) colorMap[o] += 1;
+        else colorMap[o] = 1;
+    }
+
+    // Find the first unused color
+    for (let i = 0; i < 7; i++) {
+        if (!colorMap.hasOwnProperty(i)) {
+            course.meta.color = i;
+            break;
+        }
+    }
+
+    // If no color found, default to least used color
+    if (course.meta.color === undefined) {
+        let min = 0;
+        for (const [k, v] of Object.entries(colorMap)) {
+            if (v < colorMap[min]) min = k as unknown as number;
+        }
+        course.meta.color = min;
+    }
+
+    // Other metadata
+    course.meta.complete = false;
+    course.meta.areas = [];
+    course.meta.confirms = {};
+}
+
 // Get the current pool of courses
 const getCurrentPool = (pool: CoursePool, scheduleId: number): 
 CourseData[] => {
@@ -63,7 +103,7 @@ term: number): Promise<void> => {
 
     // Fetch course-schedule-associations
     let { data, error } = await supabase.from("course_schedule_associations")
-        .select("course_id, is_pinned")
+        .select("course_id, is_pinned, metadata")
         .eq("schedule_id", scheduleId)
 
     if (error) {
@@ -77,6 +117,9 @@ term: number): Promise<void> => {
     data.forEach(x => {
         // Find Course
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
+
+        // Add metadata
+        cur.meta = x.metadata;
 
         // Load section data
         sectionData.add(supabase, term, cur.id);
@@ -97,6 +140,9 @@ Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
+    // Add metadata
+    if (pool === savedCourses) addCourseMetadata(course, scheduleId);
+
     // Update store
     pool.update(x => {
         if (currentPool.length === 0) x[scheduleId] = [course];
@@ -112,7 +158,8 @@ Promise<boolean> => {
         .insert({
             course_id: course.id,
             schedule_id: scheduleId,
-            is_pinned: isPinned
+            is_pinned: isPinned,
+            metadata: course.meta
         });
 
     // Revert if error

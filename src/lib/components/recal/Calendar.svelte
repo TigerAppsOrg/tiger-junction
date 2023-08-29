@@ -6,7 +6,7 @@ export let supabase: SupabaseClient;
 
 
 <div class="h-full">
-    <div class=" h-full w-full std-area">
+    <div class="h-full w-full std-area">
         <div class="grid grid-cols-5 w-full h-[4%] text-center 
         font-semibold">
             {#each ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as day}
@@ -23,6 +23,10 @@ export let supabase: SupabaseClient;
                 dark:outline-slate-200/30"></div>
             {/each}
         </div>
+
+        <!-- CalBoxes-->
+        
+        
     </div>
 </div>
 
