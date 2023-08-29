@@ -6,6 +6,7 @@ import type { Invalidator, Subscriber, Unsubscriber } from "svelte/motion";
 import { writable, type Writable } from "svelte/store";
 import { rawCourseData, searchCourseData } from "./recal";
 import { getCurrentTerm } from "$lib/scripts/ReCal+/getters";
+import { sectionData } from "./rsections";
 
 // Course pool type
 type CoursePool = {
@@ -73,11 +74,15 @@ term: number): Promise<void> => {
 
     searchCourseData.reset(term);
 
-    let courses: CourseData[] = [];
     data.forEach(x => {
-        let pool = x.is_pinned ? pinnedCourses : savedCourses;
+        // Find Course
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
-        courses.push(cur);
+
+        // Load section data
+        sectionData.add(supabase, term, cur.id);
+
+        // Update pool
+        let pool = x.is_pinned ? pinnedCourses : savedCourses;
         pool.update(x => {
             x[scheduleId] = [...x[scheduleId], cur];
             return x;

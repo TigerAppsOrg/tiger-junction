@@ -27,7 +27,6 @@ const triggerSearch = () => {
     if ($searchResults.length > 0) isResult.set(true);
     else isResult.set(false);
 
-    // TODO - Test if this is practical in reality
     // If results are less than threshold, add sections
     if ($searchResults.length < THRESHOLD) 
         for (let i = 0; i < $searchResults.length; i++)

@@ -20,7 +20,7 @@ Promise<boolean | null> => {
         .from("courses")
         .select(FIELDS)
         .eq("term", term)
-        .limit(10) // TODO: remove this
+        // .limit(10)
         .order("code", { ascending: true });
 
     if (error) return false
