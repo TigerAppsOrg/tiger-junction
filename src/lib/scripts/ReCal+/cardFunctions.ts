@@ -1,5 +1,4 @@
 // Functions for card actions
-import { searchCourseData } from "$lib/stores/recal";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";

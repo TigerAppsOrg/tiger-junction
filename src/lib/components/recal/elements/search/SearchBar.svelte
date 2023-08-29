@@ -2,9 +2,16 @@
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { searchSettings, searchResults, currentTerm, type SearchSettings, searchCourseData, currentSchedule } from "$lib/stores/recal";
+import { sectionData } from "$lib/stores/rsections";
 import type { RawCourseData } from "$lib/types/dbTypes";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export let supabase: SupabaseClient;
 
 let inputBar: HTMLInputElement;
+
+// Number of results, under which sections are added automatically
+const THRESHOLD = 50;
 
 // Update search results when params change
 $: autoTrig($searchSettings, $searchCourseData, $currentTerm, $currentSchedule);
@@ -15,6 +22,11 @@ const autoTrig = (a: SearchSettings, b: RawCourseData, c: number, d: number) => 
 const triggerSearch = () => {
     if (!inputBar || inputBar.value === undefined) return;
     searchResults.search(inputBar.value, $currentTerm, $searchSettings);
+
+    // If results are less than threshold, add sections
+    if ($searchResults.length < THRESHOLD) 
+        for (let i = 0; i < $searchResults.length; i++)
+            sectionData.add(supabase, $currentTerm, $searchResults[i].id);
 }
 </script>
 

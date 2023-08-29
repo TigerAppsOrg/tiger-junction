@@ -3,6 +3,7 @@
 import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
+import { sectionData } from "./rsections";
 
 //----------------------------------------------------------------------
 // Current Term/Schedule

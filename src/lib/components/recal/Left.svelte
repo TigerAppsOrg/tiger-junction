@@ -10,7 +10,7 @@ export let supabase: SupabaseClient;
 
 <div class="h-full max-h-full w-full flex flex-col">
     <div>
-        <SearchBar />
+        <SearchBar {supabase} />
     </div>
     <div>
         <Saved {supabase} />
