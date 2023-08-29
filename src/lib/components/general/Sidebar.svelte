@@ -1,5 +1,4 @@
 <script lang="ts">
-import { fly } from "svelte/transition";
 import NavButton from "../elements/NavButton.svelte";
 
 import homeIcon from "$lib/img/icons/homeicon.svg";
@@ -138,7 +137,6 @@ const toggleSidebar = () => {
 
 <style lang="postcss">
 nav {
-    @apply bg-gradient-to-b from-deepblue-light to-deepblue-dark
-    shadow-xl;
+    @apply bg-gradient-to-b from-deepblue-light to-deepblue-dark;
 }
 </style>
