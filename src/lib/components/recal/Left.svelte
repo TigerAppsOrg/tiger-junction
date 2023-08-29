@@ -18,7 +18,7 @@ export let supabase: SupabaseClient;
     <div>
         <Pinned {supabase} />
     </div>
-    <div class="flex-1">
+    <div class="top-0">
         <SearchResults {supabase} />
     </div>
 </div>

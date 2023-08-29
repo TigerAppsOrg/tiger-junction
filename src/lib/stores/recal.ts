@@ -25,6 +25,8 @@ export const schedules: Writable<Record<number, {
     1232: []
 })
 
+export const isResult: Writable<boolean> = writable(false);
+
 //----------------------------------------------------------------------
 // Search Results
 //----------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, type SearchSettings, searchCourseData, currentSchedule } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm, type SearchSettings, searchCourseData, currentSchedule, isResult } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
 import type { RawCourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -23,6 +23,11 @@ const triggerSearch = () => {
     if (!inputBar || inputBar.value === undefined) return;
     searchResults.search(inputBar.value, $currentTerm, $searchSettings);
 
+    // Handle isResult flag
+    if ($searchResults.length > 0) isResult.set(true);
+    else isResult.set(false);
+
+    // TODO - Test if this is practical in reality
     // If results are less than threshold, add sections
     if ($searchResults.length < THRESHOLD) 
         for (let i = 0; i < $searchResults.length; i++)

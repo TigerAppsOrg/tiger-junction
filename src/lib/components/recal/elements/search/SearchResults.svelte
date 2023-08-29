@@ -15,7 +15,7 @@ export let supabase: SupabaseClient;
     </div> <!-- * End Head -->
 
     <div class="flex flex-col overflow-auto border-2 rounded-xl
-    max-h-[50vh]">
+    max-h-[60vh]">
         <div class="overflow-y-auto">
             {#key $searchResults}
             {#each $searchResults as course}

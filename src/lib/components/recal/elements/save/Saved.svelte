@@ -1,5 +1,5 @@
 <script lang="ts">
-import { currentSchedule, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, isResult, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
@@ -26,7 +26,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden border-2 rounded-xl 
-    max-h-[70vh]">
+    {$isResult ? "max-h-[10vh]" : "max-h-[70vh]"}">
         <div class="overflow-y-auto">
             {#key saved}
             {#each saved as course}

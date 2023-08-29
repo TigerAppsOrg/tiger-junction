@@ -43,7 +43,7 @@ const handleLogout = async () => {
 
 </script>
 
-<div class="h-20 std-area mt-2 p-1">
+<div class="h-20 max-h-[15vh] std-area mt-2 p-1">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
