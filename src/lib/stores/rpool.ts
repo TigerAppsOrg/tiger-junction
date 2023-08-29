@@ -4,6 +4,7 @@ import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Invalidator, Subscriber, Unsubscriber } from "svelte/motion";
 import { writable, type Writable } from "svelte/store";
+import { rawCourseData, searchCourseData } from "./recal";
 
 // Course pool type
 type CoursePool = {
@@ -33,6 +34,57 @@ CourseData[] => {
         else data = [];
     })();
     return data;
+}
+
+// Initialize a schedule pool
+export const initSchedule = async (supabase: SupabaseClient, scheduleId: number, 
+term: number): Promise<void> => {
+    savedCourses.update(x => {
+        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = [];
+        return x;
+    });
+    pinnedCourses.update(x => {
+        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = [];
+        return x;
+    });
+
+    let loaded = false;
+    savedCourses.subscribe(x => {
+        if (x[scheduleId].length > 0) loaded = true;
+    })();
+    pinnedCourses.subscribe(x => {
+        if (x[scheduleId].length > 0) loaded = true;
+    })();
+    if (loaded) return;
+
+    const rawCourses = rawCourseData.get(term);
+
+    // Fetch course-schedule-associations
+    let { data, error } = await supabase.from("course_schedule_associations")
+        .select("course_id, is_pinned")
+        .eq("schedule_id", scheduleId)
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+    if (!data) return;
+
+    searchCourseData.reset(term);
+
+    let courses: CourseData[] = [];
+    data.forEach(x => {
+        let pool = x.is_pinned ? pinnedCourses : savedCourses;
+        let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
+        courses.push(cur);
+        pool.update(x => {
+            x[scheduleId] = [...x[scheduleId], cur];
+            return x;
+        });
+    });
+
+    // searchCourseData.remove(term, courses);
+    // console.log(searchCourseData.get(term));
 }
 
 // Add a course to a pool
@@ -135,7 +187,7 @@ scheduleId: number): Promise<boolean> => {
 //----------------------------------------------------------------------
 
 const { set: setSave, update: updateSave, subscribe: subscribeSave }: 
-Writable<Record<number, CourseData[]>> = writable([]);
+Writable<Record<number, CourseData[]>> = writable({});
 
 export const savedCourses: CoursePool = {
     set: setSave,
@@ -169,7 +221,8 @@ export const savedCourses: CoursePool = {
      * @param supabase 
      * @param scheduleId 
      */
-    clear: async (supabase: SupabaseClient, scheduleId: number): Promise<boolean> => {
+    clear: async (supabase: SupabaseClient, scheduleId: number): 
+    Promise<boolean> => {
         return await clearPool(supabase, savedCourses, scheduleId);
     }
 }
@@ -179,7 +232,7 @@ export const savedCourses: CoursePool = {
 //----------------------------------------------------------------------
 
 const { set: setPin, update: updatePin, subscribe: subscribePin }: 
-Writable<Record<number, CourseData[]>> = writable([]);
+Writable<Record<number, CourseData[]>> = writable({});
 
 export const pinnedCourses: CoursePool = {
     set: setPin,
@@ -213,7 +266,8 @@ export const pinnedCourses: CoursePool = {
      * @param supabase 
      * @param scheduleId 
      */
-    clear: async (supabase: SupabaseClient, scheduleId: number): Promise<boolean> => {
+    clear: async (supabase: SupabaseClient, scheduleId: number): 
+    Promise<boolean> => {
         return await clearPool(supabase, pinnedCourses, scheduleId);
     }
 }

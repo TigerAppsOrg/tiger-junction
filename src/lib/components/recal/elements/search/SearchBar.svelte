@@ -1,15 +1,20 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, type SearchSettings } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm, type SearchSettings, searchCourseData, currentSchedule } from "$lib/stores/recal";
+import type { RawCourseData } from "$lib/types/dbTypes";
 
 let inputBar: HTMLInputElement;
 
-$: triggerSearch($searchSettings);
+// Update search results when params change
+$: autoTrig($searchSettings, $searchCourseData, $currentTerm, $currentSchedule);
+const autoTrig = (a: SearchSettings, b: RawCourseData, c: number, d: number) => {
+    triggerSearch();
+}
 
-const triggerSearch = (settings: SearchSettings) => {
+const triggerSearch = () => {
     if (!inputBar || inputBar.value === undefined) return;
-    searchResults.search(inputBar.value, $currentTerm, settings);
+    searchResults.search(inputBar.value, $currentTerm, $searchSettings);
 }
 </script>
 
@@ -17,7 +22,7 @@ const triggerSearch = (settings: SearchSettings) => {
     <div class="flex gap-2">
         <input type="text" placeholder="Search" 
         class="search-input std-area" bind:this={inputBar}
-        on:input={() => triggerSearch($searchSettings)}>
+        on:input={triggerSearch}>
         <button class="adv-search"
         on:click={() => modalStore.open("adv", { clear: true })}>
             <img src={settingsIcon} alt="Settings Icon" 

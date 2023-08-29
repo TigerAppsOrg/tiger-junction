@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
@@ -13,6 +13,7 @@ import logoutIcon from "$lib/img/icons/logouticon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
+import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 
 export let supabase: SupabaseClient;
 
@@ -27,6 +28,10 @@ const handleTermChange = async (term: number) => {
 
 const handleScheduleChange = (scheduleId: number) => {
     currentSchedule.set(scheduleId);
+    searchCourseData.reset($currentTerm);
+
+    let courses = [...$savedCourses[scheduleId], ...$pinnedCourses[scheduleId]];
+    searchCourseData.remove($currentTerm, courses);
 }
 
 // Logout the user

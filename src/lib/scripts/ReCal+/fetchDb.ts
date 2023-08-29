@@ -1,5 +1,5 @@
 import { currentSchedule, rawCourseData, schedules, searchCourseData } from "$lib/stores/recal";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { initSchedule } from "$lib/stores/rpool";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -20,6 +20,7 @@ Promise<boolean | null> => {
         .from("courses")
         .select(FIELDS)
         .eq("term", term)
+        .limit(10) // TODO: remove this
         .order("code", { ascending: true });
 
     if (error) return false
@@ -88,44 +89,16 @@ Promise<boolean | null> => {
  * @param scheduleIds 
  * @param term 
  */
-const populatePools = (supabase: SupabaseClient, term: number): void => {
+const populatePools = async (supabase: SupabaseClient, term: number): 
+Promise<void> => {
     // Get raw course data and schedule ids
-    const rawCourses = rawCourseData.get(term);
     let scheduleIds: number[] = [];
     schedules.subscribe(x => {
         scheduleIds = x[term as keyof RawCourseData].map(y => y.id);
     })();
 
-    scheduleIds.forEach(id => {
-        // Check if pools are already populated
-        let loaded = false;
-        savedCourses.subscribe(x => {
-            if (x.hasOwnProperty(id) && x[id].length > 0) loaded = true;
-        })();
-        pinnedCourses.subscribe(x => {
-            if (x.hasOwnProperty(id) && x[id].length > 0) loaded = true;
-        })();
-        if (loaded) return;
-        
-        // Fetch course-schedule-associations
-        supabase.from("course_schedule_associations")
-            .select("course_id, is_pinned")
-            .eq("schedule_id", id)
-        .then(res => {
-            if (res.error) {
-                console.log(res.error);
-                return;
-            }
-
-            // Populate pools
-            res.data.forEach(x => {
-                let pool = x.is_pinned ? pinnedCourses : savedCourses;
-                let cur = rawCourses
-                    .find(y => y.id === x.course_id) as CourseData;
-                pool.add(supabase, id, cur);
-            });
-        });
-    });
+    for (const id of scheduleIds) 
+        await initSchedule(supabase, id, term)
 }
 
 export { fetchRawCourseData, fetchUserSchedules, populatePools };

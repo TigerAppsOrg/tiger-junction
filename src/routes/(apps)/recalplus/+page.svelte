@@ -3,13 +3,15 @@ import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
-import { fetchRawCourseData, populatePools } from "$lib/scripts/ReCal+/fetchDb";
+import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { onMount } from "svelte";
 
 export let data;
 
 onMount(async () => {
+    console.log("Fetching data")
     await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
+    await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
 });
 </script>

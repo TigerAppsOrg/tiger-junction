@@ -1,5 +1,5 @@
 // Functions for card actions
-import { currentSchedule } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, searchCourseData } from "$lib/stores/recal";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -13,8 +13,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  * @param supabase 
  * @param course 
  */
-const saveCourseFromSearch = (supabase: SupabaseClient, course: CourseData) => {
-    savedCourses.add(supabase, getCurrentSchedule(), course);
+const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+    await savedCourses.add(supabase, getCurrentSchedule(), course);
+    searchCourseData.remove(getCurrentTerm(), [course]);
 }
 
 
@@ -23,8 +24,9 @@ const saveCourseFromSearch = (supabase: SupabaseClient, course: CourseData) => {
  * @param supabase 
  * @param course 
  */
-const pinCourseFromSearch = (supabase: SupabaseClient, course: CourseData) => {
-    pinnedCourses.add(supabase, getCurrentSchedule(), course);
+const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+    await pinnedCourses.add(supabase, getCurrentSchedule(), course);
+    searchCourseData.remove(getCurrentTerm(), [course]);
 }
 
 //----------------------------------------------------------------------
@@ -48,6 +50,7 @@ const pinCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) 
  */
 const removeCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) => {
     await savedCourses.remove(supabase, getCurrentSchedule(), course);
+    searchCourseData.add(getCurrentTerm(), [course]);
 }
 
 //----------------------------------------------------------------------
@@ -71,6 +74,7 @@ const saveCourseFromPinned = async (supabase: SupabaseClient, course: CourseData
  */
 const removeCourseFromPinned = async (supabase: SupabaseClient, course: CourseData) => {
     await pinnedCourses.remove(supabase, getCurrentSchedule(), course);
+    searchCourseData.add(getCurrentTerm(), [course]);
 }
 
 //----------------------------------------------------------------------
@@ -84,6 +88,15 @@ const getCurrentSchedule = (): number => {
         schedule = x;
     })();
     return schedule;
+}
+
+// Get the current term
+const getCurrentTerm = (): number => {
+    let term: number = -1;
+    currentTerm.subscribe(x => {
+        term = x;
+    })();
+    return term;
 }
 
 export {
