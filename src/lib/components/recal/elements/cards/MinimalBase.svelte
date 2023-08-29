@@ -47,7 +47,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
 {$searchSettings.style["Color by Rating"] && color}">
     {#if !flipped}
     <button 
-    class="text-sm font-light text-left w-[70%] dark:text-white p-1"
+    class="text-xs font-light text-left w-[75%] dark:text-white p-1"
     on:click={() => flipped = true}>
         <div class="font-normal">
             {code}
@@ -64,14 +64,14 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
 
         <!-- TODO: Refactor, super messy! -->
 
-        <div class="w-[25%] flex justify-evenly">
+        <div class="w-[20%] flex justify-evenly">
             {#if category === "saved"}
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => cf.pinCourseFromSaved(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                    class="ic" />
                 </button>
 
                 <button class="remove-button
@@ -79,24 +79,25 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 duration-100"
                 on:click={() => cf.removeCourseFromSaved(supabase, course)}>
                     <img src={removeIcon} alt="Remove" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                    class="ic" />
                 </button>
 
             {:else if category === "pinned"}
-                <button class="remove-button
-                z-50 h-full w-full flex items-center justify-center
-                duration-100"
-                on:click={() => cf.removeCourseFromPinned(supabase, course)}>
-                    <img src={removeIcon} alt="Remove" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
-                </button>
 
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => cf.saveCourseFromPinned(supabase, course)}>
                     <img src={plusIcon} alt="Save" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                    class="ic" />
+                </button>
+
+                <button class="remove-button
+                z-50 h-full w-full flex items-center justify-center
+                duration-100"
+                on:click={() => cf.removeCourseFromPinned(supabase, course)}>
+                    <img src={removeIcon} alt="Remove" 
+                    class="ic" />
                 </button>
 
             {:else}
@@ -105,7 +106,7 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 duration-100"
                 on:click={() => cf.pinCourseFromSearch(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                    class="ic" />
                 </button>
 
                 <button class="add-button
@@ -113,14 +114,14 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
                 duration-100"
                 on:click={() => cf.saveCourseFromSearch(supabase, course)}>
                     <img src={plusIcon} alt="Add" 
-                    class="w-6 h-6 invert-[.5] dark:invert-[.7]" />
+                    class="ic" />
                 </button>
             {/if}
         </div> 
 
     {:else}
     <div class="w-full">
-        <button class="text-sm font-normal p-1 pb-2 w-full text-left"
+        <button class="text-xs font-normal p-1 pb-2 w-full text-left"
         on:click={() => flipped = false}>
             {code}
         </button>
@@ -204,5 +205,9 @@ class="border-b-[1px] flex justify-between items-stretch duration-100
 
 .icon {
     @apply w-6 h-6 mx-auto;
+}
+
+.ic {
+    @apply w-5 h-5 invert-[.5] dark:invert-[.7]
 }
 </style>

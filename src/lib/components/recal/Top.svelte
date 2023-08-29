@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 import shareIcon from "$lib/img/icons/shareicon.svg";
+import pinIcon from "$lib/img/icons/pinicon.svg";
 import addIcon from "$lib/img/icons/addicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import editIcon from "$lib/img/icons/editicon.svg"
@@ -68,6 +69,11 @@ const handleLogout = async () => {
                 <img src={shareIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button> -->
+            <button class="btn-circ"
+            on:click={() => modalStore.open("pinned", { clear: true})}>
+                <img src={pinIcon} alt="Pin Icon"
+                class="btn-icon">
+            </button>
             <button class="btn-circ"
             on:click={() => modalStore.open("exportCal", { clear: true})}>
                 <img src={calendarIcon} alt="Custom Block Icon"

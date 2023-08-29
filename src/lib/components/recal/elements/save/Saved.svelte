@@ -11,15 +11,19 @@ $: saved = $savedCourses[$currentSchedule];
 </script>
 
 
-{#if saved && saved.length > 0}
-<div class="max-h-full">
+{#if saved}
+<div class="max-h-full mt-2">
     <div class="text-base font-normal dark:text-white ml-1">
-        {saved.length} Saved Courses
+        <span>
+            {saved.length} Saved 
+            {saved.length === 1 ? "Course" : "Courses"}
+        </span>
     </div> <!-- * End Head -->
 
+    {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden border-2 rounded-xl 
-    max-h-[30vh]">
-        <div class="overflow-y-scroll">
+    max-h-[70vh]">
+        <div class="overflow-y-auto">
             {#key saved}
             {#each saved as course}
                 {#if $searchSettings.style["Original Style"]}
@@ -31,5 +35,6 @@ $: saved = $savedCourses[$currentSchedule];
             {/key}
         </div>
     </div> <!-- * End Results -->
+    {/if}
 </div>
 {/if}
