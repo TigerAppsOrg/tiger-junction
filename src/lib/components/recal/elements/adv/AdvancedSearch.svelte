@@ -13,7 +13,7 @@ const saveSettings = () => {
 </script>
 
 <Modal {showModal}>
-    <div class="p-6 w-[80vw] max-w-2xl">
+    <div class="p-6 w-[80vw] max-w-4xl">
         <h1 class="text-xl font-bold mb-2">Advanced Search Settings</h1>
         <div class="flex flex-col gap-2">
             <div class="settings-area" id="options">
@@ -29,6 +29,23 @@ const saveSettings = () => {
                 <div class="flex flex-wrap gap-2">
                     {#each Object.keys($searchSettings.filters) as filter}
                         <Checkpill name={filter} category="filters" />
+                    {/each}
+                </div>
+
+                <!-- * Filter Specifications -->
+                <div>
+                    {#each Object.keys($searchSettings.filters) as filter}
+                    {#if $searchSettings.filters[filter].enabled 
+                    && $searchSettings.filters[filter].hasOwnProperty("values")}
+                        <div class="flex flex-wrap gap-2 border-2">
+                            {#each Object.keys($searchSettings.filters[filter].values) 
+                            as value}
+                                <Checkpill 
+                                name={value} 
+                                category={filter} />
+                            {/each}
+                        </div>
+                    {/if}
                     {/each}
                 </div>
             </div>

@@ -15,10 +15,13 @@ export let category: string;
     {:else if category === "style"}
         <input type="checkbox" name={name} id={name}
         bind:checked={$searchSettings.style[name]}>
+    {:else}
+        <input type="checkbox" name={name} id={name}
+        bind:checked={$searchSettings.filters[category].values[name]}>
     {/if}
     <span class="info flex items-center gap-1">
         <span>
-            {name}
+            {category === "Levels" ? name + "00" : name}
         </span>
         <span class="icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
