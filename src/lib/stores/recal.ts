@@ -76,6 +76,21 @@ export const searchResults = {
             });
         }
 
+        // * PDFable
+        if (settings.filters["PDFable"].enabled) {
+            data = data.filter(x => x.basis !== "NPD" && x.basis !== "GRD");
+        }
+
+        // * PDF Only
+        if (settings.filters["PDF Only"].enabled) {
+            data = data.filter(x => x.basis === "PDF");
+        }
+
+        // * No Final
+        if (settings.filters["No Scheduled Final"].enabled) {
+            data = data.filter(x => !x.grading_info.hasOwnProperty("Final Scheduled Exam"));
+        }
+
         // * Open Only
         if (settings.filters["Open Only"].enabled) {
             data = data.filter(x => x.status === 0);
@@ -340,6 +355,15 @@ export const searchSettings: Writable<SearchSettings> = writable({
                 "4": false,
                 "5": true,
             }
+        },
+        "PDFable": {
+            "enabled": false,
+        },
+        "PDF Only": {
+            "enabled": false,
+        },
+        "No Scheduled Final": {
+            "enabled": false,
         },
         "Open Only": {
             "enabled": false,
