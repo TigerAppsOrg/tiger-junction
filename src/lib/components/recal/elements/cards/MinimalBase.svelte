@@ -8,7 +8,7 @@ import { currentTerm, searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";
-    import { sectionData } from "$lib/stores/rsections";
+import { sectionData } from "$lib/stores/rsections";
 
 export let course: CourseData;
 export let category: string = "search";
