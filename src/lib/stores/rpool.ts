@@ -90,7 +90,7 @@ const addCourse = async (supabase: SupabaseClient, pool: CoursePool,
 scheduleId: number, course: CourseData, isPinned: boolean, SCD?: boolean): 
 Promise<boolean> => {
     // Get current pool courses
-    let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
+    let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     // Update store
     pool.update(x => {

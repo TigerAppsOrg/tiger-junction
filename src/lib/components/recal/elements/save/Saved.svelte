@@ -3,11 +3,12 @@ import { currentSchedule, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
-import { savedCourses } from "$lib/stores/rpool";
+import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 
 export let supabase: SupabaseClient;
 
 $: saved = $savedCourses[$currentSchedule];
+$: pinned = $pinnedCourses[$currentSchedule];
 </script>
 
 
@@ -17,6 +18,9 @@ $: saved = $savedCourses[$currentSchedule];
         <span>
             {saved.length} Saved 
             {saved.length === 1 ? "Course" : "Courses"}
+            {#if pinned.length > 0}
+            ({pinned.length} Pin{pinned.length === 1 ? "" : "s"})
+            {/if}   
         </span>
     </div> <!-- * End Head -->
 
