@@ -13,7 +13,7 @@ export let data;
 const handleLogin = async () => { 
 
     if ((await data.supabase.auth.getUser()).data.user) {
-        goto("/home");
+        goto("/recalplus");
         return;
     }
 
