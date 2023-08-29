@@ -1,28 +1,29 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
-    import ViewCard from '$lib/components/elements/ViewCard.svelte';
+import { goto } from '$app/navigation';
+import ViewCard from '$lib/components/elements/ViewCard.svelte';
 
-    import CalendarPic from "$lib/img/calendar.png";
-    import TreePic from "$lib/img/tree.png";
-    import CertificatePic from "$lib/img/certificate.png";
-    import RoadPic from "$lib/img/road.png";
+import CalendarPic from "$lib/img/calendar.png";
+import TreePic from "$lib/img/tree.png";
+import CertificatePic from "$lib/img/certificate.png";
+import RoadPic from "$lib/img/road.png";
+import { EMAIL_LIST_FORM_LINK } from '$lib/constants';
 
-    export let data;
+export let data;
 
-    const handleLogin = async () => { 
+const handleLogin = async () => { 
 
-        if ((await data.supabase.auth.getUser()).data.user) {
-            goto("/home");
-            return;
-        }
-
-        await data.supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: "http://localhost:5173/auth/callback"
-            }
-        });
+    if ((await data.supabase.auth.getUser()).data.user) {
+        goto("/home");
+        return;
     }
+
+    await data.supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+            redirectTo: "http://localhost:5173/auth/callback"
+        }
+    });
+}
 </script>
 
 <div class="h-screen area">
@@ -108,7 +109,7 @@
         <ViewCard 
         className="bg-gradient-to-br from-[#103CE7] to-[#64E9FF] text-white">
             <img slot="image" src={CertificatePic} alt="Certificate 3d model">
-            <span slot="title">CourseGenie</span>
+            <span slot="title">CourseGenie (Coming Soon)</span>
             <span slot="description">
                 <div class="mb-2">
                     With CourseGenie, you can embark on an enriched 
@@ -136,7 +137,7 @@
         <ViewCard 
         className="bg-gradient-to-br from-[#0172AF] to-[#74FEBD] text-white">
             <img slot="image" src={TreePic} alt="Tree 3d model">
-            <span slot="title">ReqTree</span>
+            <span slot="title">ReqTree (Coming Soon)</span>
             <span slot="description">
                 <div class="mb-2">
                     A visually dynamic app that transforms prerequisites 
@@ -159,6 +160,20 @@
             </span>
         </ViewCard>
     </div>
+    <div class="mt-16">
+        <div class="bg-slate-600 text-white p-8 rounded-lg shadow-lg
+        text-xl flex justify-between items-center gap-6">
+            <div>
+                Join our emailing list to receive updates about
+                TigerJunction feature releases and other news!
+            </div>
+            <a href={EMAIL_LIST_FORM_LINK} target="_blank">
+                <button class="btn-cool">
+                    Get Updated
+                </button>
+            </a>
+        </div>
+    </div>
 </div>
 <footer class="bg-black dark:bg-white text-center text-white dark:text-black text-sm font-light
 py-4">
@@ -173,30 +188,30 @@ py-4">
 </footer>
 
 <style lang="postcss">
-    .rainbow {
-        @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+.rainbow {
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-    .glow {
-        text-shadow: 0 0 80px rgb(192 219 255 / 75%), 0 0 32px rgb(65 120 255 / 24%);
-    }
+.glow {
+    text-shadow: 0 0 80px rgb(192 219 255 / 75%), 0 0 32px rgb(65 120 255 / 24%);
+}
 
-    .btn-cool:hover {
-        @apply shadow-lg duration-150;
-    }
+.btn-cool:hover {
+    @apply shadow-lg duration-150;
+}
 
-    .btn-cool {
-        @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
-        text-white rounded-full px-4 py-2;
-    }
+.btn-cool {
+    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
+    text-white rounded-full px-4 py-2;
+}
 
-    .area {
-        @apply bg-white dark:bg-black dark:text-white text-black px-20 w-screen;
-    }
+.area {
+    @apply bg-white dark:bg-black dark:text-white text-black px-20 w-screen;
+}
 
-    .link {
-        @apply underline hover:text-gray-200 duration-150;
-    }
+.link {
+    @apply underline hover:text-gray-200 duration-150;
+}
 </style>

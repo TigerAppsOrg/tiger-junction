@@ -1,5 +1,8 @@
 import type { RegGradingInfo } from "./types/regTypes";
 
+// Emailing List Form
+const EMAIL_LIST_FORM_LINK = "/";
+
 // Database
 const CATEGORIES = ["ab", "bse", "certificate", "minor"];
 
@@ -73,6 +76,7 @@ const STATUS_MAP: Record<string, number> = {
 export const RED = "#FF0000";
 
 export { 
+    EMAIL_LIST_FORM_LINK,
     CATEGORIES, 
     REGISTRAR_AUTH_BEARER, 
     TERM_URL,

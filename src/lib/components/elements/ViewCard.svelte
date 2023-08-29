@@ -4,10 +4,10 @@
 
 <div class="{className} card">
     <div class="max-w-full w-32 max-h-32 mx-auto mb-6">
-        <slot name="image">No image</slot>
+        <slot name="image"></slot>
     </div>
     <h1 class="font-bold text-xl mb-2">
-        <slot name="title">No Title</slot>
+        <slot name="title"></slot>
     </h1>
     <p class="font-light text-xl">
         <slot name="description">No Description</slot>
