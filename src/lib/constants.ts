@@ -7,7 +7,7 @@ const EMAIL_LIST_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSebVwd90R
 const CATEGORIES = ["ab", "bse", "certificate", "minor"];
 
 // Registrar API
-const REGISTRAR_AUTH_BEARER = "Bearer ZTY0YjMwN2ItMTI4Yy0zYzQxLTk0NzctZDBhNWNiZjM1NDY1OnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI="; 
+const REGISTRAR_AUTH_BEARER = "Bearer ZGMyZDQ1NWUtYzA5OC0zNjY1LTkwODMtNmU1NzdjZmE3NDJjOnJlZ2lzdHJhcmFwaUBjYXJib24uc3VwZXI=";
 const TERM_URL = 'https://api.princeton.edu/registrar/course-offerings/classes/';
 const COURSE_URL = 'https://api.princeton.edu/registrar/course-offerings/1.0.1/course-details?'
 const EVALUATION_URL = "https://registrarapps.princeton.edu/course-evaluation?";

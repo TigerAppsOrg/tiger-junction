@@ -136,7 +136,8 @@ on:mouseenter={handleHover}>
 
     {:else}
     <div class="w-full">
-        <button class="text-xs font-normal p-1 pb-2 w-full text-left"
+        <button class="text-xs font-normal p-1 pb-2 w-full text-left
+        dark:text-white"
         on:click={() => flipped = false}>
             {code}
         </button>
@@ -164,7 +165,7 @@ on:mouseenter={handleHover}>
 
             <!-- Registrar -->
             <a href={registrar} target="_blank" 
-            class="cardlink bg-gray-400 dark:bg-gray-700">
+            class="cardlink bg-gray-400 dark:bg-gray-500">
                 <button class="btn variant-soft-primary cardbutton">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="icon">
