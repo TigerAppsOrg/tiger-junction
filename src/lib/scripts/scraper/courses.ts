@@ -88,8 +88,8 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
                     data.long_title : 
                     data.long_title + ": " + data.topic_title,
                 grading_info: parseGradingInfo(data),
-                course_info: parseCourseInfo(data),
-                reading_info: parseReadingInfo(data),
+                // course_info: parseCourseInfo(data),
+                // reading_info: parseReadingInfo(data),
                 status: courselist[index].status,
                 basis: data.grading_basis,
                 dists: data.distribution_area_short ?  
