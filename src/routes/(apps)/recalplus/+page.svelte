@@ -4,6 +4,8 @@ import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
+    import { schedules, searchCourseData } from "$lib/stores/recal.js";
+    import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
 import { onMount } from "svelte";
 
 export let data;
@@ -13,6 +15,11 @@ onMount(async () => {
     await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
     await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
+
+    searchCourseData.resetAll();
+    let id = $schedules[CURRENT_TERM_ID][0].id;
+    let courses = [...$savedCourses[id], ...$pinnedCourses[id]];
+    searchCourseData.remove(CURRENT_TERM_ID, courses);
 });
 </script>
 

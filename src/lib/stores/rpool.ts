@@ -82,9 +82,6 @@ term: number): Promise<void> => {
             return x;
         });
     });
-
-    // searchCourseData.remove(term, courses);
-    // console.log(searchCourseData.get(term));
 }
 
 // Add a course to a pool
