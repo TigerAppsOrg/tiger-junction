@@ -1,7 +1,7 @@
 import type { RegGradingInfo } from "./types/regTypes";
 
 // Emailing List Form
-const EMAIL_LIST_FORM_LINK = "/";
+const EMAIL_LIST_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link";
 
 // Database
 const CATEGORIES = ["ab", "bse", "certificate", "minor"];
