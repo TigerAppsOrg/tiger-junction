@@ -172,6 +172,39 @@ const daysToValue = (section: WeekDays) => {
     return days;
 }
 
+/**
+ * Converts a value to a section's days
+ * @param value between 0 and 31
+ * @returns days in number array
+ */
+const valueToDays = (value: number) => {
+    let days = []
+
+    if (value >= 16) {
+        days.push(5)
+        value -= 16;
+    }
+    if (value >= 8) {
+        days.push(4)
+        value -= 8;
+    }
+    if (value >= 4) {
+        days.push(3)
+        value -= 4;
+    }
+    if (value >= 2) {
+        days.push(2)
+        value -= 2;
+    }
+    if (value >= 1) {
+        days.push(1)
+        value -= 1;
+    }
+
+    return days;
+}
+
+
 //----------------------------------------------------------------------
 // Text Functions
 //----------------------------------------------------------------------
@@ -194,6 +227,7 @@ export {
     valuesToTimeLabel, 
     testTimeToValue,
     daysToValue,
+    valueToDays,
     normalizeText,
 }
 

@@ -8,6 +8,7 @@ export let borderColor: string;       // Must be a tailwind color (ex. blue-500)
 export let bgColor: string;           // Must be a tailwind color (ex. blue-500)
 export let confirmed: boolean;
 export let preview: boolean = false;
+export let day: number;
 
 let show = false;
 
@@ -39,7 +40,8 @@ const handleClick = () => {
 
 {#if show}
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="h-[{height}%] w-[18%] {colorStyle}"
+<button id="box" class="h-[{height}%] w-[18%] {colorStyle} absolute
+left-[{day*20}%] top-11 rounded-md"
 on:click={handleClick}>
     <div class="text-sm">
         <div class="font-light">

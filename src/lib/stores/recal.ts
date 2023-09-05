@@ -9,6 +9,9 @@ import { sectionData } from "./rsections";
 // Current Term/Schedule
 //----------------------------------------------------------------------
 
+// Ready for calendar render
+export const ready: Writable<boolean> = writable(false);
+
 // Current term id
 export const currentTerm: Writable<number> = writable(1242);
 

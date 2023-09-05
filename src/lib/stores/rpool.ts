@@ -182,7 +182,7 @@ term: number) => {
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
         // Add metadata
-        // TODO !!
+        addCourseMetadata(supabase, cur, scheduleId);
 
         // Load section data
         sectionData.add(supabase, term, cur.id);
