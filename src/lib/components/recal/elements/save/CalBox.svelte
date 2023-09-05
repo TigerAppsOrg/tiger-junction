@@ -3,15 +3,31 @@ import { valuesToTimeLabel } from "$lib/scripts/convert";
 import type { SectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 
-export let courseCode: string;
-export let section: SectionData;
-export let borderColor: string;       // Must be a tailwind color (ex. blue-500)
-export let bgColor: string;           // Must be a tailwind color (ex. blue-500)
-export let confirmed: boolean;
-export let preview: boolean = false;
-export let day: number;
-
 export let params: CalBoxParam;
+const { courseCode, section, color, preview, day } = params;
+
+const COLOR_MAP = {
+    
+}
+
+let confirmed = true;
+
+
+let styles = {
+    "bg": `#a3f923`,
+    "border": `#a3f923`,
+    "stripes": confirmed ? "" : `repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(0, 0, 0, 0.05) 5px,
+        rgba(0, 0, 0, 0.05) 10px);`,
+    
+}
+
+$: cssVarStyles = Object.entries(styles)
+		.map(([key, value]) => `--${key}:${value}`)
+		.join(';');
 
 let show = false;
 
@@ -26,11 +42,11 @@ const calculateHeight = (): number => {
 }
 
 // Determine color of card
-let colorStyle = preview ? 
-    "bg-slate-300 border-slate-600 text-slate-600 dark:bg-slate-500 dark:border-slate-200 dark:text-slate-200" :
-    confirmed ? 
-        `bg-${bgColor} border-${borderColor} text-${borderColor}` : 
-        `bg-${bgColor}/50 border-${bgColor}/60 text-${borderColor}/80`;
+// let colorStyle = preview ? 
+//     "bg-slate-300 border-slate-600 text-slate-600 dark:bg-slate-500 dark:border-slate-200 dark:text-slate-200" :
+//     confirmed ? 
+//         `bg-${bgColor} border-${borderColor} text-${borderColor}` : 
+//         `bg-${bgColor}/50 border-${bgColor}/60 text-${borderColor}/80`;
 
 let height = calculateHeight();
 
@@ -43,8 +59,8 @@ const handleClick = () => {
 
 {#if show}
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="h-[{height}%] w-[18%] {colorStyle} absolute
-left-[{day*20}%] top-11 rounded-md"
+<button id="box" class="h-[{height}%] w-[18%] absolute
+left-[{day*20}%] top-11 rounded-md" style={cssVarStyles}
 on:click={handleClick}>
     <div class="text-sm">
         <div class="font-light">
@@ -63,12 +79,8 @@ on:click={handleClick}>
 <style lang="postcss">
 /* Stripes */
 button {
-    background-image: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(0, 0, 0, 0.05) 5px,
-        rgba(0, 0, 0, 0.05) 10px
-    );
+    background-image: var(--stripes);
+
+    background-color: var(--bg);
 }
 </style>

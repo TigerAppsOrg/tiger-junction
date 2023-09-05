@@ -73,11 +73,16 @@ type CourseLinks = {
 type CalBoxParam = {
     courseCode: string;
     section: SectionData;
-    borderColor: string;
-    bgColor: string;
+    color: number;
     confirmed: boolean;
     preview?: boolean;
     day: number;
+}
+
+type CalendarBox = {
+    courseCode: string;
+    section: SectionData;
+    style: string;
 }
 
 export type { 
@@ -91,4 +96,5 @@ export type {
     RawCourseData,
     CourseLinks,
     CalBoxParam,
+    CalendarBox
 };

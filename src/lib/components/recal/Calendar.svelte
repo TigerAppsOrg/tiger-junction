@@ -14,17 +14,6 @@ export let supabase: SupabaseClient;
 $: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
 
 
-// Conversion from code to tailwind color
-const COLOR_MAP: Record<number, string> = {
-    0: "blue-500",
-    1: "green-500",
-    2: "yellow-500",
-    3: "red-500",
-    4: "purple-500",
-    5: "pink-500",
-    6: "indigo-500",
-} as const;
-
 const calcFormSaved = (ready: boolean, currentSchedule: number, 
 savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
     let saved: CalBoxParam[] = [];
@@ -36,7 +25,6 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
         const sections = get(sectionData)[course.term][course.id];
 
         const meta = get(rMeta)[currentSchedule][course.id];
-        const color = COLOR_MAP[meta.color % 7];
     
         for (let j = 0; j < sections.length; j++) {
             let catConf = meta.confirms.hasOwnProperty(sections[j].category);
@@ -47,8 +35,7 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
                     saved.push({
                         courseCode: course.code,
                         section: sections[j],
-                        borderColor: color,
-                        bgColor: color,
+                        color: meta.color,
                         confirmed: false,
                         preview: false,
                         day: k,
@@ -58,8 +45,7 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
                     saved.push({
                         courseCode: course.code,
                         section: sections[j],
-                        borderColor: color,
-                        bgColor: color,
+                        color: meta.color,
                         confirmed: true,
                         preview: false,
                         day: k,
@@ -96,11 +82,8 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
             <!-- * CalBoxes-->
             <!-- Saved Courses With Meta Colors -->
             {#key saved}
-            {#each saved as save}
-                <CalBox courseCode={save.courseCode} section={save.section}
-                borderColor={save.borderColor} bgColor={save.bgColor}
-                confirmed={save.confirmed} preview={save.preview}
-                day={save.day} />
+            {#each saved as params}
+                <CalBox {params} />
             {/each}
             {/key}
 
