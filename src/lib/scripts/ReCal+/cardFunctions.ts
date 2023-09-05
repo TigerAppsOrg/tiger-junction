@@ -3,6 +3,8 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCurrentSchedule } from "./getters";
+import { rMeta } from "$lib/stores/rmeta";
+import { get } from "svelte/store";
 
 //----------------------------------------------------------------------
 // From Search
@@ -53,10 +55,16 @@ const pinCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) 
         return x;
     });
 
+    // Remove the course from rMeta
+    rMeta.update(x => {
+        delete x[getCurrentSchedule()][course.id];
+        return x;
+    })
+
     // Update the course schedule association
     const { error } = await supabase
         .from("course_schedule_associations")
-        .update({is_pinned: true})
+        .update({is_pinned: true, metadata: {}})
         .eq("course_id", course.id)
         .eq("schedule_id", getCurrentSchedule());
 
