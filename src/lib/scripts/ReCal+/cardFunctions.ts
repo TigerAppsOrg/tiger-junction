@@ -1,5 +1,5 @@
 // Functions for card actions
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { addCourseMetadata, pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCurrentSchedule } from "./getters";
@@ -102,6 +102,10 @@ const removeCourseFromSaved = async (supabase: SupabaseClient, course: CourseDat
  * @param course 
  */
 const saveCourseFromPinned = async (supabase: SupabaseClient, course: CourseData) => {
+    addCourseMetadata(supabase, course, getCurrentSchedule());
+    let rawMeta = get(rMeta);
+    let metadata = rawMeta[getCurrentSchedule()][course.id];
+
     // Update pools
     pinnedCourses.update(x => {
         if (!x.hasOwnProperty(getCurrentSchedule())) 
@@ -121,7 +125,7 @@ const saveCourseFromPinned = async (supabase: SupabaseClient, course: CourseData
     // Update the course schedule association
     const { error } = await supabase
         .from("course_schedule_associations")
-        .update({is_pinned: false})
+        .update({is_pinned: false, metadata })
         .eq("course_id", course.id)
         .eq("schedule_id", getCurrentSchedule());
 
