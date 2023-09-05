@@ -4,22 +4,12 @@ import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
 import { currentSchedule, ready } from "$lib/stores/recal";
 import { sectionData, type SectionData } from "$lib/stores/rsections";
-import type { CourseData } from "$lib/types/dbTypes";
+import type { CalBoxParam, CourseData } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
-    import { valueToDays } from "$lib/scripts/convert";
+import { valueToDays } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
-
-type CalBoxParam = {
-    courseCode: string;
-    section: SectionData;
-    borderColor: string;
-    bgColor: string;
-    confirmed: boolean;
-    preview?: boolean;
-    day: number;
-}
 
 $: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
 

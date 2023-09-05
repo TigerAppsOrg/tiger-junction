@@ -10,6 +10,8 @@ export let confirmed: boolean;
 export let preview: boolean = false;
 export let day: number;
 
+
+
 let show = false;
 
 // Calculate height as percentage of calendar area

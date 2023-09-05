@@ -1,5 +1,6 @@
 // Types relating to database fetching and insertion
 
+import type { SectionData } from "$lib/stores/rsections"
 import type { RegSeatReservation } from "./regTypes"
 
 type Listing = {
@@ -69,6 +70,16 @@ type CourseLinks = {
     princetoncourses: string,
 }
 
+type CalBoxParam = {
+    courseCode: string;
+    section: SectionData;
+    borderColor: string;
+    bgColor: string;
+    confirmed: boolean;
+    preview?: boolean;
+    day: number;
+}
+
 export type { 
     Listing, 
     CourseInsert, 
@@ -79,4 +90,5 @@ export type {
     CourseData,
     RawCourseData,
     CourseLinks,
+    CalBoxParam,
 };
