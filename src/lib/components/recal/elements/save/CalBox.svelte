@@ -1,6 +1,7 @@
 <script lang="ts">
 import { valuesToTimeLabel } from "$lib/scripts/convert";
 import type { SectionData } from "$lib/stores/rsections";
+import type { CalBoxParam } from "$lib/types/dbTypes";
 
 export let courseCode: string;
 export let section: SectionData;
@@ -10,7 +11,7 @@ export let confirmed: boolean;
 export let preview: boolean = false;
 export let day: number;
 
-
+export let params: CalBoxParam;
 
 let show = false;
 
