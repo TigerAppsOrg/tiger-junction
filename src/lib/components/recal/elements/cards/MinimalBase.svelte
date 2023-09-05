@@ -68,7 +68,7 @@ on:mouseenter={handleHover}>
             {code}
         </div>
         <div>
-            {title}
+            {title} {course.meta ? course.meta : ""}
         </div>
         {#if $searchSettings.style["Show Rating"]}
             <div class="text-xs italic font-light">

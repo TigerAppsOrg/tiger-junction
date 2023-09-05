@@ -6,7 +6,8 @@ import type { Invalidator, Subscriber, Unsubscriber } from "svelte/motion";
 import { writable, type Writable } from "svelte/store";
 import { rawCourseData, searchCourseData } from "./recal";
 import { getCurrentTerm } from "$lib/scripts/ReCal+/getters";
-import { sectionData } from "./rsections";
+import { sectionData, type SectionData } from "./rsections";
+import { rMeta, type RMetadata } from "./rmeta";
 
 // Course pool type
 type CoursePool = {
@@ -27,17 +28,33 @@ type CoursePool = {
 // Helpers
 //----------------------------------------------------------------------
 
-// Handle metadata
-export const addCourseMetadata = (course: CourseData, scheduleId: number) => {
-    course.meta = {};
+/**
+ * Add default metadata to a course
+ * @param course 
+ * @param scheduleId 
+ */
+export const addCourseMetadata = async (supabase: SupabaseClient, course: CourseData, 
+scheduleId: number): Promise<boolean> => {
+    // Create default metadata
+    let meta: any = {
+        complete: false,
+        color: undefined,
+        sections: [],
+        confirms: {},
+    };
 
-    // Handle color
+    // * Handle color
     // Get other saved course colors
+    let otherIds: number[] = [];
     let otherColors: number[] = [];
     savedCourses.subscribe(x => {
-        otherColors = x[scheduleId].map(y => y.meta.color);
+        otherIds = x[scheduleId].map(y => y.id);
     })();
-
+    rMeta.subscribe(x => {
+        for (let i = 0; i < otherIds.length; i++) 
+            otherColors.push(x[scheduleId][otherIds[i]].color)
+    })();
+        
     let colorMap: Record<number, number> = {};
     for (const o of otherColors) {
         if (colorMap.hasOwnProperty(o)) colorMap[o] += 1;
@@ -47,27 +64,65 @@ export const addCourseMetadata = (course: CourseData, scheduleId: number) => {
     // Find the first unused color
     for (let i = 0; i < 7; i++) {
         if (!colorMap.hasOwnProperty(i)) {
-            course.meta.color = i;
+            meta.color = i;
             break;
         }
     }
 
     // If no color found, default to least used color
-    if (course.meta.color === undefined) {
+    if (meta.color === undefined) {
         let min = 0;
         for (const [k, v] of Object.entries(colorMap)) {
             if (v < colorMap[min]) min = k as unknown as number;
         }
-        course.meta.color = min;
+        meta.color = min;
     }
 
-    // Other metadata
-    course.meta.complete = false;
-    course.meta.areas = [];
-    course.meta.confirms = {};
-}
+    // * Handle Sections
+    // Check if section data is already populated
+    let sections: SectionData[] = [];
+    sectionData.subscribe(x => {
+        sections = x[course.term][course.id] ? x[course.term][course.id] : [];
+    });
 
-// Get the current pool of courses
+    // Sections are already loaded
+    if (sections.length > 0) {
+        let categories = sections.map(x => x.category);
+        let uniqueCategories = [...new Set(categories)];
+        meta.sections = uniqueCategories.sort();
+
+    // Sections are not loaded
+    } else {
+        // Load section data
+        let res = await sectionData.add(supabase, getCurrentTerm(), course.id);
+
+        if (!res) return false;
+
+        // Get section data
+        sectionData.subscribe(x => {
+            sections = x[course.term][course.id] ? x[course.term][course.id] : [];
+        })();
+
+        // Add categories
+        let categories = sections.map(x => x.category);
+        let uniqueCategories = [...new Set(categories)];
+        meta.sections = uniqueCategories.sort();
+    }
+
+    // * Update rMeta
+    rMeta.update(x => {
+        x[scheduleId][course.id] = meta as RMetadata;
+        return x;
+    });
+
+    return true;
+}
+/**
+ * Get the current pool for a given schedule
+ * @param pool 
+ * @param scheduleId 
+ * @returns course data array for the current pool
+ */
 const getCurrentPool = (pool: CoursePool, scheduleId: number): 
 CourseData[] => {
     let data: CourseData[] = [];
@@ -78,9 +133,14 @@ CourseData[] => {
     return data;
 }
 
-// Initialize a schedule pool
+/**
+ * Initialize a course pool
+ * @param supabase 
+ * @param scheduleId 
+ * @param term 
+ */
 export const initSchedule = async (supabase: SupabaseClient, scheduleId: number, 
-term: number): Promise<void> => {
+term: number) => {
     savedCourses.update(x => {
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = [];
         return x;
@@ -133,7 +193,16 @@ term: number): Promise<void> => {
     });
 }
 
-// Add a course to a pool
+/**
+ * Add a course to a pool
+ * @param supabase 
+ * @param pool 
+ * @param scheduleId 
+ * @param course 
+ * @param isPinned 
+ * @param SCD 
+ * @returns true if successful, false if failure
+ */
 const addCourse = async (supabase: SupabaseClient, pool: CoursePool, 
 scheduleId: number, course: CourseData, isPinned: boolean, SCD?: boolean): 
 Promise<boolean> => {
@@ -141,7 +210,8 @@ Promise<boolean> => {
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     // Add metadata
-    if (pool === savedCourses) addCourseMetadata(course, scheduleId);
+    course.meta = {};
+    if (pool === savedCourses) addCourseMetadata(supabase, course, scheduleId);
 
     // Update store
     pool.update(x => {
@@ -175,7 +245,15 @@ Promise<boolean> => {
     return true;
 }
 
-// Remove a course from a pool
+/**
+ * Remove a course from a pool
+ * @param supabase 
+ * @param pool 
+ * @param scheduleId 
+ * @param course 
+ * @param SCD 
+ * @returns true if successful, false if failure
+ */
 const removeCourse = async (supabase: SupabaseClient, pool: CoursePool, 
 scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
     // Get current pool courses
@@ -210,7 +288,13 @@ scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
     return true;
 }
 
-// Clear a pool
+/**
+ * Clear a pool
+ * @param supabase 
+ * @param pool 
+ * @param scheduleId 
+ * @returns true if successful, false if failure
+ */
 const clearPool = async (supabase: SupabaseClient, pool: CoursePool, 
 scheduleId: number): Promise<boolean> => {
     // Get current pool courses

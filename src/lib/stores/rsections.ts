@@ -3,10 +3,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { writable, type Writable } from "svelte/store";
 
+// term -> SectionMap
 type RawSectionData = {
     [key: number]: SectionMap
 }
 
+// course_id -> SectionData[]
 type SectionMap = {
     [key: string]: SectionData[]
 }
@@ -43,13 +45,13 @@ export const sectionData = {
      * @param courseId 
      */
     add: async (supabase: SupabaseClient, term: keyof RawSectionData, 
-    courseId: number) => {
+    courseId: number): Promise<boolean> => {
         // Check if the data is already loaded
         let loaded = false;
         sectionData.subscribe(x => {
             if (x[term][courseId]) loaded = true;
         })();
-        if (loaded) return;
+        if (loaded) return true;
 
         // Load the data
         const { data, error } = await supabase
@@ -60,7 +62,7 @@ export const sectionData = {
 
         if (error) {
             console.log(error);
-            return;
+            return false;
         }
 
         // Add the data
@@ -68,5 +70,6 @@ export const sectionData = {
             x[term][courseId] = data;
             return x;
         });
+        return true;
     }
 }
