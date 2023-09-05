@@ -51,6 +51,7 @@ scheduleId: number): Promise<boolean> => {
         otherIds = x[scheduleId].map(y => y.id);
     })();
     rMeta.subscribe(x => {
+        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
         for (let i = 0; i < otherIds.length; i++) {
             otherColors.push(x[scheduleId][otherIds[i]].color)
         }
@@ -177,7 +178,9 @@ term: number) => {
 
     searchCourseData.reset(term);
 
-    data.forEach(x => {
+    for (let i = 0; i < data.length; i++) {
+        let x = data[i];
+
         // Find Course
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
@@ -185,7 +188,7 @@ term: number) => {
         addCourseMetadata(supabase, cur, scheduleId);
 
         // Load section data
-        sectionData.add(supabase, term, cur.id);
+        await sectionData.add(supabase, term, cur.id);
 
         // Update pool
         let pool = x.is_pinned ? pinnedCourses : savedCourses;
@@ -193,7 +196,7 @@ term: number) => {
             x[scheduleId] = [...x[scheduleId], cur];
             return x;
         });
-    });
+    }        
 }
 
 /**
