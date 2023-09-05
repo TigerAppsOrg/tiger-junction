@@ -10,7 +10,7 @@ export type RMetadata = {
 // Map from schedule_id -> course_id -> metadata
 const { set, update, subscribe }: Writable<
     Record<number, Record<number, RMetadata>>
-> = writable();
+> = writable({});
 
 export const rMeta = {
     set,

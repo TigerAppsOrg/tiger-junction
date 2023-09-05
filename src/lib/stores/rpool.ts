@@ -111,6 +111,8 @@ scheduleId: number): Promise<boolean> => {
 
     // * Update rMeta
     rMeta.update(x => {
+        console.log(scheduleId);
+        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
         x[scheduleId][course.id] = meta as RMetadata;
         return x;
     });
@@ -179,7 +181,7 @@ term: number) => {
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
         // Add metadata
-        cur.meta = x.metadata;
+        // TODO !!
 
         // Load section data
         sectionData.add(supabase, term, cur.id);
@@ -209,10 +211,16 @@ Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
+    
     // Add metadata
-    course.meta = {};
-    if (pool === savedCourses) addCourseMetadata(supabase, course, scheduleId);
-
+    let meta: RMetadata | {} = {};
+    if (pool === savedCourses) {
+        addCourseMetadata(supabase, course, scheduleId);
+        rMeta.subscribe(x => {
+            meta =  x[scheduleId][course.id];
+        })();
+    }
+    
     // Update store
     pool.update(x => {
         if (currentPool.length === 0) x[scheduleId] = [course];
@@ -222,6 +230,7 @@ Promise<boolean> => {
 
     if (SCD) searchCourseData.remove(getCurrentTerm(), [course]);
 
+
     // Update course-schedule-associations table
     const { error } = await supabase
         .from("course_schedule_associations")
@@ -229,7 +238,7 @@ Promise<boolean> => {
             course_id: course.id,
             schedule_id: scheduleId,
             is_pinned: isPinned,
-            metadata: course.meta
+            metadata: meta,
         });
 
     // Revert if error

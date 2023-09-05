@@ -55,7 +55,6 @@ type CourseData = {
     dists: string[],
     rating: number,
     grading_info: Record<string, string>,
-    meta?: any | null,
 }
 
 type RawCourseData = {
