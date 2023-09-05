@@ -52,7 +52,6 @@ scheduleId: number): Promise<boolean> => {
     })();
     console.log(otherIds);
     rMeta.subscribe(x => {
-        console.log(x);
         for (let i = 0; i < otherIds.length; i++) {
             otherColors.push(x[scheduleId][otherIds[i]].color)
         }
