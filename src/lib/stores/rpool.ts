@@ -50,7 +50,6 @@ scheduleId: number): Promise<boolean> => {
     savedCourses.subscribe(x => {
         otherIds = x[scheduleId].map(y => y.id);
     })();
-    console.log(otherIds);
     rMeta.subscribe(x => {
         for (let i = 0; i < otherIds.length; i++) {
             otherColors.push(x[scheduleId][otherIds[i]].color)
