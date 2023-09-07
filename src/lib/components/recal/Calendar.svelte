@@ -11,8 +11,26 @@ import { valueToDays } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
 
-$: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
+/*
+    Procedure for rendering:
+    1. Get saved courses from savedCourses
+    2. Get hovered course from hoveredCourse (if exists)
+    3. Get section data from sectionData
+    4. Get meta data from rMeta
+    5. For each course, get the sections
+    6. For each section, get the days
+    7. For each day, create a CalBoxParam with an empty slotIndex
+    8. Sort by start time
+    9. For each CalBoxParam, find overlaps
+    10. For each CalBoxParam, assign slotIndex
+    11. Determine styles for each CalBoxParam
+    12. Render CalBoxParam
+*/
+const renderCalBoxes = () => {
+    
+}
 
+$: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
 
 const calcFormSaved = (ready: boolean, currentSchedule: number, 
 savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
@@ -56,6 +74,43 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
     console.log(saved);
     return saved;
 }
+
+// const findOverlaps = () => {
+//     // Sort by start time
+//     $toRender.sort((a, b) => a.start - b.start);
+    
+//     // Find overlaps
+//     for (let i = 0; i < $toRender.length; i++) {
+//         let current = $toRender[i];
+//         let overlaps = 0;
+//         for (let j = 0; j < $toRender.length; j++) {
+//             if (i === j) continue;
+//             let compare = $toRender[j];
+//             if (current.day !== compare.day) continue;
+//             if (current.start >= compare.end) continue;
+//             if (current.end <= compare.start) continue;
+//             overlaps++;
+//         }
+//         current.totalSlots = overlaps + 1;
+//     }
+
+//     // Assign slots
+//     for (let i = 0; i < $toRender.length; i++) {
+//         let current = $toRender[i];
+//         let slot = 1;
+//         for (let j = 0; j < $toRender.length; j++) {
+//             if (i === j) continue;
+//             let compare = $toRender[j];
+//             if (current.day !== compare.day) continue;
+//             if (current.start >= compare.end) continue;
+//             if (current.end <= compare.start) continue;
+//             if (current.slotIndex !== compare.slotIndex) continue;
+//             compare.slotIndex = current.totalSlots + 1;
+//             slot++;
+//         }
+//         current.slotIndex = slot;
+//     }
+// }
 
 </script>
 

@@ -12,6 +12,9 @@ import { sectionData } from "./rsections";
 // Ready for calendar render
 export const ready: Writable<boolean> = writable(false);
 
+// Hovered course
+export const hoveredCourse: Writable<CourseData | null> = writable(null);
+
 // Current term id
 export const currentTerm: Writable<number> = writable(1242);
 

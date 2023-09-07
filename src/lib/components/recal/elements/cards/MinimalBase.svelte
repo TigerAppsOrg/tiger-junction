@@ -4,7 +4,7 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { currentTerm, searchSettings } from "$lib/stores/recal";
+import { currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -51,6 +51,18 @@ const handleHover = async () => {
     let end = performance.now();
     console.log(end - start);
     console.log($sectionData);
+
+    if (category === "search") {
+        $hoveredCourse = course;
+    }
+    console.log($hoveredCourse);
+}
+
+const handleLeave = () => {
+    if (category === "search") {
+        $hoveredCourse = null;
+    }
+    console.log($hoveredCourse);
 }
 
 </script>
@@ -59,7 +71,8 @@ const handleHover = async () => {
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
 class="border-b-[1px] flex justify-between items-stretch duration-100
 {$searchSettings.style["Color by Rating"] && color}" 
-on:mouseenter={handleHover}>
+on:mouseenter={handleHover}
+on:mouseleave={handleLeave}>
     {#if !flipped}
     <button 
     class="text-xs font-light text-left w-[75%] dark:text-white p-1"
@@ -68,7 +81,7 @@ on:mouseenter={handleHover}>
             {code}
         </div>
         <div>
-            {title} {course.meta ? course.meta : ""}
+            {title}
         </div>
         {#if $searchSettings.style["Show Rating"]}
             <div class="text-xs italic font-light">
