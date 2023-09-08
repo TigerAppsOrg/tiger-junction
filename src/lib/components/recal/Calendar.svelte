@@ -30,50 +30,50 @@ const renderCalBoxes = () => {
     
 }
 
-$: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
+// $: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
 
-const calcFormSaved = (ready: boolean, currentSchedule: number, 
-savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
-    let saved: CalBoxParam[] = [];
-    if (!ready) return saved;
+// const calcFormSaved = (ready: boolean, currentSchedule: number, 
+// savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
+//     let saved: CalBoxParam[] = [];
+//     if (!ready) return saved;
 
-    const current = savedCourses[currentSchedule];
-    for (let i = 0; i < current.length; i++) {
-        const course = current[i];
-        const sections = get(sectionData)[course.term][course.id];
+//     const current = savedCourses[currentSchedule];
+//     for (let i = 0; i < current.length; i++) {
+//         const course = current[i];
+//         const sections = get(sectionData)[course.term][course.id];
 
-        const meta = get(rMeta)[currentSchedule][course.id];
+//         const meta = get(rMeta)[currentSchedule][course.id];
     
-        for (let j = 0; j < sections.length; j++) {
-            let catConf = meta.confirms.hasOwnProperty(sections[j].category);
-            let days: number[] = valueToDays(sections[j].days);
+//         for (let j = 0; j < sections.length; j++) {
+//             let catConf = meta.confirms.hasOwnProperty(sections[j].category);
+//             let days: number[] = valueToDays(sections[j].days);
 
-            if (!catConf) 
-                for (let k = 0; k < days.length; k++) 
-                    saved.push({
-                        courseCode: course.code,
-                        section: sections[j],
-                        color: meta.color,
-                        confirmed: false,
-                        preview: false,
-                        day: k,
-                    });
-            else if (meta.confirms[sections[j].category] === j) 
-                for (let k = 0; k < days.length; k++)
-                    saved.push({
-                        courseCode: course.code,
-                        section: sections[j],
-                        color: meta.color,
-                        confirmed: true,
-                        preview: false,
-                        day: k,
-                    });
-        }
-    }
+//             if (!catConf) 
+//                 for (let k = 0; k < days.length; k++) 
+//                     saved.push({
+//                         courseCode: course.code,
+//                         section: sections[j],
+//                         color: meta.color,
+//                         confirmed: false,
+//                         preview: false,
+//                         day: k,
+//                     });
+//             else if (meta.confirms[sections[j].category] === j) 
+//                 for (let k = 0; k < days.length; k++)
+//                     saved.push({
+//                         courseCode: course.code,
+//                         section: sections[j],
+//                         color: meta.color,
+//                         confirmed: true,
+//                         preview: false,
+//                         day: k,
+//                     });
+//         }
+//     }
 
-    console.log(saved);
-    return saved;
-}
+//     console.log(saved);
+//     return saved;
+// }
 
 // const findOverlaps = () => {
 //     // Sort by start time
@@ -136,11 +136,11 @@ savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
 
             <!-- * CalBoxes-->
             <!-- Saved Courses With Meta Colors -->
-            {#key saved}
+            <!-- {#key saved}
             {#each saved as params}
                 <CalBox {params} />
             {/each}
-            {/key}
+            {/key} -->
 
         <!-- Hovered Course -->
         </div>
