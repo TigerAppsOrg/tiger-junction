@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
-import { currentSchedule, ready } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, hoveredCourse, ready } from "$lib/stores/recal";
 import { sectionData, type SectionData } from "$lib/stores/rsections";
 import type { CalBoxParam, CourseData } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
@@ -10,6 +10,8 @@ import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
+
+let toRender: CalBoxParam[] = [];
 
 /*
     Procedure for rendering:
@@ -27,90 +29,83 @@ export let supabase: SupabaseClient;
     12. Render CalBoxParam
 */
 const renderCalBoxes = () => {
-    
+    let courseRenders: CalBoxParam[]= [];
+
+    // Steps 1-4
+    let saved = $savedCourses[$currentSchedule];
+    let hovered = $hoveredCourse;
+    let sections = $sectionData[$currentTerm];
+    let meta = $rMeta[$currentSchedule];
+
+    // Steps 5-7
+    for (let i = 0; i < saved.length; i++) {
+        let course = saved[i];
+        let courseSections = sections[course.id];
+        let courseMeta = meta[course.id];
+
+        for (let j = 0; j < courseSections.length; j++) {
+            let section = courseSections[j];
+            let days = valueToDays(section.days);
+
+            for (let k = 0; k < days.length; k++) {
+                let day = days[k];
+                courseRenders.push({
+                    courseCode: course.code,
+                    section: section,
+                    color: courseMeta.color,
+                    confirmed: false,
+                    preview: false,
+                    day: day,
+                    slot: 0,
+                });
+            }
+        }
+    }
+
+    if (hovered) {
+        let hoveredSections = sections[hovered.id];
+        for (let i = 0; i < hoveredSections.length; i++) {
+            let section = hoveredSections[i];
+            let days = valueToDays(section.days);
+
+            for (let j = 0; j < days.length; j++) {
+                let day = days[j];
+                courseRenders.push({
+                    courseCode: hovered.code,
+                    section: section,
+                    color: -1,
+                    confirmed: false,
+                    preview: true,
+                    day: day,
+                    slot: 0,
+                });
+            }
+        }
+    }
+
+    // Sort by start time
+    courseRenders.sort((a, b) => 
+        a.section.start_time - b.section.start_time);
+
+    // Find overlaps and assign slotIndex
+
+
+    // Determine styles for each CalBoxParam
+
+
+    // Render CalBoxParam
+    toRender = courseRenders;
 }
 
-// $: saved = calcFormSaved($ready, $currentSchedule, get(savedCourses));
+// Find overlaps and assign slotIndex
+const findOverlaps = (calboxes: CalBoxParam[]) => {
 
-// const calcFormSaved = (ready: boolean, currentSchedule: number, 
-// savedCourses: Record<number, CourseData[]>): CalBoxParam[] => {
-//     let saved: CalBoxParam[] = [];
-//     if (!ready) return saved;
+}
 
-//     const current = savedCourses[currentSchedule];
-//     for (let i = 0; i < current.length; i++) {
-//         const course = current[i];
-//         const sections = get(sectionData)[course.term][course.id];
+// Determine styles for each CalBoxParam
+const determineStyles = (calboxes: CalBoxParam[]) => {
 
-//         const meta = get(rMeta)[currentSchedule][course.id];
-    
-//         for (let j = 0; j < sections.length; j++) {
-//             let catConf = meta.confirms.hasOwnProperty(sections[j].category);
-//             let days: number[] = valueToDays(sections[j].days);
-
-//             if (!catConf) 
-//                 for (let k = 0; k < days.length; k++) 
-//                     saved.push({
-//                         courseCode: course.code,
-//                         section: sections[j],
-//                         color: meta.color,
-//                         confirmed: false,
-//                         preview: false,
-//                         day: k,
-//                     });
-//             else if (meta.confirms[sections[j].category] === j) 
-//                 for (let k = 0; k < days.length; k++)
-//                     saved.push({
-//                         courseCode: course.code,
-//                         section: sections[j],
-//                         color: meta.color,
-//                         confirmed: true,
-//                         preview: false,
-//                         day: k,
-//                     });
-//         }
-//     }
-
-//     console.log(saved);
-//     return saved;
-// }
-
-// const findOverlaps = () => {
-//     // Sort by start time
-//     $toRender.sort((a, b) => a.start - b.start);
-    
-//     // Find overlaps
-//     for (let i = 0; i < $toRender.length; i++) {
-//         let current = $toRender[i];
-//         let overlaps = 0;
-//         for (let j = 0; j < $toRender.length; j++) {
-//             if (i === j) continue;
-//             let compare = $toRender[j];
-//             if (current.day !== compare.day) continue;
-//             if (current.start >= compare.end) continue;
-//             if (current.end <= compare.start) continue;
-//             overlaps++;
-//         }
-//         current.totalSlots = overlaps + 1;
-//     }
-
-//     // Assign slots
-//     for (let i = 0; i < $toRender.length; i++) {
-//         let current = $toRender[i];
-//         let slot = 1;
-//         for (let j = 0; j < $toRender.length; j++) {
-//             if (i === j) continue;
-//             let compare = $toRender[j];
-//             if (current.day !== compare.day) continue;
-//             if (current.start >= compare.end) continue;
-//             if (current.end <= compare.start) continue;
-//             if (current.slotIndex !== compare.slotIndex) continue;
-//             compare.slotIndex = current.totalSlots + 1;
-//             slot++;
-//         }
-//         current.slotIndex = slot;
-//     }
-// }
+}
 
 </script>
 
@@ -136,13 +131,11 @@ const renderCalBoxes = () => {
 
             <!-- * CalBoxes-->
             <!-- Saved Courses With Meta Colors -->
-            <!-- {#key saved}
-            {#each saved as params}
+            <!-- {#key toRender}
+            {#each toRender as params}
                 <CalBox {params} />
             {/each}
             {/key} -->
-
-        <!-- Hovered Course -->
         </div>
         
     </div>

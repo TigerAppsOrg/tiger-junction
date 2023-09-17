@@ -77,6 +77,7 @@ type CalBoxParam = {
     confirmed: boolean;
     preview?: boolean;
     day: number;
+    slot: number;
 }
 
 type CalendarBox = {
