@@ -106,7 +106,9 @@ const handleLeave = () => {
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
-class="border-b-[1px] flex justify-between items-stretch duration-100" 
+class="border-b-[1px] 
+flex justify-between items-stretch duration-100
+{category==="saved" && "dark:border-black"}" 
 style={cssVarStyles}
 on:mouseenter={handleHover}
 on:mouseleave={handleLeave}>

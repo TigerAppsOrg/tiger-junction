@@ -5,7 +5,7 @@ import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { pinnedCourses } from "$lib/stores/rpool";
 import Modal from "$lib/components/elements/Modal.svelte";
-    import { modalStore } from "$lib/stores/modal";
+import { modalStore } from "$lib/stores/modal";
 
 export let supabase: SupabaseClient;
 export let showModal: boolean = false;
