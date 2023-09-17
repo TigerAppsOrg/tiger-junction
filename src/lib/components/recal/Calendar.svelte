@@ -16,6 +16,8 @@ let toRender: CalBoxParam[] = [];
 let prevSchedule: number = -1;
 let prevTerm: number = -1;
 
+$: console.log($ready);
+
 $: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, $currentSchedule, $currentTerm);
 
 const triggerRender = (a: any, b: any, c: any, d: any, e: any, f: any) => {
@@ -57,10 +59,13 @@ const renderCalBoxes = () => {
     let meta = $rMeta[$currentSchedule];
 
     // Steps 5-7
+    if (!saved) return;
     for (let i = 0; i < saved.length; i++) {
         let course = saved[i];
         let courseSections = sections[course.id];
         let courseMeta = meta[course.id];
+
+        if (!courseSections || !courseMeta) continue;
 
         for (let j = 0; j < courseSections.length; j++) {
             let section = courseSections[j];
