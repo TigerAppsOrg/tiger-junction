@@ -3,7 +3,7 @@ import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scri
 import { currentSchedule, currentTerm, hoveredCourse, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-// import customBlockIcon from "$lib/img/icons/customblockicon.svg";
+import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 // import shareIcon from "$lib/img/icons/shareicon.svg";
 import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import pinIcon from "$lib/img/icons/pinicon.svg";
@@ -19,6 +19,7 @@ import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { rMeta } from "$lib/stores/rmeta";
 
 export let supabase: SupabaseClient;
 
@@ -98,11 +99,11 @@ const handleLogout = async () => {
                 <img src={calendarIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button>
-            <!-- <button class="btn-circ"
-            on:click={() => console.log($hoveredCourse)}>
+            <button class="btn-circ"
+            on:click={() => console.log($rMeta)}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button> -->
+            </button>
             <button class="btn-circ"
             on:click={handleLogout}>
                 <img src={logoutIcon} alt="Logout Icon"

@@ -2,7 +2,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
-import { currentSchedule, currentTerm, hoveredCourse, ready } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, hoveredCourse, ready, recal } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
@@ -13,9 +13,9 @@ export let supabase: SupabaseClient;
 
 let toRender: CalBoxParam[] = [];
 
-$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready);
+$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal);
 
-const triggerRender = (a: any, b: any, c: any) => {
+const triggerRender = (a: any, b: any, c: any, d: any) => {
     if (!get(ready)) return;
     renderCalBoxes();
 }
@@ -38,6 +38,7 @@ const triggerRender = (a: any, b: any, c: any) => {
 const renderCalBoxes = () => {
     let courseRenders: CalBoxParam[]= [];
 
+    console.log($rMeta);
     // Steps 1-4
     let saved = $savedCourses[$currentSchedule];
     let hovered = $hoveredCourse;
@@ -49,7 +50,6 @@ const renderCalBoxes = () => {
         let course = saved[i];
         let courseSections = sections[course.id];
         let courseMeta = meta[course.id];
-        console.log(courseMeta);
 
         for (let j = 0; j < courseSections.length; j++) {
             let section = courseSections[j];
@@ -111,7 +111,6 @@ const renderCalBoxes = () => {
     findOverlaps(courseRenders);
     calculateDimensions(courseRenders);
 
-    console.log(courseRenders)
     toRender = courseRenders;
 }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
-import { currentSchedule, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors, type CalColors } from "$lib/stores/styles";
@@ -50,6 +50,8 @@ const handleClick = () => {
         return x;
     });
 
+    $recal = !$recal;
+
     // Modify db
     supabase.from("course_schedule_associations")
         .update({
@@ -67,8 +69,6 @@ const handleClick = () => {
                 x[$currentSchedule][params.section.course_id].confirms = oldConfirms;
                 return x;
             });
-        } else {
-            console.log("Successfully updated db")
         }
     });
 }

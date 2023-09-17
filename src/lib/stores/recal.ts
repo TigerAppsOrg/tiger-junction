@@ -12,7 +12,11 @@ import { sectionData } from "./rsections";
 // Ready for calendar render
 export const ready: Writable<boolean> = writable(false);
 
+// Force rerendering of top area
 export const retop: Writable<boolean> = writable(false);
+
+// Force rerendering of calendar
+export const recal: Writable<boolean> = writable(false);
 
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
