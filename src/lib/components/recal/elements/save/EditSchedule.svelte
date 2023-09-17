@@ -143,12 +143,16 @@ const saveSchedule = async () => {
                 <button type="submit" class="default" 
                 on:click={saveSchedule}>
                 </button>
-                
+
+                <!-- Disallow delete if only 1 schedule -->
+                {#if $schedules[$currentTerm].length > 1}
                 <button type="submit"
                 class="btn flex-1 bg-red-500 text-white"
                 on:click={deleteSchedule}>
                     Delete
                 </button>
+                {/if}
+
                 <button type="submit"
                 class="btn flex-1 bg-blue-500 text-white"
                 on:click={duplicateSchedule}>

@@ -1,7 +1,7 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, retop, schedules } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let showModal: boolean = false;
@@ -40,7 +40,9 @@ const saveSchedule = async () => {
 
         // Update current schedule
         currentSchedule.set(res.data[0].id);
-    })
+        if ($schedules[$currentTerm].length === 1)
+            $retop = !$retop;
+    });
 
     // Clean Up and Close
     input = "";

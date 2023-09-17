@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
@@ -94,6 +94,7 @@ const handleLogout = async () => {
 
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
     p-1 rounded-md h-8 font-light">
+    {#key $retop}
         {#await fetchUserSchedules(supabase, $currentTerm)}
             <Loader />
         {:then}
@@ -126,10 +127,14 @@ const handleLogout = async () => {
                 </button>
             {/key}
         {:catch error}
-            <div class="text-red-500">
-                {error.message}
-            </div>
+            <button class="termchoice"
+            on:click={() => 
+            modalStore.open("addSchedule", { clear: true })}>
+                <img src={addIcon} alt="Add Icon"
+                class="btn-icon">
+            </button>
         {/await}
+    {/key}
     </div> <!-- * Schedule Select -->
 </div>
 
