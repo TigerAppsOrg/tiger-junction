@@ -157,10 +157,10 @@ term: number) => {
 
     let loaded = false;
     savedCourses.subscribe(x => {
-        if (x[scheduleId].length > 0) loaded = true;
+        if (x[scheduleId] !== undefined) loaded = true;
     })();
     pinnedCourses.subscribe(x => {
-        if (x[scheduleId].length > 0) loaded = true;
+        if (x[scheduleId] !== undefined) loaded = true;
     })();
     if (loaded) return;
 
