@@ -16,17 +16,16 @@ let toRender: CalBoxParam[] = [];
 let prevSchedule: number = -1;
 let prevTerm: number = -1;
 
-$: console.log($ready);
-
 $: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, $currentSchedule, $currentTerm);
 
-const triggerRender = (a: any, b: any, c: any, d: any, e: any, f: any) => {
-    if (prevSchedule === -1) prevSchedule = e;
-    if (prevTerm === -1) prevTerm = f;
+const triggerRender = (a: any, b: any, c: any, d: any,
+currentSchedule: number, currentTerm: number) => {
+    if (prevSchedule === -1) prevSchedule = currentSchedule;
+    if (prevTerm === -1) prevTerm = currentTerm;
 
-    if (prevSchedule !== e || prevTerm !== f) {
-        prevSchedule = e;
-        prevTerm = f;
+    if (prevSchedule !== currentSchedule || prevTerm !== currentTerm) {
+        prevSchedule = currentSchedule;
+        prevTerm = currentTerm;
         toRender = [];
     }
 
