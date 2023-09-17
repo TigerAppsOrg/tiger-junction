@@ -55,9 +55,12 @@ const renderCalBoxes = () => {
             let section = courseSections[j];
             let days = valueToDays(section.days);
 
-            if (courseMeta.confirms.hasOwnProperty(section.category) 
-            && courseMeta.confirms[section.category] !== section.id) 
-                continue;
+
+            let confirmed = false;
+            if (courseMeta.confirms.hasOwnProperty(section.category)) 
+                if (courseMeta.confirms[section.category] !== section.id)
+                    continue;
+                else confirmed = true;
 
             for (let k = 0; k < days.length; k++) {
                 let day = days[k];
@@ -65,7 +68,7 @@ const renderCalBoxes = () => {
                     courseCode: course.code.split("/")[0],
                     section: section,
                     color: courseMeta.color,
-                    confirmed: false,
+                    confirmed: confirmed,
                     day: day,
                     slot: 0,
                     maxSlot: 0,
