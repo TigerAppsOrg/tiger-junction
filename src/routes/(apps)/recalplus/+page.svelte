@@ -11,7 +11,6 @@ import { onMount } from "svelte";
 export let data;
 
 onMount(async () => {
-    console.log("Fetching data")
     await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
     await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
