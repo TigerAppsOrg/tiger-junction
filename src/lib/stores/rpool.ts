@@ -111,6 +111,13 @@ scheduleId: number): Promise<boolean> => {
         meta.sections = uniqueCategories.sort();
     }
 
+    // Auto-Add if only one section
+    if (meta.sections.length === 1) {
+        console.log("efefef")
+        meta.complete = true;
+        meta.confirms[meta.sections[0]] = sections[0].id;
+    }
+
     // * Update rMeta
     rMeta.update(x => {
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
