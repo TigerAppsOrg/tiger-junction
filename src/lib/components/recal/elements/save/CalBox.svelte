@@ -1,10 +1,11 @@
 <script lang="ts">
 import { valuesToTimeLabel } from "$lib/scripts/convert";
-import type { SectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let params: CalBoxParam;
-const { courseCode, section, confirmed, color, day } = params;
+export let supabase: SupabaseClient;
+const { courseCode, section, confirmed, color } = params;
 
 const COLOR_MAP: Record<number, string> = {
     "-1": "#a3a3a3",
@@ -49,7 +50,7 @@ let show = false;
 
 // Toggle section choice and modify db and ui
 const handleClick = () => {
-    
+
 }
 
 </script>

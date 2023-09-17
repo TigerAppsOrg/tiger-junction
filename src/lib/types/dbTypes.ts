@@ -76,6 +76,7 @@ type CalBoxParam = {
     color: number;
     confirmed: boolean;
     day: number;
+    dimensions: string;
     slot: number;
 }
 

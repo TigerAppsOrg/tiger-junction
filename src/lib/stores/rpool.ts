@@ -48,7 +48,6 @@ scheduleId: number): Promise<boolean> => {
     let otherIds: number[] = [];
     let otherColors: number[] = [];
     savedCourses.subscribe(x => {
-        console.log(x);
         otherIds = x[scheduleId].map(y => y.id);
     })();
     rMeta.subscribe(x => {
@@ -114,7 +113,6 @@ scheduleId: number): Promise<boolean> => {
 
     // * Update rMeta
     rMeta.update(x => {
-        console.log(scheduleId);
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
         x[scheduleId][course.id] = meta as RMetadata;
         return x;
@@ -146,22 +144,19 @@ CourseData[] => {
  */
 export const initSchedule = async (supabase: SupabaseClient, scheduleId: number, 
 term: number) => {
+    let loaded = false;
     savedCourses.update(x => {
-        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = [];
+        if (x.hasOwnProperty(scheduleId)) loaded = true;
+        else x[scheduleId] = [];
+        
         return x;
     });
     pinnedCourses.update(x => {
-        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = [];
+        if (x.hasOwnProperty(scheduleId)) loaded = true;
+        else x[scheduleId] = [];
+        
         return x;
     });
-
-    let loaded = false;
-    savedCourses.subscribe(x => {
-        if (x[scheduleId] !== undefined) loaded = true;
-    })();
-    pinnedCourses.subscribe(x => {
-        if (x[scheduleId] !== undefined) loaded = true;
-    })();
     if (loaded) return;
 
     const rawCourses = rawCourseData.get(term);

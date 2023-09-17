@@ -13,6 +13,13 @@ export let supabase: SupabaseClient;
 
 let toRender: CalBoxParam[] = [];
 
+$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse);
+
+const triggerRender = (a: any, b: any) => {
+    if (!get(ready)) return;
+    renderCalBoxes();
+}
+
 /*
     Procedure for rendering:
     1. Get saved courses from savedCourses
@@ -56,6 +63,7 @@ const renderCalBoxes = () => {
                     confirmed: false,
                     day: day,
                     slot: 0,
+                    dimensions: "",
                 });
             }
         }
@@ -76,6 +84,7 @@ const renderCalBoxes = () => {
                     confirmed: false,
                     day: day,
                     slot: 0,
+                    dimensions: "",
                 });
             }
         }
@@ -91,6 +100,7 @@ const renderCalBoxes = () => {
     // Determine styles for each CalBoxParam
 
 
+    console.log(courseRenders)
     // Render CalBoxParam
     toRender = courseRenders;
 }
@@ -131,7 +141,7 @@ const determineStyles = (calboxes: CalBoxParam[]) => {
             <!-- Saved Courses With Meta Colors -->
             <!-- {#key toRender}
             {#each toRender as params}
-                <CalBox {params} />
+                <CalBox {params} {supabase} />
             {/each}
             {/key} -->
         </div>
