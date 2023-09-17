@@ -40,7 +40,7 @@ const handleClick = () => {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex p-1" style={cssVarStyles}
+<button id="box" class="absolute text-left flex p-1 rounded-md" style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>

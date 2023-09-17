@@ -163,7 +163,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
         let height = ((calbox.section.end_time - calbox.section.start_time) / 90) * 100;
         let top = ((calbox.section.start_time) / 90) * 100;
         let left = (calbox.day - 1) * 20 + (calbox.slot / calbox.maxSlot) * 20;
-        let width = 20 / calbox.maxSlot;
+        let width = 20 / calbox.maxSlot - 0.4;
 
 
         calbox.height = `${height}%`;
