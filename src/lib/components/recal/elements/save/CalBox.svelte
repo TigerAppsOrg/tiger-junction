@@ -50,14 +50,19 @@ const handleClick = () => {
         return x;
     });
 
+    let secMeta = $rMeta[$currentSchedule][params.section.course_id];
+
+    // Check for completeness (addedkeys == requiredkeys)
+    let addedKeys = Object.keys(secMeta.confirms);
+    secMeta.complete = addedKeys.length === secMeta.sections.length;
+
+    // Force calendar rerender
     $recal = !$recal;
 
     // Modify db
     supabase.from("course_schedule_associations")
         .update({
-            metadata: {
-                confirms: $rMeta[$currentSchedule][params.section.course_id].confirms
-            }
+            metadata: $rMeta[$currentSchedule][params.section.course_id]
         })
         .eq("course_id", params.section.course_id)
         .eq("schedule_id", $currentSchedule)
@@ -69,6 +74,7 @@ const handleClick = () => {
                 x[$currentSchedule][params.section.course_id].confirms = oldConfirms;
                 return x;
             });
+            $recal = !$recal;
         }
     });
 }

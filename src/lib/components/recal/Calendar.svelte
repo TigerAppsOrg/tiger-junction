@@ -38,7 +38,6 @@ const triggerRender = (a: any, b: any, c: any, d: any) => {
 const renderCalBoxes = () => {
     let courseRenders: CalBoxParam[]= [];
 
-    console.log($rMeta);
     // Steps 1-4
     let saved = $savedCourses[$currentSchedule];
     let hovered = $hoveredCourse;
