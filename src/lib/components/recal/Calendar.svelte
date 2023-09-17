@@ -3,8 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
 import { currentSchedule, currentTerm, hoveredCourse, ready } from "$lib/stores/recal";
-import { sectionData, type SectionData } from "$lib/stores/rsections";
-import type { CalBoxParam, CourseData } from "$lib/types/dbTypes";
+import { sectionData } from "$lib/stores/rsections";
+import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
@@ -13,9 +13,9 @@ export let supabase: SupabaseClient;
 
 let toRender: CalBoxParam[] = [];
 
-$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse);
+$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready);
 
-const triggerRender = (a: any, b: any) => {
+const triggerRender = (a: any, b: any, c: any) => {
     if (!get(ready)) return;
     renderCalBoxes();
 }
@@ -49,10 +49,15 @@ const renderCalBoxes = () => {
         let course = saved[i];
         let courseSections = sections[course.id];
         let courseMeta = meta[course.id];
+        console.log(courseMeta);
 
         for (let j = 0; j < courseSections.length; j++) {
             let section = courseSections[j];
             let days = valueToDays(section.days);
+
+            if (courseMeta.confirms.hasOwnProperty(section.category) 
+            && courseMeta.confirms[section.category] !== section.id) 
+                continue;
 
             for (let k = 0; k < days.length; k++) {
                 let day = days[k];
@@ -63,7 +68,11 @@ const renderCalBoxes = () => {
                     confirmed: false,
                     day: day,
                     slot: 0,
-                    dimensions: "",
+                    maxSlot: 0,
+                    top: "",
+                    left: "",
+                    width: "",
+                    height: "",
                 });
             }
         }
@@ -84,35 +93,83 @@ const renderCalBoxes = () => {
                     confirmed: false,
                     day: day,
                     slot: 0,
-                    dimensions: "",
+                    maxSlot: 0,
+                    top: "",
+                    left: "",
+                    width: "",
+                    height: "",
                 });
             }
         }
     }
 
+    // Steps 8-12
     // Sort by start time
     courseRenders.sort((a, b) => 
         a.section.start_time - b.section.start_time);
 
-    // Find overlaps and assign slotIndex
-
-
-    // Determine styles for each CalBoxParam
-
+    findOverlaps(courseRenders);
+    calculateDimensions(courseRenders);
 
     console.log(courseRenders)
-    // Render CalBoxParam
     toRender = courseRenders;
 }
 
-// Find overlaps and assign slotIndex
+// Find overlaps and assign slotIndex and maxSlot
+// maxSlot is the number of overlaps for a given CalBoxParam
+// slotIndex is the index of the CalBoxParam in the list of overlaps
 const findOverlaps = (calboxes: CalBoxParam[]) => {
+    let overlaps: Record<string, CalBoxParam[]> = {};
 
+    // Assign slotIndex
+    for (let i = 0; i < calboxes.length; i++) {
+        let calbox = calboxes[i];
+        let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
+
+        if (overlaps.hasOwnProperty(key)) {
+            let overlap = overlaps[key];
+            let found = false;
+
+            for (let j = 0; j < overlap.length; j++) {
+                let overlapCalbox = overlap[j];
+                if (overlapCalbox.section.id === calbox.section.id) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                overlap.push(calbox);
+                calbox.slot = overlap.length - 1;
+            }
+        } else {
+            overlaps[key] = [calbox];
+            calbox.slot = 0;
+        }
+    }
+
+    // Assign maxSlot
+    for (let i = 0; i < calboxes.length; i++) {
+        let calbox = calboxes[i];
+        let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
+        calbox.maxSlot = overlaps[key].length;
+    }
 }
 
-// Determine styles for each CalBoxParam
-const determineStyles = (calboxes: CalBoxParam[]) => {
+// Calculate dimensions for each CalBoxParam
+const calculateDimensions = (calboxes: CalBoxParam[]) => {
+    for (let i = 0; i < calboxes.length; i++) {
+        let calbox = calboxes[i];
+        let height = (calbox.section.end_time - calbox.section.start_time) / 0.6;
+        let top = (calbox.section.start_time - 8) / 0.6;
+        let left = (calbox.day - 1) * 20 + (calbox.slot / calbox.maxSlot) * 20;
+        let width = 20 / calbox.maxSlot;
 
+        calbox.height = `${height}%`;
+        calbox.top = `${top}%`;
+        calbox.left = `${left}%`;
+        calbox.width = `${width}%`;
+    }
 }
 
 </script>
@@ -138,12 +195,11 @@ const determineStyles = (calboxes: CalBoxParam[]) => {
             {/each}
 
             <!-- * CalBoxes-->
-            <!-- Saved Courses With Meta Colors -->
-            <!-- {#key toRender}
+            {#key toRender}
             {#each toRender as params}
                 <CalBox {params} {supabase} />
             {/each}
-            {/key} -->
+            {/key}
         </div>
         
     </div>

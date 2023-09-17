@@ -9,7 +9,6 @@ export let supabase: SupabaseClient;
 
 $: saved = $savedCourses[$currentSchedule];
 $: pinned = $pinnedCourses[$currentSchedule];
-$: console.log(saved, pinned);
 </script>
 
 

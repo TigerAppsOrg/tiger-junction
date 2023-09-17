@@ -76,8 +76,12 @@ type CalBoxParam = {
     color: number;
     confirmed: boolean;
     day: number;
-    dimensions: string;
     slot: number;
+    maxSlot: number;
+    height: string;
+    width: string;
+    top: string;
+    left: string;
 }
 
 type CalendarBox = {

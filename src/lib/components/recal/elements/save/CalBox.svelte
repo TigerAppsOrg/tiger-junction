@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
-const { courseCode, section, confirmed, color } = params;
+const { courseCode, section } = params;
 
 const COLOR_MAP: Record<number, string> = {
     "-1": "#a3a3a3",
@@ -31,31 +31,31 @@ const BORDER_MAP: Record<number, string> = {
 }
 
 let styles = {
-    "bg": COLOR_MAP[color],
-    "border": BORDER_MAP[color],
-    "alpha": confirmed ? "1" : "0.5",
-    "stripes": confirmed ? "" : `repeating-linear-gradient(
+    "bg": COLOR_MAP[params.color],
+    "border": BORDER_MAP[params.color],
+    "alpha": params.confirmed ? "1" : "0.5",
+    "stripes": params.confirmed ? "" : `repeating-linear-gradient(
         45deg,
         transparent,
         transparent 5px,
         rgba(0, 0, 0, 0.05) 5px,
         rgba(0, 0, 0, 0.05) 10px);`,
+    "top": `${params.top}`,
+    "left": `${params.left}`,
+    "height": `${params.height}`,
+    "width": `${params.width}`,
 }
 
 $: cssVarStyles = Object.entries(styles)
 		.map(([key, value]) => `--${key}:${value}`)
 		.join(';');
 
-let show = false;
-
 // Toggle section choice and modify db and ui
 const handleClick = () => {
 
 }
-
 </script>
 
-{#if show}
 <!-- Height is on scale from 0 to 90 -->
 <button id="box" class="absolute rounded-md" style={cssVarStyles}
 on:click={handleClick}>
@@ -71,7 +71,6 @@ on:click={handleClick}>
         </div>
     </div>
 </button>
-{/if}
 
 <style lang="postcss">
 button {
@@ -79,5 +78,9 @@ button {
     background-color: var(--bg)/var(--alpha);
     border: 1px solid var(--border)/var(--alpha);
     text: var(--border)/var(--alpha);
+    top: var(--top);
+    left: var(--left);
+    height: var(--height);
+    width: var(--width);
 }
 </style>
