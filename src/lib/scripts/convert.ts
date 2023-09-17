@@ -234,6 +234,50 @@ const darkenHSL = (hsl: string, amount: number) => {
     return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
+/**
+ * Converts an HSL color to a RGB color
+ * @param hsl 
+ * @returns RGB color
+ */
+const hslToRGB = (hsl: string) => {
+    let [h, s, l] = hsl.split(",").map((x) => parseInt(x.replace(/\D/g, "")));
+
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+
+    const f = (n: number) => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color).toString(16).padStart(2, '0');  
+    };
+
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+const rgbToHSL = (hex: string) => {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const l = Math.max(r, g, b);
+    const s = l - Math.min(r, g, b);
+    const h = s
+      ? l === r
+        ? (g - b) / s
+        : l === g
+        ? 2 + (b - r) / s
+        : 4 + (r - g) / s
+      : 0;
+    return [
+      60 * h < 0 ? 60 * h + 360 : 60 * h,
+      100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+      (100 * (2 * l - s)) / 2,
+    ];
+}
+
 //----------------------------------------------------------------------
 
 export { 
@@ -246,5 +290,7 @@ export {
     valueToDays,
     normalizeText,
     darkenHSL,
+    hslToRGB,
+    rgbToHSL,
 }
 
