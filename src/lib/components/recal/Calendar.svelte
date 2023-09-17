@@ -13,9 +13,21 @@ export let supabase: SupabaseClient;
 
 let toRender: CalBoxParam[] = [];
 
-$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal);
+let prevSchedule: number = -1;
+let prevTerm: number = -1;
 
-const triggerRender = (a: any, b: any, c: any, d: any) => {
+$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, $currentSchedule, $currentTerm);
+
+const triggerRender = (a: any, b: any, c: any, d: any, e: any, f: any) => {
+    if (prevSchedule === -1) prevSchedule = e;
+    if (prevTerm === -1) prevTerm = f;
+
+    if (prevSchedule !== e || prevTerm !== f) {
+        prevSchedule = e;
+        prevTerm = f;
+        toRender = [];
+    }
+
     if (!get(ready)) return;
     renderCalBoxes();
 }
