@@ -75,7 +75,6 @@ type CalBoxParam = {
     section: SectionData;
     color: number;
     confirmed: boolean;
-    preview?: boolean;
     day: number;
     slot: number;
 }

@@ -54,7 +54,6 @@ const renderCalBoxes = () => {
                     section: section,
                     color: courseMeta.color,
                     confirmed: false,
-                    preview: false,
                     day: day,
                     slot: 0,
                 });
@@ -75,7 +74,6 @@ const renderCalBoxes = () => {
                     section: section,
                     color: -1,
                     confirmed: false,
-                    preview: true,
                     day: day,
                     slot: 0,
                 });

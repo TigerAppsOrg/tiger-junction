@@ -4,25 +4,41 @@ import type { SectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 
 export let params: CalBoxParam;
-const { courseCode, section, color, preview, day } = params;
+const { courseCode, section, confirmed, color, day } = params;
 
-const COLOR_MAP = {
-    
+const COLOR_MAP: Record<number, string> = {
+    "-1": "#a3a3a3",
+    0: "#a3f923",
+    1: "#f92323",
+    2: "#f9d423",
+    3: "#23f9f9",
+    4: "#f923f9",
+    5: "#23f923",
+    6: "#f9f923",
 }
 
-let confirmed = true;
-
+// Slightly darker colors
+const BORDER_MAP: Record<number, string> = {
+    "-1": "#7a7a7a",
+    0: "#7ab923",
+    1: "#b92323",
+    2: "#b9a923",
+    3: "#23b9b9",
+    4: "#b923b9",
+    5: "#23b923",
+    6: "#b9b923",
+}
 
 let styles = {
-    "bg": `#a3f923`,
-    "border": `#a3f923`,
+    "bg": COLOR_MAP[color],
+    "border": BORDER_MAP[color],
+    "alpha": confirmed ? "1" : "0.5",
     "stripes": confirmed ? "" : `repeating-linear-gradient(
         45deg,
         transparent,
         transparent 5px,
         rgba(0, 0, 0, 0.05) 5px,
         rgba(0, 0, 0, 0.05) 10px);`,
-    
 }
 
 $: cssVarStyles = Object.entries(styles)
@@ -31,36 +47,16 @@ $: cssVarStyles = Object.entries(styles)
 
 let show = false;
 
-// Calculate height as percentage of calendar area
-const calculateHeight = (): number => {
-    if (section.start_time === -48 || section.end_time === -48) {
-        show = false;
-       return 0;
-    }
-    show = true;
-    return ((section.end_time - section.start_time)/90) * 100;
-}
-
-// Determine color of card
-// let colorStyle = preview ? 
-//     "bg-slate-300 border-slate-600 text-slate-600 dark:bg-slate-500 dark:border-slate-200 dark:text-slate-200" :
-//     confirmed ? 
-//         `bg-${bgColor} border-${borderColor} text-${borderColor}` : 
-//         `bg-${bgColor}/50 border-${bgColor}/60 text-${borderColor}/80`;
-
-let height = calculateHeight();
-
 // Toggle section choice and modify db and ui
 const handleClick = () => {
-
+    
 }
 
 </script>
 
 {#if show}
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="h-[{height}%] w-[18%] absolute
-left-[{day*20}%] top-11 rounded-md" style={cssVarStyles}
+<button id="box" class="absolute rounded-md" style={cssVarStyles}
 on:click={handleClick}>
     <div class="text-sm">
         <div class="font-light">
@@ -77,10 +73,10 @@ on:click={handleClick}>
 {/if}
 
 <style lang="postcss">
-/* Stripes */
 button {
     background-image: var(--stripes);
-
-    background-color: var(--bg);
+    background-color: var(--bg)/var(--alpha);
+    border: 1px solid var(--border)/var(--alpha);
+    text: var(--border)/var(--alpha);
 }
 </style>
