@@ -219,6 +219,25 @@ const normalizeText = (text: string) => {
 }
 
 //----------------------------------------------------------------------
+// Color Functions
+//----------------------------------------------------------------------
+
+/**
+ * Darkens an HSL color
+ * @param hsl 
+ * @param amount 
+ * @returns 
+ */
+const darkenHSL = (hsl: string, amount: number) => {
+    let [h, s, l] = hsl.split(",").map((x) => parseInt(x.replace(/\D/g, "")));
+
+    l = Math.max(0, l - amount);
+
+    console.log(`hsl(${h}, ${s}%, ${l}%)`);
+    return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
+//----------------------------------------------------------------------
 
 export { 
     timeToValue, 
@@ -229,5 +248,6 @@ export {
     daysToValue,
     valueToDays,
     normalizeText,
+    darkenHSL,
 }
 

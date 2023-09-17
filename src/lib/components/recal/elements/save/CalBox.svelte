@@ -1,8 +1,9 @@
 <script lang="ts">
-import { valuesToTimeLabel } from "$lib/scripts/convert";
+import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
 import { searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { calColors, type CalColors } from "$lib/stores/styles";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -10,33 +11,12 @@ const { courseCode, section } = params;
 
 let hovered: boolean = false;
 
-const COLOR_MAP: Record<number, string> = {
-    "-1": "#a3a3a3",
-    0: "#a3f923",
-    1: "#f92323",
-    2: "#f9d423",
-    3: "#23f9f9",
-    4: "#f923f9",
-    5: "#23f923",
-    6: "#f9f923",
-}
-
-// Much darker colors
-const BORDER_MAP: Record<number, string> = {
-    "-1": "#a3a3a3",
-    0: "#7f7f00",
-    1: "#7f0000",
-    2: "#7f5f00",
-    3: "#007f7f",
-    4: "#7f007f",
-    5: "#007f00",
-    6: "#7f7f00",
-}
+params.confirmed = true;
 
 let styles = {
-    "bg": COLOR_MAP[params.color],
-    "border": BORDER_MAP[params.color],
-    "alpha": params.confirmed ? "1" : "0.5",
+    "bg": $calColors[params.color as keyof CalColors],
+    "border": darkenHSL($calColors[params.color as keyof CalColors], 40),
+    "alpha": params.confirmed ? "1" : "0.6",
     "stripes": params.confirmed ? "" : `repeating-linear-gradient(
         45deg,
         transparent,
@@ -47,6 +27,7 @@ let styles = {
     "left": `${params.left}`,
     "height": `${params.height}`,
     "width": `${params.width}`,
+    "trans": params.confirmed ? "solid" : "transparent"
 }
 
 $: cssVarStyles = Object.entries(styles)
@@ -86,8 +67,9 @@ on:mouseleave={() => hovered = false}>
 button {
     background-image: var(--stripes);
     background-color: var(--bg);
-    border-left: 4px solid var(--border);
+    border-left: 4px var(--trans) var(--border);
     color: var(--border);
+    opacity: var(--alpha);
     top: var(--top);
     left: var(--left);
     height: var(--height);
