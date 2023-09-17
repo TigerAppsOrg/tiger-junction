@@ -187,7 +187,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
             {/each}
         </div>
             
-            <div class="grid grid-cols-5 w-full h-[96%] relative">
+            <div class="grid grid-cols-5 w-full h-[96%] relative overflow-x-hidden">
 
             <!-- * Grid Lines -->
             {#each {length: 75} as _}

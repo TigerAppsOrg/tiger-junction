@@ -28,6 +28,7 @@ const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData
  * @param course 
  */
 const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+    hoveredCourse.set(null);
     await pinnedCourses.add(supabase, getCurrentSchedule(), course, true);
 }
 

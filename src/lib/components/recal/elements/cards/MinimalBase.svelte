@@ -4,11 +4,15 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { sectionData } from "$lib/stores/rsections";
+import { calColors, type CalColors } from "$lib/stores/styles";
+import { rMeta } from "$lib/stores/rmeta";
+import { darkenHSL } from "$lib/scripts/convert";
+import { darkTheme } from "$lib/stores/state";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -21,25 +25,67 @@ let title = course.title;
 const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
 // Determine color of card
-let color: string = "";
+let styles = {
+    color: "",
+    text: "",
+    hoverColor: "",
+    hoverText: ""
+}
+
+const fillStyles = () => {
+    if (styles.color === "") return;
+    styles.text = darkenHSL(styles.color, 50);
+    styles.hoverColor = darkenHSL(styles.color, 10);
+    styles.hoverText = darkenHSL(styles.color, 70);
+}
 
 // Color by rating
 if (category === "search" || category === "pinned") {
-    if (!course.rating) color = "bg-slate-300 dark:bg-slate-500";
-    else if (course.rating >= 4.5) color = "bg-green-400 dark:bg-green-700";
-    else if (course.rating >= 4.0) color = "bg-blue-400 dark:bg-blue-700"
-    else if (course.rating >= 3.5) color = "bg-yellow-400 dark:bg-yellow-700";
-    else if (course.rating >= 3.0) color = "bg-orange-400 dark:bg-orange-700";
-    else color = "bg-red-400 dark:bg-red-700";
-
+    if ($searchSettings.style["Color by Rating"]) {
+        if (!course.rating) {
+            styles.color = "hsl(0, 0%, 50%)";
+            fillStyles();
+        } else if (course.rating >= 4.5) {
+            styles.color = "hsl(120, 100%, 50%)";
+            fillStyles();
+        } else if (course.rating >= 4.0) {
+            styles.color = "hsl(210, 100%, 50%)";
+            fillStyles();
+        } else if (course.rating >= 3.5) {
+            styles.color = "hsl(60, 100%, 50%)";
+            fillStyles();
+        } else if (course.rating >= 3.0) {
+            styles.color = "hsl(30, 100%, 50%)";
+            fillStyles();
+        } else {
+            styles.color = "hsl(0, 100%, 50%)";
+            fillStyles();
+        }
+    } else {
+        if ($darkTheme) {
+            styles.color = "hsl(0, 0%, 0%)"
+            styles.text = "hsl(0, 0%, 90%)"
+            styles.hoverColor = "hsl(0, 0%, 10%)"
+            styles.hoverText = "hsl(0, 0%, 100%)"
+        }  else {
+            styles.color = "hsl(0, 0%,100%)"
+            fillStyles();
+        }
+    }
+    
 // Dynamic color (saved courses)
 } else {
-
-    // ! Placeholder
-    color = "bg-slate-300 dark:bg-slate-500";
+    let meta = $rMeta[$currentSchedule][course.id];
+    styles.color = $calColors[meta.color as keyof CalColors];
+    fillStyles();
 }
 
 let flipped: boolean = false;
+
+$: cssVarStyles = Object.entries(styles)
+		.map(([key, value]) => `--${key}:${value}`)
+		.join(';');
+
 
 const handleHover = async () => {
     await sectionData.add(supabase, $currentTerm, course.id)
@@ -55,17 +101,18 @@ const handleLeave = () => {
     }
 }
 
+
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
-class="border-b-[1px] flex justify-between items-stretch duration-100
-{$searchSettings.style["Color by Rating"] && color}" 
+class="border-b-[1px] flex justify-between items-stretch duration-100" 
+style={cssVarStyles}
 on:mouseenter={handleHover}
 on:mouseleave={handleLeave}>
     {#if !flipped}
     <button 
-    class="text-xs font-light text-left w-[75%] dark:text-white p-1"
+    class="text-xs font-light text-left w-[75%] p-1"
     on:click={() => flipped = true}>
         <div class="font-normal">
             {code}
@@ -184,8 +231,14 @@ on:mouseleave={handleLeave}>
 </div>
 
 <style lang="postcss">
+#card {
+    background-color: var(--color);
+    color: var(--text);
+}
+
 #card:hover {
-    @apply bg-slate-100 dark:bg-slate-700;
+    background-color: var(--hoverColor);
+    color: var(--hoverText);
 }
 
 /* !-- Refactor --! */
