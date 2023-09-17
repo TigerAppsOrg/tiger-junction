@@ -31,6 +31,8 @@ let styles = {
     hoverColor: "",
     hoverText: "",
     alpha: "1",
+    border: "",
+    trans: "hidden",
     "stripes": `repeating-linear-gradient(
         45deg,
         transparent,
@@ -86,12 +88,15 @@ if (category === "search" || category === "pinned") {
     let meta = $rMeta[$currentSchedule][course.id];
     styles.color = $calColors[meta.color as keyof CalColors];
     fillStyles();
+    styles.trans = "solid";
 
     if (meta.complete) {
         styles.stripes = "";
+        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 40);
     } else {
         styles.color = darkenHSL($calColors[meta.color as keyof CalColors], -10);
         styles.alpha = "0.8";
+        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 20);
     }
 }
 
@@ -253,6 +258,7 @@ on:mouseleave={handleLeave}>
     opacity: var(--alpha);
     background-color: var(--color);
     color: var(--text);
+    border-left: 6px var(--trans) var(--border);
 }
 
 #card:hover {

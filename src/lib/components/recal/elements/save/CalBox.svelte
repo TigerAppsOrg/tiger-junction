@@ -14,7 +14,10 @@ let hovered: boolean = false;
 
 let styles = {
     "bg": $calColors[params.color as keyof CalColors],
-    "border": darkenHSL($calColors[params.color as keyof CalColors], 60),
+    "border": params.confirmed ? 
+        darkenHSL($calColors[params.color as keyof CalColors], 40)
+        : darkenHSL($calColors[params.color as keyof CalColors], 20),
+    "text": darkenHSL($calColors[params.color as keyof CalColors], 40),
     "alpha": params.confirmed ? "1" : "0.7",
     "stripes": params.confirmed ? "" : `repeating-linear-gradient(
         45deg,
@@ -26,7 +29,6 @@ let styles = {
     "left": `${params.left}`,
     "height": `${params.height}`,
     "width": `${params.width}`,
-    "trans": params.confirmed ? "solid" : "transparent"
 }
 
 $: cssVarStyles = Object.entries(styles)
@@ -107,8 +109,8 @@ on:mouseleave={() => hovered = false}>
 button {
     background-image: var(--stripes);
     background-color: var(--bg);
-    border-left: 4px var(--trans) var(--border);
-    color: var(--border);
+    border-left: 4px solid var(--border);
+    color: var(--text);
     opacity: var(--alpha);
     top: var(--top);
     left: var(--left);
