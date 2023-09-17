@@ -1,9 +1,10 @@
 <script lang="ts">
 import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
-import { searchSettings } from "$lib/stores/recal";
+import { currentSchedule, searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors, type CalColors } from "$lib/stores/styles";
+import { rMeta } from "$lib/stores/rmeta";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -34,7 +35,42 @@ $: cssVarStyles = Object.entries(styles)
 
 // Toggle section choice and modify db and ui
 const handleClick = () => {
+    // Modify meta store
+    let oldConfirms = {};
+    rMeta.update(x => {
+        oldConfirms = x[$currentSchedule][params.section.course_id].confirms;
 
+        let a = x[$currentSchedule][params.section.course_id].confirms;
+
+        if (a.hasOwnProperty(params.section.category)) {
+            delete a[params.section.category];
+        } else {
+            a[params.section.category] = section.id;
+        }
+        return x;
+    });
+
+    // Modify db
+    supabase.from("course_schedule_associations")
+        .update({
+            metadata: {
+                confirms: $rMeta[$currentSchedule][params.section.course_id].confirms
+            }
+        })
+        .eq("course_id", params.section.course_id)
+        .eq("schedule_id", $currentSchedule)
+    .then(res => {
+        // Revert if error
+        if (res.error) {
+            console.log(res.error)
+            rMeta.update(x => {
+                x[$currentSchedule][params.section.course_id].confirms = oldConfirms;
+                return x;
+            });
+        } else {
+            console.log("Successfully updated db")
+        }
+    });
 }
 
 </script>
