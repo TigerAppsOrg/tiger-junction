@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, hoveredCourse, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
@@ -85,11 +85,11 @@ const handleLogout = async () => {
                 <img src={calendarIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button>
-            <!-- <button class="btn-circ"
-            on:click={() => modalStore.open("manageCb", { clear: true })}>
+            <button class="btn-circ"
+            on:click={() => console.log($hoveredCourse)}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button> -->
+            </button>
             <button class="btn-circ"
             on:click={handleLogout}>
                 <img src={logoutIcon} alt="Logout Icon"

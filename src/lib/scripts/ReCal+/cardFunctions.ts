@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCurrentSchedule } from "./getters";
 import { rMeta } from "$lib/stores/rmeta";
 import { get } from "svelte/store";
+import { hoveredCourse } from "$lib/stores/recal";
 
 //----------------------------------------------------------------------
 // From Search
@@ -16,6 +17,7 @@ import { get } from "svelte/store";
  * @param course 
  */
 const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+    hoveredCourse.set(null);
     await savedCourses.add(supabase, getCurrentSchedule(), course, true);
 }
 

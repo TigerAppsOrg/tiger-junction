@@ -87,7 +87,9 @@ on:mouseleave={handleLeave}>
                 <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                on:click={() => cf.pinCourseFromSaved(supabase, course)}>
+                on:click={() => {
+                    cf.pinCourseFromSaved(supabase, course);
+                }}>
                     <img src={pinIcon} alt="Pin" 
                     class="ic" />
                 </button>
