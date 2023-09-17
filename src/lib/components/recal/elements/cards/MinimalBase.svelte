@@ -48,6 +48,7 @@ const fillStyles = () => {
 
 // Color by rating
 if (category === "search" || category === "pinned") {
+    styles.stripes = "";
     if ($searchSettings.style["Color by Rating"]) {
         if (!course.rating) {
             styles.color = "hsl(0, 0%, 50%)";
@@ -85,10 +86,12 @@ if (category === "search" || category === "pinned") {
     let meta = $rMeta[$currentSchedule][course.id];
     styles.color = $calColors[meta.color as keyof CalColors];
     fillStyles();
-    
+
     if (meta.complete) {
+        styles.stripes = "";
     } else {
         styles.color = darkenHSL($calColors[meta.color as keyof CalColors], -10);
+        styles.alpha = "0.8";
     }
 }
 
