@@ -42,27 +42,17 @@ if (category === "search" || category === "pinned") {
 let flipped: boolean = false;
 
 const handleHover = async () => {
-    // Measure time from start of function to end
-
-    let start = performance.now();
-
     await sectionData.add(supabase, $currentTerm, course.id)
-
-    let end = performance.now();
-    console.log(end - start);
-    console.log($sectionData);
 
     if (category === "search") {
         $hoveredCourse = course;
     }
-    console.log($hoveredCourse);
 }
 
 const handleLeave = () => {
     if (category === "search") {
         $hoveredCourse = null;
     }
-    console.log($hoveredCourse);
 }
 
 </script>

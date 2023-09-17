@@ -2,6 +2,7 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, retop, schedules } from "$lib/stores/recal";
+    import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let showModal: boolean = false;
@@ -37,6 +38,17 @@ const saveSchedule = async () => {
             x[$currentTerm] = [...x[$currentTerm], res.data[0]];
             return x;
         });
+
+        // ! TODO Bandage
+        savedCourses.update(x => {
+            x[res.data[0].id] = [];
+            return x;
+        });
+
+        pinnedCourses.update(x => {
+            x[res.data[0].id] = [];
+            return x;
+        }); 
 
         // Update current schedule
         currentSchedule.set(res.data[0].id);

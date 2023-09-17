@@ -48,6 +48,7 @@ scheduleId: number): Promise<boolean> => {
     let otherIds: number[] = [];
     let otherColors: number[] = [];
     savedCourses.subscribe(x => {
+        console.log(x);
         otherIds = x[scheduleId].map(y => y.id);
     })();
     rMeta.subscribe(x => {
