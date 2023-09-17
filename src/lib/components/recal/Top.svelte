@@ -10,8 +10,11 @@ import pinIcon from "$lib/img/icons/pinicon.svg";
 import addIcon from "$lib/img/icons/addicon.svg";
 import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import editIcon from "$lib/img/icons/editicon.svg"
-
 import logoutIcon from "$lib/img/icons/logouticon.svg";
+import moonIcon from "$lib/img/icons/moonicon.svg";
+import sunIcon from "$lib/img/icons/sunicon.svg";
+
+import { darkTheme } from "$lib/stores/state";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
@@ -65,6 +68,16 @@ const handleLogout = async () => {
             </button>
         </div> <!-- * Semester Select -->
         <div class="flex gap-2">
+            <button on:click={() => $darkTheme = !$darkTheme}
+                class="btn-circ">
+                    {#if $darkTheme}
+                        <img src={moonIcon} alt="Dark Mode Icon" 
+                        class="btn-icon">
+                    {:else}
+                        <img src={sunIcon} alt="Light Mode Icon" 
+                        class="btn-icon">
+                    {/if}
+                </button>
             <!-- <button class="btn-circ"
             on:click={() => modalStore.open("shareCal", { clear: true})}>
                 <img src={shareIcon} alt="Custom Block Icon"

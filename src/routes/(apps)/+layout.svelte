@@ -10,8 +10,8 @@ let sidebar_show = false;
 
 <ModalLib supabase={data.supabase} />
 <div class="h-screen w-screen flex bg-white dark:bg-black">
-    <div class="my-2">
+    <!-- <div class="my-2">
         <Sidebar bind:show={sidebar_show} {currentApp} />
-    </div>
+    </div> -->
     <slot />
 </div>
