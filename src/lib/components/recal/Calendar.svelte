@@ -62,7 +62,7 @@ const renderCalBoxes = () => {
             for (let k = 0; k < days.length; k++) {
                 let day = days[k];
                 courseRenders.push({
-                    courseCode: course.code,
+                    courseCode: course.code.split("/")[0],
                     section: section,
                     color: courseMeta.color,
                     confirmed: false,
@@ -87,7 +87,7 @@ const renderCalBoxes = () => {
             for (let j = 0; j < days.length; j++) {
                 let day = days[j];
                 courseRenders.push({
-                    courseCode: hovered.code,
+                    courseCode: hovered.code.split("/")[0],
                     section: section,
                     color: -1,
                     confirmed: false,

@@ -57,7 +57,7 @@ const handleClick = () => {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute" style={cssVarStyles}
+<button id="box" class="absolute text-left flex" style={cssVarStyles}
 on:click={handleClick}>
     <div class="text-xs">
         <div class="font-light">
