@@ -29,7 +29,14 @@ let styles = {
     color: "",
     text: "",
     hoverColor: "",
-    hoverText: ""
+    hoverText: "",
+    alpha: "1",
+    "stripes": `repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(0, 0, 0, 0.05) 5px,
+        rgba(0, 0, 0, 0.05) 10px);`,
 }
 
 const fillStyles = () => {
@@ -78,6 +85,11 @@ if (category === "search" || category === "pinned") {
     let meta = $rMeta[$currentSchedule][course.id];
     styles.color = $calColors[meta.color as keyof CalColors];
     fillStyles();
+    
+    if (meta.complete) {
+    } else {
+        styles.color = darkenHSL($calColors[meta.color as keyof CalColors], -10);
+    }
 }
 
 let flipped: boolean = false;
@@ -234,6 +246,8 @@ on:mouseleave={handleLeave}>
 
 <style lang="postcss">
 #card {
+    background-image: var(--stripes);
+    opacity: var(--alpha);
     background-color: var(--color);
     color: var(--text);
 }

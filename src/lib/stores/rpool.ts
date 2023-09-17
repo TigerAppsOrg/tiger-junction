@@ -181,7 +181,12 @@ term: number) => {
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
         // Add metadata
-        addCourseMetadata(supabase, cur, scheduleId);
+        rMeta.update(y => {
+            if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
+            y[scheduleId][cur.id] = x.metadata;
+            return y;
+        });
+        // addCourseMetadata(supabase, cur, scheduleId);
 
         // Load section data
         await sectionData.add(supabase, term, cur.id);
