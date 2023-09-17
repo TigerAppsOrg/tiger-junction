@@ -160,10 +160,11 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
 const calculateDimensions = (calboxes: CalBoxParam[]) => {
     for (let i = 0; i < calboxes.length; i++) {
         let calbox = calboxes[i];
-        let height = (calbox.section.end_time - calbox.section.start_time) / 0.6;
-        let top = (calbox.section.start_time - 8) / 0.6;
+        let height = ((calbox.section.end_time - calbox.section.start_time) / 90) * 100;
+        let top = ((calbox.section.start_time) / 90) * 100;
         let left = (calbox.day - 1) * 20 + (calbox.slot / calbox.maxSlot) * 20;
         let width = 20 / calbox.maxSlot;
+
 
         calbox.height = `${height}%`;
         calbox.top = `${top}%`;
@@ -183,8 +184,8 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
                 <div class="outline outline-[1px] outline-slate-600/30
                 dark:outline-slate-200/30 flex justify-center 
                 items-center text-sm">{day}</div>
-                {/each}
-            </div>
+            {/each}
+        </div>
             
             <div class="grid grid-cols-5 w-full h-[96%] relative">
 
