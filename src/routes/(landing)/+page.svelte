@@ -181,7 +181,7 @@ py-4">
     <a href="https://svelte.dev/" target="_blank" class="link">
         Svelte
     </a> 
-    by @joshuamotoaki.
+    by @motoaki.
     <a href="https://www.vecteezy.com/free-png/3d" target="_blank" class="link">
         3d PNGs by Vecteezy
     </a>

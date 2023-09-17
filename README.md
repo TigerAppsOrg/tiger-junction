@@ -4,5 +4,5 @@
 
 ## Support
 
-If you have any questions, feedback, or need assistance, feel free to reach out to me at jl9926@princeton.edu. 
+If you have any questions, feedback, or need assistance, feel free to reach out to me at motoaki@princeton.edu. 
 
