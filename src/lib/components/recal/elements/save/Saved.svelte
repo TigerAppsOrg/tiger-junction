@@ -1,5 +1,5 @@
 <script lang="ts">
-import { currentSchedule, isResult, retop, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, isResult, ready, retop, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
@@ -13,7 +13,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
 
 
 {#key saved}
-{#if saved}
+{#if saved && $ready}
 <div class="max-h-full mt-2">
     <div class="text-base font-normal dark:text-white ml-1">
         <span>
