@@ -384,5 +384,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         // "Original Style": false,
         "Show Rating": true,
         "Color by Rating": false,
+        "Always Show Enrollments": false,
     }
 });

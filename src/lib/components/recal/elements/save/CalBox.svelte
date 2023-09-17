@@ -1,11 +1,14 @@
 <script lang="ts">
 import { valuesToTimeLabel } from "$lib/scripts/convert";
+import { searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
 const { courseCode, section } = params;
+
+let hovered: boolean = false;
 
 const COLOR_MAP: Record<number, string> = {
     "-1": "#a3a3a3",
@@ -54,11 +57,14 @@ $: cssVarStyles = Object.entries(styles)
 const handleClick = () => {
 
 }
+
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex" style={cssVarStyles}
-on:click={handleClick}>
+<button id="box" class="absolute text-left flex p-1" style={cssVarStyles}
+on:click={handleClick} 
+on:mouseenter={() => hovered = true}
+on:mouseleave={() => hovered = false}>
     <div class="text-xs">
         <div class="font-light">
             {valuesToTimeLabel(section.start_time, section.end_time)}
@@ -66,9 +72,13 @@ on:click={handleClick}>
         <div class="font-normal">
             {courseCode} {section.title}
         </div>
-        <div class="font-thin">
-            {section.tot}/{section.cap} Enrollments
-        </div>
+
+        {#if $searchSettings.style["Always Show Enrollments"] || hovered === true}
+            <div class="font-light">
+                {section.tot}/{section.cap} Enrollments
+            </div>
+        {/if}
+
     </div>
 </button>
 
