@@ -18,16 +18,16 @@ const COLOR_MAP: Record<number, string> = {
     6: "#f9f923",
 }
 
-// Slightly darker colors
+// Much darker colors
 const BORDER_MAP: Record<number, string> = {
-    "-1": "#7a7a7a",
-    0: "#7ab923",
-    1: "#b92323",
-    2: "#b9a923",
-    3: "#23b9b9",
-    4: "#b923b9",
-    5: "#23b923",
-    6: "#b9b923",
+    "-1": "#a3a3a3",
+    0: "#7f7f00",
+    1: "#7f0000",
+    2: "#7f5f00",
+    3: "#007f7f",
+    4: "#7f007f",
+    5: "#007f00",
+    6: "#7f7f00",
 }
 
 let styles = {
@@ -57,9 +57,9 @@ const handleClick = () => {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute rounded-md" style={cssVarStyles}
+<button id="box" class="absolute" style={cssVarStyles}
 on:click={handleClick}>
-    <div class="text-sm">
+    <div class="text-xs">
         <div class="font-light">
             {valuesToTimeLabel(section.start_time, section.end_time)}
         </div>
@@ -75,9 +75,9 @@ on:click={handleClick}>
 <style lang="postcss">
 button {
     background-image: var(--stripes);
-    background-color: var(--bg)/var(--alpha);
-    border: 1px solid var(--border)/var(--alpha);
-    text: var(--border)/var(--alpha);
+    background-color: var(--bg);
+    border-left: 4px solid var(--border);
+    color: var(--border);
     top: var(--top);
     left: var(--left);
     height: var(--height);
