@@ -4,12 +4,21 @@ import { calColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
 
 
-$: rgbColors = Object.entries($calColors)
+let rgbColors = Object.entries($calColors)
     .map(([key, value]) => [key, hslToRGB(value)])
     .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
-$: console.log(rgbColors);
 
 export let showModal: boolean = false;
+
+const handleChange = (color: string) => {
+    console.log(color, rgbColors[color], rgbToHSL(rgbColors[color]));
+    $calColors[color] = rgbToHSL(rgbColors[color]);
+    console.log($calColors[color]);
+}
+
+const handleBlur = (color: string) => {
+    console.log(color);
+}
 
 </script>
 
@@ -22,7 +31,9 @@ export let showModal: boolean = false;
                 <div class="flex flex-wrap gap-2">
                     {#each Object.keys($calColors) as color}
                         <div class="flex flex-col items-center">
-                            <input type="color" bind:value={rgbColors[color]} />
+                            <input type="color" bind:value={rgbColors[color]} 
+                            on:input={() => handleChange(color)}
+                            on:blur={() => handleBlur(color)}/>
                             <!-- <div class="w-8 h-8 rounded-full" style={`background-color: ${$calColors[color]}`}></div>
                             <div class="text-xs">{color}</div> -->
                         </div>
