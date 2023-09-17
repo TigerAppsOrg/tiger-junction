@@ -9,6 +9,7 @@ import ShareCal from "../recal/elements/export/ShareCal.svelte";
 import AddSchedule from "../recal/elements/save/AddSchedule.svelte";
 import EditSchedule from "../recal/elements/save/EditSchedule.svelte";
 import Pinned from "../recal/elements/save/Pinned.svelte";
+import RecalColors from "../recal/elements/adv/RecalColors.svelte";
 
 export let supabase: SupabaseClient;
 
@@ -44,4 +45,8 @@ export let supabase: SupabaseClient;
 
 {#if $modalStore === "pinned"}
 <Pinned showModal={$modalStore === "pinned"} {supabase} />
+{/if}
+
+{#if $modalStore === "rcolors"}
+<RecalColors showModal={$modalStore === "rcolors"} />
 {/if}
