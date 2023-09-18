@@ -129,7 +129,6 @@ const renderCalBoxes = () => {
     findOverlaps(courseRenders);
     calculateDimensions(courseRenders);
 
-    console.log(courseRenders);
     toRender = courseRenders;
 }
 
