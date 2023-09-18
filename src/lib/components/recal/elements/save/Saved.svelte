@@ -31,7 +31,7 @@ $: pinned = $pinnedCourses[$currentSchedule] ?
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-xl 
-    {$isResult ? "max-h-[10vh]" : "max-h-[70vh]"}">
+    {$isResult ? "max-h-[10vh]" : "max-h-[75vh]"}">
         <div class="overflow-y-auto">
             {#key saved}
             {#each saved as course}
