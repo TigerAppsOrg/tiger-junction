@@ -1,8 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { REGISTRAR_AUTH_BEARER, COURSE_URL, GENERIC_GRADING_INFO, TERM_URL } from "$lib/constants";
+import { COURSE_URL, GENERIC_GRADING_INFO, TERM_URL } from "$lib/constants";
 import type { CourseInsert, InstructorInsert } from "$lib/types/dbTypes";
 import { daysToValue, timeToValue } from "../convert";
 import type { RegGradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
+import { REG_AUTH } from "$env/static/private";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
 const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
@@ -19,7 +20,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
     const rawCourselist = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": REGISTRAR_AUTH_BEARER
+            "Authorization": REG_AUTH
         }
     });
 
@@ -63,7 +64,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
             `${COURSE_URL}term=${term}&course_id=${courselist[index].id}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": REGISTRAR_AUTH_BEARER
+                    "Authorization": REG_AUTH
                 }
             }
         ) 

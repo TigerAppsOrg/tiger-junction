@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { REGISTRAR_AUTH_BEARER, TERM_MAP, TERM_URL } from "$lib/constants";
+import { TERM_MAP, TERM_URL } from "$lib/constants";
 import type { Listing } from "$lib/types/dbTypes";
+import { REG_AUTH } from "$env/static/private";
 
 const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
@@ -34,7 +35,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     const res = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": REGISTRAR_AUTH_BEARER
+            "Authorization": REG_AUTH
         }
     });
 
