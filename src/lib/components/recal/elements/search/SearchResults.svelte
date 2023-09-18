@@ -18,7 +18,8 @@ export let supabase: SupabaseClient;
     <div class="flex flex-col overflow-auto border-2 rounded-xl
     max-h-[60vh]">
         <div class="overflow-y-auto">
-            {#key $searchResults && $darkTheme}
+            {#key $searchResults}
+            {#key $darkTheme}
             {#each $searchResults as course}
                 {#if $searchSettings.style["Original Style"]}
                     <ClassicSearch {course} />
@@ -26,6 +27,7 @@ export let supabase: SupabaseClient;
                     <MinimalBase {supabase} {course} />
                 {/if}
             {/each}
+            {/key}
             {/key}
         </div>
     </div> <!-- * End Results -->
