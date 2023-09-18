@@ -7,8 +7,8 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 
 export let supabase: SupabaseClient;
 
-$: saved = $savedCourses[$currentSchedule];
-$: pinned = $pinnedCourses[$currentSchedule];
+$: saved = $savedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code));
+$: pinned = $pinnedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code));
 </script>
 
 
