@@ -119,7 +119,7 @@ on:mouseleave={() => hovered = false}>
 {#if hovered}
 <!-- Tooltip with room and capacity that follows cursor -->
 <div class="fixed z-50 bg-slate-100 dark:bg-slate-800 rounded-md 
-p-1 text-xs"
+p-1 text-xs opacity-80"
 style={`top: ${mouseY}px; left: ${mouseX + 10}px;`}>
     <div class="font-light">
         {section.room ? section.room : ""}
