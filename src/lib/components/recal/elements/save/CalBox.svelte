@@ -116,7 +116,7 @@ on:mouseleave={() => hovered = false}>
     </div>
 </button>
 
-{#if hovered}
+{#if $searchSettings.style["Show Tooltips"] && hovered}
 <!-- Tooltip with room and capacity that follows cursor -->
 <div class="fixed z-50 bg-slate-100 dark:bg-slate-800 rounded-md 
 p-1 text-xs opacity-80"

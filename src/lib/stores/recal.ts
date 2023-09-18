@@ -390,5 +390,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "Show Rating": true,
         "Color by Rating": false,
         "Always Show Enrollments": false,
+        "Show Tooltips": true,
     }
 });
