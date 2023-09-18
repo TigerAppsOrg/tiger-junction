@@ -129,6 +129,7 @@ const renderCalBoxes = () => {
     findOverlaps(courseRenders);
     calculateDimensions(courseRenders);
 
+    console.log(courseRenders);
     toRender = courseRenders;
 }
 
@@ -136,42 +137,93 @@ const renderCalBoxes = () => {
 // maxSlot is the number of overlaps for a given CalBoxParam
 // slotIndex is the index of the CalBoxParam in the list of overlaps
 const findOverlaps = (calboxes: CalBoxParam[]) => {
-    let overlaps: Record<string, CalBoxParam[]> = {};
+    const sortedCalboxes = calboxes.slice().sort((a, b) => a.section.start_time - b.section.start_time);
+    
+    // First pass: Assign maxSlot values
+    for (let i = 0; i < sortedCalboxes.length; i++) {
+        const calbox = sortedCalboxes[i];
+        let maxSlot = 1;
+        const group = [calbox];
 
-    // Assign slotIndex
-    for (let i = 0; i < calboxes.length; i++) {
-        let calbox = calboxes[i];
-        let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
+        for (let j = 0; j < i; j++) {
+            const prevCalbox = sortedCalboxes[j];
 
-        if (overlaps.hasOwnProperty(key)) {
-            let overlap = overlaps[key];
-            let found = false;
-
-            for (let j = 0; j < overlap.length; j++) {
-                let overlapCalbox = overlap[j];
-                if (overlapCalbox.section.id === calbox.section.id) {
-                    found = true;
-                    break;
-                }
+            // Check for overlap based on start and end times and the same day
+            if (
+                calbox.section.start_time < prevCalbox.section.end_time &&
+                calbox.section.end_time > prevCalbox.section.start_time &&
+                calbox.day === prevCalbox.day
+            ) {
+                group.push(prevCalbox);
+                maxSlot = prevCalbox.maxSlot + 1;
             }
-
-            if (!found) {
-                overlap.push(calbox);
-                calbox.slot = overlap.length - 1;
-            }
-        } else {
-            overlaps[key] = [calbox];
-            calbox.slot = 0;
         }
+
+        // Update maxSlot for the entire group
+        group.forEach((groupCalbox) => {
+            groupCalbox.maxSlot = maxSlot;
+        });
     }
 
-    // Assign maxSlot
-    for (let i = 0; i < calboxes.length; i++) {
-        let calbox = calboxes[i];
-        let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
-        calbox.maxSlot = overlaps[key].length;
+    // Second pass: Assign slotIndex values
+    for (let i = 0; i < sortedCalboxes.length; i++) {
+        const calbox = sortedCalboxes[i];
+        const group = [];
+
+        for (let j = 0; j < i; j++) {
+            const prevCalbox = sortedCalboxes[j];
+
+            // Check for overlap based on start and end times and the same day
+            if (
+                calbox.section.start_time < prevCalbox.section.end_time &&
+                calbox.section.end_time > prevCalbox.section.start_time &&
+                calbox.day === prevCalbox.day
+            ) {
+                group.push(prevCalbox);
+            }
+        }
+
+        // Assign slotIndex for the current calbox within its group
+        calbox.slot = group.length;
     }
-}
+};
+// const findOverlaps = (calboxes: CalBoxParam[]) => {
+//     let overlaps: Record<string, CalBoxParam[]> = {};
+
+//     // Assign slotIndex
+//     for (let i = 0; i < calboxes.length; i++) {
+//         let calbox = calboxes[i];
+//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
+
+//         if (overlaps.hasOwnProperty(key)) {
+//             let overlap = overlaps[key];
+//             let found = false;
+
+//             for (let j = 0; j < overlap.length; j++) {
+//                 let overlapCalbox = overlap[j];
+//                 if (overlapCalbox.section.id === calbox.section.id) {
+//                     found = true;
+//                     break;
+//                 }
+//             }
+
+//             if (!found) {
+//                 overlap.push(calbox);
+//                 calbox.slot = overlap.length - 1;
+//             }
+//         } else {
+//             overlaps[key] = [calbox];
+//             calbox.slot = 0;
+//         }
+//     }
+
+//     // Assign maxSlot
+//     for (let i = 0; i < calboxes.length; i++) {
+//         let calbox = calboxes[i];
+//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
+//         calbox.maxSlot = overlaps[key].length;
+//     }
+// }
 
 // Calculate dimensions for each CalBoxParam
 const calculateDimensions = (calboxes: CalBoxParam[]) => {
