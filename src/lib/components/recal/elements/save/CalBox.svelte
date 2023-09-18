@@ -5,6 +5,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors, type CalColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
+    import HoverTooltip from "$lib/components/general/HoverTooltip.svelte";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -88,22 +89,31 @@ const handleClick = () => {
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
-    <div class="text-xs">
+    <div class="text-xs z-50 -space-y-1">
         <div class="font-light">
             {valuesToTimeLabel(section.start_time, section.end_time)}
         </div>
         <div class="font-normal">
             {courseCode} {section.title}
         </div>
-
+<!-- 
+        <div class="font-light">
+            {section.room}
+        </div> -->
         {#if $searchSettings.style["Always Show Enrollments"] || hovered === true}
             <div class="font-light">
-                {section.tot}/{section.cap} Enrollments
+                {section.tot}/{section.cap}
             </div>
         {/if}
 
     </div>
+    <div class="relative">
+        {#if hovered}
+            <HoverTooltip content={section.room} />
+        {/if}
+    </div>
 </button>
+
 
 <style lang="postcss">
 button {
