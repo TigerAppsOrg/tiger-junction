@@ -20,7 +20,7 @@ const handleLogin = async () => {
     await data.supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-            redirectTo: "http://localhost:5173/auth/callback"
+            redirectTo: "https://tigerjunction.com/auth/callback"
         }
     });
 }
