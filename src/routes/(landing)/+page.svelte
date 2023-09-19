@@ -66,10 +66,10 @@ const handleLogin = async () => {
                 Get Started →
             </button>
         </div>
-        <div class="flex justify-end">
+        <!-- <div class="flex justify-end">
             <img src={RoadPic} alt="3d road sign model"
             class="max-h-[70vh] w-auto">
-        </div>
+        </div> -->
     </main>
 </div>
 <div id="about" class="py-20 area">
