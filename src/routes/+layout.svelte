@@ -18,7 +18,7 @@ onMount(() => {
     // window.addEventListener("resize", () => {
     //     $isMobile = window.innerWidth < 768;
     // });
-    $isMobile = window.innerWidth < 768;
+    $isMobile = window.innerWidth < 600;
 
     const {
         data: { subscription }
