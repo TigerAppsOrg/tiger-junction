@@ -125,20 +125,21 @@ export const searchResults = {
         // Filter by search query
         //--------------------------------------------------------------
 
+        query = normalizeText(query);
         if (query.length < 3 && !settings.options["All"])
              searchResults.set([]);
 
         else if (query.length === 3 && !settings.options["All"]) 
             searchResults.set(data.filter(x => {
-                return normalizeText(x.code).includes(normalizeText(query))
+                return normalizeText(x.code).includes(query)
             }));
         
         else searchResults.set(data.filter((x) => {
             let title: boolean = settings.options["Title"] && (
-                normalizeText(x.title).includes(normalizeText(query))
+                normalizeText(x.title).includes(query)
             );
             let code: boolean = settings.options["Code"] && (
-                normalizeText(x.code).includes(normalizeText(query))
+                normalizeText(x.code).includes(query)
             );
             let all: boolean = settings.options["All"] && (
                 title || code 
@@ -389,5 +390,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "Show Rating": true,
         "Color by Rating": false,
         "Always Show Enrollments": false,
+        "Show Tooltips": true,
     }
 });

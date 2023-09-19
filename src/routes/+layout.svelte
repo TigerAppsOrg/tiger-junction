@@ -3,6 +3,7 @@ import "../app.pcss";
 import { invalidate } from "$app/navigation";
 import { onMount } from "svelte";
 import { darkTheme } from "$lib/stores/state";
+import { isMobile } from "$lib/stores/mobile";
 
 export let data;
 
@@ -10,6 +11,13 @@ let { supabase, session } = data;
 $: ({ supabase, session } = data);
 
 $: dark = $darkTheme;
+
+// Run any time the window is resized
+window.addEventListener("resize", () => {
+    $isMobile = window.innerWidth < 768;
+});
+
+
 
 onMount(() => {
     const {

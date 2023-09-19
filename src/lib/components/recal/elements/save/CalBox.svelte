@@ -81,6 +81,18 @@ const handleClick = () => {
     });
 }
 
+// For cursor-following tooltip
+let mouseX: number = 0;
+let mouseY: number = 0;
+$: {
+    if (hovered) {
+        window.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+    }
+}
+
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
@@ -88,7 +100,7 @@ const handleClick = () => {
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
-    <div class="text-xs">
+    <div class="text-xs z-40 -space-y-1 relative">
         <div class="font-light">
             {valuesToTimeLabel(section.start_time, section.end_time)}
         </div>
@@ -96,14 +108,27 @@ on:mouseleave={() => hovered = false}>
             {courseCode} {section.title}
         </div>
 
-        {#if $searchSettings.style["Always Show Enrollments"] || hovered === true}
+        {#if $searchSettings.style["Always Show Enrollments"]}
             <div class="font-light">
-                {section.tot}/{section.cap} Enrollments
+                {section.tot}/{section.cap}
             </div>
         {/if}
-
     </div>
 </button>
+
+{#if $searchSettings.style["Show Tooltips"] && hovered}
+<!-- Tooltip with room and capacity that follows cursor -->
+<div class="fixed z-50 bg-slate-100 dark:bg-slate-800 rounded-md 
+p-1 text-xs opacity-80"
+style={`top: ${mouseY}px; left: ${mouseX + 10}px;`}>
+    <div class="font-light">
+        {section.room ? section.room : ""}
+    </div>
+    <div class="font-light">
+        Enrollments: {section.tot}/{section.cap}
+    </div>
+</div>
+{/if}
 
 <style lang="postcss">
 button {

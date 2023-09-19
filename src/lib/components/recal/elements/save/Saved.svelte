@@ -7,8 +7,12 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 
 export let supabase: SupabaseClient;
 
-$: saved = $savedCourses[$currentSchedule];
-$: pinned = $pinnedCourses[$currentSchedule];
+$: saved = $savedCourses[$currentSchedule] ? 
+    $savedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code))
+    : [];
+$: pinned = $pinnedCourses[$currentSchedule] ?
+    $pinnedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code))
+    : [];
 </script>
 
 
@@ -27,7 +31,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-xl 
-    {$isResult ? "max-h-[10vh]" : "max-h-[70vh]"}">
+    {$isResult ? "max-h-[10vh]" : "max-h-[75vh]"}">
         <div class="overflow-y-auto">
             {#key saved}
             {#each saved as course}
