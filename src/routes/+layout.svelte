@@ -12,14 +12,13 @@ $: ({ supabase, session } = data);
 
 $: dark = $darkTheme;
 
-// Run any time the window is resized
-window.addEventListener("resize", () => {
-    $isMobile = window.innerWidth < 768;
-});
-
-
-
 onMount(() => {
+
+    // Run any time the window is resized
+    window.addEventListener("resize", () => {
+        $isMobile = window.innerWidth < 768;
+    });
+
     const {
         data: { subscription }
     } = supabase.auth.onAuthStateChange(( event, _session) => {
