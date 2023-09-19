@@ -131,7 +131,9 @@ flex justify-between items-stretch duration-100
 {category==="saved" && "dark:border-black"}" 
 style={cssVarStyles}
 on:mouseenter={handleHover}
-on:mouseleave={handleLeave}>
+on:mouseleave={handleLeave}
+on:blur={handleLeave}
+on:focus={handleHover}>
     {#if !flipped}
     <button 
     class="text-xs font-light text-left w-[75%] p-1"
@@ -210,8 +212,7 @@ on:mouseleave={handleLeave}>
 
     {:else}
     <div class="w-full">
-        <button class="text-xs font-normal p-1 pb-2 w-full text-left
-        dark:text-white"
+        <button class="text-xs font-normal p-1 pb-2 w-full text-left"
         on:click={() => flipped = false}>
             {code}
         </button>

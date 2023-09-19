@@ -19,9 +19,11 @@ import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
-import { rMeta } from "$lib/stores/rmeta";
+import { isMobile, showCal } from "$lib/stores/mobile";
 
 export let supabase: SupabaseClient;
+
+// $: isMobile = window.innerWidth < 768;
 
 const handleTermChange = async (term: number) => {
     $ready = false;
@@ -58,20 +60,45 @@ const handleLogout = async () => {
             <button class="termchoice" 
             class:selected={$currentTerm === 1232}
             on:click={() => handleTermChange(1232)}>
+                {#if $isMobile}
+                F22
+                {:else}
                 Fall 2022
+                {/if}
             </button>
             <button class="termchoice" 
             class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
-                Spring 2022
+                {#if $isMobile}
+                S23
+                {:else}
+                Spring 2023
+                {/if}
             </button>
             <button class="termchoice" 
             class:selected={$currentTerm === 1242}
             on:click={() => handleTermChange(1242)}>
+                {#if $isMobile}
+                F23
+                {:else}
                 Fall 2023
+                {/if}
             </button>
         </div> <!-- * Semester Select -->
+
         <div class="flex gap-2">
+            {#if $isMobile}
+            <button on:click={() => $showCal = !$showCal}
+                class="btn-circ text-slate-600 dark:text-slate-300
+                flex items-center justify-center">
+                    {#if $showCal}
+                        ←
+                    {:else}
+                        →
+                    {/if}
+            </button>
+            {/if}
+
             <button on:click={() => $darkTheme = !$darkTheme}
                 class="btn-circ">
                     {#if $darkTheme}
@@ -81,7 +108,7 @@ const handleLogout = async () => {
                         <img src={sunIcon} alt="Light Mode Icon" 
                         class="btn-icon">
                     {/if}
-                </button>
+            </button>
             <!-- <button class="btn-circ"
             on:click={() => modalStore.open("shareCal", { clear: true})}>
                 <img src={shareIcon} alt="Custom Block Icon"

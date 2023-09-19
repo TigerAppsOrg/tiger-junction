@@ -4,6 +4,7 @@ import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
+    import { isMobile, showCal } from "$lib/stores/mobile";
 import { ready, schedules, searchCourseData } from "$lib/stores/recal.js";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
 import { onMount } from "svelte";
@@ -36,16 +37,31 @@ bg-white dark:bg-black max-h-screen overflow-clip">
         <Top supabase={data.supabase} />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
-    <div class="flex flex-1 m-2 max-h-[calc(100vh-80px)]">
-        <div class="w-1/5 min-w-[200px]">
-            <Left supabase={data.supabase} />
-        </div>
-        <div class="flex-1 min-w-[400px] ml-2">
-            <Calendar supabase={data.supabase} />
-        </div>
+    <div id="main" class="flex flex-1 m-2 max-h-[calc(100vh-80px)]">
+        {#if $isMobile}
+            {#if !$showCal}
+                <div class="flex-1 min-w-[200px]">
+                    <Left supabase={data.supabase} />
+                </div>
+            {:else}
+                <div class="flex-1">
+                    <Calendar supabase={data.supabase} />
+                </div>
+            {/if}
+        {:else}
+            <div class="w-1/5 min-w-[200px]">
+                <Left supabase={data.supabase} />
+            </div>
+            <div class="flex-1 min-w-[400px] ml-2">
+                <Calendar supabase={data.supabase} />
+            </div>
+        {/if}
     </div>
 </div>
 
 <style lang="postcss">
-
+/* On mobile, one toggles the views back and forth */
+#main {
+    
+}
 </style>
