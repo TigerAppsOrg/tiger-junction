@@ -12,6 +12,14 @@
 
 <div align="center">
 <img src="static/recalplusscreenshot.png" width="80%" alt="Screenshot of ReCalPlus">
+<p>Screenshot of ReCal+ App</p>
+</div>
+
+<br />
+
+<div align="center">
+<img src="static/TigerJunctionERD.png" width="80%" alt="Database ERD">
+<p>The database entity relationship diagram for the entire app</p>
 </div>
 
 ## Release Calendar
@@ -32,5 +40,5 @@ Currently, the `ReCal+` portion of `TigerJunction` is live. The other portions a
 - [ ] **Mobile App Release** (1/28)
 
 ## Support
-Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link) to receive updates on `TigerJunction`. If you have any questions, feedback, or need assistance, feel free to reach out to me at jl9926@princeton.edu. 
+Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link) to receive updates on `TigerJunction`. If you have any questions, feedback, or need assistance, feel free to reach out to me at motoaki@princeton.edu. 
 
