@@ -25,19 +25,19 @@
 ## Release Calendar
 Currently, the `ReCal+` portion of `TigerJunction` is live. The other portions are still under development, and will be released shortly. Here is a tentative release calendar:
 
-- [x] **ReCal+ Release** (9/17)
-- [ ] Mobile Compatibility and Custom Colors (9/24)
-- [ ] Custom Blocks and Google Calendar Exporting (10/1)
-- [ ] Schedule Share and Split Screen (10/8)
-- [ ] **CourseGenie Initial Release** (10/22)
-- [ ] Smart Search (10/29)
-- [ ] Appwide Themes (11/5)
-- [ ] Visual Course Data Insights (11/12) 
-- [ ] **CourseGenie Personal Advisor Release** (11/29)
-- [ ] **ReqTree Release** (12/24)
-- [ ] TigerSnatch Integration (1/7)
-- [ ] Various Optimizations (1/21)
-- [ ] **Mobile App Release** (1/28)
+- [x] [1.1] **ReCal+ Release** (9/17)
+- [ ] [1.2] Mobile Compatibility and Custom Colors (9/24)
+- [ ] [1.3] Custom Blocks and Google Calendar Exporting (10/1)
+- [ ] [1.4] Schedule Share and Split Screen (10/8)
+- [ ] [2.0] **CourseGenie Initial Release** (10/22)
+- [ ] [2.1] Smart Search (10/29)
+- [ ] [2.2] Appwide Themes (11/5)
+- [ ] [2.3] Visual Course Data Insights (11/12) 
+- [ ] [3.0] **CourseGenie Personal Advisor Release** (11/29)
+- [ ] [4.0] **ReqTree Release** (12/24)
+- [ ] [4.1] TigerSnatch Integration (1/7)
+- [ ] [4.2] Various Optimizations (1/21)
+- [ ] [5.0] **Mobile App Release** (1/28)
 
 ## Support
 Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link) to receive updates on `TigerJunction`. If you have any questions, feedback, or need assistance, feel free to reach out to me at motoaki@princeton.edu. 
