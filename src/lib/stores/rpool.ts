@@ -111,21 +111,17 @@ scheduleId: number): Promise<boolean> => {
         meta.sections = uniqueCategories.sort();
     }
 
-    // Auto-Add if only one section in a category
+    // Auto-Add if only one section in a category and check if complete
+    meta.complete = true;
     for (let i = 0; i  < meta.sections.length; i++) {
         let category = meta.sections[i];
         let categorySections = sections.filter(x => x.category === category);
         if (categorySections.length === 1) {
-            meta.complete = true;
             meta.confirms[category] = categorySections[0].id;
+        } else {
+            meta.complete = false;
         }
     }
-
-    // if (meta.sections.length === 1) {
-    //     console.log("efefef")
-    //     meta.complete = true;
-    //     meta.confirms[meta.sections[0]] = sections[0].id;
-    // }
 
     // * Update rMeta
     rMeta.update(x => {
