@@ -186,43 +186,6 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
         calbox.slot = group.length;
     }
 };
-// const findOverlaps = (calboxes: CalBoxParam[]) => {
-//     let overlaps: Record<string, CalBoxParam[]> = {};
-
-//     // Assign slotIndex
-//     for (let i = 0; i < calboxes.length; i++) {
-//         let calbox = calboxes[i];
-//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
-
-//         if (overlaps.hasOwnProperty(key)) {
-//             let overlap = overlaps[key];
-//             let found = false;
-
-//             for (let j = 0; j < overlap.length; j++) {
-//                 let overlapCalbox = overlap[j];
-//                 if (overlapCalbox.section.id === calbox.section.id) {
-//                     found = true;
-//                     break;
-//                 }
-//             }
-
-//             if (!found) {
-//                 overlap.push(calbox);
-//                 calbox.slot = overlap.length - 1;
-//             }
-//         } else {
-//             overlaps[key] = [calbox];
-//             calbox.slot = 0;
-//         }
-//     }
-
-//     // Assign maxSlot
-//     for (let i = 0; i < calboxes.length; i++) {
-//         let calbox = calboxes[i];
-//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
-//         calbox.maxSlot = overlaps[key].length;
-//     }
-// }
 
 // Calculate dimensions for each CalBoxParam
 const calculateDimensions = (calboxes: CalBoxParam[]) => {
@@ -243,6 +206,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
 
 </script>
 
+<!--!------------------------------------------------------------------>
 
 <div class="h-full">
     <div class="h-full w-full std-area">
