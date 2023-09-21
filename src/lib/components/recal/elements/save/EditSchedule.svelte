@@ -2,6 +2,8 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
+import { rMeta } from "$lib/stores/rmeta";
+import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { onMount } from "svelte";
 
@@ -16,7 +18,9 @@ onMount(() => {
     if (schedule) input = schedule.title;
 })
 
-// Duplicate schedule and close modal
+/**
+ * Duplicate schedule and close modal
+ */
 const duplicateSchedule = async () => {
     // Get User
     const user = (await supabase.auth.getUser()).data.user;
@@ -28,7 +32,7 @@ const duplicateSchedule = async () => {
     // Upload to database
     supabase.from("schedules")
         .insert({ 
-            title: input, 
+            title: input + " (Copy)", 
             term: $currentTerm,
             user_id: user.id,
         })
@@ -45,8 +49,76 @@ const duplicateSchedule = async () => {
             return x;
         });
 
-        // Update current schedule
-        currentSchedule.set(res.data[0].id);
+        // Update course schedule associations
+        let saved = $savedCourses[$currentSchedule];
+        let pinned = $pinnedCourses[$currentSchedule];        
+        let meta = $rMeta[$currentSchedule];
+
+        let newId = res.data[0].id.toString();
+
+        let assocUploads = [];
+        for (let i = 0; i < saved.length; i++) assocUploads.push({
+            schedule_id: newId,
+            course_id: saved[i].id,
+            is_pinned: false,
+            metadata: meta[saved[i].id],
+        });
+        
+        for (let i = 0; i < pinned.length; i++) assocUploads.push({
+            schedule_id: newId,
+            course_id: pinned[i].id,
+            is_pinned: true,
+            metadata: meta[pinned[i].id],
+        });
+
+        // Update stores 
+        savedCourses.update(x => {
+            x[newId] = saved;
+            return x;
+        });
+
+        pinnedCourses.update(x => {
+            x[newId] = pinned;
+            return x;
+        });
+
+        // Deep copy
+        rMeta.update(x => {
+            x[newId] = JSON.parse(JSON.stringify(meta));
+            return x;
+        });
+
+        // Upload to database
+        supabase.from("course_schedule_associations")
+            .insert(assocUploads)
+            .select("schedule_id, course_id, is_pinned, metadata")
+        .then(res2 => {
+            // Revert if error
+            if (res2.error) {
+                console.log(res2.error);
+                schedules.update(x => {
+                    x[$currentTerm] = x[$currentTerm].filter(x => 
+                        x.id !== newId);
+                    return x;
+                });
+                savedCourses.update(x => {
+                    delete x[newId];
+                    return x;
+                });
+                pinnedCourses.update(x => {
+                    delete x[newId];
+                    return x;
+                });
+                rMeta.update(x => {
+                    delete x[newId];
+                    return x;
+                });
+                return;
+            }
+
+            // Update current schedule
+            currentSchedule.set(res.data[0].id);
+        });
     });
 
     // Clean Up and Close
@@ -54,7 +126,9 @@ const duplicateSchedule = async () => {
     modalStore.close();
 }
 
-// Delete schedule and close modal
+/**
+ * Delete schedule and close modal
+ */
 const deleteSchedule = async () => {
     // Update database
     supabase.from("schedules")
@@ -82,7 +156,9 @@ const deleteSchedule = async () => {
     modalStore.close();
 }
 
-// Save schedule and close modal
+/**
+ * Save schedule and close modal
+ */
 const saveSchedule = async () => {
     // Get User
     const user = (await supabase.auth.getUser()).data.user;
