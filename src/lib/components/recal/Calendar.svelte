@@ -87,6 +87,7 @@ const renderCalBoxes = () => {
                     day: day,
                     slot: 0,
                     maxSlot: 0,
+                    colSpan: 1,
                     top: "",
                     left: "",
                     width: "",
@@ -112,6 +113,7 @@ const renderCalBoxes = () => {
                     day: day,
                     slot: 0,
                     maxSlot: 0,
+                    colSpan: 1,
                     top: "",
                     left: "",
                     width: "",
@@ -136,93 +138,62 @@ const renderCalBoxes = () => {
 // maxSlot is the number of overlaps for a given CalBoxParam
 // slotIndex is the index of the CalBoxParam in the list of overlaps
 const findOverlaps = (calboxes: CalBoxParam[]) => {
-    const sortedCalboxes = calboxes.slice().sort((a, b) => a.section.start_time - b.section.start_time);
+    let sortedCalboxes = calboxes.slice()
+        .sort((a, b) => a.section.start_time - b.section.start_time)
+        .sort((a, b) => a.section.end_time - b.section.end_time)
+        .sort((a, b) => (b.section.end_time - b.section.start_time) - (a.section.end_time - a.section.start_time));
     
-    // First pass: Assign maxSlot values
+    // Split into days
+    let days: CalBoxParam[][] = [[], [], [], [], []];
     for (let i = 0; i < sortedCalboxes.length; i++) {
-        const calbox = sortedCalboxes[i];
-        let maxSlot = 1;
-        const group = [calbox];
+        let calbox = sortedCalboxes[i];
+        days[calbox.day - 1].push(calbox);
+    }
 
-        for (let j = 0; j < i; j++) {
-            const prevCalbox = sortedCalboxes[j];
+    // Check for conflicts
+    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
+        return (a.section.start_time < b.section.end_time 
+        && a.section.end_time > b.section.start_time
+        && a.day === b.day);
+    }
+    
+    for (let i = 0; i < days.length; i++) {
+        let day = days[i];
+        let overlaps: CalBoxParam[][] = [];
+        let maxSlot = 0;
 
-            // Check for overlap based on start and end times and the same day
-            if (
-                calbox.section.start_time < prevCalbox.section.end_time &&
-                calbox.section.end_time > prevCalbox.section.start_time &&
-                calbox.day === prevCalbox.day
-            ) {
-                group.push(prevCalbox);
-                maxSlot = prevCalbox.maxSlot + 1;
+        for (let j = 0; j < day.length; j++) {
+            let calbox = day[j];
+            let found = false;
+
+            for (let k = 0; k < overlaps.length; k++) {
+                let overlap = overlaps[k];
+                if (conflicts(calbox, overlap[0])) {
+                    overlap.push(calbox);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                overlaps.push([calbox]);
             }
         }
 
-        // Update maxSlot for the entire group
-        group.forEach((groupCalbox) => {
-            groupCalbox.maxSlot = maxSlot;
-        });
-    }
-
-    // Second pass: Assign slotIndex values
-    for (let i = 0; i < sortedCalboxes.length; i++) {
-        const calbox = sortedCalboxes[i];
-        const group = [];
-
-        for (let j = 0; j < i; j++) {
-            const prevCalbox = sortedCalboxes[j];
-
-            // Check for overlap based on start and end times and the same day
-            if (
-                calbox.section.start_time < prevCalbox.section.end_time &&
-                calbox.section.end_time > prevCalbox.section.start_time &&
-                calbox.day === prevCalbox.day
-            ) {
-                group.push(prevCalbox);
+        for (let j = 0; j < overlaps.length; j++) {
+            let overlap = overlaps[j];
+            if (overlap.length > maxSlot) maxSlot = overlap.length;
+            for (let k = 0; k < overlap.length; k++) {
+                overlap[k].slot = k;
+                overlap[k].maxSlot = overlap.length;
             }
         }
-
-        // Assign slotIndex for the current calbox within its group
-        calbox.slot = group.length;
     }
+
+    console.log(days);
+    console.log(calboxes.filter(x => x.day === 5));
 };
-// const findOverlaps = (calboxes: CalBoxParam[]) => {
-//     let overlaps: Record<string, CalBoxParam[]> = {};
 
-//     // Assign slotIndex
-//     for (let i = 0; i < calboxes.length; i++) {
-//         let calbox = calboxes[i];
-//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
-
-//         if (overlaps.hasOwnProperty(key)) {
-//             let overlap = overlaps[key];
-//             let found = false;
-
-//             for (let j = 0; j < overlap.length; j++) {
-//                 let overlapCalbox = overlap[j];
-//                 if (overlapCalbox.section.id === calbox.section.id) {
-//                     found = true;
-//                     break;
-//                 }
-//             }
-
-//             if (!found) {
-//                 overlap.push(calbox);
-//                 calbox.slot = overlap.length - 1;
-//             }
-//         } else {
-//             overlaps[key] = [calbox];
-//             calbox.slot = 0;
-//         }
-//     }
-
-//     // Assign maxSlot
-//     for (let i = 0; i < calboxes.length; i++) {
-//         let calbox = calboxes[i];
-//         let key = `${calbox.day}-${calbox.section.start_time}-${calbox.section.end_time}`;
-//         calbox.maxSlot = overlaps[key].length;
-//     }
-// }
 
 // Calculate dimensions for each CalBoxParam
 const calculateDimensions = (calboxes: CalBoxParam[]) => {
@@ -233,7 +204,6 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
         let left = (calbox.day - 1) * 20 + (calbox.slot / calbox.maxSlot) * 20;
         let width = 20 / calbox.maxSlot - 0.4;
 
-
         calbox.height = `${height}%`;
         calbox.top = `${top}%`;
         calbox.left = `${left}%`;
@@ -243,6 +213,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
 
 </script>
 
+<!--!------------------------------------------------------------------>
 
 <div class="h-full">
     <div class="h-full w-full std-area">
