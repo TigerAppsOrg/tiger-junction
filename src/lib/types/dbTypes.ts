@@ -1,6 +1,7 @@
 // Types relating to database fetching and insertion
 
 import type { SectionData } from "$lib/stores/rsections"
+import type { CalColors } from "$lib/stores/styles"
 import type { RegSeatReservation } from "./regTypes"
 
 type Listing = {
@@ -73,7 +74,7 @@ type CourseLinks = {
 type CalBoxParam = {
     courseCode: string;
     section: SectionData;
-    color: number;
+    color: keyof CalColors;
     confirmed: boolean;
     day: number;
     slot: number;

@@ -13,11 +13,11 @@ const { courseCode, section } = params;
 let hovered: boolean = false;
 
 let styles = {
-    "bg": $calColors[params.color as keyof CalColors],
+    "bg": $calColors[params.color],
     "border": params.confirmed ? 
-        darkenHSL($calColors[params.color as keyof CalColors], 40)
-        : darkenHSL($calColors[params.color as keyof CalColors], 20),
-    "text": darkenHSL($calColors[params.color as keyof CalColors], 40),
+        darkenHSL($calColors[params.color], 40)
+        : darkenHSL($calColors[params.color], 20),
+    "text": darkenHSL($calColors[params.color], 40),
     "alpha": params.confirmed ? "1" : "0.7",
     "stripes": params.confirmed ? "" : `repeating-linear-gradient(
         45deg,

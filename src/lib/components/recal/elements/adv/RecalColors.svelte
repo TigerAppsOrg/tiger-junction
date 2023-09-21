@@ -1,25 +1,24 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
-import { calColors } from "$lib/stores/styles";
+import { calColors, type CalColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
+import { onMount } from "svelte";
 
 
-let rgbColors = Object.entries($calColors)
+let rgbColors: CalColors = Object.entries($calColors)
     .map(([key, value]) => [key, hslToRGB(value)])
-    .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
+    .reduce((acc, [key, value]) => ({...acc, [key]: value}), {}) as CalColors;
 
 export let showModal: boolean = false;
 
-const handleChange = (color: string) => {
+const handleChange = (color: keyof CalColors) => {
     console.log(color, rgbColors[color], rgbToHSL(rgbColors[color]));
     $calColors[color] = rgbToHSL(rgbColors[color]);
-    console.log($calColors[color]);
 }
 
 const handleBlur = (color: string) => {
     console.log(color);
 }
-
 </script>
 
 <Modal {showModal}>

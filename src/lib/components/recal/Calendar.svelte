@@ -8,6 +8,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
+    import type { CalColors } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -82,7 +83,7 @@ const renderCalBoxes = () => {
                 courseRenders.push({
                     courseCode: course.code.split("/")[0],
                     section: section,
-                    color: courseMeta.color,
+                    color: courseMeta.color.toString() as keyof CalColors,
                     confirmed: confirmed,
                     day: day,
                     slot: 0,
@@ -108,7 +109,7 @@ const renderCalBoxes = () => {
                 courseRenders.push({
                     courseCode: hovered.code.split("/")[0],
                     section: section,
-                    color: -1,
+                    color: "-1",
                     confirmed: false,
                     day: day,
                     slot: 0,

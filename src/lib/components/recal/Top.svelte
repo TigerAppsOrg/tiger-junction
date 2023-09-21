@@ -20,6 +20,7 @@ import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
+    import { calColors } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -119,11 +120,11 @@ const handleLogout = async () => {
                 <img src={pinIcon} alt="Pin Icon"
                 class="btn-icon">
             </button>
-            <!-- <button class="btn-circ"
+            <button class="btn-circ"
             on:click={() => modalStore.open("rcolors", { clear: true})}>
                 <img src={paletteIcon} alt="Palette Icon"
                 class="btn-icon">
-            </button> -->
+            </button>
             <!-- <button class="btn-circ"
             on:click={() => modalStore.open("exportCal", { clear: true})}>
                 <img src={calendarIcon} alt="Custom Block Icon"
