@@ -19,7 +19,7 @@
 
 <div align="center">
 <img src="static/TigerJunctionERD.png" width="80%" alt="Database ERD">
-<p>The database entity relationship diagram for the entire app</p>
+<p>The entity relationship diagram for the entire app</p>
 </div>
 
 ## Release Calendar
