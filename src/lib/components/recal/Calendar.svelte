@@ -189,9 +189,6 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
             }
         }
     }
-
-    console.log(days);
-    console.log(calboxes.filter(x => x.day === 5));
 };
 
 
