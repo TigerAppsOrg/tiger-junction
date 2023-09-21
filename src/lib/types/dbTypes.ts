@@ -78,6 +78,7 @@ type CalBoxParam = {
     day: number;
     slot: number;
     maxSlot: number;
+    colSpan: number;
     height: string;
     width: string;
     top: string;

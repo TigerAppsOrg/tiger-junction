@@ -116,8 +116,8 @@ on:mouseleave={() => hovered = false}>
     </div>
 </button>
 
-{#if $searchSettings.style["Show Tooltips"] && hovered}
 <!-- Tooltip with room and capacity that follows cursor -->
+<!-- {#if $searchSettings.style["Show Tooltips"] && hovered} 
 <div class="fixed z-50 bg-slate-100 dark:bg-slate-800 rounded-md 
 p-1 text-xs opacity-80"
 style={`top: ${mouseY}px; left: ${mouseX + 10}px;`}>
@@ -128,7 +128,7 @@ style={`top: ${mouseY}px; left: ${mouseX + 10}px;`}>
         Enrollments: {section.tot}/{section.cap}
     </div>
 </div>
-{/if}
+{/if} -->
 
 <style lang="postcss">
 button {
