@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, rawCourseData, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
@@ -30,8 +30,9 @@ const handleTermChange = async (term: number) => {
     $ready = false;
     currentTerm.set(term);
     await fetchRawCourseData(supabase, term);
+    await fetchUserSchedules(supabase, term);
     await populatePools(supabase, term);
-
+    
     if ($schedules[term].length > 0)
         currentSchedule.set($schedules[term][0].id);
 
