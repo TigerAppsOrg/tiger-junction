@@ -4,6 +4,7 @@ import { calColors, type CalColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
 import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
+import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import { onMount } from "svelte";
 
 export let showModal: boolean = false;
@@ -52,22 +53,30 @@ onMount(() => {
                     {#each Object.keys($calColors) as color}
                         <div class="flex flex-col items-center">
                             <input type="color" 
-                             bind:value={rgbColors[color]}/>
+                            class="dark:bg-slate-800/50 bg-slate-200/50"
+                            bind:value={rgbColors[color]}/>
                             <div class="text-xs">{
-                                color === "-1" ? "Preview" : `Color ${color}`
+                                color === "-1" ? 
+                                    "Preview" : 
+                                    `Color ${parseInt(color) + 1}`
                             }</div>
                         </div>
                     {/each}
                 </div>
-            </div>
 
-            <!-- Themes -->
-            <!-- <div class="settings-area" id="options">
-                <h2 class="text-lg font-bold mb-2">Themes</h2>
-                <div class="flex flex-wrap gap-2 justify-center">
-                    
-                </div>
-            </div> -->
+                
+                <button class="btn flex items-center bg-gradient-to-r 
+                from-deepblue-light to-deepblue-dark text-white
+                mx-auto gap-2 p-4 mt-6"
+                on:click={saveColors}>
+                    <img src={paletteIcon} alt="palette Icon" 
+                    class="invert h-8 w--8">
+                    <span>
+                        View Color Palettes
+                    </span>
+                </button>
+
+            </div>
         </div>
         <div class="flex gap-2 border-t-2 mt-2 pt-2">
             <button class="btn border-2 border-slate-600/30 flex-1" 
