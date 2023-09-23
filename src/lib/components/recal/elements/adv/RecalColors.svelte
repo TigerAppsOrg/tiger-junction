@@ -3,6 +3,7 @@ import Modal from "$lib/components/elements/Modal.svelte";
 import { calColors, type CalColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
 import { modalStore } from "$lib/stores/modal";
+import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
 import { onMount } from "svelte";
 
 export let showModal: boolean = false;
@@ -23,6 +24,15 @@ const saveColors = () => {
     modalStore.close();
 }
 
+/**
+ * Reset colors to default
+ */
+const resetColors = () => {
+    rgbColors = Object.entries(DEFAULT_RCARD_COLORS)
+        .map(([key, value]) => [key, hslToRGB(value)])
+        .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
+}
+
 onMount(() => {
     rgbColors = Object.entries($calColors)
         .map(([key, value]) => [key, hslToRGB(value)])
@@ -41,7 +51,8 @@ onMount(() => {
                 <div class="flex flex-wrap gap-2 justify-center">
                     {#each Object.keys($calColors) as color}
                         <div class="flex flex-col items-center">
-                            <input type="color" bind:value={rgbColors[color]}/>
+                            <input type="color" 
+                             bind:value={rgbColors[color]}/>
                             <div class="text-xs">{
                                 color === "-1" ? "Preview" : `Color ${color}`
                             }</div>
@@ -62,6 +73,10 @@ onMount(() => {
             <button class="btn border-2 border-slate-600/30 flex-1" 
             on:click={() => modalStore.close()}>
                 Cancel
+            </button>
+            <button class="btn bg-orange-400 text-white flex-1" 
+            on:click={resetColors}>
+                Reset to Default
             </button>
             <button class="btn flex-1 bg-gradient-to-r 
             from-deepblue-light to-deepblue-dark text-white"
