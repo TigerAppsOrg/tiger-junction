@@ -68,7 +68,9 @@ onMount(() => {
                 <button class="btn flex items-center bg-gradient-to-r 
                 from-deepblue-light to-deepblue-dark text-white
                 mx-auto gap-2 p-4 mt-6"
-                on:click={saveColors}>
+                on:click={() => modalStore.open("rpalettes", {
+                    current: true
+                })}>
                     <img src={paletteIcon} alt="palette Icon" 
                     class="invert h-8 w--8">
                     <span>
