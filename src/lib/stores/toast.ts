@@ -15,10 +15,10 @@ export const toastStore = {
 
     /**
      * Add a toast
-     * @param message 
      * @param type 
+     * @param message 
      */
-    add: (message: string, type: Toast["type"]) => {
+    add: (type: Toast["type"], message: string) => {
         // Generate a random id
         const id = Math.floor(Math.random() * 1000000);
 

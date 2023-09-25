@@ -8,7 +8,7 @@ export let type = "success";
 </script>
 
 <article class={type}
-in:fade={{ duration: 100 }}
+in:fade={{ duration: 150 }}
 out:fade={{ duration: 300 }}>
     {#if type === "info"}
         I
@@ -32,7 +32,7 @@ out:fade={{ duration: 300 }}>
 
 <style lang="postcss">
 article {
-    opacity: 0.8;
+    opacity: 0.85;
     color: black;
     padding: 0.75rem 1.5rem;
     border-radius: 0.375rem;
@@ -60,6 +60,7 @@ article {
 }
 
 .close {
+    z-index: 5000;
     color: black;
     background: transparent;
     border: 0 none;
