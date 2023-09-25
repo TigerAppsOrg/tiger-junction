@@ -53,9 +53,10 @@ onMount(() => {
                     {#each Object.keys($calColors) as color}
                         <div class="flex flex-col items-center">
                             <input type="color" 
-                            class="dark:bg-slate-800/50 bg-slate-200/50"
+                            class="dark:bg-slate-800/50 bg-slate-200/50
+                            w-14 h-8 2 cursor-pointer"
                             bind:value={rgbColors[color]}/>
-                            <div class="text-xs">{
+                            <div class="text-sm font-light">{
                                 color === "-1" ? 
                                     "Preview" : 
                                     `Color ${parseInt(color) + 1}`
@@ -65,7 +66,7 @@ onMount(() => {
                 </div>
 
                 
-                <button class="btn flex items-center bg-gradient-to-r 
+                <!-- <button class="btn flex items-center bg-gradient-to-r 
                 from-deepblue-light to-deepblue-dark text-white
                 mx-auto gap-2 p-4 mt-6"
                 on:click={() => modalStore.open("rpalettes", {
@@ -76,7 +77,7 @@ onMount(() => {
                     <span>
                         View Color Palettes
                     </span>
-                </button>
+                </button> -->
 
             </div>
         </div>
