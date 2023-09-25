@@ -4,6 +4,7 @@ import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+    import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { onMount } from "svelte";
 
@@ -118,6 +119,8 @@ const duplicateSchedule = async () => {
 
             // Update current schedule
             currentSchedule.set(res.data[0].id);
+
+            toastStore.add("success", "Schedule successfully duplicated!");
         });
     });
 
@@ -149,6 +152,8 @@ const deleteSchedule = async () => {
 
         // Update current schedule
         currentSchedule.set($schedules[$currentTerm][0].id);
+
+        toastStore.add("success", "Schedule successfully deleted!");
     });
 
     // Clean Up and Close

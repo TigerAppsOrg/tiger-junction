@@ -127,11 +127,11 @@ const handleLogout = async () => {
                 <img src={paletteIcon} alt="Palette Icon"
                 class="btn-icon">
             </button>
-            <button class="btn-circ"
-            on:click={() => toastStore.add("success", "Awooga")}>
+            <!-- <button class="btn-circ"
+            on:click={() => toastStore.add("info", "Awooga")}>
                 <img src={calendarIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button>
+            </button> -->
             <!-- <button class="btn-circ"
             on:click={() => console.log($toastStore)}>
                 <img src={customBlockIcon} alt="Custom Block Icon"

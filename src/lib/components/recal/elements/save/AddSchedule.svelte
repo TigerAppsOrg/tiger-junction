@@ -56,7 +56,7 @@ const saveSchedule = async () => {
         if ($schedules[$currentTerm].length === 1)
             $retop = !$retop;
 
-        toastStore.add("success", "Schedule created");
+        toastStore.add("success", "Schedule successfully created!");
     });
 
     // Clean Up and Close
