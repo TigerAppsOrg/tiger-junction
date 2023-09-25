@@ -83,6 +83,12 @@ const duplicateSchedule = async () => {
             return x;
         });
 
+        if (assocUploads.length === 0) {
+            currentSchedule.set(parseInt(newId));
+            toastStore.add("success", "Schedule successfully duplicated!");
+            return;
+        }
+
         // Deep copy
         rMeta.update(x => {
             x[newId] = JSON.parse(JSON.stringify(meta));
