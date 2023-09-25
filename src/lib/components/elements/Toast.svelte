@@ -14,6 +14,8 @@ out:fade={{ duration: 300 }}>
         I
     {:else if type === "error"}
         E
+    {:else if type === "warning"}
+        W
     {:else}
         S
     {/if}
@@ -46,11 +48,15 @@ article {
 }
 
 .error {
-    background-color: #hsl(1, 100%, 69%);
+    background-color: hsl(1, 100%, 69%);
+}
+
+.warning {
+    background-color: hsl(35, 99%, 65%);
 }
 
 .info {
-    background-color: #hsl(197, 34%, 72%);
+    background-color: hsl(197, 34%, 72%);
 }
 
 .close {
