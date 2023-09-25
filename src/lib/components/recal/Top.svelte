@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, rawCourseData, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import customBlockIcon from "$lib/img/icons/customblockicon.svg";
@@ -20,7 +20,7 @@ import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
-    import { calColors } from "$lib/stores/styles";
+import { calColors } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -30,8 +30,9 @@ const handleTermChange = async (term: number) => {
     $ready = false;
     currentTerm.set(term);
     await fetchRawCourseData(supabase, term);
+    await fetchUserSchedules(supabase, term);
     await populatePools(supabase, term);
-
+    
     if ($schedules[term].length > 0)
         currentSchedule.set($schedules[term][0].id);
 
@@ -120,11 +121,11 @@ const handleLogout = async () => {
                 <img src={pinIcon} alt="Pin Icon"
                 class="btn-icon">
             </button>
-            <!-- <button class="btn-circ"
+            <button class="btn-circ"
             on:click={() => modalStore.open("rcolors", { clear: true})}>
                 <img src={paletteIcon} alt="Palette Icon"
                 class="btn-icon">
-            </button> -->
+            </button>
             <!-- <button class="btn-circ"
             on:click={() => modalStore.open("exportCal", { clear: true})}>
                 <img src={calendarIcon} alt="Custom Block Icon"

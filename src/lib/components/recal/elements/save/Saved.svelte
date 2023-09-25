@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { calColors } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -13,6 +14,8 @@ $: saved = $savedCourses[$currentSchedule] ?
 $: pinned = $pinnedCourses[$currentSchedule] ?
     $pinnedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code))
     : [];
+
+$: colorChange = $calColors;
 </script>
 
 
@@ -33,7 +36,7 @@ $: pinned = $pinnedCourses[$currentSchedule] ?
     <div class="flex flex-col overflow-hidden rounded-xl 
     {$isResult ? "max-h-[10vh]" : "max-h-[75vh]"}">
         <div class="overflow-y-auto">
-            {#key saved}
+            {#key saved && colorChange}
             {#each saved as course}
                 {#if $searchSettings.style["Original Style"]}
                     <ClassicSearch {course} />

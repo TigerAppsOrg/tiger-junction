@@ -2,44 +2,100 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import { calColors, type CalColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
+import { modalStore } from "$lib/stores/modal";
+import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
+import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import { onMount } from "svelte";
-
-
-let rgbColors: CalColors = Object.entries($calColors)
-    .map(([key, value]) => [key, hslToRGB(value)])
-    .reduce((acc, [key, value]) => ({...acc, [key]: value}), {}) as CalColors;
 
 export let showModal: boolean = false;
 
-const handleChange = (color: keyof CalColors) => {
-    console.log(color, rgbColors[color], rgbToHSL(rgbColors[color]));
-    $calColors[color] = rgbToHSL(rgbColors[color]);
+// Convert hslColors to rgb
+let rgbColors: Record<string, string> = {};
+
+/**
+ * Save colors to store and close modal
+ */
+const saveColors = () => {
+    // Convert rgbColors to hsl
+    let hslColors: CalColors = Object.entries(rgbColors)
+        .map(([key, value]) => [key, rgbToHSL(value)])
+        .reduce((acc, [key, value]) => ({...acc, [key]: value}), {}) as CalColors;
+
+    calColors.set(hslColors);
+    modalStore.close();
 }
 
-const handleBlur = (color: string) => {
-    console.log(color);
+/**
+ * Reset colors to default
+ */
+const resetColors = () => {
+    rgbColors = Object.entries(DEFAULT_RCARD_COLORS)
+        .map(([key, value]) => [key, hslToRGB(value)])
+        .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
 }
+
+onMount(() => {
+    rgbColors = Object.entries($calColors)
+        .map(([key, value]) => [key, hslToRGB(value)])
+        .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
+})
 </script>
 
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-4xl">
         <h1 class="text-xl font-bold mb-2">Color Settings</h1>
         <div class="flex flex-col gap-2">
+
+            <!-- Card Colors -->
             <div class="settings-area" id="options">
-                <!-- <h2 class="text-lg font-bold mb-2">Card Colors</h2> -->
-                <div class="flex flex-wrap gap-2">
+                <h2 class="text-lg font-bold mb-2">Card Colors</h2>
+                <div class="flex flex-wrap gap-2 justify-center">
                     {#each Object.keys($calColors) as color}
                         <div class="flex flex-col items-center">
-                            <input type="color" bind:value={rgbColors[color]} 
-                            on:input={() => handleChange(color)}
-                            on:blur={() => handleBlur(color)}/>
-                            <!-- <div class="w-8 h-8 rounded-full" style={`background-color: ${$calColors[color]}`}></div>
-                            <div class="text-xs">{color}</div> -->
+                            <input type="color" 
+                            class="dark:bg-slate-800/50 bg-slate-200/50
+                            w-14 h-8 2 cursor-pointer"
+                            bind:value={rgbColors[color]}/>
+                            <div class="text-sm font-light">{
+                                color === "-1" ? 
+                                    "Preview" : 
+                                    `Color ${parseInt(color) + 1}`
+                            }</div>
                         </div>
                     {/each}
                 </div>
+
+                
+                <!-- <button class="btn flex items-center bg-gradient-to-r 
+                from-deepblue-light to-deepblue-dark text-white
+                mx-auto gap-2 p-4 mt-6"
+                on:click={() => modalStore.open("rpalettes", {
+                    current: true
+                })}>
+                    <img src={paletteIcon} alt="palette Icon" 
+                    class="invert h-8 w--8">
+                    <span>
+                        View Color Palettes
+                    </span>
+                </button> -->
+
             </div>
         </div>
+        <div class="flex gap-2 border-t-2 mt-2 pt-2">
+            <button class="btn border-2 border-slate-600/30 flex-1" 
+            on:click={() => modalStore.close()}>
+                Cancel
+            </button>
+            <button class="btn bg-orange-400 text-white flex-1" 
+            on:click={resetColors}>
+                Reset to Default
+            </button>
+            <button class="btn flex-1 bg-gradient-to-r 
+            from-deepblue-light to-deepblue-dark text-white"
+            on:click={saveColors}>
+                Save
+            </button>
+        </div> <!-- * End Nav -->
     </div>
 </Modal>
 

@@ -15,11 +15,7 @@ export type CalColors = {
     "6": string,
 }
 
-// HSL colors
-const { subscribe: ccSubscribe, update: ccUpdate, set: ccSet }: Writable<CalColors> = writable(    
-    typeof window !== "undefined" && localStorage.getItem("calColors") !== null
-    ? JSON.parse(localStorage.getItem("calColors") as string)
-    : {
+export const DEFAULT_RCARD_COLORS: CalColors = {
     "-1": "hsl(0, 0%, 66%)", 
     0: "hsl(1, 100%, 69%)",   
     1: "hsl(35, 99%, 65%)",   
@@ -28,7 +24,14 @@ const { subscribe: ccSubscribe, update: ccUpdate, set: ccSet }: Writable<CalColo
     4: "hsl(120, 52%, 75%)", 
     5: "hsl(330, 100%, 80%)", 
     6: "hsl(304, 33%, 70%)", 
-});
+}
+
+// HSL colors
+const { subscribe: ccSubscribe, update: ccUpdate, set: ccSet }: Writable<CalColors> = writable(    
+    typeof window !== "undefined" && localStorage.getItem("calColors") !== null
+    ? JSON.parse(localStorage.getItem("calColors") as string)
+    : DEFAULT_RCARD_COLORS
+);
 
 export const calColors = {
     subscribe: ccSubscribe,

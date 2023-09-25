@@ -4,7 +4,7 @@ import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-    import { isMobile, showCal } from "$lib/stores/mobile";
+import { isMobile, showCal } from "$lib/stores/mobile";
 import { ready, schedules, searchCourseData } from "$lib/stores/recal.js";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
 import { onMount } from "svelte";

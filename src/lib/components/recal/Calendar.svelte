@@ -8,7 +8,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
-    import type { CalColors } from "$lib/stores/styles";
+import { calColors, type CalColors } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -17,10 +17,18 @@ let toRender: CalBoxParam[] = [];
 let prevSchedule: number = -1;
 let prevTerm: number = -1;
 
-$: triggerRender($savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, $currentSchedule, $currentTerm);
+$: triggerRender($currentSchedule, $currentTerm, 
+$savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, 
+$calColors);
 
-const triggerRender = (a: any, b: any, c: any, d: any,
-currentSchedule: number, currentTerm: number) => {
+/**
+ * Trigger render if schedule or term or args change
+ * @param currentSchedule
+ * @param currentTerm
+ * @param args
+ */
+const triggerRender = (currentSchedule: number, currentTerm: number, 
+...args: any[]) => {
     if (prevSchedule === -1) prevSchedule = currentSchedule;
     if (prevTerm === -1) prevTerm = currentTerm;
 
