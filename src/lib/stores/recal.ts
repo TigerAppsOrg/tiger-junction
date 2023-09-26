@@ -322,6 +322,7 @@ type Filter = {
 export type SearchSettings = {
     options: Record<string, boolean>,
     filters: Record<string, Filter>,
+    sortBy: Record<string, boolean>,
     style: Record<string, boolean>,
 }
 
@@ -384,6 +385,10 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "No Cancelled": {
             "enabled": false,
         },
+    },
+    "sortBy": {
+        "Name (A-Z)": true,
+        "Name (Z-A)": true,
     },
     "style": {
         // "Original Style": false,
