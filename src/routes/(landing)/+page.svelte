@@ -62,8 +62,14 @@ const handleLogin = async () => {
                 succeed.
             </p>
             <button on:click={handleLogin}
-            class="btn-cool text-xl">
+            class="btn-cool text-xl space-y-0">
+            <div>
                 Get Started →
+            </div>
+            <div class="font-light text-xs italic">
+                Princeton Email Required
+            </div>
+
             </button>
         </div>
         <!-- <div class="flex justify-end">

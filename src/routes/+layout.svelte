@@ -4,6 +4,7 @@ import { invalidate } from "$app/navigation";
 import { onMount } from "svelte";
 import { darkTheme } from "$lib/stores/state";
 import { isMobile } from "$lib/stores/mobile";
+import ToastLib from "$lib/components/general/ToastLib.svelte";
 
 export let data;
 
@@ -37,5 +38,6 @@ onMount(() => {
 </svelte:head>
 
 <div class="font-lato" class:dark>
+    <ToastLib />
     <slot />
 </div>

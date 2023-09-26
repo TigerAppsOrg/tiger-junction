@@ -51,7 +51,10 @@ const handleScheduleChange = (scheduleId: number) => {
 // Logout the user
 const handleLogout = async () => { 
     const { error } = await supabase.auth.signOut();
-    if (!error) goto("/");
+    if (!error) {
+        toastStore.add("success", "Logged out successfully");
+        goto("/");
+    }
 }
 
 </script>
