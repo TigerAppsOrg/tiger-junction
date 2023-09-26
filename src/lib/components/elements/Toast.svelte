@@ -2,6 +2,7 @@
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
 import infoIcon from "$lib/img/icons/infoicon.svg"
+import errorIcon from "$lib/img/icons/blockicon.svg";
 
 const dispatch = createEventDispatcher();
 
@@ -17,7 +18,7 @@ on:click={() => dispatch("dismiss")}>
     {#if type === "info"}
         {infoIcon}
     {:else if type === "error"}
-        E
+        <img class="w-6" src={errorIcon} alt="Info Icon">
     {:else if type === "warning"}
         W
     {:else}

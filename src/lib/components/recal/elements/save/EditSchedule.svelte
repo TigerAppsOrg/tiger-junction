@@ -4,7 +4,7 @@ import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
-    import { toastStore } from "$lib/stores/toast";
+import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { onMount } from "svelte";
 
@@ -120,6 +120,8 @@ const duplicateSchedule = async () => {
                     delete x[newId];
                     return x;
                 });
+
+                toastStore.add("error", "Error: please refresh and try again.");
                 return;
             }
 
@@ -146,6 +148,7 @@ const deleteSchedule = async () => {
     .then(res => {
         if (res.error) {
             console.log(res.error);
+            toastStore.add("error", "Error: please refresh and try again.");
             return;
         }
 
@@ -188,6 +191,7 @@ const saveSchedule = async () => {
     .then(res => {
         if (res.error) {
             console.log(res.error);
+            toastStore.add("error", "Error: please refresh and try again.");
             return;
         }
 

@@ -31,6 +31,7 @@ const saveSchedule = async () => {
     .then(res => {
         if (res.error) {
             console.log(res.error);
+            toastStore.add("error", "Error: please refresh and try again.");
             return;
         }
 
