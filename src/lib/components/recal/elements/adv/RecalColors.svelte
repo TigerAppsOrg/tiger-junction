@@ -86,7 +86,9 @@ onMount(() => {
             on:click={() => modalStore.close()}>
                 Cancel
             </button>
-            <button class="btn bg-orange-400 text-white flex-1" 
+            <button class="btn bg-black text-white
+            dark:bg-slate-200 dark:text-black
+            flex-1" 
             on:click={resetColors}>
                 Reset to Default
             </button>

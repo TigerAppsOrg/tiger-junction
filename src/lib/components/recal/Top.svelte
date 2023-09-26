@@ -21,6 +21,7 @@ import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { calColors } from "$lib/stores/styles";
+    import { toastStore } from "$lib/stores/toast";
 
 export let supabase: SupabaseClient;
 
@@ -127,12 +128,12 @@ const handleLogout = async () => {
                 class="btn-icon">
             </button>
             <!-- <button class="btn-circ"
-            on:click={() => modalStore.open("exportCal", { clear: true})}>
+            on:click={() => toastStore.add("info", "Awooga")}>
                 <img src={calendarIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button> -->
             <!-- <button class="btn-circ"
-            on:click={() => console.log($rMeta)}>
+            on:click={() => console.log($toastStore)}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
                 class="btn-icon">
             </button> -->

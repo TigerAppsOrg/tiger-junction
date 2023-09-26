@@ -2,8 +2,9 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, retop, schedules } from "$lib/stores/recal";
-    import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { toastStore } from "$lib/stores/toast";
 
 export let showModal: boolean = false;
 export let supabase: SupabaseClient;
@@ -30,6 +31,7 @@ const saveSchedule = async () => {
     .then(res => {
         if (res.error) {
             console.log(res.error);
+            toastStore.add("error", "Error: please refresh and try again.");
             return;
         }
 
@@ -54,6 +56,8 @@ const saveSchedule = async () => {
         currentSchedule.set(res.data[0].id);
         if ($schedules[$currentTerm].length === 1)
             $retop = !$retop;
+
+        toastStore.add("success", "Schedule successfully created!");
     });
 
     // Clean Up and Close
