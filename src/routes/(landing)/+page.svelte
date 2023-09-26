@@ -26,7 +26,9 @@ const handleLogin = async () => {
 }
 </script>
 
-<div class="h-screen area">
+<div class="overflow-x-hidden">
+<div class="area overflow-x-hidden">
+
     <nav class="flex justify-between items-center text-xl h-[10vh]">
         <div id="left">
             <a href="/" class="flex items-center">
@@ -36,16 +38,17 @@ const handleLogin = async () => {
             </a>
         </div>
         <div id="right" class="space-x-6">
-            <a href="#about" class="hover:text-gray-500 duration-150">
+            <!-- <a href="#about" class="hover:text-gray-500 duration-150">
                 About
-            </a>
+            </a> -->
             <button class="btn-cool"
             on:click={handleLogin}>
                 Login
             </button>
         </div>
     </nav>
-    <main class="grid grid-cols-2 h-[70vh] py-20">
+
+    <main class="grid h-[70vh] py-20">
         <div class="my-auto h-[60vh]">
             <p class="text-xl mb-2 font-bold">
                 TigerJunction
@@ -166,6 +169,7 @@ const handleLogin = async () => {
             </span>
         </ViewCard>
     </div>
+    
     <div class="mt-16">
         <div class="bg-slate-600 text-white p-8 rounded-lg shadow-lg
         text-xl flex justify-between items-center gap-6">
@@ -181,8 +185,8 @@ const handleLogin = async () => {
         </div>
     </div>
 </div>
-<footer class="bg-black dark:bg-white text-center text-white dark:text-black text-sm font-light
-py-4">
+<footer class="bg-black dark:bg-white text-center text-white 
+dark:text-black text-sm font-light py-4">
     Made with 
     <a href="https://svelte.dev/" target="_blank" class="link">
         Svelte
@@ -192,6 +196,7 @@ py-4">
         3d PNGs by Vecteezy
     </a>
 </footer>
+</div>
 
 <style lang="postcss">
 .rainbow {
@@ -214,7 +219,8 @@ py-4">
 }
 
 .area {
-    @apply bg-white dark:bg-black dark:text-white text-black px-20 w-screen;
+    @apply bg-white dark:bg-black dark:text-white 
+    text-black px-4 sm:px-20 w-screen;
 }
 
 .link {
