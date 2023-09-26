@@ -26,7 +26,7 @@
 Currently, the `ReCal+` portion of `TigerJunction` is live. The other portions are still under development, and will be released shortly. Here is a tentative release calendar:
 
 - [x] [1.1] **ReCal+ Release** (9/17)
-- [ ] [1.2] Mobile Compatibility and Custom Colors (9/24)
+- [x] [1.2] Mobile Compatibility and Custom Colors (9/25)
 - [ ] [1.3] Custom Blocks and Google Calendar Exporting (10/1)
 - [ ] [1.4] Schedule Share and Split Screen (10/8)
 - [ ] [2.0] **CourseGenie Initial Release** (10/22)
