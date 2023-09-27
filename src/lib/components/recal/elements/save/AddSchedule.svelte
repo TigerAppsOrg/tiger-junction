@@ -1,7 +1,7 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { currentSchedule, currentTerm, retop, schedules } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { toastStore } from "$lib/stores/toast";
@@ -41,19 +41,25 @@ const saveSchedule = async () => {
             return x;
         });
 
+        let newId = res.data[0].id;
+
         // ! TODO Bandage
         savedCourses.update(x => {
-            x[res.data[0].id] = [];
+            x[newId] = [];
             return x;
         });
 
         pinnedCourses.update(x => {
-            x[res.data[0].id] = [];
+            x[newId] = [];
             return x;
         }); 
 
         // Update current schedule
-        currentSchedule.set(res.data[0].id);
+        currentSchedule.set(newId);
+        searchCourseData.reset($currentTerm);
+        let courses = [...$savedCourses[newId], ...$pinnedCourses[newId]];
+        searchCourseData.remove($currentTerm, courses);
+
         if ($schedules[$currentTerm].length === 1)
             $retop = !$retop;
 

@@ -1,9 +1,8 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, type SearchSettings, searchCourseData, currentSchedule, isResult } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
-import type { RawCourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let supabase: SupabaseClient;
@@ -15,7 +14,7 @@ const THRESHOLD = 50;
 
 // Update search results when params change
 $: autoTrig($searchSettings, $searchCourseData, $currentTerm, $currentSchedule);
-const autoTrig = (a: SearchSettings, b: RawCourseData, c: number, d: number) => {
+const autoTrig = (...params: any[]) => {
     triggerSearch();
 }
 
