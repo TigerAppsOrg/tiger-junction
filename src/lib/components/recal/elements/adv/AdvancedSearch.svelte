@@ -1,6 +1,7 @@
 <script lang="ts">
 import Checkpill from "$lib/components/elements/Checkpill.svelte";
 import Modal from "$lib/components/elements/Modal.svelte";
+    import TogTog from "$lib/components/elements/TogTog.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { searchSettings } from "$lib/stores/recal";
 
@@ -53,6 +54,14 @@ const saveSettings = () => {
                         </div>
                     {/if}
                     {/each}
+                </div>
+            </div>
+            <div class="settings-area" id="sort">
+                <h2 class="text-lg font-bold mb-2">Sort By</h2>
+                <div class="flex flex-wrap gap-2">
+                    <TogTog name="Name" />
+                    <TogTog name="Rating" />
+                    <TogTog name="Number" />
                 </div>
             </div>
             <div class="settings-area" id="style">

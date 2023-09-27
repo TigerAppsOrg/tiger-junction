@@ -319,10 +319,16 @@ type Filter = {
     [key: string]: any,
 }
 
+type SortBy = {
+    enabled: boolean,
+    options: string[],
+    value: number,
+}
+
 export type SearchSettings = {
     options: Record<string, boolean>,
     filters: Record<string, Filter>,
-    sortBy: Record<string, boolean>,
+    sortBy: Record<string, SortBy>,
     style: Record<string, boolean>,
 }
 
@@ -387,8 +393,21 @@ export const searchSettings: Writable<SearchSettings> = writable({
         },
     },
     "sortBy": {
-        "Name (A-Z)": true,
-        "Name (Z-A)": true,
+        "Name": {
+            "enabled": false,
+            "options": ["A-Z", "Z-A"],
+            "value": 0,
+        },
+        "Rating": {
+            "enabled": false,
+            "options": ["High-Low", "Low-High"],
+            "value": 0,
+        },
+        "Number": {
+            "enabled": false,
+            "options": ["Low-High", "High-Low"],
+            "value": 0,
+        }
     },
     "style": {
         // "Original Style": false,
