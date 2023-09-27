@@ -7,6 +7,14 @@ const handleToggle = (e: Event) => {
     console.log(target);
 }
 
+const toggleVal = (index: number) => {
+    searchSettings.update((settings) => {
+        settings.sortBy[name].value = index;
+        return settings;
+    });
+    console.log(sortParam.value);
+}
+
 $: sortParam = $searchSettings.sortBy[name];
 
 </script>
@@ -25,11 +33,17 @@ $: sortParam = $searchSettings.sortBy[name];
         <span>
             {#each sortParam.options as option, i}
                 {#if i === sortParam.value}
-                    <span>
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <span class="bg-red-500"
+                    on:click={() => toggleVal(i)}>
                         {option}
                     </span>
-                {:else}
-                    <span>
+                    {:else}
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <span class="bg-blue-500"
+                    on:click={() => toggleVal(i)}>
                         {option}
                     </span>
                 {/if}
