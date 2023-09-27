@@ -66,6 +66,15 @@ export const searchResults = {
         // Filter by settings
         //--------------------------------------------------------------
 
+        // * Rating
+        if (settings.filters["Rating"].enabled) {
+            data = data.filter(x => {
+                let rating: number = x.rating ? x.rating : 0;
+                return rating >= settings.filters["Rating"].min
+                    && rating <= settings.filters["Rating"].max;
+            });
+        }
+
         // * Distribution requirements
         if (settings.filters["Dists"].enabled) {
             data = data.filter(x => {
