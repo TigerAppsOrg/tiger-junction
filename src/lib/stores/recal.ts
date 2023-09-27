@@ -81,9 +81,10 @@ export const searchResults = {
                 let enabled: boolean = false;
 
                 // If no dists, check if "No Dist" is enabled
-                if ((!x.dists || x.dists.length === 0 
-                    && settings.filters["Dists"].values["No Dist"]))
-                    return true;
+                if (!x.dists || x.dists.length === 0) {
+                    if (settings.filters["Dists"].values["No Dist"]) return true;
+                    else return false;
+                }
 
                 // Check if any dist is enabled
                 for (let dist of x.dists) {
