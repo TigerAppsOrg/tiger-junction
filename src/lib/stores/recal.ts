@@ -395,17 +395,17 @@ export const searchSettings: Writable<SearchSettings> = writable({
     "sortBy": {
         "Name": {
             "enabled": false,
-            "options": ["A-Z", "Z-A"],
+            "options": ["A to Z", "Z to A"],
             "value": 0,
         },
         "Rating": {
             "enabled": false,
-            "options": ["High-Low", "Low-High"],
+            "options": ["High to Low", "Low to High"],
             "value": 0,
         },
         "Number": {
             "enabled": false,
-            "options": ["Low-High", "High-Low"],
+            "options": ["Low to High", "High to Low"],
             "value": 0,
         }
     },
