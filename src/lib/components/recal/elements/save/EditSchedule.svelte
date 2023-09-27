@@ -1,7 +1,7 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { currentSchedule, currentTerm, schedules } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { toastStore } from "$lib/stores/toast";
@@ -127,6 +127,10 @@ const duplicateSchedule = async () => {
 
             // Update current schedule
             currentSchedule.set(res.data[0].id);
+                searchCourseData.reset($currentTerm);
+                let courses = [...$savedCourses[res.data[0].id], ...$pinnedCourses[res.data[0].id]];
+                searchCourseData.remove($currentTerm, courses);
+            
 
             toastStore.add("success", "Schedule successfully duplicated!");
         });

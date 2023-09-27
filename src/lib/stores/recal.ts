@@ -3,7 +3,6 @@
 import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
-import { sectionData } from "./rsections";
 
 //----------------------------------------------------------------------
 // Current Term/Schedule
@@ -67,6 +66,15 @@ export const searchResults = {
         // Filter by settings
         //--------------------------------------------------------------
 
+        // * Rating
+        if (settings.filters["Rating"].enabled) {
+            data = data.filter(x => {
+                let rating: number = x.rating ? x.rating : 0;
+                return rating >= settings.filters["Rating"].min
+                    && rating <= settings.filters["Rating"].max;
+            });
+        }
+
         // * Distribution requirements
         if (settings.filters["Dists"].enabled) {
             data = data.filter(x => {
@@ -120,6 +128,28 @@ export const searchResults = {
                 .values[x.code.charAt(3)]
             );
         }
+
+        //--------------------------------------------------------------
+        // SortBy Settings
+        //--------------------------------------------------------------
+
+        // * Default Sort (Alphabetical)
+        data = data.sort((a, b) => {
+            return a.code > b.code ? 1 : -1
+        });
+
+        // * Rating
+        if (settings.sortBy["Rating"].enabled) {
+
+            data = data.sort((a, b) => {
+                let aRating: number = a.rating ? a.rating : 0;
+                let bRating: number = b.rating ? b.rating : 0;
+
+                return settings.sortBy["Rating"].value === 0 ?
+                    (bRating - aRating) : (aRating - bRating);
+            });
+        }
+
 
         //--------------------------------------------------------------
         // Filter by search query
@@ -319,9 +349,16 @@ type Filter = {
     [key: string]: any,
 }
 
+type SortBy = {
+    enabled: boolean,
+    options: string[],
+    value: number,
+}
+
 export type SearchSettings = {
     options: Record<string, boolean>,
     filters: Record<string, Filter>,
+    sortBy: Record<string, SortBy>,
     style: Record<string, boolean>,
 }
 
@@ -334,6 +371,11 @@ export const searchSettings: Writable<SearchSettings> = writable({
         // "Smart Search": false,
     }, 
     "filters": {
+        "Rating": {
+            "enabled": false,
+            "min": 0,
+            "max": 5,
+        },
         "Dists": {
             "enabled": false,
             "values": {
@@ -349,16 +391,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
                 "No Dist": true,
             }
         },
-        // "Days": {
-        //     "enabled": false,
-        //     "values": {
-        //         "Monday": true,
-        //         "Tuesday": true,
-        //         "Wednesday": true,
-        //         "Thursday": true,
-        //         "Friday": true,
-        //     }
-        // },
         "Levels": {
             "enabled": false,
             "values": {
@@ -384,6 +416,23 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "No Cancelled": {
             "enabled": false,
         },
+    },
+    "sortBy": {
+        // "Name": {
+        //     "enabled": false,
+        //     "options": ["A to Z", "Z to A"],
+        //     "value": 0,
+        // },
+        "Rating": {
+            "enabled": false,
+            "options": ["High to Low", "Low to High"],
+            "value": 0,
+        },
+        // "Number": {
+        //     "enabled": false,
+        //     "options": ["Low to High", "High to Low"],
+        //     "value": 0,
+        // }
     },
     "style": {
         // "Original Style": false,

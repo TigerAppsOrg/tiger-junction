@@ -1,14 +1,14 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, rawCourseData, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import customBlockIcon from "$lib/img/icons/customblockicon.svg";
+// import customBlockIcon from "$lib/img/icons/customblockicon.svg";
 // import shareIcon from "$lib/img/icons/shareicon.svg";
 import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import pinIcon from "$lib/img/icons/pinicon.svg";
 import addIcon from "$lib/img/icons/addicon.svg";
-import calendarIcon from "$lib/img/icons/calendaricon.svg";
+// import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import editIcon from "$lib/img/icons/editicon.svg"
 import logoutIcon from "$lib/img/icons/logouticon.svg";
 import moonIcon from "$lib/img/icons/moonicon.svg";
@@ -20,8 +20,7 @@ import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
-import { calColors } from "$lib/stores/styles";
-    import { toastStore } from "$lib/stores/toast";
+import { toastStore } from "$lib/stores/toast";
 
 export let supabase: SupabaseClient;
 
