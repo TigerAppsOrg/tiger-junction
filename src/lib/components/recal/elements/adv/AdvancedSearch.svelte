@@ -89,7 +89,7 @@ const handleMax = (e: Event) => {
                     dark:border-slate-200/30 border-t-2 mt-2">
                         <div class="mb-2 flex items-center gap-4">
                             <h3 class="text-lg font-semibold">Rating</h3>
-                            <p class="italic">Note: 0 means no rating</p>
+                            <p class="italic">Note: courses with no rating correspond to 0</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <input type="number" step="0.1" 
