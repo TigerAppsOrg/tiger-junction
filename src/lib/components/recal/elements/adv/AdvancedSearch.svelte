@@ -59,9 +59,9 @@ const saveSettings = () => {
             <div class="settings-area" id="sort">
                 <h2 class="text-lg font-bold mb-2">Sort By</h2>
                 <div class="flex flex-wrap gap-2">
-                    <TogTog name="Name" />
+                    <!-- <TogTog name="Name" /> -->
                     <TogTog name="Rating" />
-                    <TogTog name="Number" />
+                    <!-- <TogTog name="Number" /> -->
                 </div>
             </div>
             <div class="settings-area" id="style">

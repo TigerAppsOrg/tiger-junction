@@ -122,6 +122,28 @@ export const searchResults = {
         }
 
         //--------------------------------------------------------------
+        // SortBy Settings
+        //--------------------------------------------------------------
+
+        // * Default Sort (Alphabetical)
+        data = data.sort((a, b) => {
+            return a.code > b.code ? 1 : -1
+        });
+
+        // * Rating
+        if (settings.sortBy["Rating"].enabled) {
+
+            data = data.sort((a, b) => {
+                let aRating: number = a.rating ? a.rating : 0;
+                let bRating: number = b.rating ? b.rating : 0;
+
+                return settings.sortBy["Rating"].value === 0 ?
+                    (bRating - aRating) : (aRating - bRating);
+            });
+        }
+
+
+        //--------------------------------------------------------------
         // Filter by search query
         //--------------------------------------------------------------
 
@@ -393,21 +415,21 @@ export const searchSettings: Writable<SearchSettings> = writable({
         },
     },
     "sortBy": {
-        "Name": {
-            "enabled": false,
-            "options": ["A to Z", "Z to A"],
-            "value": 0,
-        },
+        // "Name": {
+        //     "enabled": false,
+        //     "options": ["A to Z", "Z to A"],
+        //     "value": 0,
+        // },
         "Rating": {
             "enabled": false,
             "options": ["High to Low", "Low to High"],
             "value": 0,
         },
-        "Number": {
-            "enabled": false,
-            "options": ["Low to High", "High to Low"],
-            "value": 0,
-        }
+        // "Number": {
+        //     "enabled": false,
+        //     "options": ["Low to High", "High to Low"],
+        //     "value": 0,
+        // }
     },
     "style": {
         // "Original Style": false,
