@@ -362,6 +362,11 @@ export const searchSettings: Writable<SearchSettings> = writable({
         // "Smart Search": false,
     }, 
     "filters": {
+        "Rating": {
+            "enabled": false,
+            "min": 0,
+            "max": 5,
+        },
         "Dists": {
             "enabled": false,
             "values": {
@@ -377,16 +382,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
                 "No Dist": true,
             }
         },
-        // "Days": {
-        //     "enabled": false,
-        //     "values": {
-        //         "Monday": true,
-        //         "Tuesday": true,
-        //         "Wednesday": true,
-        //         "Thursday": true,
-        //         "Friday": true,
-        //     }
-        // },
         "Levels": {
             "enabled": false,
             "values": {

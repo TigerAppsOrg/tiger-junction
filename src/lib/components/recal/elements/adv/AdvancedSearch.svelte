@@ -7,9 +7,38 @@ import { searchSettings } from "$lib/stores/recal";
 
 export let showModal: boolean = false;
 
-// Save settings and close modal
+/**
+ * Save settings and close modal
+ */
 const saveSettings = () => {
     modalStore.close();
+}
+
+let minInput: number = $searchSettings.filters["Rating"].min;
+let maxInput: number = $searchSettings.filters["Rating"].max;
+
+/**
+ * Handle min rating input
+ * @param e Input event
+ */
+const handleMin = (e: Event) => {
+    let target = e.target as HTMLInputElement;
+    minInput = parseFloat(target.value);
+    if (minInput < 0) minInput = 0;
+    if (minInput > 5) minInput = 5;
+    $searchSettings.filters["Rating"].min = minInput;
+}
+
+/**
+ * Handle max rating input
+ * @param e Input event
+ */
+const handleMax = (e: Event) => {
+    let target = e.target as HTMLInputElement;
+    maxInput = parseFloat(target.value);
+    if (maxInput < 0) maxInput = 0;
+    if (maxInput > 5) maxInput = 5;
+    $searchSettings.filters["Rating"].max = maxInput;
 }
 </script>
 
@@ -54,6 +83,30 @@ const saveSettings = () => {
                         </div>
                     {/if}
                     {/each}
+
+                    {#if $searchSettings.filters["Rating"].enabled}
+                    <div class="border-slate-600/30 mx-8 p-2
+                    dark:border-slate-200/30 border-t-2 mt-2">
+                        <div class="mb-2 flex items-center gap-4">
+                            <h3 class="text-lg font-semibold">Rating</h3>
+                            <p class="italic">Note: 0 means no rating</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="number" step="0.1" 
+                            max="5" min="0" bind:value={minInput}
+                            placeholder="Min Rating" 
+                            class="p-2 h-10 std-area w-36"
+                            on:input={handleMin}>
+                            <span>to</span>
+                            <input type="number" step="0.1" 
+                            max="5" min="0" bind:value={maxInput}
+                            placeholder="Max Rating" 
+                            class="p-2 h-10 std-area w-36"
+                            on:input={handleMax}>
+                        </div>
+                    </div>
+                    {/if}
+
                 </div>
             </div>
             <div class="settings-area" id="sort">
