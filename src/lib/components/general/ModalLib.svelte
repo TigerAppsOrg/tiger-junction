@@ -4,9 +4,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import AdvancedSearch from "../recal/elements/adv/AdvancedSearch.svelte";
 import EditCb from "../recal/elements/cb/editCb.svelte";
 import ManageCb from "../recal/elements/cb/manageCb.svelte";
-
-// import ExportCal from "../recal/elements/export/ExportCal.svelte";
-// import ShareCal from "../recal/elements/export/ShareCal.svelte";
+import ExportCal from "../recal/elements/export/ExportCal.svelte";
+import ShareCal from "../recal/elements/export/ShareCal.svelte";
 import AddSchedule from "../recal/elements/save/AddSchedule.svelte";
 import EditSchedule from "../recal/elements/save/EditSchedule.svelte";
 import Pinned from "../recal/elements/save/Pinned.svelte";
@@ -29,13 +28,13 @@ export let supabase: SupabaseClient;
 <EditCb showModal={$modalStore === "editCb"} />
 {/if}
 
-<!-- {#if $modalStore === "shareCal"}
+{#if $modalStore === "shareCal"}
 <ShareCal showModal={$modalStore === "shareCal"} />
 {/if}
 
 {#if $modalStore === "exportCal"}
 <ExportCal showModal={$modalStore === "exportCal"} />
-{/if} -->
+{/if}
 
 {#if $modalStore === "addSchedule"}
 <AddSchedule showModal={$modalStore === "addSchedule"} {supabase} />
