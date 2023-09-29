@@ -114,12 +114,22 @@ const handleLogout = async () => {
                         class="btn-icon">
                     {/if}
             </button>
+
             <button class="btn-circ"
             on:click={() => modalStore.open("pinned", { clear: true})}>
                 <img src={pinIcon} alt="Pin Icon"
                 class="btn-icon">
             </button>
+
             <button class="btn-circ"
+            on:click={() => modalStore.open("rutils", { clear: true})}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                stroke="currentColor" 
+                class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>              
+            </button>
+            <!-- <button class="btn-circ"
             on:click={() => modalStore.open("shareCal", { clear: true})}>
                 <img src={shareIcon} alt="Custom Block Icon"
                 class="btn-icon">
@@ -138,9 +148,10 @@ const handleLogout = async () => {
             on:click={() => modalStore.open("manageCb", { clear: true })}>
                 <img src={customBlockIcon} alt="Custom Block Icon"
                 class="btn-icon">
-            </button>
+            </button> -->
             <button class="btn-circ"
             on:click={handleLogout}>
+                
                 <img src={logoutIcon} alt="Logout Icon"
                 class="btn-icon">
             </button>
