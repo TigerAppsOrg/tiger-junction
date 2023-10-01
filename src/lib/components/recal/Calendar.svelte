@@ -79,12 +79,19 @@ const renderCalBoxes = () => {
             let section = courseSections[j];
             let days = valueToDays(section.days);
 
-
             let confirmed = false;
-            if (courseMeta.confirms.hasOwnProperty(section.category)) 
-                if (courseMeta.confirms[section.category] !== section.id)
-                    continue;
-                else confirmed = true;
+            if (courseMeta.confirms.hasOwnProperty(section.category)) {
+                // Legacy compatibility 
+                if (typeof courseMeta.confirms[section.category] === "number") {
+                    if (parseInt(courseMeta.confirms[section.category]) !== section.id)
+                        continue;
+                    else confirmed = true;
+                } else {
+                    if (courseMeta.confirms[section.category] !== section.title)
+                        continue;
+                    else confirmed = true;
+                }
+            }
 
             for (let k = 0; k < days.length; k++) {
                 let day = days[k];

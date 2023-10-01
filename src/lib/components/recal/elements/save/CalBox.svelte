@@ -47,7 +47,7 @@ const handleClick = () => {
         if (a.hasOwnProperty(params.section.category)) {
             delete a[params.section.category];
         } else {
-            a[params.section.category] = section.id;
+            a[params.section.category] = section.title;
         }
         return x;
     });
