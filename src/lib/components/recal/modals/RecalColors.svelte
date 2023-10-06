@@ -1,12 +1,10 @@
 <script lang="ts">
-import Modal from "$lib/components/elements/Modal.svelte";
 import { calColors, type CalColors } from "$lib/stores/styles";
 import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
 import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
-import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import { onMount } from "svelte";
-    import StdModal from "$lib/components/elements/StdModal.svelte";
+import StdModal from "$lib/components/elements/StdModal.svelte";
 
 export let showModal: boolean = false;
 
@@ -88,6 +86,7 @@ onMount(() => {
         </button>
         <button class="btn bg-black text-white
         dark:bg-slate-200 dark:text-black
+        hover:bg-black/80 
         flex-1" 
         on:click={resetColors}>
             Reset to Default
