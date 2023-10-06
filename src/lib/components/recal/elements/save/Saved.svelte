@@ -1,7 +1,7 @@
 <script lang="ts">
 import { currentSchedule, isResult, ready, recal, retop, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import ClassicSearch from "../cards/ClassicSearch.svelte";
+// import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { calColors } from "$lib/stores/styles";
@@ -40,7 +40,7 @@ $: colorChange = $calColors;
             {#key saved && colorChange}
             {#each saved as course}
                 {#if $searchSettings.style["Original Style"]}
-                    <ClassicSearch {course} />
+                    <!-- <ClassicSearch {course} /> -->
                 {:else}
                     <MinimalBase {supabase} {course} category="saved" />
                 {/if}
