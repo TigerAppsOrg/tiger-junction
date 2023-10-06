@@ -86,17 +86,17 @@ if (category === "search" || category === "pinned") {
 // Dynamic color (saved courses)
 } else {
     let meta = $rMeta[$currentSchedule][course.id];
-    styles.color = $calColors[meta.color as keyof CalColors];
+    styles.color = $calColors[meta.color as unknown as keyof CalColors];
     fillStyles();
     styles.trans = "solid";
 
     if (meta.complete) {
         styles.stripes = "";
-        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 40);
+        styles.border = darkenHSL($calColors[meta.color as unknown as keyof CalColors], 40);
     } else {
-        styles.color = darkenHSL($calColors[meta.color as keyof CalColors], -10);
+        styles.color = darkenHSL($calColors[meta.color as unknown as keyof CalColors], -10);
         styles.alpha = "0.8";
-        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 20);
+        styles.border = darkenHSL($calColors[meta.color as unknown as keyof CalColors], 20);
     }
 }
 
