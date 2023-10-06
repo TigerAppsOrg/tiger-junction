@@ -12,6 +12,8 @@ import Pinned from "../recal/elements/save/Pinned.svelte";
 import RecalColors from "../recal/modals/RecalColors.svelte";
 import RecalPalettes from "../recal/modals/RecalPalettes.svelte";
 import RecalUtils from "../recal/modals/RecalUtils.svelte";
+import RecalStats from "../recal/modals/RecalStats.svelte";
+import SiteTimer from "../recal/modals/SiteTimer.svelte";
 
 export let supabase: SupabaseClient;
 
@@ -60,3 +62,12 @@ export let supabase: SupabaseClient;
 {#if $modalStore === "rutils"}
 <RecalUtils showModal={$modalStore === "rutils"} />
 {/if}
+
+{#if $modalStore === "rstats"}
+<RecalStats showModal={$modalStore === "rstats"} />
+{/if}
+
+{#if $modalStore === "rtimer"}
+<SiteTimer showModal={$modalStore === "rtimer"} />
+{/if}
+
