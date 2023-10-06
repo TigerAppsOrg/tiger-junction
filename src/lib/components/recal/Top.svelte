@@ -3,16 +3,12 @@ import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scri
 import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import customBlockIcon from "$lib/img/icons/customblockicon.svg";
-import shareIcon from "$lib/img/icons/shareicon.svg";
-import paletteIcon from "$lib/img/icons/paletteicon.svg";
-import pinIcon from "$lib/img/icons/pinicon.svg";
 import addIcon from "$lib/img/icons/addicon.svg";
-import calendarIcon from "$lib/img/icons/calendaricon.svg";
 import editIcon from "$lib/img/icons/editicon.svg"
 import logoutIcon from "$lib/img/icons/logouticon.svg";
 import moonIcon from "$lib/img/icons/moonicon.svg";
 import sunIcon from "$lib/img/icons/sunicon.svg";
+import utilsIcon from "$lib/img/icons/utilsicon.svg";
 
 import { darkTheme } from "$lib/stores/state";
 import { modalStore } from "$lib/stores/modal";
@@ -115,27 +111,30 @@ const handleLogout = async () => {
                     {/if}
             </button>
 
-            <!-- <button class="btn-circ"
-            on:click={() => modalStore.open("pinned", { clear: true})}>
-                <img src={pinIcon} alt="Pin Icon"
-                class="btn-icon">
-            </button> -->
-
             <button class="btn-circ"
             on:click={() => modalStore.open("rutils", { clear: true})}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
-                stroke="currentColor" 
-                class="btn-icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>              
+                <img src={utilsIcon} alt="Utils Icon" class="btn-icon">
             </button>
 
-            <button class="btn-circ"
-            on:click={handleLogout}>
-                
-                <img src={logoutIcon} alt="Logout Icon"
-                class="btn-icon">
-            </button>
+            {#if !$isMobile}
+                <button class="p-2 border-slate-600/30 border-2 duration-150
+                dark:border-slate-200/60 h-8
+                hover:bg-slate-100 hover:border-slate-600/40
+                hover:dark:bg-slate-700 hover:dark:border-slate-200/90
+                rounded-full flex items-center gap-2
+                text-sm font-light text-slate-600 dark:text-slate-300"
+                on:click={handleLogout}>
+                    Logout
+                    <img src={logoutIcon} alt="Logout Icon"
+                    class="btn-icon">
+                </button>
+            {:else}
+                <button class="btn-circ"   
+                on:click={handleLogout}>
+                    <img src={logoutIcon} alt="Logout Icon"
+                    class="btn-icon">
+                </button>
+            {/if}
         </div> <!-- * Icon Buttons -->
     </div>
 
