@@ -10,7 +10,7 @@ export let supabase: SupabaseClient;
 let inputBar: HTMLInputElement;
 
 // Number of results, under which sections are added automatically
-const THRESHOLD = 50;
+const THRESHOLD = 20;
 
 // Update search results when params change
 $: autoTrig($searchSettings, $searchCourseData, $currentTerm, $currentSchedule);

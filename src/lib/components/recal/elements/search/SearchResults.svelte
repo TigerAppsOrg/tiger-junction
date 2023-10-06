@@ -7,13 +7,6 @@ import { darkTheme } from "$lib/stores/state";
 
 export let supabase: SupabaseClient;
 
-// TODO: Work in progress
-// $: sorted = $searchResults.sort((a, b) => a.code.localeCompare(b.code));
-
-// Sort results according to search settings
-const sortResults = () => {
-
-}
 </script>
 
 {#if $searchResults.length > 0}

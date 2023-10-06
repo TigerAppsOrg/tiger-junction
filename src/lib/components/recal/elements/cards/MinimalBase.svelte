@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { CourseData } from "$lib/types/dbTypes";
 import plusIcon from "$lib/img/icons/addicon.svg"
-import pinIcon from "$lib/img/icons/pinicon.svg"
+// import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
 import { currentSchedule, currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
@@ -13,6 +13,7 @@ import { calColors, type CalColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
 import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
+import { inview } from "svelte-inview";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -102,6 +103,14 @@ if (category === "search" || category === "pinned") {
 
 let flipped: boolean = false;
 
+// Handle section loading on view 
+let isInView: boolean;
+const options = {};
+
+$: if (isInView) {
+    sectionData.add(supabase, $currentTerm, course.id)
+}
+
 $: cssVarStyles = Object.entries(styles)
 		.map(([key, value]) => `--${key}:${value}`)
 		.join(';');
@@ -133,7 +142,10 @@ style={cssVarStyles}
 on:mouseenter={handleHover}
 on:mouseleave={handleLeave}
 on:blur={handleLeave}
-on:focus={handleHover}>
+on:focus={handleHover}
+use:inview={options}
+on:inview_enter={(e) => isInView = e.detail.inView}
+>
     {#if !flipped}
     <button 
     class="text-xs font-light text-left w-[75%] p-1"
