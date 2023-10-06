@@ -28,6 +28,7 @@ const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData
  * @param course 
  */
 const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+    return;
     hoveredCourse.set(null);
     await pinnedCourses.add(supabase, getCurrentSchedule(), course, true);
 }
@@ -42,6 +43,7 @@ const pinCourseFromSearch = async (supabase: SupabaseClient, course: CourseData)
  * @param course 
  */
 const pinCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) => {
+    return;
     // Update pools
     savedCourses.update(x => {
         if (!x.hasOwnProperty(getCurrentSchedule())) 

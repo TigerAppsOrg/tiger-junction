@@ -115,11 +115,11 @@ const handleLogout = async () => {
                     {/if}
             </button>
 
-            <button class="btn-circ"
+            <!-- <button class="btn-circ"
             on:click={() => modalStore.open("pinned", { clear: true})}>
                 <img src={pinIcon} alt="Pin Icon"
                 class="btn-icon">
-            </button>
+            </button> -->
 
             <button class="btn-circ"
             on:click={() => modalStore.open("rutils", { clear: true})}>

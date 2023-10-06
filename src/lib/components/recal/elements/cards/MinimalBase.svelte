@@ -155,7 +155,7 @@ on:focus={handleHover}>
 
         <div class="w-[20%] flex justify-evenly">
             {#if category === "saved"}
-                <button class="pin-button
+                <!-- <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => {
@@ -163,7 +163,7 @@ on:focus={handleHover}>
                 }}>
                     <img src={pinIcon} alt="Pin" 
                     class="ic" />
-                </button>
+                </button> -->
 
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
@@ -192,13 +192,13 @@ on:focus={handleHover}>
                 </button>
 
             {:else}
-                <button class="pin-button
+                <!-- <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => cf.pinCourseFromSearch(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="ic" />
-                </button>
+                </button> -->
 
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
