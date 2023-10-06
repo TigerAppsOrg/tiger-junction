@@ -6,6 +6,7 @@ import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
 import paletteIcon from "$lib/img/icons/paletteicon.svg";
 import { onMount } from "svelte";
+    import StdModal from "$lib/components/elements/StdModal.svelte";
 
 export let showModal: boolean = false;
 
@@ -41,65 +42,65 @@ onMount(() => {
 })
 </script>
 
-<Modal {showModal}>
-    <div class="p-6 w-[80vw] max-w-4xl">
-        <h1 class="text-xl font-bold mb-2">Color Settings</h1>
-        <div class="flex flex-col gap-2">
+<StdModal title="Color Settings" {showModal} stdClose={false}>
+    <div class="flex flex-col gap-2" slot="main">
 
-            <!-- Card Colors -->
-            <div class="settings-area" id="options">
-                <h2 class="text-lg font-bold mb-2">Card Colors</h2>
-                <div class="flex flex-wrap gap-2 justify-center">
-                    {#each Object.keys($calColors) as color}
-                        <div class="flex flex-col items-center">
-                            <input type="color" 
-                            class="dark:bg-slate-800/50 bg-slate-200/50
-                            w-14 h-8 2 cursor-pointer"
-                            bind:value={rgbColors[color]}/>
-                            <div class="text-sm font-light">{
-                                color === "-1" ? 
-                                    "Preview" : 
-                                    `Color ${parseInt(color) + 1}`
-                            }</div>
-                        </div>
-                    {/each}
-                </div>
-
-                
-                <!-- <button class="btn flex items-center bg-gradient-to-r 
-                from-deepblue-light to-deepblue-dark text-white
-                mx-auto gap-2 p-4 mt-6"
-                on:click={() => modalStore.open("rpalettes", {
-                    current: true
-                })}>
-                    <img src={paletteIcon} alt="palette Icon" 
-                    class="invert h-8 w--8">
-                    <span>
-                        View Color Palettes
-                    </span>
-                </button> -->
-
+        <!-- Card Colors -->
+        <div class="settings-area" id="options">
+            <h2 class="text-lg font-bold mb-2">Card Colors</h2>
+            <div class="flex flex-wrap gap-2 justify-center">
+                {#each Object.keys($calColors) as color}
+                    <div class="flex flex-col items-center">
+                        <input type="color" 
+                        class="dark:bg-slate-800/50 bg-slate-200/50
+                        w-14 h-8 2 cursor-pointer"
+                        bind:value={rgbColors[color]}/>
+                        <div class="text-sm font-light">{
+                            color === "-1" ? 
+                                "Preview" : 
+                                `Color ${parseInt(color) + 1}`
+                        }</div>
+                    </div>
+                {/each}
             </div>
+
+            
+            <!-- <button class="btn flex items-center bg-gradient-to-r 
+            from-deepblue-light to-deepblue-dark text-white
+            mx-auto gap-2 p-4 mt-6"
+            on:click={() => modalStore.open("rpalettes", {
+                current: true
+            })}>
+                <img src={paletteIcon} alt="palette Icon" 
+                class="invert h-8 w--8">
+                <span>
+                    View Color Palettes
+                </span>
+            </button> -->
+
         </div>
-        <div class="flex gap-2 border-t-2 mt-2 pt-2">
-            <button class="btn border-2 border-slate-600/30 flex-1" 
-            on:click={() => modalStore.close()}>
-                Cancel
-            </button>
-            <button class="btn bg-black text-white
-            dark:bg-slate-200 dark:text-black
-            flex-1" 
-            on:click={resetColors}>
-                Reset to Default
-            </button>
-            <button class="btn flex-1 bg-gradient-to-r 
-            from-deepblue-light to-deepblue-dark text-white"
-            on:click={saveColors}>
-                Save
-            </button>
-        </div> <!-- * End Nav -->
     </div>
-</Modal>
+
+    <div class="flex gap-2 border-t-2 mt-2 pt-2" slot="buttons">
+        <button class="btn border-2 border-slate-600/30 flex-1" 
+        on:click={() => modalStore.close()}>
+            Cancel
+        </button>
+        <button class="btn bg-black text-white
+        dark:bg-slate-200 dark:text-black
+        flex-1" 
+        on:click={resetColors}>
+            Reset to Default
+        </button>
+        <button class="btn flex-1 bg-gradient-to-r 
+        from-deepblue-light to-deepblue-dark text-white"
+        on:click={saveColors}>
+            Save
+        </button>
+    </div> <!-- * End Nav -->
+</StdModal>
+
+
 
 <style lang="postcss">
 .settings-area {

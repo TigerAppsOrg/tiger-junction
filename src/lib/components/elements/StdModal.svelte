@@ -15,18 +15,18 @@ export let showModal: boolean = false;
             <slot name="main" />
         </div> 
         
-        <div class="flex gap-2 border-t-2 mt-2 pt-2">
-
+        {#if stdClose}
+            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+                <button class="rounded-md py-2 text-center
+                flex-1 bg-gradient-to-r btn
+                from-deepblue-light to-deepblue-dark text-white"
+                type="submit"
+                on:click={() => modalStore.close()}>
+                    Close
+                </button>
+            </div> 
+        {:else}
             <slot name="buttons" />
-            {#if stdClose}
-            <button class="rounded-md py-2 text-center
-            flex-1 bg-gradient-to-r btn
-            from-deepblue-light to-deepblue-dark text-white"
-            type="submit"
-            on:click={() => modalStore.close()}>
-                Close
-            </button>
-            {/if}
-        </div> 
+        {/if}
     </div>
 </Modal>
