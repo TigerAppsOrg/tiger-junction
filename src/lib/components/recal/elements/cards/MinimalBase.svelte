@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { CourseData } from "$lib/types/dbTypes";
 import plusIcon from "$lib/img/icons/addicon.svg"
-import pinIcon from "$lib/img/icons/pinicon.svg"
+// import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
 import { currentSchedule, currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
@@ -13,6 +13,7 @@ import { calColors, type CalColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
 import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
+import { inview } from "svelte-inview";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -86,21 +87,29 @@ if (category === "search" || category === "pinned") {
 // Dynamic color (saved courses)
 } else {
     let meta = $rMeta[$currentSchedule][course.id];
-    styles.color = $calColors[meta.color as keyof CalColors];
+    styles.color = $calColors[meta.color as unknown as keyof CalColors];
     fillStyles();
     styles.trans = "solid";
 
     if (meta.complete) {
         styles.stripes = "";
-        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 40);
+        styles.border = darkenHSL($calColors[meta.color as unknown as keyof CalColors], 40);
     } else {
-        styles.color = darkenHSL($calColors[meta.color as keyof CalColors], -10);
+        styles.color = darkenHSL($calColors[meta.color as unknown as keyof CalColors], -10);
         styles.alpha = "0.8";
-        styles.border = darkenHSL($calColors[meta.color as keyof CalColors], 20);
+        styles.border = darkenHSL($calColors[meta.color as unknown as keyof CalColors], 20);
     }
 }
 
 let flipped: boolean = false;
+
+// Handle section loading on view 
+let isInView: boolean;
+const options = {};
+
+$: if (isInView) {
+    sectionData.add(supabase, $currentTerm, course.id)
+}
 
 $: cssVarStyles = Object.entries(styles)
 		.map(([key, value]) => `--${key}:${value}`)
@@ -133,7 +142,10 @@ style={cssVarStyles}
 on:mouseenter={handleHover}
 on:mouseleave={handleLeave}
 on:blur={handleLeave}
-on:focus={handleHover}>
+on:focus={handleHover}
+use:inview={options}
+on:inview_enter={(e) => isInView = e.detail.inView}
+>
     {#if !flipped}
     <button 
     class="text-xs font-light text-left w-[75%] p-1"
@@ -155,7 +167,7 @@ on:focus={handleHover}>
 
         <div class="w-[20%] flex justify-evenly">
             {#if category === "saved"}
-                <button class="pin-button
+                <!-- <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => {
@@ -163,7 +175,7 @@ on:focus={handleHover}>
                 }}>
                     <img src={pinIcon} alt="Pin" 
                     class="ic" />
-                </button>
+                </button> -->
 
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
@@ -192,13 +204,13 @@ on:focus={handleHover}>
                 </button>
 
             {:else}
-                <button class="pin-button
+                <!-- <button class="pin-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
                 on:click={() => cf.pinCourseFromSearch(supabase, course)}>
                     <img src={pinIcon} alt="Pin" 
                     class="ic" />
-                </button>
+                </button> -->
 
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center
@@ -219,7 +231,7 @@ on:focus={handleHover}>
         <div id="buttons" class="w-full flex justify-evenly text-white">
             <a href={tigersnatch} target="_blank" 
             class="cardlink bg-orange-400 dark:bg-orange-700">
-                <button class="btn variant-soft-warning cardbutton">
+                <button class="variant-soft-warning cardbutton">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -230,7 +242,7 @@ on:focus={handleHover}>
             <!-- Princeton Courses -->
             <a href={princetoncourses} target="_blank" 
             class="cardlink bg-blue-400 dark:bg-blue-700">
-                <button class="btn variant-soft-tertiary cardbutton">
+                <button class="variant-soft-tertiary cardbutton">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -241,7 +253,7 @@ on:focus={handleHover}>
             <!-- Registrar -->
             <a href={registrar} target="_blank" 
             class="cardlink bg-gray-400 dark:bg-gray-500">
-                <button class="btn variant-soft-primary cardbutton">
+                <button class="variant-soft-primary cardbutton">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />

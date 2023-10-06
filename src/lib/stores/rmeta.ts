@@ -4,7 +4,7 @@ export type RMetadata = {
     complete: boolean,
     color: number,
     sections: string[],
-    confirms: Record<string, number>,
+    confirms: Record<string, string>,
 }
 
 // Map from schedule_id -> course_id -> metadata

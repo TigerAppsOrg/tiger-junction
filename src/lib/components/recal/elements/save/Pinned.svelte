@@ -1,7 +1,7 @@
 <script lang="ts">
 import { currentSchedule, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import ClassicSearch from "../cards/ClassicSearch.svelte";
+// import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { pinnedCourses } from "$lib/stores/rpool";
 import Modal from "$lib/components/elements/Modal.svelte";
@@ -29,7 +29,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
             {#key pinned}
             {#each pinned as course}
                 {#if $searchSettings.style["Original Style"]}
-                    <ClassicSearch {course} />
+                    <!-- <ClassicSearch {course} /> -->
                 {:else}
                     <MinimalBase {supabase} {course} category="pinned" />
                 {/if}

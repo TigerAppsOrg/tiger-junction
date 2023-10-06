@@ -1,19 +1,11 @@
 <script lang="ts">
 import { searchResults, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { darkTheme } from "$lib/stores/state";
 
 export let supabase: SupabaseClient;
 
-// TODO: Work in progress
-// $: sorted = $searchResults.sort((a, b) => a.code.localeCompare(b.code));
-
-// Sort results according to search settings
-const sortResults = () => {
-
-}
 </script>
 
 {#if $searchResults.length > 0}
@@ -30,7 +22,7 @@ const sortResults = () => {
             {#key $darkTheme}
             {#each $searchResults as course}
                 {#if $searchSettings.style["Original Style"]}
-                    <ClassicSearch {course} />
+                    <!-- <ClassicSearch {course} /> -->
                 {:else}
                     <MinimalBase {supabase} {course} />
                 {/if}

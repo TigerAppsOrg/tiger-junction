@@ -249,7 +249,7 @@ const saveSchedule = async () => {
                 {/if}
 
                 <button type="submit"
-                class="btn flex-1 bg-blue-500 text-white"
+                class="btn hover:bg-blue-600 flex-1 bg-blue-500 text-white"
                 on:click={duplicateSchedule}>
                     Duplicate
                 </button>

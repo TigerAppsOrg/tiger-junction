@@ -1,10 +1,11 @@
 <script lang="ts">
 import { currentSchedule, isResult, ready, recal, retop, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import ClassicSearch from "../cards/ClassicSearch.svelte";
+// import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { calColors } from "$lib/stores/styles";
+    import Loader from "$lib/components/elements/Loader.svelte";
 
 export let supabase: SupabaseClient;
 
@@ -30,7 +31,7 @@ $: colorChange = $calColors;
             ({pinned.length} Pin{pinned.length === 1 ? "" : "s"})
             {/if}   
         </span>
-    </div> <!-- * End Head -->
+    </div> 
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-xl 
@@ -39,15 +40,22 @@ $: colorChange = $calColors;
             {#key saved && colorChange}
             {#each saved as course}
                 {#if $searchSettings.style["Original Style"]}
-                    <ClassicSearch {course} />
+                    <!-- <ClassicSearch {course} /> -->
                 {:else}
                     <MinimalBase {supabase} {course} category="saved" />
                 {/if}
             {/each}
             {/key}
         </div>
-    </div> <!-- * End Results -->
+    </div> 
     {/if}
 </div>
+{:else}
+    <div class="flex items-center gap-2 mt-2">
+        <Loader />
+        <span>
+            Loading...
+        </span>
+    </div>
 {/if}
 {/key}
