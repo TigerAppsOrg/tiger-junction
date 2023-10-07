@@ -1,9 +1,9 @@
 <script lang="ts">
-import Modal from "$lib/components/elements/Modal.svelte";
+import StdModal from "$lib/components/elements/StdModal.svelte";
 
 export let showModal: boolean = false;
 </script>
 
-<Modal {showModal}>
-    
-</Modal>
+<StdModal title="Share Schedule" stdClose={true} {showModal}>
+
+</StdModal>
