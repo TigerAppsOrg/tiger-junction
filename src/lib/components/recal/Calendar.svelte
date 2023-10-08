@@ -150,6 +150,7 @@ const renderCalBoxes = () => {
     toRender = courseRenders;
 }
 
+// Credits to Gabe Sidler on StackOverflow for the algorithm
 // Find overlaps and assign width and left
 const findOverlaps = (calboxes: CalBoxParam[]) => {
     let sortedCalboxes = calboxes.slice();
