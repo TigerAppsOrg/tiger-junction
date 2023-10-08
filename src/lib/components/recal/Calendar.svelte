@@ -150,14 +150,9 @@ const renderCalBoxes = () => {
     toRender = courseRenders;
 }
 
-// Find overlaps and assign slotIndex and maxSlot
-// maxSlot is the number of overlaps for a given CalBoxParam
-// slotIndex is the index of the CalBoxParam in the list of overlaps
+// Find overlaps and assign width and left
 const findOverlaps = (calboxes: CalBoxParam[]) => {
-    let sortedCalboxes = calboxes.slice()
-        .sort((a, b) => a.section.start_time - b.section.start_time)
-        .sort((a, b) => a.section.end_time - b.section.end_time)
-        .sort((a, b) => (b.section.end_time - b.section.start_time) - (a.section.end_time - a.section.start_time));
+    let sortedCalboxes = calboxes.slice();
     
     // Split into days
     let days: CalBoxParam[][] = [[], [], [], [], []];
@@ -166,46 +161,63 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
         days[calbox.day - 1].push(calbox);
     }
 
+    // Sort within days
+    for (let i = 0; i < days.length; i++) {
+        days[i].sort((a, b) => a.section.end_time - b.section.end_time);
+        days[i].sort((a, b) => a.section.start_time - b.section.start_time);
+    }
+
     // Check for conflicts
     const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
         return (a.section.start_time < b.section.end_time 
         && a.section.end_time > b.section.start_time
         && a.day === b.day);
     }
-    
+
     for (let i = 0; i < days.length; i++) {
-        let day = days[i];
-        let overlaps: CalBoxParam[][] = [];
-        let maxSlot = 0;
+        let columns: CalBoxParam[][] = [];
+        let lastEventEnding: number | null = null;
 
-        for (let j = 0; j < day.length; j++) {
-            let calbox = day[j];
-            let found = false;
+        days[i].forEach(box => {
+            if (lastEventEnding !== null && box.section.start_time >= lastEventEnding) {
+                packEvents(columns);
+                columns = [];
+                lastEventEnding = null;
+            }
 
-            for (let k = 0; k < overlaps.length; k++) {
-                let overlap = overlaps[k];
-                if (conflicts(calbox, overlap[0])) {
-                    overlap.push(calbox);
-                    found = true;
+            let placed = false;
+            for (let i = 0; i < columns.length; i++) {
+                let col = columns[i];
+                if (!conflicts(box, col[col.length - 1])) {
+                    col.push(box);
+                    placed = true;
                     break;
                 }
             }
 
-            if (!found) {
-                overlaps.push([calbox]);
+            if (!placed) {
+                columns.push([box]);
             }
-        }
 
-        for (let j = 0; j < overlaps.length; j++) {
-            let overlap = overlaps[j];
-            if (overlap.length > maxSlot) maxSlot = overlap.length;
-            for (let k = 0; k < overlap.length; k++) {
-                overlap[k].slot = k;
-                overlap[k].maxSlot = overlap.length;
+            if (lastEventEnding === null || box.section.end_time > lastEventEnding) {
+                lastEventEnding = box.section.end_time;
             }
-        }
+        })
+
+        if (columns.length > 0) packEvents(columns);
     }
 };
+
+// Set the left and right positions for each calbox in the connected group
+const packEvents = (cols: CalBoxParam[][]) => {
+    for (let i = 0; i < cols.length; i++) 
+        for (let j = 0; j < cols[i].length; j++) {
+            cols[i][j].left = 
+                `${(cols[i][j].day - 1) * 20 + (i / cols.length) * 20}%`;
+            cols[i][j].width = 
+                `${20 / cols.length - 0.4}%`;
+        }
+}
 
 
 // Calculate dimensions for each CalBoxParam
@@ -214,13 +226,9 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
         let calbox = calboxes[i];
         let height = ((calbox.section.end_time - calbox.section.start_time) / 90) * 100;
         let top = ((calbox.section.start_time) / 90) * 100;
-        let left = (calbox.day - 1) * 20 + (calbox.slot / calbox.maxSlot) * 20;
-        let width = 20 / calbox.maxSlot - 0.4;
 
         calbox.height = `${height}%`;
         calbox.top = `${top}%`;
-        calbox.left = `${left}%`;
-        calbox.width = `${width}%`;
     }
 }
 
