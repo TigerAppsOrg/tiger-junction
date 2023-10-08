@@ -12,7 +12,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  */
 const fetchRawCourseData = async (supabase: SupabaseClient, term: number): 
 Promise<boolean | null> => {
-    const FIELDS = "id, listing_id, term, code, title, status, basis, dists, rating, grading_info";
+    const FIELDS = "id, listing_id, term, code, title, status, basis, dists, rating, num_evals, grading_info";
     
     if (rawCourseData.check(term)) return null;
 

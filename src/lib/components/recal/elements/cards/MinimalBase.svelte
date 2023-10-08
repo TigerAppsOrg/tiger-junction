@@ -156,11 +156,16 @@ on:inview_enter={(e) => isInView = e.detail.inView}
         <div>
             {title}
         </div>
-        {#if $searchSettings.style["Show Rating"]}
-            <div class="text-xs italic font-light">
+
+        <div class="text-xs italic font-light">
+            {#if $searchSettings.style["Show Rating"]}
                 Rating: {course.rating ? course.rating : "N/A"}
-            </div>
-        {/if}
+            {/if}
+            {#if $searchSettings.style["Show # of Comments"]}
+                ({course.num_evals ? course.num_evals : "N/A"} comments)
+            {/if}
+        </div>
+        
         </button>
 
         <!-- TODO: Refactor, super messy! -->

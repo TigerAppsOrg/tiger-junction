@@ -438,6 +438,7 @@ export const searchSettings: Writable<SearchSettings> = writable({
     "style": {
         // "Original Style": false,
         "Show Rating": true,
+        "Show # of Comments": true,
         "Color by Rating": false,
         "Always Show Enrollments": false,
         "Show Tooltips": true,
