@@ -129,8 +129,6 @@ const handleLeave = () => {
         $hoveredCourse = null;
     }
 }
-
-
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -163,6 +161,9 @@ on:inview_enter={(e) => isInView = e.detail.inView}
             {/if}
             {#if $searchSettings.style["Show # of Comments"]}
                 ({course.num_evals ? course.num_evals : "N/A"} comments)
+            {/if}
+            {#if $searchSettings.style["Show Weighted Rating"]}
+                [{course.adj_rating} adj]
             {/if}
         </div>
         

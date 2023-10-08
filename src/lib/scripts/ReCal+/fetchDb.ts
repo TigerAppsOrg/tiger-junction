@@ -23,7 +23,14 @@ Promise<boolean | null> => {
         // .limit(10)
         .order("code", { ascending: true });
 
-    if (error) return false
+    if (error) return false;
+
+    data.forEach((x: any) => {
+        let adj_evals = (x.num_evals + 1) * 1.5;
+        x.adj_rating = x.rating !== null && x.num_evals !== null ?
+        Math.round(((x.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
+        : 0;
+    })
 
     rawCourseData.update((x) => {
         x[term as keyof RawCourseData] = data as CourseData[];
@@ -100,5 +107,6 @@ Promise<void> => {
     for (const id of scheduleIds) 
         await initSchedule(supabase, id, term)
 }
+
 
 export { fetchRawCourseData, fetchUserSchedules, populatePools };

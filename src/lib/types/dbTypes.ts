@@ -57,6 +57,7 @@ type CourseData = {
     dists: string[],
     rating: number,
     num_evals: number,
+    adj_rating: number,
     grading_info: Record<string, string>,
 }
 
