@@ -114,7 +114,7 @@ const handleMax = (e: Event) => {
                 <div class="flex flex-wrap gap-2">
                     <!-- <TogTog name="Name" /> -->
                     <TogTog name="Rating" />
-                    <!-- <TogTog name="Number" /> -->
+                    <TogTog name="Adjusted Rating" />
                 </div>
             </div>
             <div class="settings-area" id="style">

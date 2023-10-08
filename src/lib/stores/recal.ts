@@ -363,6 +363,8 @@ export type SearchSettings = {
     style: Record<string, boolean>,
 }
 
+export const currentSortBy: Writable<string | null> = writable(null);
+
 export const searchSettings: Writable<SearchSettings> = writable({
     "options": {
         "Title": true,
@@ -425,6 +427,11 @@ export const searchSettings: Writable<SearchSettings> = writable({
         //     "value": 0,
         // },
         "Rating": {
+            "enabled": false,
+            "options": ["High to Low", "Low to High"],
+            "value": 0,
+        },
+        "Adjusted Rating": {
             "enabled": false,
             "options": ["High to Low", "Low to High"],
             "value": 0,

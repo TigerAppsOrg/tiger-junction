@@ -1,5 +1,5 @@
 <script lang="ts">
-import { searchSettings } from "$lib/stores/recal";
+import { currentSortBy, searchSettings } from "$lib/stores/recal";
 export let name: string = "";
 
 const handleToggle = () => {
@@ -7,14 +7,24 @@ const handleToggle = () => {
         if (sortParam.value === sortParam.options.length - 1) {
             sortParam.value = 0;
             sortParam.enabled = false;
+            currentSortBy.set(null);
         } else sortParam.value++;
     } else {
         sortParam.value = 0;
         sortParam.enabled = true;
+        currentSortBy.set(name);
     }
 }
 
 $: sortParam = $searchSettings.sortBy[name];
+
+$: handleFilterChange($currentSortBy)
+const handleFilterChange = (s: null | string) => {
+    if (s == null || s !== name) {
+        sortParam.enabled = false;
+        sortParam.value = 0;
+    }
+}
 </script>
 
 
