@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { JSDOM } from "jsdom";
 import { getCourseDualIds } from "./reg";
 
-const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
+const PARALLEL_REQUESTS = 20; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
 /**
@@ -100,11 +100,15 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
             return null;
         }
 
+        let evalCount = returnDict.hasOwnProperty("comments") ?
+            returnDict["comments"].length : null;
+
         let { error: err1 } = await supabase.from("evaluations")
         .upsert({
             course_id: ids[index].id,
             listing_id: ids[index].listing_id,
             rating: findRating(),
+            num_evals: evalCount,
             metadata: returnDict
         })
 

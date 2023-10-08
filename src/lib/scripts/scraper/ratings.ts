@@ -16,9 +16,16 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
     let ids: DualId[] = await getCourseDualIds(supabase, term);
 
     // Limit the number of evaluations fetched
-    // ids = ids.slice(0, 100);
+    // ids = ids.slice(0, 50);
 
-    let nulls: number = 0;
+    // Keep track of number of different cases
+    let counts = {
+        id_matches: 0,
+        instructor_matches: 0,
+        most_recent: 0,
+        nulls: 0,
+        total: 0,
+    };
     
     /*
     Priority Procedure (listing_id must always match):
@@ -39,10 +46,12 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
             await processNextRating(index + PARALLEL_REQUESTS);
         }
 
+        counts.total++;
+
         // * Case 1: Check for evaluation entry with matching course_id
         let { data: data1, error: err1 } = await supabase
             .from("evaluations")
-            .select("rating")
+            .select("rating, num_evals")
             .eq("course_id", ids[index].id)
 
         if (err1) {
@@ -57,10 +66,11 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
 
         if (data1.length > 0 && data1[0].rating !== null) {
             await supabase.from("courses")
-                .update({ rating: data1[0].rating })
+                .update({ rating: data1[0].rating, num_evals: data1[0].num_evals })
                 .eq("id", ids[index].id)
             
-            nextRequest();
+            counts.id_matches++;
+            await nextRequest();
             return;
         }
 
@@ -99,6 +109,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
 
         // Rating from most recent term with a rating
         let mostRecentRating: number | null = null;
+        let mostRecentNumEval: number | null = null;
 
         if (data2 && data2.length !== 0) {
 
@@ -106,7 +117,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
             for (let i = data2.length - 1; i >= 0; i--) {
                 let { data: data3, error: err3 } = await supabase
                     .from("courses")
-                    .select("evaluations (rating), instructors (netid)")
+                    .select("evaluations (rating, num_evals), instructors (netid)")
                     .eq("id", data2[i].id);
 
                 if (err3) {
@@ -116,16 +127,21 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
 
                 type AppeaseTS = {
                     rating: number | null,
+                    num_evals: number | null
                 }
 
                 if (data3 && data3.length > 0 && data3[0].evaluations
                 && (data3[0].evaluations as unknown as AppeaseTS).rating !== null) {
 
                     // Check for most recent rating
-                    if (!mostRecentRating) 
+                    if (!mostRecentRating) {
                         mostRecentRating = 
                         (data3[0].evaluations as unknown as AppeaseTS)
                         .rating;
+                        mostRecentNumEval = 
+                        (data3[0].evaluations as unknown as AppeaseTS)
+                        .num_evals;
+                    }
 
                     // Check for matching instructor
                     if (checkInstructors) {
@@ -136,11 +152,16 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
                                 .update({ rating: (
                                     data3[0]
                                     .evaluations as unknown as AppeaseTS)
-                                    .rating 
+                                    .rating, 
+                                    num_evals: (
+                                        data3[0]
+                                        .evaluations as unknown as AppeaseTS)
+                                        .num_evals
                                 })
                                 .eq("id", ids[index].id)
 
-                            nextRequest();
+                            counts.instructor_matches++;
+                            await nextRequest();
                             return;
                         }
                     }
@@ -152,20 +173,21 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         // * Case 3: Check for most recent term
         if (mostRecentRating) {
             await supabase.from("courses")
-                .update({ rating: mostRecentRating })
+                .update({ rating: mostRecentRating, num_evals: mostRecentNumEval })
                 .eq("id", ids[index].id)
             
-            nextRequest();
+            counts.most_recent++;
+            await nextRequest();
             return;
         }
 
         // * Case 4: No entry (null)
         await supabase.from("courses")
-            .update({ rating: null })
+            .update({ rating: null, num_evals: null })
             .eq("id", ids[index].id)
 
-        nextRequest();
-        nulls++;
+        await nextRequest();
+        counts.nulls++;
         return;
     }
 
@@ -179,8 +201,10 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
     await Promise.all(promises);
 
     // Return success message
+    // let msg = `Finished updating ratings for ${term}. 
+    //     (${ids.length - nulls} updates, ${nulls} nulls)`;
     let msg = `Finished updating ratings for ${term}. 
-        (${ids.length - nulls} updates, ${nulls} nulls)`;
+        (${counts.id_matches} id matches, ${counts.instructor_matches} instructor matches, ${counts.most_recent} most recent, ${counts.nulls} nulls)`;
     console.log(msg);
     return msg;
 }
