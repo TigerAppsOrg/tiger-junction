@@ -151,6 +151,18 @@ export const searchResults = {
             });
         }
 
+        // * Adjusted Rating
+        if (settings.sortBy["Adjusted Rating"].enabled) {
+
+            data = data.sort((a, b) => {
+                let aRating: number = a.adj_rating ? a.adj_rating : 0;
+                let bRating: number = b.adj_rating ? b.adj_rating : 0;
+
+                return settings.sortBy["Adjusted Rating"].value === 0 ?
+                    (bRating - aRating) : (aRating - bRating);
+            });
+        }
+
 
         //--------------------------------------------------------------
         // Filter by search query
