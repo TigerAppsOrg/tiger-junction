@@ -3,7 +3,7 @@ import Checkpill from "$lib/components/elements/Checkpill.svelte";
 import Modal from "$lib/components/elements/Modal.svelte";
 import TogTog from "$lib/components/elements/TogTog.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings } from "$lib/stores/recal";
+import { DEFAULT_SETTINGS, searchSettings } from "$lib/stores/recal";
 
 export let showModal: boolean = false;
 
@@ -127,10 +127,11 @@ const handleMax = (e: Event) => {
             </div>
         </div> <!-- * End Container -->
         <div class="flex gap-2 border-t-2 mt-2 pt-2">
-            <!-- <button class="btn border-2 border-slate-600/30 flex-1" 
-            on:click={() => modalStore.close()}>
-                Cancel
-            </button> -->
+            <button class="btn bg-black text-white dark:bg-slate-200
+            dark:text-black hover:bg-black/80 flex-1" 
+            on:click={() => $searchSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))}>
+                Reset to Default
+            </button>
             <button class="btn flex-1 bg-gradient-to-r 
             from-deepblue-light to-deepblue-dark text-white"
             on:click={saveSettings}>

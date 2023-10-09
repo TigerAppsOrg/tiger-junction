@@ -377,7 +377,7 @@ export type SearchSettings = {
 
 export const currentSortBy: Writable<string | null> = writable(null);
 
-export const searchSettings: Writable<SearchSettings> = writable({
+export const DEFAULT_SETTINGS: SearchSettings = {
     "options": {
         "Title": true,
         "Code": true,
@@ -433,11 +433,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         },
     },
     "sortBy": {
-        // "Name": {
-        //     "enabled": false,
-        //     "options": ["A to Z", "Z to A"],
-        //     "value": 0,
-        // },
         "Rating": {
             "enabled": false,
             "options": ["High to Low", "Low to High"],
@@ -448,11 +443,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
             "options": ["High to Low", "Low to High"],
             "value": 0,
         },
-        // "Number": {
-        //     "enabled": false,
-        //     "options": ["Low to High", "High to Low"],
-        //     "value": 0,
-        // }
     },
     "style": {
         // "Original Style": false,
@@ -463,4 +453,6 @@ export const searchSettings: Writable<SearchSettings> = writable({
         "Always Show Enrollments": false,
         "Show Tooltips": true,
     }
-});
+}
+
+export const searchSettings: Writable<SearchSettings> = writable(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)));
