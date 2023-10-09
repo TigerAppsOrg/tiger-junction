@@ -30,10 +30,15 @@ const duplicateSchedule = async () => {
         return;
     };
 
+    let newTitle = input + " (Copy)";
+    if (newTitle.length > 100) {
+        newTitle = newTitle.substring(0, 100);
+    }
+
     // Upload to database
     supabase.from("schedules")
         .insert({ 
-            title: input + " (Copy)", 
+            title: newTitle, 
             term: $currentTerm,
             user_id: user.id,
         })
@@ -178,6 +183,15 @@ const deleteSchedule = async () => {
  * Save schedule and close modal
  */
 const saveSchedule = async () => {
+    // Check that input is valid
+        if (input.length === 0) {
+        toastStore.add("error", "Please enter a title");
+        return;
+    } else if (input.length > 100) {
+        toastStore.add("error", "Title must be less than 100 characters");
+        return;
+    }
+
     // Get User
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) {
