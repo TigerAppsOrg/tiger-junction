@@ -242,7 +242,7 @@ const saveSchedule = async () => {
                 <!-- Disallow delete if only 1 schedule -->
                 {#if $schedules[$currentTerm].length > 1}
                 <button type="submit"
-                class="btn flex-1 bg-red-500 text-white"
+                class="btn flex-1 hover:bg-red-600 bg-red-500 text-white"
                 on:click={deleteSchedule}>
                     Delete
                 </button>
