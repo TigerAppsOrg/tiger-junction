@@ -54,7 +54,10 @@ const handleLogout = async () => {
 
 </script>
 
-<div class="h-20 max-h-[15vh] std-area mt-2 p-1">
+<div class="h-20 max-h-[15vh] mt-2 p-1
+rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
+dark:text-white border-2 border-slate-600/30
+dark:border-slate-200/60">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
@@ -138,6 +141,7 @@ const handleLogout = async () => {
         </div> <!-- * Icon Buttons -->
     </div>
 
+    <div class="w-auto overflow-x-auto overflow-y-hidden">
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
     p-1 rounded-md h-8 font-light">
     {#key $retop}
@@ -181,6 +185,7 @@ const handleLogout = async () => {
             </button>
         {/await}
     {/key}
+    </div> 
     </div> <!-- * Schedule Select -->
 </div>
 
