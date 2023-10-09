@@ -156,15 +156,17 @@ dark:border-slate-200/60">
                 class:selected={$currentSchedule === schedule.id}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
-                    <span>{schedule.title}</span>
+                    <span class="whitespace-nowrap">{schedule.title}</span>
                     <img src={editIcon} alt="Edit Icon" 
-                    class="w-4 h-4 invert">
+                    class="w-4 h-4 invert mr-2">
                 </button>
             {:else}
                 <button class="termchoice" 
                 class:selected={$currentSchedule === schedule.id}
                 on:click={() => handleScheduleChange(schedule.id)}>
-                    {schedule.title}
+                    <span class="whitespace-nowrap">
+                        {schedule.title}
+                    </span>
                 </button>
             {/if}
 
