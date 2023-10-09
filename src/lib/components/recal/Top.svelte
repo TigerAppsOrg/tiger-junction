@@ -17,11 +17,11 @@ import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
+    import { SCHEDULE_CAP } from "$lib/constants";
 
 export let supabase: SupabaseClient;
 
-// $: isMobile = window.innerWidth < 768;
-
+// Change the current term
 const handleTermChange = async (term: number) => {
     $ready = false;
     currentTerm.set(term);
@@ -35,6 +35,7 @@ const handleTermChange = async (term: number) => {
     $ready = true;
 }
 
+// Change the current schedule
 const handleScheduleChange = (scheduleId: number) => {
     currentSchedule.set(scheduleId);
     searchCourseData.reset($currentTerm);
@@ -52,9 +53,23 @@ const handleLogout = async () => {
     }
 }
 
+// Add a new schedule if user has less than 10 schedules
+const handleAddSchedule = () => {
+    // Check if user has more than 10 schedules (max)
+    if ($schedules[$currentTerm].length >= SCHEDULE_CAP) {
+        toastStore.add("error", "Maximum number of schedules reached");
+        return;
+    }
+
+    modalStore.open("addSchedule", { clear: true });
+}
+
 </script>
 
-<div class="h-20 max-h-[15vh] std-area mt-2 p-1">
+<div class="h-20 max-h-[15vh] mt-2 p-1
+rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
+dark:text-white border-2 border-slate-600/30
+dark:border-slate-200/60">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
@@ -138,6 +153,7 @@ const handleLogout = async () => {
         </div> <!-- * Icon Buttons -->
     </div>
 
+    <div class="w-auto overflow-x-auto overflow-y-hidden">
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
     p-1 rounded-md h-8 font-light">
     {#key $retop}
@@ -148,28 +164,31 @@ const handleLogout = async () => {
             {#each $schedules[$currentTerm] as schedule}
 
             {#if $currentSchedule === schedule.id}
-                <button class="termchoice flex items-center gap-2" 
+                <button class="termchoice flex items-center gap-4" 
                 class:selected={$currentSchedule === schedule.id}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
-                    <span>{schedule.title}</span>
+                    <span class="whitespace-nowrap">{schedule.title}</span>
                     <img src={editIcon} alt="Edit Icon" 
-                    class="w-4 h-4 invert">
+                    class="w-4 h-4 invert mr-2">
                 </button>
             {:else}
                 <button class="termchoice" 
                 class:selected={$currentSchedule === schedule.id}
                 on:click={() => handleScheduleChange(schedule.id)}>
-                    {schedule.title}
+                    <span class="whitespace-nowrap">
+                        {schedule.title}
+                    </span>
                 </button>
             {/if}
 
             {/each}
                 <button class="termchoice"
-                on:click={() => 
-                modalStore.open("addSchedule", { clear: true })}>
-                    <img src={addIcon} alt="Add Icon"
-                    class="btn-icon">
+                on:click={handleAddSchedule}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                    class="h-5 w-5 dark:text-slate-300 text-slate-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
                 </button>
             {/key}
         {:catch error}
@@ -181,6 +200,7 @@ const handleLogout = async () => {
             </button>
         {/await}
     {/key}
+    </div> 
     </div> <!-- * Schedule Select -->
 </div>
 

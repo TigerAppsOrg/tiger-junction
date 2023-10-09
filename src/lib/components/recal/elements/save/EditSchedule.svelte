@@ -30,10 +30,15 @@ const duplicateSchedule = async () => {
         return;
     };
 
+    let newTitle = input + " (Copy)";
+    if (newTitle.length > 100) {
+        newTitle = newTitle.substring(0, 100);
+    }
+
     // Upload to database
     supabase.from("schedules")
         .insert({ 
-            title: input + " (Copy)", 
+            title: newTitle, 
             term: $currentTerm,
             user_id: user.id,
         })
@@ -178,6 +183,15 @@ const deleteSchedule = async () => {
  * Save schedule and close modal
  */
 const saveSchedule = async () => {
+    // Check that input is valid
+        if (input.length === 0) {
+        toastStore.add("error", "Please enter a title");
+        return;
+    } else if (input.length > 100) {
+        toastStore.add("error", "Title must be less than 100 characters");
+        return;
+    }
+
     // Get User
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) {
@@ -242,7 +256,7 @@ const saveSchedule = async () => {
                 <!-- Disallow delete if only 1 schedule -->
                 {#if $schedules[$currentTerm].length > 1}
                 <button type="submit"
-                class="btn flex-1 bg-red-500 text-white"
+                class="btn flex-1 hover:bg-red-600 bg-red-500 text-white"
                 on:click={deleteSchedule}>
                     Delete
                 </button>

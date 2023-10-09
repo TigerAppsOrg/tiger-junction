@@ -22,7 +22,6 @@
 <p>The entity relationship diagram for the entire app</p>
 </div>
 
-## Release Calendar
 Currently, the `ReCal+` (and, to some degree, `PrincetonCourses`) portion of `TigerJunction` is live. The other portions are still under development, and will be released shortly. 
 
 ## Support

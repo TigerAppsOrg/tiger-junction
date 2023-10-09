@@ -150,6 +150,7 @@ const renderCalBoxes = () => {
     toRender = courseRenders;
 }
 
+// Credits to Gabe Sidler on StackOverflow for the algorithm
 // Find overlaps and assign width and left
 const findOverlaps = (calboxes: CalBoxParam[]) => {
     let sortedCalboxes = calboxes.slice();
@@ -164,14 +165,8 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
     // Sort within days
     for (let i = 0; i < days.length; i++) {
         days[i].sort((a, b) => a.section.end_time - b.section.end_time);
+        days[i].sort((b, a) => (a.section.end_time - a.section.start_time) - (b.section.end_time - b.section.start_time))
         days[i].sort((a, b) => a.section.start_time - b.section.start_time);
-    }
-
-    // Check for conflicts
-    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
-        return (a.section.start_time < b.section.end_time 
-        && a.section.end_time > b.section.start_time
-        && a.day === b.day);
     }
 
     for (let i = 0; i < days.length; i++) {
@@ -208,15 +203,39 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
     }
 };
 
+    // Check for conflicts
+    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
+        return (a.section.start_time < b.section.end_time 
+        && a.section.end_time > b.section.start_time
+        && a.day === b.day);
+    }
+
 // Set the left and right positions for each calbox in the connected group
 const packEvents = (cols: CalBoxParam[][]) => {
-    for (let i = 0; i < cols.length; i++) 
+    for (let i = 0; i < cols.length; i++) {
         for (let j = 0; j < cols[i].length; j++) {
-            cols[i][j].left = 
-                `${(cols[i][j].day - 1) * 20 + (i / cols.length) * 20}%`;
-            cols[i][j].width = 
-                `${20 / cols.length - 0.4}%`;
+            let cur = cols[i][j];
+            let colSpan = expandEvent(cur, i, cols);
+            cur.left = 
+                `${(cur.day - 1) * 20 + (i / cols.length) * 20}%`;
+            cur.width = 
+                `${(20 * colSpan )/ cols.length - 0.4}%`;
         }
+    }
+}
+
+// Expand the event to the right
+const expandEvent = (calbox: CalBoxParam, iColumn: number, cols: CalBoxParam[][]) => {
+    let colSpan = 1;
+    for (let i = iColumn + 1; i < cols.length; i++) {
+        for (let j = 0; j < cols[i].length; j++) {
+            if (conflicts(calbox, cols[i][j])) {
+                return colSpan;
+            }
+        }
+        colSpan++;
+    }
+    return colSpan;
 }
 
 

@@ -3,7 +3,7 @@ import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
 import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { calColors, type CalColors } from "$lib/stores/styles";
+import { calColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
 
 export let params: CalBoxParam;
@@ -100,13 +100,12 @@ $: {
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
-    <div class="text-xs z-40 -space-y-1 relative">
+    <div class="text-xs z-40 -space-y-1 relative overflow-clip">
         <div class="font-light">
             {valuesToTimeLabel(section.start_time, section.end_time)}
         </div>
         <div class="font-normal">
             {courseCode} {section.title}
-        </div>
 
         {#if $searchSettings.style["Always Show Enrollments"]}
             <div class="font-light">

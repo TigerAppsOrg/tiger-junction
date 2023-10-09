@@ -13,6 +13,15 @@ let input: string = "";
 
 // Save schedule and close modal
 const saveSchedule = async () => {
+    // Check that input is valid
+    if (input.length === 0) {
+        toastStore.add("error", "Please enter a title");
+        return;
+    } else if (input.length > 100) {
+        toastStore.add("error", "Title must be less than 100 characters");
+        return;
+    }
+
     // Get User
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) {
