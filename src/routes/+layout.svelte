@@ -33,10 +33,6 @@ onMount(() => {
 });
 </script>
 
-<svelte:head>
-    <title>TigerJunction</title>
-</svelte:head>
-
 <div class="font-lato" class:dark>
     <ToastLib />
     <slot />
