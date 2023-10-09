@@ -12,7 +12,7 @@ const getLinks = (course: CourseData): CourseLinks => {
 
     return {
         registrar: REGISTRAR + course.term + "&courseid=" + course.listing_id,
-        tigersnatch: TIGERSNATCH + course.id + "&skip&ref=recalplus",
+        tigersnatch: TIGERSNATCH + course.listing_id + "&skip&ref=recalplus",
         princetoncourses: PRINCETONCOURSES + course.term + course.listing_id
     };
 
