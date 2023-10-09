@@ -152,7 +152,7 @@ dark:border-slate-200/60">
             {#each $schedules[$currentTerm] as schedule}
 
             {#if $currentSchedule === schedule.id}
-                <button class="termchoice flex items-center gap-2" 
+                <button class="termchoice flex items-center gap-4" 
                 class:selected={$currentSchedule === schedule.id}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
