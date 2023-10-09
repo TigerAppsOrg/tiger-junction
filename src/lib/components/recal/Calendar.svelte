@@ -165,6 +165,7 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
     // Sort within days
     for (let i = 0; i < days.length; i++) {
         days[i].sort((a, b) => a.section.end_time - b.section.end_time);
+        days[i].sort((b, a) => (a.section.end_time - a.section.start_time) - (b.section.end_time - b.section.start_time))
         days[i].sort((a, b) => a.section.start_time - b.section.start_time);
     }
 
