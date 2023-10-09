@@ -379,8 +379,8 @@ export const currentSortBy: Writable<string | null> = writable(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
     "options": {
-        "Title": true,
-        "Code": true,
+        // "Title": true,
+        // "Code": true,
         // "Instructor": true,
         "All": false,
         // "Smart Search": false,
