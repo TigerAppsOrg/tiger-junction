@@ -102,7 +102,7 @@ const valuesToTimeLabel = (start: number, end: number) => {
     if (startTime.slice(0, 1) === "0") startTime = startTime.slice(1);
     if (endTime.slice(0, 1) === "0") endTime = endTime.slice(1);
 
-    return `${startTime} - ${endTime}`;
+    return `${startTime}-${endTime}`;
 }
 
 /**
