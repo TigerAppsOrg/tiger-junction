@@ -17,11 +17,11 @@ import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
+    import { SCHEDULE_CAP } from "$lib/constants";
 
 export let supabase: SupabaseClient;
 
-// $: isMobile = window.innerWidth < 768;
-
+// Change the current term
 const handleTermChange = async (term: number) => {
     $ready = false;
     currentTerm.set(term);
@@ -35,6 +35,7 @@ const handleTermChange = async (term: number) => {
     $ready = true;
 }
 
+// Change the current schedule
 const handleScheduleChange = (scheduleId: number) => {
     currentSchedule.set(scheduleId);
     searchCourseData.reset($currentTerm);
@@ -50,6 +51,17 @@ const handleLogout = async () => {
         toastStore.add("success", "Logged out successfully");
         goto("/");
     }
+}
+
+// Add a new schedule if user has less than 10 schedules
+const handleAddSchedule = () => {
+    // Check if user has more than 10 schedules (max)
+    if ($schedules[$currentTerm].length >= SCHEDULE_CAP) {
+        toastStore.add("error", "Maximum number of schedules reached");
+        return;
+    }
+
+    modalStore.open("addSchedule", { clear: true });
 }
 
 </script>
@@ -172,8 +184,7 @@ dark:border-slate-200/60">
 
             {/each}
                 <button class="termchoice"
-                on:click={() => 
-                modalStore.open("addSchedule", { clear: true })}>
+                on:click={handleAddSchedule}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="h-5 w-5 dark:text-slate-300 text-slate-500">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

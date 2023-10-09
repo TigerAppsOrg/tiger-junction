@@ -74,6 +74,9 @@ const STATUS_MAP: Record<string, number> = {
 
 export const RED = "#FF0000";
 
+// Maximum number of schedules in a term for a user
+export const SCHEDULE_CAP = 10;
+
 export { 
     EMAIL_LIST_FORM_LINK,
     CATEGORIES, 
