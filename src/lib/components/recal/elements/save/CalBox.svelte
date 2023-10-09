@@ -3,7 +3,7 @@ import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
 import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { calColors, type CalColors } from "$lib/stores/styles";
+import { calColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
 
 export let params: CalBoxParam;
