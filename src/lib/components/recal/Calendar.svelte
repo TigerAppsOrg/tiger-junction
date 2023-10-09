@@ -176,7 +176,6 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
         days[i].forEach(box => {
             if (lastEventEnding !== null && box.section.start_time >= lastEventEnding) {
                 packEvents(columns);
-                console.log(columns);
                 columns = [];
                 lastEventEnding = null;
             }
