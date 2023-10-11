@@ -17,7 +17,7 @@ import Loader from "../elements/Loader.svelte";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
-    import { SCHEDULE_CAP } from "$lib/constants";
+import { SCHEDULE_CAP } from "$lib/constants";
 
 export let supabase: SupabaseClient;
 

@@ -169,25 +169,17 @@ export const searchResults = {
         //--------------------------------------------------------------
 
         query = normalizeText(query);
-        if (query.length < 3 && !settings.options["All"])
+        if (query.length < 3 && !settings.filters["Show All"].enabled)
              searchResults.set([]);
 
-        else if (query.length === 3 && !settings.options["All"]) 
+        else if (query.length === 3 && !settings.filters["Show All"].enabled) 
             searchResults.set(data.filter(x => {
                 return normalizeText(x.code).includes(query)
             }));
         
         else searchResults.set(data.filter((x) => {
-            let title: boolean = settings.options["Title"] && (
-                normalizeText(x.title).includes(query)
-            );
-            let code: boolean = settings.options["Code"] && (
-                normalizeText(x.code).includes(query)
-            );
-            let all: boolean = settings.options["All"] && (
-                title || code 
-            );
-            return title || code || all;
+            return normalizeText(x.title).includes(query) 
+                || normalizeText(x.code).includes(query);
         }));
     },
 }
@@ -379,13 +371,15 @@ export const currentSortBy: Writable<string | null> = writable(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
     "options": {
-        "Title": true,
-        "Code": true,
+        // "Title": true,
+        // "Code": true,
         // "Instructor": true,
-        "All": false,
         // "Smart Search": false,
     }, 
     "filters": {
+        "Show All": {
+            "enabled": false,
+        },
         "Rating": {
             "enabled": false,
             "min": 0,
@@ -451,7 +445,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Weighted Rating": false,
         "Color by Rating": false,
         "Always Show Enrollments": false,
-        "Show Tooltips": true,
+        // "Show Tooltips": true,
     }
 }
 
