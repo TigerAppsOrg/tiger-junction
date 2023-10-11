@@ -445,7 +445,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Weighted Rating": false,
         "Color by Rating": false,
         "Always Show Enrollments": false,
-        "Show Tooltips": true,
+        // "Show Tooltips": true,
     }
 }
 
