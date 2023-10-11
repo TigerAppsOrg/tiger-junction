@@ -1,7 +1,7 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -24,7 +24,10 @@ const triggerSearch = () => {
 
     // Handle isResult flag
     if ($searchResults.length > 0) isResult.set(true);
-    else isResult.set(false);
+    else {
+        isResult.set(false);
+        hoveredCourse.set(null);   
+    }
 
     // If results are less than threshold, add sections
     if ($searchResults.length < THRESHOLD) 
