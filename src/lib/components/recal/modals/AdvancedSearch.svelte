@@ -46,14 +46,14 @@ const handleMax = (e: Event) => {
     <div class="p-6 w-[80vw] max-w-4xl">
         <h1 class="text-xl font-bold mb-2">Advanced Search Settings</h1>
         <div class="flex flex-col gap-2">
-            <div class="settings-area" id="options">
+            <!-- <div class="settings-area" id="options">
                 <h2 class="text-lg font-bold mb-2">Search By</h2>
                 <div class="flex flex-wrap gap-2">
                     {#each Object.keys($searchSettings.options) as option}
                         <Checkpill name={option} category="options" />
                     {/each}
                 </div>
-            </div>
+            </div> -->
             <div class="settings-area" id="filters">
                 <h2 class="text-lg font-bold mb-2">Filters</h2>
                 <div class="flex flex-wrap gap-2">
