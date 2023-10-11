@@ -178,10 +178,8 @@ export const searchResults = {
             }));
         
         else searchResults.set(data.filter((x) => {
-            // let all: boolean = !settings.filters["Show All"].enabled && (
-            //     title || code 
-            // );
-            return normalizeText(x.title).includes(query) || normalizeText(x.code).includes(query);
+            return normalizeText(x.title).includes(query) 
+                || normalizeText(x.code).includes(query);
         }));
     },
 }
