@@ -44,9 +44,16 @@ let styles = {
 
 const fillStyles = () => {
     if (styles.color === "") return;
-    styles.text = darkenHSL(styles.color, 50);
-    styles.hoverColor = darkenHSL(styles.color, 10);
-    styles.hoverText = darkenHSL(styles.color, 70);
+
+    if (parseInt(styles.color.split(",")[2].split("%")[0]) > 50) {
+        styles.text = darkenHSL(styles.color, 60);
+        styles.hoverColor = darkenHSL(styles.color, 10);
+        styles.hoverText = darkenHSL(styles.color, 70);
+    } else {
+        styles.text = darkenHSL(styles.color, -60);
+        styles.hoverColor = darkenHSL(styles.color, -10);
+        styles.hoverText = darkenHSL(styles.color, -70);
+    }
 }
 
 // Color by rating
