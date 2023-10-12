@@ -236,7 +236,8 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
 
 
     {#if flipped}
-    <div class="w-full">
+    <div class="w-full"
+    transition:slide={{ axis: 'y', duration: 150 }}>
         <div id="buttons" class="w-full flex flex-col">
 
             <CardLinkButton href={tigersnatch} title="TigerSnatch"
