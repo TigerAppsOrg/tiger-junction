@@ -55,12 +55,24 @@ const triggerSearch = () => {
 }
 
 .adv-search {
-    @apply h-10 w-10 flex justify-center items-center duration-150
-    border-slate-600/30 border-2 dark:border-slate-200/60 rounded-xl;
+  @apply h-10 w-10 flex justify-center items-center duration-150
+    border-slate-600/30 border-2 dark:border-slate-200/60
+    hover:bg-slate-100 dark:hover:bg-slate-800;
+    border-radius: 50%;
 }
 
 .adv-search:hover {
-    @apply bg-slate-100 border-slate-600/40
-    dark:bg-slate-700 dark:border-slate-200/90;
+    animation: rainbow-border 2s linear infinite;
+}
+
+@keyframes rainbow-border {
+  0% {
+    border-image-slice: 1;
+    transform: rotate(0deg);
+  }
+  100% {
+    border-image-slice: 8;
+    transform: rotate(360deg);
+  }
 }
 </style>
