@@ -14,6 +14,7 @@ import { rMeta } from "$lib/stores/rmeta";
 import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
 import { inview } from "svelte-inview";
+    import CardButton from "./CardButton.svelte";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -140,8 +141,7 @@ const handleLeave = () => {
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
-class="border-b-[1px] 
-flex justify-between items-stretch duration-100
+class="border-b-[1px] duration-100
 {category==="saved" && "dark:border-black"}" 
 style={cssVarStyles}
 on:mouseenter={handleHover}
@@ -150,8 +150,8 @@ on:blur={handleLeave}
 on:focus={handleHover}
 use:inview={options}
 on:inview_enter={(e) => isInView = e.detail.inView}
->
-    {#if !flipped}
+>   
+    <div class="flex justify-between items-stretch">
     <button 
     class="text-xs font-light text-left w-[75%] p-1"
     on:click={() => flipped = true}>
@@ -234,46 +234,35 @@ on:inview_enter={(e) => isInView = e.detail.inView}
                 </button>
             {/if}
         </div> 
+    </div>   
 
-    {:else}
-    <div class="w-full">
-        <button class="text-xs font-normal p-1 pb-2 w-full text-left"
-        on:click={() => flipped = false}>
-            {code}
-        </button>
+
+    {#if flipped}
+    <div class="w-full bg-red-500">
         <div id="buttons" class="w-full flex justify-evenly text-white">
-            <a href={tigersnatch} target="_blank" 
-            class="cardlink bg-orange-400 dark:bg-orange-700">
-                <button class="variant-soft-warning cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </button>
-            </a>
 
-            <!-- Princeton Courses -->
-            <a href={princetoncourses} target="_blank" 
-            class="cardlink bg-blue-400 dark:bg-blue-700">
-                <button class="variant-soft-tertiary cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                    </svg>
-                </button>
-            </a>
+            <CardButton href={tigersnatch} title="TigerSnatch">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </CardButton>
 
-            <!-- Registrar -->
-            <a href={registrar} target="_blank" 
-            class="cardlink bg-gray-400 dark:bg-gray-500">
-                <button class="variant-soft-primary cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                    </svg>
-                </button>
-            </a>
-        </div> <!-- * End Buttons -->
+            <CardButton href={princetoncourses} title="Evaluations">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+            </CardButton>
+
+            <CardButton href={registrar} title="Registrar">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+            </CardButton>
+
+        </div> 
     </div>
     {/if}  
 </div>
