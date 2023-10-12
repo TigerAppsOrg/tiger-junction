@@ -24,6 +24,7 @@ let maxInput: number = $searchSettings.filters["Rating"].max;
 const handleMin = (e: Event) => {
     let target = e.target as HTMLInputElement;
     minInput = parseFloat(target.value);
+    if (minInput > maxInput) minInput = maxInput;
     if (minInput < 0) minInput = 0;
     if (minInput > 5) minInput = 5;
     $searchSettings.filters["Rating"].min = minInput;
@@ -36,9 +37,19 @@ const handleMin = (e: Event) => {
 const handleMax = (e: Event) => {
     let target = e.target as HTMLInputElement;
     maxInput = parseFloat(target.value);
+    if (maxInput < minInput) maxInput = minInput;
     if (maxInput < 0) maxInput = 0;
     if (maxInput > 5) maxInput = 5;
     $searchSettings.filters["Rating"].max = maxInput;
+}
+
+/**
+ * Reset search settings to default
+ */
+const resetSearchSettings = () => {
+    $searchSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    minInput = 0;
+    maxInput = 5;
 }
 </script>
 
@@ -129,7 +140,7 @@ const handleMax = (e: Event) => {
         <div class="flex gap-2 border-t-2 mt-2 pt-2">
             <button class="btn bg-black text-white dark:bg-slate-200
             dark:text-black hover:bg-black/80 flex-1" 
-            on:click={() => $searchSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))}>
+            on:click={resetSearchSettings}>
                 Reset to Default
             </button>
             <button class="btn flex-1 bg-gradient-to-r 
