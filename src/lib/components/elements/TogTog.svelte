@@ -1,5 +1,5 @@
 <script lang="ts">
-import { currentSortBy, searchSettings } from "$lib/stores/recal";
+import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
 export let name: string = "";
 
 const handleToggle = () => {
@@ -14,6 +14,7 @@ const handleToggle = () => {
         sortParam.enabled = true;
         currentSortBy.set(name);
     }
+    $research = !$research;
 }
 
 $: sortParam = $searchSettings.sortBy[name];

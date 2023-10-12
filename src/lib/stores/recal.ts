@@ -5,7 +5,7 @@ import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
 
 //----------------------------------------------------------------------
-// Current Term/Schedule
+// Forcers
 //----------------------------------------------------------------------
 
 // Ready for calendar render
@@ -16,6 +16,13 @@ export const retop: Writable<boolean> = writable(false);
 
 // Force rerendering of calendar
 export const recal: Writable<boolean> = writable(false);
+
+// Force rerendering of search results
+export const research: Writable<boolean> = writable(false);
+
+//----------------------------------------------------------------------
+// Current Term/Schedule
+//----------------------------------------------------------------------
 
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
