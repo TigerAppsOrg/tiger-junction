@@ -24,6 +24,7 @@ let maxInput: number = $searchSettings.filters["Rating"].max;
 const handleMin = (e: Event) => {
     let target = e.target as HTMLInputElement;
     minInput = parseFloat(target.value);
+    if (Number.isNaN(minInput)) return;
     if (minInput > maxInput) minInput = maxInput;
     if (minInput < 0) minInput = 0;
     if (minInput > 5) minInput = 5;
@@ -37,6 +38,7 @@ const handleMin = (e: Event) => {
 const handleMax = (e: Event) => {
     let target = e.target as HTMLInputElement;
     maxInput = parseFloat(target.value);
+    if (Number.isNaN(maxInput)) return;
     if (maxInput < minInput) maxInput = minInput;
     if (maxInput < 0) maxInput = 0;
     if (maxInput > 5) maxInput = 5;

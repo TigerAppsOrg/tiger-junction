@@ -110,9 +110,9 @@ on:mouseleave={() => hovered = false}>
             {courseCode} {section.title}
         </div>
         
-        {#if $searchSettings.style["Always Show Rooms"] || hovered}
+        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && section.room }
             <div class="font-light">
-                {section.room ? section.room : ""}
+                {section.room}
             </div>
         {/if}
 
