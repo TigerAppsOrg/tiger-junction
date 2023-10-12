@@ -98,7 +98,7 @@ $: {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex p-1 rounded-md" style={cssVarStyles}
+<button id="box" class="absolute text-left flex p-[1px] rounded-md" style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
@@ -108,12 +108,20 @@ on:mouseleave={() => hovered = false}>
         </div>
         <div class="font-normal">
             {courseCode} {section.title}
+        </div>
+        
+        {#if $searchSettings.style["Always Show Rooms"] || hovered}
+            <div class="font-light">
+                {section.room ? section.room : ""}
+            </div>
+        {/if}
 
         {#if $searchSettings.style["Always Show Enrollments"]}
             <div class="font-light">
-                {section.tot}/{section.cap}
+                Enrollment: {section.tot}/{section.cap}
             </div>
         {/if}
+
     </div>
 </button>
 
