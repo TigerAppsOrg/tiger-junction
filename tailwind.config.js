@@ -27,10 +27,7 @@ export default {
       },
     },
   },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: ["light"]
-  },
+  plugins: [],
   darkMode: "class",
 }
 
