@@ -125,7 +125,7 @@ const resetSearchSettings = () => {
                 <div class="flex flex-wrap gap-2">
                     <!-- <TogTog name="Name" /> -->
                     <TogTog name="Rating" />
-                    <TogTog name="Adjusted Rating" />
+                    <TogTog name="Weighted Rating" />
                 </div>
             </div>
             <div class="settings-area" id="style">

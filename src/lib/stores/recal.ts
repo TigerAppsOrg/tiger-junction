@@ -158,14 +158,14 @@ export const searchResults = {
             });
         }
 
-        // * Adjusted Rating
-        if (settings.sortBy["Adjusted Rating"].enabled) {
+        // * Weighted Rating
+        if (settings.sortBy["Weighted Rating"].enabled) {
 
             data = data.sort((a, b) => {
                 let aRating: number = a.adj_rating ? a.adj_rating : 0;
                 let bRating: number = b.adj_rating ? b.adj_rating : 0;
 
-                return settings.sortBy["Adjusted Rating"].value === 0 ?
+                return settings.sortBy["Weighted Rating"].value === 0 ?
                     (bRating - aRating) : (aRating - bRating);
             });
         }
@@ -439,7 +439,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             "options": ["High to Low", "Low to High"],
             "value": 0,
         },
-        "Adjusted Rating": {
+        "Weighted Rating": {
             "enabled": false,
             "options": ["High to Low", "Low to High"],
             "value": 0,
