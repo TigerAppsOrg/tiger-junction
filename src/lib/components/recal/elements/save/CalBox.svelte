@@ -17,7 +17,9 @@ let styles = {
     "border": params.confirmed ? 
         darkenHSL($calColors[params.color], 40)
         : darkenHSL($calColors[params.color], 20),
-    "text": darkenHSL($calColors[params.color], 40),
+    "text": parseInt($calColors[params.color].split(",")[2].split("%")[0]) > 50 ? 
+        darkenHSL($calColors[params.color], 60)
+        : darkenHSL($calColors[params.color], -60),
     "alpha": params.confirmed ? "1" : "0.7",
     "stripes": params.confirmed ? "" : `repeating-linear-gradient(
         45deg,
@@ -96,7 +98,7 @@ $: {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex p-1 rounded-md" style={cssVarStyles}
+<button id="box" class="absolute text-left flex p-[1px] rounded-md" style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
@@ -106,12 +108,20 @@ on:mouseleave={() => hovered = false}>
         </div>
         <div class="font-normal">
             {courseCode} {section.title}
-
-        {#if $searchSettings.style["Always Show Enrollments"]}
+        </div>
+        
+        {#if $searchSettings.style["Always Show Rooms"] || hovered}
             <div class="font-light">
-                {section.tot}/{section.cap}
+                {section.room ? section.room : ""}
             </div>
         {/if}
+
+        {#if $searchSettings.style["Show Enrollments"]}
+            <div class="font-light">
+                Enrollment: {section.tot}/{section.cap}
+            </div>
+        {/if}
+
     </div>
 </button>
 

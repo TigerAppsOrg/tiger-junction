@@ -5,7 +5,7 @@ import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
 
 //----------------------------------------------------------------------
-// Current Term/Schedule
+// Forcers
 //----------------------------------------------------------------------
 
 // Ready for calendar render
@@ -16,6 +16,13 @@ export const retop: Writable<boolean> = writable(false);
 
 // Force rerendering of calendar
 export const recal: Writable<boolean> = writable(false);
+
+// Force rerendering of search results
+export const research: Writable<boolean> = writable(false);
+
+//----------------------------------------------------------------------
+// Current Term/Schedule
+//----------------------------------------------------------------------
 
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
@@ -151,14 +158,14 @@ export const searchResults = {
             });
         }
 
-        // * Adjusted Rating
-        if (settings.sortBy["Adjusted Rating"].enabled) {
+        // * Weighted Rating
+        if (settings.sortBy["Weighted Rating"].enabled) {
 
             data = data.sort((a, b) => {
                 let aRating: number = a.adj_rating ? a.adj_rating : 0;
                 let bRating: number = b.adj_rating ? b.adj_rating : 0;
 
-                return settings.sortBy["Adjusted Rating"].value === 0 ?
+                return settings.sortBy["Weighted Rating"].value === 0 ?
                     (bRating - aRating) : (aRating - bRating);
             });
         }
@@ -432,7 +439,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             "options": ["High to Low", "Low to High"],
             "value": 0,
         },
-        "Adjusted Rating": {
+        "Weighted Rating": {
             "enabled": false,
             "options": ["High to Low", "Low to High"],
             "value": 0,
@@ -444,7 +451,8 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show # of Comments": false,
         "Show Weighted Rating": false,
         "Color by Rating": false,
-        "Always Show Enrollments": false,
+        "Always Show Rooms": false,
+        "Show Enrollments": false,
         // "Show Tooltips": true,
     }
 }

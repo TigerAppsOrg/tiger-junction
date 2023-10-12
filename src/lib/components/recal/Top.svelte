@@ -66,7 +66,7 @@ const handleAddSchedule = () => {
 
 </script>
 
-<div class="h-20 max-h-[15vh] mt-2 p-1
+<div class="h-20 mt-2 p-1
 rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
 dark:text-white border-2 border-slate-600/30
 dark:border-slate-200/60">

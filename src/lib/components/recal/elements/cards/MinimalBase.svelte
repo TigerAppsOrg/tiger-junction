@@ -14,6 +14,7 @@ import { rMeta } from "$lib/stores/rmeta";
 import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
 import { inview } from "svelte-inview";
+import CardLinkButton from "./CardLinkButton.svelte";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -44,9 +45,16 @@ let styles = {
 
 const fillStyles = () => {
     if (styles.color === "") return;
-    styles.text = darkenHSL(styles.color, 50);
-    styles.hoverColor = darkenHSL(styles.color, 10);
-    styles.hoverText = darkenHSL(styles.color, 70);
+
+    if (parseInt(styles.color.split(",")[2].split("%")[0]) > 50) {
+        styles.text = darkenHSL(styles.color, 60);
+        styles.hoverColor = darkenHSL(styles.color, 10);
+        styles.hoverText = darkenHSL(styles.color, 70);
+    } else {
+        styles.text = darkenHSL(styles.color, -60);
+        styles.hoverColor = darkenHSL(styles.color, -10);
+        styles.hoverText = darkenHSL(styles.color, -70);
+    }
 }
 
 // Color by rating
@@ -57,19 +65,19 @@ if (category === "search" || category === "pinned") {
             styles.color = "hsl(0, 0%, 50%)";
             fillStyles();
         } else if (course.rating >= 4.5) {
-            styles.color = "hsl(120, 100%, 50%)";
+            styles.color = "hsl(120, 52%, 75%)";
             fillStyles();
         } else if (course.rating >= 4.0) {
-            styles.color = "hsl(210, 100%, 50%)";
+            styles.color = "hsl(197, 34%, 72%)";
             fillStyles();
         } else if (course.rating >= 3.5) {
-            styles.color = "hsl(60, 100%, 50%)";
+            styles.color = "hsl(60, 96%, 74%)";
             fillStyles();
         } else if (course.rating >= 3.0) {
-            styles.color = "hsl(30, 100%, 50%)";
+            styles.color = "hsl(35, 99%, 65%)";
             fillStyles();
         } else {
-            styles.color = "hsl(0, 100%, 50%)";
+            styles.color = "hsl(1, 100%, 69%)";
             fillStyles();
         }
     } else {
@@ -133,8 +141,7 @@ const handleLeave = () => {
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="card" transition:slide="{{ duration: 150, axis: "y" }}"
-class="border-b-[1px] 
-flex justify-between items-stretch duration-100
+class="duration-100 {!flipped && "border-b-[1px]"}
 {category==="saved" && "dark:border-black"}" 
 style={cssVarStyles}
 on:mouseenter={handleHover}
@@ -142,34 +149,32 @@ on:mouseleave={handleLeave}
 on:blur={handleLeave}
 on:focus={handleHover}
 use:inview={options}
-on:inview_enter={(e) => isInView = e.detail.inView}
->
-    {#if !flipped}
-    <button 
-    class="text-xs font-light text-left w-[75%] p-1"
-    on:click={() => flipped = true}>
-        <div class="font-normal">
-            {code}
-        </div>
-        <div>
-            {title}
-        </div>
+on:inview_enter={(e) => isInView = e.detail.inView}>   
+    <div id="topcard" class="flex justify-between items-stretch duration-100">
+        <button 
+        class="text-xs font-light text-left w-[75%] p-1"
+        on:click={() => flipped = !flipped}>
+            <div class="font-normal">
+                {code}
+            </div>
+            <div>
+                {title}
+            </div>
 
-        <div class="text-xs italic font-light">
-            {#if $searchSettings.style["Show Rating"]}
-                Rating: {course.rating ? course.rating : "N/A"}
-            {/if}
-            {#if $searchSettings.style["Show # of Comments"]}
-                ({course.num_evals ? course.num_evals : "N/A"} comments)
-            {/if}
-            {#if $searchSettings.style["Show Weighted Rating"]}
-                [{course.adj_rating} adj]
-            {/if}
-        </div>
-        
+            <div class="text-xs italic font-light">
+                {#if $searchSettings.style["Show Rating"]}
+                    Rating: {course.rating ? course.rating : "N/A"}
+                {/if}
+                {#if $searchSettings.style["Show # of Comments"]}
+                    ({course.num_evals ? course.num_evals : "N/A"} comments)
+                {/if}
+                {#if $searchSettings.style["Show Weighted Rating"]}
+                    [{course.adj_rating} adj]
+                {/if}
+            </div>
+            
         </button>
 
-        <!-- TODO: Refactor, super messy! -->
 
         <div class="w-[20%] flex justify-evenly">
             {#if category === "saved"}
@@ -227,46 +232,42 @@ on:inview_enter={(e) => isInView = e.detail.inView}
                 </button>
             {/if}
         </div> 
+    </div>   
 
-    {:else}
-    <div class="w-full">
-        <button class="text-xs font-normal p-1 pb-2 w-full text-left"
-        on:click={() => flipped = false}>
-            {code}
-        </button>
-        <div id="buttons" class="w-full flex justify-evenly text-white">
-            <a href={tigersnatch} target="_blank" 
-            class="cardlink bg-orange-400 dark:bg-orange-700">
-                <button class="variant-soft-warning cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </button>
-            </a>
 
-            <!-- Princeton Courses -->
-            <a href={princetoncourses} target="_blank" 
-            class="cardlink bg-blue-400 dark:bg-blue-700">
-                <button class="variant-soft-tertiary cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                    </svg>
-                </button>
-            </a>
+    {#if flipped}
+    <div class="w-full"
+    transition:slide={{ axis: 'y', duration: 150 }}>
+        <div id="buttons" class="w-full flex flex-col">
 
-            <!-- Registrar -->
-            <a href={registrar} target="_blank" 
-            class="cardlink bg-gray-400 dark:bg-gray-500">
-                <button class="variant-soft-primary cardbutton">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                    </svg>
-                </button>
-            </a>
-        </div> <!-- * End Buttons -->
+            <CardLinkButton href={tigersnatch} title="TigerSnatch"
+            hoverColor={styles.hoverColor} hoverText={styles.hoverText}
+            borderColor={styles.border}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </CardLinkButton>
+
+            <CardLinkButton href={princetoncourses} title="PrincetonCourses"
+            hoverColor={styles.hoverColor} hoverText={styles.hoverText}
+            borderColor={styles.border}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+            </CardLinkButton>
+
+            <CardLinkButton href={registrar} title="Registrar"
+            hoverColor={styles.hoverColor} hoverText={styles.hoverText}
+            borderColor={styles.border}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>
+            </CardLinkButton>
+
+        </div> 
     </div>
     {/if}  
 </div>
@@ -280,9 +281,13 @@ on:inview_enter={(e) => isInView = e.detail.inView}
     border-left: 6px var(--trans) var(--border);
 }
 
-#card:hover {
+#topcard:hover {
     background-color: var(--hoverColor);
     color: var(--hoverText);
+}
+
+#buttons {
+    border-bottom: 2px solid var(--border);
 }
 
 /* !-- Refactor --! */
