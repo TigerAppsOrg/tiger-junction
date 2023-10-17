@@ -4,11 +4,15 @@
 
 console.log("Hello from Functions!")
 
-Deno.serve(async (req) => {
-  const { name } = await req.json()
+Deno.serve(async () => {
   const data = {
-    message: `Hello ${name}!`,
+    message: `Hello there!`,
   }
+
+  await setTimeout(() => {
+    console.log("Hello from setTimeoutfew!")
+  }, 300000)
+
 
   return new Response(
     JSON.stringify(data),

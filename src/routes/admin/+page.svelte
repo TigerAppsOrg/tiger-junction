@@ -35,6 +35,12 @@ const handleLogout = async () => {
     if (!error) goto("/");
 }
 
+const invokeFunc = async () => {
+    // const res = await data.supabase.functions.invoke('courses', {
+    //     body: { term: 1242 }
+    // });
+    await fetch("/api/admin/scraper/courses");
+}
 </script>
 
 <svelte:head>
@@ -86,8 +92,13 @@ const handleLogout = async () => {
         <div class="area bg-cyan-400">
             "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected." - Steve Jobs
         </div>
-        <div class="area bg-green-400">
+        <!-- <div class="area bg-green-400">
             "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
+        </div> -->
+        <div class="area bg-green-400">
+            <button on:click={() => invokeFunc()}>
+                Invoke
+            </button>
         </div>
     </div> <!-- * End Colored Data -->
 

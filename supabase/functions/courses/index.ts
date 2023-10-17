@@ -2,16 +2,39 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-console.log("Hello from Functions!")
+// import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
+
+console.log("Scraping courses from registrar")
 
 Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
+  const { term } = await req.json();
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    {global: { headers: { Authorization: req.headers.get('Authorization')! }}}
+  );
+
+  const { data: { user }} = await supabaseClient.auth.getUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const { data, error } = await supabaseClient.from('private_profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single()
+
+  if (error || !data) {
+    throw new Error(error.message);
+  }
+
+  if (!data?.is_admin) {
+    throw new Error("User not admin");
   }
 
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify({ message: `Correct!` }),
     { headers: { "Content-Type": "application/json" } },
   )
 })
