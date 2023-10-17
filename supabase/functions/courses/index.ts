@@ -4,12 +4,16 @@
 
 // import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
+import { RegCourse } from "../../../src/lib/types/regTypes.ts";
+import { CourseInsert } from "../../../src/lib/types/dbTypes.ts";
+import { GENERIC_GRADING_INFO } from "../../../src/lib/constants.ts";
+import { RegGradingInfo } from "../../../src/lib/types/regTypes.ts";
+import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
 
 console.log("Scraping courses from registrar")
 
 Deno.serve(async (req) => {
-  const { term } = await req.json();
-
+  // Check if user is admin
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -34,11 +38,17 @@ Deno.serve(async (req) => {
     throw new Error("User not admin");
   }
 
+  // Scrape courses for term 
+  // Code modified from src/lib/scripts/scraper/courses.ts
+  const { term } = await req.json();
+
+  await populateCourses(supabaseClient, term);
+
   return new Response(
-    JSON.stringify({ message: `Correct!` }),
+    JSON.stringify({ message: "Courses scraped" }),
     { headers: { "Content-Type": "application/json" } },
   )
-})
+});
 
 // To invoke:
 // curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
