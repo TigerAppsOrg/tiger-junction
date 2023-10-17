@@ -39,7 +39,7 @@ const invokeFunc = async () => {
     // const res = await data.supabase.functions.invoke('courses', {
     //     body: { term: 1242 }
     // });
-    await fetch("/api/admin/scraper/courses");
+    await fetch("/api/admin/scraper/courses/1242");
 }
 </script>
 

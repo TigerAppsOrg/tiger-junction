@@ -8,6 +8,11 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
 console.log("Scraping courses from registrar")
 
 Deno.serve(async (req) => {
+  return new Response(
+    JSON.stringify({ message: `Hello from Deno ${Deno.version.deno} 🦕` }),
+    { headers: { "Content-Type": "application/json" } },
+  );
+
   const { term } = await req.json();
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL")!,
