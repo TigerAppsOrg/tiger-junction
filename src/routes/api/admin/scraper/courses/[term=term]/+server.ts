@@ -8,7 +8,9 @@ export const GET: RequestHandler = async (req) => {
 
     let term = req.params.term;
 
-    const { data, error } = await supabase.functions.invoke("courses");
+    const { data, error } = await supabase.functions.invoke("courses", {
+        body: { term },
+    });
 
     if (error) throw error;
     if (!data) throw new Error("No data returned");
