@@ -2,7 +2,6 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-// import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
 import { SupabaseClient, createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
 import { RegCourse, RegSection, WeekDays } from "../../../src/lib/types/regTypes.ts";
 import { CourseInsert, InstructorInsert } from "../../../src/lib/types/dbTypes.ts";
@@ -18,23 +17,23 @@ Deno.serve(async (req) => {
     {global: { headers: { Authorization: req.headers.get('Authorization')! }}}
   );
 
-  // const { data: { user }} = await supabaseClient.auth.getUser();
-  // if (!user) {
-  //   throw new Error("User not found");
-  // }
+  const { data: { user }} = await supabaseClient.auth.getUser();
+  if (!user) {
+    throw new Error("User not found");
+  }
 
-  // const { data, error } = await supabaseClient.from('private_profiles')
-  //   .select('is_admin')
-  //   .eq('id', user.id)
-  //   .single()
+  const { data, error } = await supabaseClient.from('private_profiles')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single()
 
-  // if (error || !data) {
-  //   throw new Error(error.message);
-  // }
+  if (error || !data) {
+    throw new Error(error.message);
+  }
 
-  // if (!data?.is_admin) {
-  //   throw new Error("User not admin");
-  // }
+  if (!data?.is_admin) {
+    throw new Error("User not admin");
+  }
 
   // Scrape courses for term 
   // Code modified from src/lib/scripts/scraper/courses.ts
@@ -349,8 +348,8 @@ const parseGradingInfo = (data: RegCourse) => {
     pu_projects: "Project(s)",
 };
 
-  let gradingInfo: Record<string, string> = {};
-  for (let key in GENERIC_GRADING_INFO) 
+  const gradingInfo: Record<string, string> = {};
+  for (const key in GENERIC_GRADING_INFO) 
       if (data[key] && data[key] !== "0")
           gradingInfo[GENERIC_GRADING_INFO[key as keyof RegGradingInfo]] 
       = data[key];
