@@ -9,11 +9,14 @@ export const GET: RequestHandler = async (req) => {
     let term = req.params.term;
 
     const { data, error } = await supabase.functions.invoke("courses", {
-        body: { term },
+        body: { term, round: 0 },
     });
 
-    if (error) throw error;
-    if (!data) throw new Error("No data returned");
+    if (error || !data) {
+        console.log("Line 1");
+        console.log(error);
+        return new Response(JSON.stringify(error));
+    }
 
-    return new Response(JSON.stringify(data));
+    return new Response(JSON.stringify("Began scraping courses for term " + term + " (begin at round 0)"));
 };

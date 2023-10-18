@@ -7,7 +7,7 @@ import { RegCourse, RegSection, WeekDays } from "../../../src/lib/types/regTypes
 import { CourseInsert, InstructorInsert } from "../../../src/lib/types/dbTypes.ts";
 import { RegGradingInfo } from "../../../src/lib/types/regTypes.ts";
 
-console.log("Scraping courses from registrar")
+// console.log("Scraping courses from registrar")
 
 Deno.serve(async (req) => {
   // Check if user is admin
@@ -37,7 +37,12 @@ Deno.serve(async (req) => {
 
   // Scrape courses for term 
   // Code modified from src/lib/scripts/scraper/courses.ts
-  const { term } = await req.json();
+  const { term, round } = await req.json();
+
+  if (!term || round === undefined) {
+    throw new Error("Invalid request body");
+  }
+
   const rawCourselist = await fetch(`https://api.princeton.edu/registrar/course-offerings/classes/${term}`, {
     method: "GET",
     headers: {
@@ -73,14 +78,10 @@ Deno.serve(async (req) => {
 
   courselist = removeDup(courselist);
 
-  // Limit the number of courses fetched
-  courselist = courselist.slice(0, 10);
-
   // Analytics
   let count = 0;
-  const PARALLEL_REQUESTS = 20;
 
-  const processNextCourse = async (index: number) => {
+  const processNextCourse = (index: number) => {
     if (index >= courselist.length) return;   // Base case
     console.log("Sending Request " + index);
     count++;
@@ -155,8 +156,6 @@ Deno.serve(async (req) => {
                         data.course_instructors.course_instructor,
                         data.course_sections.course_section
                     );
-
-                    processNextCourse(index + PARALLEL_REQUESTS);
                 });
             } else {
             supabaseClient.from("courses")
@@ -177,25 +176,34 @@ Deno.serve(async (req) => {
                         data.course_instructors.course_instructor,
                         data.course_sections.course_section
                     );
-                    
-                    processNextCourse(index + PARALLEL_REQUESTS);
               });
             }
         }); 
     })
   }
 
-  // Send 20 requests in parallel
-  const promises: Promise<void>[] = [];
-  for (let i = 0; i < PARALLEL_REQUESTS; i++) {
-    promises.push(processNextCourse(i));
+  // Send PAR_REQS requests in parallel
+  const PAR_REQS = 20;
+  for (let i = round * PAR_REQS; 
+    i < Math.min(round * PAR_REQS + PAR_REQS, courselist.length); 
+    i++) {
+    processNextCourse(i);
   }
 
-  await Promise.all(promises);
+  let lastRound = false;
+  if (round * PAR_REQS + PAR_REQS >= courselist.length) {
+    lastRound = true;
+  }
+
+  if (!lastRound) {
+    supabaseClient.functions.invoke("courses", {
+      body: { term, round: round + 1 },
+    });
+  }
 
   // Return information about course scrapings
   return new Response(
-    JSON.stringify({ message: `${count} courses scraped` }),
+    JSON.stringify({ message: `${count} courses scraped`, lastRound }),
     { headers: { "Content-Type": "application/json" } },
   )
 });
