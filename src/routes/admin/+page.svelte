@@ -7,6 +7,8 @@ import { TERM_MAP } from "$lib/constants";
 
 export let data;
 
+const API_PREFIX = "/api/admin/scraper/"
+
 let term: string = "";
 let loading: boolean = false;
 
@@ -118,61 +120,48 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
     <div class="cont">
         <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">DB Management</h2>
-            <form method="POST" use:enhance={({ cancel }) => {
-                // Validate term code
-                if (!Object.values(TERM_MAP).includes(parseInt(term))) {
-                    alert("Invalid term code!");
-                    cancel();
-                    term = "";
-                    return;
-                }
+            <div class="mb-4 space-x-2 flex items-center">
+                <label class="text-lg" for="term">Term: </label>
+                <input type="text" name="term" id="term" bind:value={term}
+                class="rounded-xl p-2 flex-1 
+                bg-slate-300 dark:bg-synth-medium">
+            </div>
+            <div class="flex flex-col gap-2">
+                <hr class="my-2" />
 
-                term = "";
-                loading = true;
-                console.log("loading...");
-
-                return async ({ result }) => {
-                    loading = false;
-                    console.log(result);
-                } 
-            }}>
-                <div class="mb-4 space-x-2 flex items-center">
-                    <label class="text-lg" for="term">Term: </label>
-                    <input type="text" name="term" id="term" bind:value={term}
-                    class="rounded-xl p-2 flex-1 
-                    bg-slate-300 dark:bg-synth-medium">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <hr class="my-2" />
-
-                    <!-- Courses -->
-                    <button formaction="?/pushListings"
-                    class="btn btn-blue">
-                        Post Term Listings 
-                    </button>
-                    <button on:click={() => submitEvent(() => fetch("/api/admin/scraper/courses/" + term))}
-                        class="btn btn-blue">
-                            Post Term Courses 
-                    </button>
-                    <button formaction="?/pushEvaluations"
-                    class="btn btn-blue">
-                        Post Term Evaluations
-                    </button>
-                    <button formaction="?/pushRatings"
-                    class="btn btn-blue">
-                        Post Course Ratings
-                    </button>
-                    <button formaction="?/pushPrograms"
-                    class="btn btn-blue">
-                        Post Programs 
-                    </button>
-                    <button formaction="?/pushPrereqs"
-                    class="btn btn-blue">
-                        Post Prereqs
-                    </button>
-                    <hr class="mt-2 mb-3 border-slate-400" />
-                </div>
-            </form>
+                <!-- Courses -->
+                <button
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}listings/${term}`))}
+                class="btn btn-blue">
+                    Post Term Listings 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}courses/${term}`))}
+                class="btn btn-blue">
+                    Post Term Courses 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}evaluations/${term}`))}
+                class="btn btn-blue">
+                    Post Term Evaluations
+                </button>
+                <button
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}ratings/${term}`))}
+                class="btn btn-blue">
+                    Post Course Ratings
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}programs/${term}`))}
+                class="btn btn-blue">
+                    Post Programs 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}prereqs/${term}`))}
+                class="btn btn-blue">
+                    Post Prereqs
+                </button>
+                <hr class="mt-2 mb-3 border-slate-400" />
+            </div>
 
             <!-- * Testing -->
             <form action="?/test" method="POST" use:enhance={() => {
@@ -186,7 +175,7 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
             </form>
         </div> <!-- * End Static DB Management -->
 
-        <div class="area area-std">
+        <!-- <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>
             <div class="flex flex-col gap-1">
                 <form method="POST"
@@ -201,7 +190,6 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                         console.log(result);
                     }
                 }}>
-                    <!-- Courses -->
                     <button formaction="?/deleteAllListings"
                     class="btn
                     {enableMassDelete ? "btn-danger" : "btn-protected"}"
@@ -253,7 +241,6 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                 </form>
                 
                 <hr class="my-2 border-slate-400" />
-                <!-- * Toggle Mass Delete -->
                 <button
                 class="btn 
                 {enableMassDelete ? "btn-danger": "btn-green"}" 
@@ -265,7 +252,7 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                     {/if}
                 </button>
             </div>
-        </div> <!-- * End Mass Deletions-->
+        </div>  -->
 
         <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">Information</h2>
