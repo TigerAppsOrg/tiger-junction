@@ -4,9 +4,8 @@
 
 // import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
 import { SupabaseClient, createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
-import { RegCourse, RegSection } from "../../../src/lib/types/regTypes.ts";
+import { RegCourse, RegSection, WeekDays } from "../../../src/lib/types/regTypes.ts";
 import { CourseInsert, InstructorInsert } from "../../../src/lib/types/dbTypes.ts";
-import { GENERIC_GRADING_INFO } from "../../../src/lib/constants.ts";
 import { RegGradingInfo } from "../../../src/lib/types/regTypes.ts";
 
 console.log("Scraping courses from registrar")
@@ -19,23 +18,23 @@ Deno.serve(async (req) => {
     {global: { headers: { Authorization: req.headers.get('Authorization')! }}}
   );
 
-  const { data: { user }} = await supabaseClient.auth.getUser();
-  if (!user) {
-    throw new Error("User not found");
-  }
+  // const { data: { user }} = await supabaseClient.auth.getUser();
+  // if (!user) {
+  //   throw new Error("User not found");
+  // }
 
-  const { data, error } = await supabaseClient.from('private_profiles')
-    .select('is_admin')
-    .eq('id', user.id)
-    .single()
+  // const { data, error } = await supabaseClient.from('private_profiles')
+  //   .select('is_admin')
+  //   .eq('id', user.id)
+  //   .single()
 
-  if (error || !data) {
-    throw new Error(error.message);
-  }
+  // if (error || !data) {
+  //   throw new Error(error.message);
+  // }
 
-  if (!data?.is_admin) {
-    throw new Error("User not admin");
-  }
+  // if (!data?.is_admin) {
+  //   throw new Error("User not admin");
+  // }
 
   // Scrape courses for term 
   // Code modified from src/lib/scripts/scraper/courses.ts
@@ -75,6 +74,9 @@ Deno.serve(async (req) => {
 
   courselist = removeDup(courselist);
 
+  // Limit the number of courses fetched
+  courselist = courselist.slice(0, 10);
+
   // Analytics
   let count = 0;
   const PARALLEL_REQUESTS = 20;
@@ -82,9 +84,10 @@ Deno.serve(async (req) => {
   const processNextCourse = async (index: number) => {
     if (index >= courselist.length) return;   // Base case
     console.log("Sending Request " + index);
+    count++;
 
     fetch(
-      `https://api.princeton.edu/registrar/course-offerings/1.0.1/course-details?term=${term}&course_id=${courselist[index].id}`, {
+      `https://api.princeton.edu/registrar/course-offerings/1.0.2/course-details?term=${term}&course_id=${courselist[index].id}`, {
         method: "GET",
         headers: {
             "Authorization": Deno.env.get("REG_AUTH") as string
@@ -148,7 +151,7 @@ Deno.serve(async (req) => {
                     }
 
                     updateCourseDependencies(
-                        supabase,
+                        supabaseClient,
                         res.data[0].id,
                         data.course_instructors.course_instructor,
                         data.course_sections.course_section
@@ -170,12 +173,12 @@ Deno.serve(async (req) => {
                     }
                     
                     updateCourseDependencies(
-                        supabase,
+                        supabaseClient,
                         res.data[0].id,
                         data.course_instructors.course_instructor,
                         data.course_sections.course_section
                     );
-
+                    
                     processNextCourse(index + PARALLEL_REQUESTS);
               });
             }
@@ -193,7 +196,7 @@ Deno.serve(async (req) => {
 
   // Return information about course scrapings
   return new Response(
-    JSON.stringify({ message: "Courses scraped" }),
+    JSON.stringify({ message: `${count} courses scraped` }),
     { headers: { "Content-Type": "application/json" } },
   )
 });
@@ -219,7 +222,7 @@ const updateInstructors = async (supabase: SupabaseClient,
           }
   
           // Set course-instructor association in database
-          for (let instructor of instructors)
+          for (const instructor of instructors)
               supabase.from("course_instructor_associations")
                   .upsert({
                       course_id,
@@ -324,6 +327,28 @@ const calculateStatus = (status: string) => {
 }
 
 const parseGradingInfo = (data: RegCourse) => {
+  const GENERIC_GRADING_INFO: RegGradingInfo = {
+    grading_design_projects: "Design Project", 
+    grading_final_exam: "Final Scheduled Exam",
+    grading_home_final_exam: "Take Home Final Exam",
+    grading_home_mid_exam: "Take Home Midterm Exam", 
+    grading_lab_reports: "Lab Reports",
+    grading_mid_exam: "Midterm Exam",
+    grading_oral_pres: "Presentation or Performance",
+    grading_other: "Other", 
+    grading_other_exam: "Exam(s) Given During Term",
+    grading_paper_final_exam: "Final Paper or Project",
+    grading_paper_mid_exam: "Midterm Paper or Project", 
+    grading_papers: "Papers/Writing Assignments",
+    grading_precept_part: "Participation",
+    grading_prob_sets: "Problem Sets",
+    grading_prog_assign: "Programming Assignments",
+    grading_quizzes: "Quizzes", 
+    grading_term_papers: "Term Paper(s)", 
+    pu_pres_final_exam: "Final presentation or Performance",
+    pu_projects: "Project(s)",
+};
+
   let gradingInfo: Record<string, string> = {};
   for (let key in GENERIC_GRADING_INFO) 
       if (data[key] && data[key] !== "0")
@@ -350,8 +375,44 @@ sections: RegSection[]) => {
   if (sections) updateSections(supabase, course_id, sections);
 }
 
+const timeToValue = (time: string) => {
+  const TIME_CONVERSION: Record<string, number> = {
+    "ZERO_ADJUST": 48,      
+    "HOUR_FACTOR": 6,       
+    "MINUTE_FACTOR": 0.1,   
+    "NULL_TIME": -42,       
+  }
+
+  if (time === undefined) 
+      return TIME_CONVERSION.NULL_TIME;
+
+  const dig = time.split(" ")[0].split(":").map((x) => parseInt(x));
+  const pm = time.split(" ")[1] === "pm";
+
+  if (dig[0] === 12) dig[0] = 0;
+
+  let val = (dig[0] * TIME_CONVERSION.HOUR_FACTOR)
+      + (dig[1] * TIME_CONVERSION.MINUTE_FACTOR)
+      - TIME_CONVERSION.ZERO_ADJUST;
+
+  if (pm) val += 12 * TIME_CONVERSION.HOUR_FACTOR;
+
+  // Round to nearest tenth (account for floating point error)
+  return Math.round((val * 10)) / 10;
+}
+
+const daysToValue = (section: WeekDays) => {
+  let days = 0;
+  if (section.mon === "Y") days += 1;
+  if (section.tues === "Y") days += 2;
+  if (section.wed === "Y") days += 4;
+  if (section.thurs === "Y") days += 8;
+  if (section.fri === "Y") days += 16;
+  return days;
+}
+
 // To invoke:
-// curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
+// curl -i --location --request POST 'http://localhost:54321/functions/v1/courses' \
 //   --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
 //   --header 'Content-Type: application/json' \
-//   --data '{"name":"Functions"}'
+//   --data '{"term":1242}'
