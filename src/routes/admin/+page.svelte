@@ -2,7 +2,7 @@
 import { enhance } from "$app/forms";
 import { goto } from "$app/navigation";
 import LightButton from "$lib/components/general/LightButton.svelte";
-import homeIcon from "$lib/img/icons/homeicon.svg";
+// import homeIcon from "$lib/img/icons/homeicon.svg";
 import { TERM_MAP } from "$lib/constants";
 
 export let data;
@@ -13,23 +13,23 @@ let term: string = "";
 let loading: boolean = false;
 
 // Safety on mass deletions
-let enableMassDelete: boolean = false;
-let massDeleteTimeout: NodeJS.Timeout;
+// let enableMassDelete: boolean = false;
+// let massDeleteTimeout: NodeJS.Timeout;
 
 // Toggle mass delete and handle timeout for auto-disable
-const toggleMassDelete = () => {
-    enableMassDelete = !enableMassDelete;
-    if (enableMassDelete) {
-        alert("WARNING: Mass deletion enabled!");
+// const toggleMassDelete = () => {
+//     enableMassDelete = !enableMassDelete;
+//     if (enableMassDelete) {
+//         alert("WARNING: Mass deletion enabled!");
 
-        // Disable mass delete after 10 seconds
-        massDeleteTimeout = setTimeout(() => {
-            enableMassDelete = false;
-        }, 10000);
-    } else {
-        clearTimeout(massDeleteTimeout);
-    }
-}
+//         // Disable mass delete after 10 seconds
+//         massDeleteTimeout = setTimeout(() => {
+//             enableMassDelete = false;
+//         }, 10000);
+//     } else {
+//         clearTimeout(massDeleteTimeout);
+//     }
+// }
 
 // Logout the user
 const handleLogout = async () => { 
@@ -290,14 +290,18 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
     @apply py-2 px-4 rounded-full duration-150 border-2 border-solid;
 }
 
+/*
 .btn-danger {
     @apply bg-red-500/40 border-red-500/50 
     hover:bg-red-500/80 hover:border-red-500/90;
 }
+*/
 
+/*
 .btn-protected {
     @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed text-gray-400;
 }
+*/
 
 .btn-blue {
     @apply bg-blue-500/40 border-blue-500/50 
