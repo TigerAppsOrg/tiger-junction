@@ -3,12 +3,11 @@
 // This enables autocomplete, go to definition, etc.
 
 // import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
-import { RegCourse } from "../../../src/lib/types/regTypes.ts";
-import { CourseInsert } from "../../../src/lib/types/dbTypes.ts";
+import { SupabaseClient, createClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
+import { RegCourse, RegSection } from "../../../src/lib/types/regTypes.ts";
+import { CourseInsert, InstructorInsert } from "../../../src/lib/types/dbTypes.ts";
 import { GENERIC_GRADING_INFO } from "../../../src/lib/constants.ts";
 import { RegGradingInfo } from "../../../src/lib/types/regTypes.ts";
-import { populateCourses } from "../../../src/lib/scripts/scraper/courses.ts";
 
 console.log("Scraping courses from registrar")
 
@@ -41,14 +40,315 @@ Deno.serve(async (req) => {
   // Scrape courses for term 
   // Code modified from src/lib/scripts/scraper/courses.ts
   const { term } = await req.json();
+  const rawCourselist = await fetch(`https://api.princeton.edu/registrar/course-offerings/classes/${term}`, {
+    method: "GET",
+    headers: {
+        "Authorization": Deno.env.get("REG_AUTH") as string
+    }
+  });
 
-  await populateCourses(supabaseClient, term);
+  type IdStatus = {
+    id: string,
+    status: number
+  }
 
+  const jsonCourselist = await rawCourselist.json();
+  let courselist: IdStatus[] = jsonCourselist.classes.class.map((x: RegCourse) => {
+    return {
+      id: x.course_id,
+      status: calculateStatus(x.calculated_status)
+    }
+  });
+
+  // Remove duplicate course ids from courselist
+  const removeDup = (arr: IdStatus[]) => {
+    const ids: string[] = [];
+    const toReturn: {id: string, status: number}[] = [];
+    for (const course of arr) {
+        if (!ids.includes(course.id)) {
+            ids.push(course.id);
+            toReturn.push(course);
+        }
+    }
+    return toReturn;
+  }
+
+  courselist = removeDup(courselist);
+
+  // Analytics
+  let count = 0;
+  const PARALLEL_REQUESTS = 20;
+
+  const processNextCourse = async (index: number) => {
+    if (index >= courselist.length) return;   // Base case
+    console.log("Sending Request " + index);
+
+    fetch(
+      `https://api.princeton.edu/registrar/course-offerings/1.0.1/course-details?term=${term}&course_id=${courselist[index].id}`, {
+        method: "GET",
+        headers: {
+            "Authorization": Deno.env.get("REG_AUTH") as string
+        }
+      }
+    )
+    .then(res => res.json())
+    .then(raw => {
+      if (!raw || !raw.course_details
+        || !raw.course_details.course_detail 
+        || raw.course_details.course_detail.length === 0) {
+            console.log("Line PC1");
+            console.log(raw);
+            throw new Error(raw);
+        }
+
+        const data: RegCourse = raw.course_details.course_detail[0];
+
+        // Format course data
+        const course: CourseInsert = {
+            listing_id: data.course_id,
+            term: parseInt(data.term),
+            code: data.crosslistings.replace(/\s/g, ""),
+            title: data.topic_title === null ? 
+                data.long_title : 
+                data.long_title + ": " + data.topic_title,
+            grading_info: parseGradingInfo(data),
+            // course_info: parseCourseInfo(data),
+            // reading_info: parseReadingInfo(data),
+            status: courselist[index].status,
+            basis: data.grading_basis,
+            dists: data.distribution_area_short ?  
+            data.distribution_area_short.split(" or ").sort() :
+            null,
+        };
+
+        // Check if course exists in database
+        supabaseClient.from("courses")
+            .select("id")
+            .eq("listing_id", course.listing_id)
+            .eq("term", course.term)
+        .then(res => {
+            if (res.error) {
+                console.log("Line PC2");
+                console.log(res);
+                console.log(course);
+                throw new Error(res.error.message);
+            }
+            
+            // If course doesn't exist, create it
+            if (res.data.length === 0) {
+              supabaseClient.from("courses")
+                .insert(course)
+                .select("id")
+                .then(res => {
+                    if (res.error) {
+                        console.log("Line PC3");
+                        console.log(res);
+                        console.log(course);
+                        throw new Error(res.error.message);
+                    }
+
+                    updateCourseDependencies(
+                        supabase,
+                        res.data[0].id,
+                        data.course_instructors.course_instructor,
+                        data.course_sections.course_section
+                    );
+
+                    processNextCourse(index + PARALLEL_REQUESTS);
+                });
+            } else {
+            supabaseClient.from("courses")
+                .update(course)
+                .eq("id", res.data[0].id)
+                .select("id")
+                .then(res => {
+                    if (res.error) {
+                        console.log("Line PC4");
+                        console.log(res);
+                        console.log(course);
+                        throw new Error(res.error.message);
+                    }
+                    
+                    updateCourseDependencies(
+                        supabase,
+                        res.data[0].id,
+                        data.course_instructors.course_instructor,
+                        data.course_sections.course_section
+                    );
+
+                    processNextCourse(index + PARALLEL_REQUESTS);
+              });
+            }
+        }); 
+    })
+  }
+
+  // Send 20 requests in parallel
+  const promises: Promise<void>[] = [];
+  for (let i = 0; i < PARALLEL_REQUESTS; i++) {
+    promises.push(processNextCourse(i));
+  }
+
+  await Promise.all(promises);
+
+  // Return information about course scrapings
   return new Response(
     JSON.stringify({ message: "Courses scraped" }),
     { headers: { "Content-Type": "application/json" } },
   )
 });
+
+/**
+ * Update instructors for a given course
+ * @param supabase 
+ * @param course_id 
+ * @param instructors 
+ */
+const updateInstructors = async (supabase: SupabaseClient, 
+  course_id: number, instructors: InstructorInsert[]) => {
+  
+      // Upsert instructor data to database
+      supabase.from("instructors").upsert(instructors)
+      .then(res => {
+          if (res.error) {
+              console.log("Line UI1");
+              console.log(res);
+              console.log(instructors);
+              console.log(course_id);
+              throw new Error(res.error.message);
+          }
+  
+          // Set course-instructor association in database
+          for (let instructor of instructors)
+              supabase.from("course_instructor_associations")
+                  .upsert({
+                      course_id,
+                      instructor_id: instructor.netid
+                  })
+                  .then(res => {
+                      if (res.error) {
+                          console.log("Line UI2");
+                          console.log(res);
+                          console.log(instructors);
+                          console.log(course_id);
+                          throw new Error(res.error.message);
+                      }
+              });
+      });
+  }
+  
+  /**
+   * Update sections for a given course
+   * @param supabase 
+   * @param course_id 
+   * @param sections 
+   */
+  const updateSections = async (supabase: SupabaseClient,
+  course_id: number, sections: RegSection[]) => {
+    for (const section of sections) {
+      supabase.from("sections")
+        .select("id")
+        .eq("course_id", course_id)
+        .eq("num", section.class_number)
+        .then(res => {
+          if (res.error) {
+            console.log("Line US1");
+            console.log(res);
+            console.log(sections);
+            console.log(course_id);
+            throw new Error(res.error.message);
+          }
+  
+          // If section doesn't exist, create it
+          if (res.data.length === 0) {
+            const formattedSection = {
+              course_id,
+              title: section.section,
+              category: section.section[0],
+              num: section.class_number,
+              room: parseBuilding(section),
+              tot: section.enrl_tot,
+              cap: section.enrl_cap,
+              days: daysToValue(section),
+              start_time: timeToValue(section.start_time),
+              end_time: timeToValue(section.end_time),
+            };
+
+            supabase.from("sections")
+              .insert(formattedSection)
+              .then(res => {
+                if (res.error) {
+                  console.log("Line US2");
+                  console.log(res);
+                  console.log(sections);
+                  console.log(course_id);
+                  throw new Error(res.error.message);
+                }
+              }); 
+  
+            // If section does exist, update it
+            } else {
+              supabase.from("sections")
+                .update({
+                  room: parseBuilding(section),
+                  tot: section.enrl_tot,
+                  cap: section.enrl_cap,
+                })
+                .eq("id", res.data[0].id)
+                .then(res => {
+                  if (res.error) {
+                    console.log("Line US3");
+                    console.log(res);
+                    console.log(sections);
+                    console.log(course_id);
+                    throw new Error(res.error.message);
+                  }
+                });
+            }    
+          }); 
+      } 
+} 
+
+// Calculate course status
+const calculateStatus = (status: string) => {
+  switch (status) {
+      case "Open":
+          return 0;
+      case "Closed":
+          return 1;
+      case "Canceled":
+          return 2;
+      default:
+          return 3;
+  }
+}
+
+const parseGradingInfo = (data: RegCourse) => {
+  let gradingInfo: Record<string, string> = {};
+  for (let key in GENERIC_GRADING_INFO) 
+      if (data[key] && data[key] !== "0")
+          gradingInfo[GENERIC_GRADING_INFO[key as keyof RegGradingInfo]] 
+      = data[key];
+  
+  return gradingInfo;
+}
+
+// Parse building and room from registrar data and handle edge case
+const parseBuilding = (section: RegSection) => {
+  if (!section.building_name 
+      || section.building_name === "No Room Required")
+      return null;
+  else
+      return section.building_name + " " + section.room 
+}
+
+const updateCourseDependencies = async (supabase: SupabaseClient, 
+course_id: number, instructors: InstructorInsert[], 
+sections: RegSection[]) => {
+
+  if (instructors) updateInstructors(supabase, course_id, instructors);
+  if (sections) updateSections(supabase, course_id, sections);
+}
 
 // To invoke:
 // curl -i --location --request POST 'http://localhost:54321/functions/v1/' \
