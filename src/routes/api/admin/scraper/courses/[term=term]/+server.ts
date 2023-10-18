@@ -18,5 +18,5 @@ export const GET: RequestHandler = async (req) => {
         return new Response(JSON.stringify(error));
     }
 
-    return new Response(JSON.stringify("Began scraping courses for term " + term + " (begin at round 0)"));
+    return new Response(JSON.stringify("Began scraping courses for term " + term));
 };
