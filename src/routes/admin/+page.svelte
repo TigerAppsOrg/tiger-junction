@@ -35,11 +35,29 @@ const handleLogout = async () => {
     if (!error) goto("/");
 }
 
-const invokeFunc = async () => {
-    // const res = await data.supabase.functions.invoke('courses', {
-    //     body: { term: 1242 }
-    // });
-    await fetch("/api/admin/scraper/courses/1242");
+/**
+ * Hit an API endpoint and handle loading and postloading
+ * @param fetcher The fetcher function to use
+ */
+const submitEvent = async (fetcher: () => Promise<Response>) => {
+    // Check for valid term code
+    if (!Object.values(TERM_MAP).includes(parseInt(term))) {
+        alert("Invalid term code!");
+        term = "";
+        return;
+    }
+
+    // Prelude
+    term = "";
+    loading = true;
+    console.log("loading...");
+
+    // Hit API
+    const result = await fetcher();
+
+    // Postlude
+    loading = false;
+    console.log(result);
 }
 </script>
 
@@ -92,13 +110,8 @@ const invokeFunc = async () => {
         <div class="area bg-cyan-400">
             "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected." - Steve Jobs
         </div>
-        <!-- <div class="area bg-green-400">
-            "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
-        </div> -->
         <div class="area bg-green-400">
-            <button on:click={() => invokeFunc()}>
-                Invoke
-            </button>
+            "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
         </div>
     </div> <!-- * End Colored Data -->
 
@@ -137,9 +150,9 @@ const invokeFunc = async () => {
                     class="btn btn-blue">
                         Post Term Listings 
                     </button>
-                    <button formaction="?/pushCourses"
-                    class="btn btn-blue">
-                        Post Term Courses 
+                    <button on:click={() => submitEvent(() => fetch("/api/admin/scraper/courses/" + term))}
+                        class="btn btn-blue">
+                            Post Term Courses 
                     </button>
                     <button formaction="?/pushEvaluations"
                     class="btn btn-blue">
