@@ -16,16 +16,21 @@ Promise<boolean | null> => {
     
     if (rawCourseData.check(term)) return null;
 
-    const { data, error } = await supabase
-        .from("courses")
-        .select(FIELDS)
-        .eq("term", term)
-        // .limit(10)
-        .order("code", { ascending: true });
+    // const { data, error } = await supabase
+    //     .from("courses")
+    //     .select(FIELDS)
+    //     .eq("term", term)
+    //     // .limit(10)
+    //     .order("code", { ascending: true });
 
-    if (error) return false;
+    // if (error) return false;
 
-    data.forEach((x: any) => {
+    const data = await fetch("/api/client/courses/" + term);
+    if (!data.ok) return false;
+    const json = await data.json();
+    console.log(typeof json);
+
+    json.forEach((x: any) => {
         let adj_evals = (x.num_evals + 1) * 1.5;
         x.adj_rating = x.rating !== null && x.num_evals !== null ?
         Math.round(((x.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
@@ -33,7 +38,7 @@ Promise<boolean | null> => {
     })
 
     rawCourseData.update((x) => {
-        x[term as keyof RawCourseData] = data as CourseData[];
+        x[term as keyof RawCourseData] = json as CourseData[];
         return x;
     });
 

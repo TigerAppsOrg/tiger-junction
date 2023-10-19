@@ -1,5 +1,5 @@
 import { createClient as createSupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.38.1";
-import { createClient as createRedisClient } from "https://esm.sh/redis"
+import { createClient as createRedisClient } from "https://esm.sh/redis@4.6.10"
 
 Deno.serve(async (req) => {
   // Check if user is admin

@@ -141,6 +141,11 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                     Post Term Courses 
                 </button>
                 <button 
+                on:click={() => submitEvent(() => fetch(`/api/admin/redis-transfer/courses/${term}`))}
+                class="btn btn-blue">
+                    Transfer Courses to Redis
+                </button>
+                <button 
                 on:click={() => submitEvent(() => fetch(`${API_PREFIX}evaluations/${term}`))}
                 class="btn btn-blue">
                     Post Term Evaluations
