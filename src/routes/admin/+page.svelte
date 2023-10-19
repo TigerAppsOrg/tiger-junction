@@ -2,32 +2,34 @@
 import { enhance } from "$app/forms";
 import { goto } from "$app/navigation";
 import LightButton from "$lib/components/general/LightButton.svelte";
-import homeIcon from "$lib/img/icons/homeicon.svg";
+// import homeIcon from "$lib/img/icons/homeicon.svg";
 import { TERM_MAP } from "$lib/constants";
 
 export let data;
+
+const API_PREFIX = "/api/admin/scraper/"
 
 let term: string = "";
 let loading: boolean = false;
 
 // Safety on mass deletions
-let enableMassDelete: boolean = false;
-let massDeleteTimeout: NodeJS.Timeout;
+// let enableMassDelete: boolean = false;
+// let massDeleteTimeout: NodeJS.Timeout;
 
 // Toggle mass delete and handle timeout for auto-disable
-const toggleMassDelete = () => {
-    enableMassDelete = !enableMassDelete;
-    if (enableMassDelete) {
-        alert("WARNING: Mass deletion enabled!");
+// const toggleMassDelete = () => {
+//     enableMassDelete = !enableMassDelete;
+//     if (enableMassDelete) {
+//         alert("WARNING: Mass deletion enabled!");
 
-        // Disable mass delete after 10 seconds
-        massDeleteTimeout = setTimeout(() => {
-            enableMassDelete = false;
-        }, 10000);
-    } else {
-        clearTimeout(massDeleteTimeout);
-    }
-}
+//         // Disable mass delete after 10 seconds
+//         massDeleteTimeout = setTimeout(() => {
+//             enableMassDelete = false;
+//         }, 10000);
+//     } else {
+//         clearTimeout(massDeleteTimeout);
+//     }
+// }
 
 // Logout the user
 const handleLogout = async () => { 
@@ -35,6 +37,30 @@ const handleLogout = async () => {
     if (!error) goto("/");
 }
 
+/**
+ * Hit an API endpoint and handle loading and postloading
+ * @param fetcher The fetcher function to use
+ */
+const submitEvent = async (fetcher: () => Promise<Response>) => {
+    // Check for valid term code
+    if (!Object.values(TERM_MAP).includes(parseInt(term))) {
+        alert("Invalid term code!");
+        term = "";
+        return;
+    }
+
+    // Prelude
+    term = "";
+    loading = true;
+    console.log("loading...");
+
+    // Hit API
+    const result = await fetcher();
+
+    // Postlude
+    loading = false;
+    console.log(result);
+}
 </script>
 
 <svelte:head>
@@ -94,61 +120,53 @@ const handleLogout = async () => {
     <div class="cont">
         <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">DB Management</h2>
-            <form method="POST" use:enhance={({ cancel }) => {
-                // Validate term code
-                if (!Object.values(TERM_MAP).includes(parseInt(term))) {
-                    alert("Invalid term code!");
-                    cancel();
-                    term = "";
-                    return;
-                }
+            <div class="mb-4 space-x-2 flex items-center">
+                <label class="text-lg" for="term">Term: </label>
+                <input type="text" name="term" id="term" bind:value={term}
+                class="rounded-xl p-2 flex-1 
+                bg-slate-300 dark:bg-synth-medium">
+            </div>
+            <div class="flex flex-col gap-2">
+                <hr class="my-2" />
 
-                term = "";
-                loading = true;
-                console.log("loading...");
-
-                return async ({ result }) => {
-                    loading = false;
-                    console.log(result);
-                } 
-            }}>
-                <div class="mb-4 space-x-2 flex items-center">
-                    <label class="text-lg" for="term">Term: </label>
-                    <input type="text" name="term" id="term" bind:value={term}
-                    class="rounded-xl p-2 flex-1 
-                    bg-slate-300 dark:bg-synth-medium">
-                </div>
-                <div class="flex flex-col gap-2">
-                    <hr class="my-2" />
-
-                    <!-- Courses -->
-                    <button formaction="?/pushListings"
-                    class="btn btn-blue">
-                        Post Term Listings 
-                    </button>
-                    <button formaction="?/pushCourses"
-                    class="btn btn-blue">
-                        Post Term Courses 
-                    </button>
-                    <button formaction="?/pushEvaluations"
-                    class="btn btn-blue">
-                        Post Term Evaluations
-                    </button>
-                    <button formaction="?/pushRatings"
-                    class="btn btn-blue">
-                        Post Course Ratings
-                    </button>
-                    <button formaction="?/pushPrograms"
-                    class="btn btn-blue">
-                        Post Programs 
-                    </button>
-                    <button formaction="?/pushPrereqs"
-                    class="btn btn-blue">
-                        Post Prereqs
-                    </button>
-                    <hr class="mt-2 mb-3 border-slate-400" />
-                </div>
-            </form>
+                <!-- Courses -->
+                <button
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}listings/${term}`))}
+                class="btn btn-blue">
+                    Post Term Listings 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}courses/${term}`))}
+                class="btn btn-blue">
+                    Post Term Courses 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`/api/admin/redis-transfer/courses/${term}`))}
+                class="btn btn-blue">
+                    Transfer Courses to Redis
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}evaluations/${term}`))}
+                class="btn btn-blue">
+                    Post Term Evaluations
+                </button>
+                <button
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}ratings/${term}`))}
+                class="btn btn-blue">
+                    Post Course Ratings
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}programs/${term}`))}
+                class="btn btn-blue">
+                    Post Programs 
+                </button>
+                <button 
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}prereqs/${term}`))}
+                class="btn btn-blue">
+                    Post Prereqs
+                </button>
+                <hr class="mt-2 mb-3 border-slate-400" />
+            </div>
 
             <!-- * Testing -->
             <form action="?/test" method="POST" use:enhance={() => {
@@ -162,7 +180,7 @@ const handleLogout = async () => {
             </form>
         </div> <!-- * End Static DB Management -->
 
-        <div class="area area-std">
+        <!-- <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>
             <div class="flex flex-col gap-1">
                 <form method="POST"
@@ -177,7 +195,6 @@ const handleLogout = async () => {
                         console.log(result);
                     }
                 }}>
-                    <!-- Courses -->
                     <button formaction="?/deleteAllListings"
                     class="btn
                     {enableMassDelete ? "btn-danger" : "btn-protected"}"
@@ -229,7 +246,6 @@ const handleLogout = async () => {
                 </form>
                 
                 <hr class="my-2 border-slate-400" />
-                <!-- * Toggle Mass Delete -->
                 <button
                 class="btn 
                 {enableMassDelete ? "btn-danger": "btn-green"}" 
@@ -241,7 +257,7 @@ const handleLogout = async () => {
                     {/if}
                 </button>
             </div>
-        </div> <!-- * End Mass Deletions-->
+        </div>  -->
 
         <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">Information</h2>
@@ -279,14 +295,18 @@ const handleLogout = async () => {
     @apply py-2 px-4 rounded-full duration-150 border-2 border-solid;
 }
 
+/*
 .btn-danger {
     @apply bg-red-500/40 border-red-500/50 
     hover:bg-red-500/80 hover:border-red-500/90;
 }
+*/
 
+/*
 .btn-protected {
     @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed text-gray-400;
 }
+*/
 
 .btn-blue {
     @apply bg-blue-500/40 border-blue-500/50 
