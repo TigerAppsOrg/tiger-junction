@@ -15,6 +15,7 @@ import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
 import { inview } from "svelte-inview";
 import CardLinkButton from "./CardLinkButton.svelte";
+import { CURRENT_TERM_ID } from "$lib/constants";
 
 export let course: CourseData;
 export let category: string = "search";
@@ -240,6 +241,7 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
     transition:slide={{ axis: 'y', duration: 150 }}>
         <div id="buttons" class="w-full flex flex-col">
 
+            {#if $currentTerm === CURRENT_TERM_ID}
             <CardLinkButton href={tigersnatch} title="TigerSnatch"
             hoverColor={styles.hoverColor} hoverText={styles.hoverText}
             borderColor={styles.border}>
@@ -248,6 +250,7 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </CardLinkButton>
+            {/if}
 
             <CardLinkButton href={princetoncourses} title="PrincetonCourses"
             hoverColor={styles.hoverColor} hoverText={styles.hoverText}
