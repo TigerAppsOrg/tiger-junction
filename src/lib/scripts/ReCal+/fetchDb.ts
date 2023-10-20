@@ -28,7 +28,6 @@ Promise<boolean | null> => {
     const data = await fetch("/api/client/courses/" + term);
     if (!data.ok) return false;
     const json = await data.json();
-    console.log(typeof json);
 
     json.forEach((x: any) => {
         let adj_evals = (x.num_evals + 1) * 1.5;
