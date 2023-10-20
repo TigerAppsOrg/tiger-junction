@@ -2,13 +2,15 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
-import { currentSchedule, currentTerm, hoveredCourse, ready, recal } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, hoveredCourse, ready, recal, searchSettings } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
 import { calColors, type CalColors } from "$lib/stores/styles";
+import { slide } from "svelte/transition";
+import { linear } from "svelte/easing";
 
 export let supabase: SupabaseClient;
 
@@ -16,6 +18,9 @@ let toRender: CalBoxParam[] = [];
 
 let prevSchedule: number = -1;
 let prevTerm: number = -1;
+
+const MARKERS = ["8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", 
+"3PM", "4PM", "5PM", "6PM", "7PM", "8PM", "9PM", "10PM"]
 
 $: triggerRender($currentSchedule, $currentTerm, 
 $savedCourses[$currentSchedule], $hoveredCourse, $ready, $recal, 
@@ -203,12 +208,12 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
     }
 };
 
-    // Check for conflicts
-    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
-        return (a.section.start_time < b.section.end_time 
-        && a.section.end_time > b.section.start_time
-        && a.day === b.day);
-    }
+// Check for conflicts
+const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
+    return (a.section.start_time < b.section.end_time 
+    && a.section.end_time > b.section.start_time
+    && a.day === b.day);
+}
 
 // Set the left and right positions for each calbox in the connected group
 const packEvents = (cols: CalBoxParam[][]) => {
@@ -256,32 +261,58 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
 <!--!------------------------------------------------------------------>
 
 <div class="h-full">
-    <div class="h-full w-full std-area">
-        <div class="grid grid-cols-5 w-full h-[4%] text-center 
-        font-semibold">
-            {#each ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as day}
-                <div class="outline outline-[1px] outline-slate-600/30
-                dark:outline-slate-200/30 flex justify-center 
-                items-center text-sm">{day}</div>
-            {/each}
-        </div>
-            
-            <div class="grid grid-cols-5 w-full h-[96%] relative overflow-x-hidden">
+    <div class="h-full w-full std-area flex">
 
-            <!-- * Grid Lines -->
-            {#each {length: 75} as _}
-                <div class="outline outline-[1px] outline-slate-600/30
-                dark:outline-slate-200/30"></div>
-            {/each}
-
-            <!-- * CalBoxes-->
-            {#key toRender}
-            {#each toRender as params}
-                <CalBox {params} {supabase} />
-            {/each}
-            {/key}
+        {#if $searchSettings.style["Show Time Marks"]}
+        <div class="w-10 h-full"
+        transition:slide={{ axis: 'x', duration: 150, easing: linear }}>
+            <div class="h-[4%] outline outline-[1px] outline-slate-600/30
+            dark:outline-slate-200/30">
+                
+            </div>
+            <div class="h-[96%] grid grid-cols-1">
+                {#each MARKERS as marker}
+                <div class="text-xs font-light
+                outline outline-[1px] outline-slate-600/30
+                dark:outline-slate-200/30 pt-[1px] pl-[1px]
+                overflow-y-hidden">
+                    {marker}
+                </div>
+                {/each}
+            </div>
         </div>
+        {/if}
+
+        <div class="w-full h-full">
+            <div class="grid grid-cols-5 w-full h-[4%] text-center 
+            font-semibold overflow-x-clip">
+                {#each ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as day}
+                    <div class="outline outline-[1px] outline-slate-600/30
+                    dark:outline-slate-200/30 flex justify-center 
+                    items-center text-sm">{day}</div>
+                {/each}
+            </div>
+
+            <div class="w-full h-[96%] flex">
+                
+                <!-- Grid -->
+                <div class="flex-1 grid grid-cols-5 h-full relative 
+                overflow-x-clip">
+                    <!-- * Grid Lines -->
+                    {#each {length: 75} as _}
+                        <div class="outline outline-[1px] outline-slate-600/30
+                        dark:outline-slate-200/30"></div>
+                    {/each}
         
+                    <!-- * CalBoxes-->
+                    {#key toRender}
+                    {#each toRender as params}
+                        <CalBox {params} {supabase} />
+                    {/each}
+                    {/key}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
