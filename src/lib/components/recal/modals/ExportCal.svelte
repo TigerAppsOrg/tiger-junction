@@ -6,10 +6,12 @@ import { currentSchedule, currentTerm } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { savedCourses } from "$lib/stores/rpool";
 import { sectionData } from "$lib/stores/rsections";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createEvents, type DateArray, type EventAttributes } from "ics";
 import { onMount } from "svelte";
 
 export let showModal: boolean = false;
+export let supabase: SupabaseClient;
 
 const createIcal = async () => {
     // Create event for each course
@@ -59,24 +61,34 @@ const createIcal = async () => {
 
             if (section.room) newEvent.location = section.room;
             
-            console.log(newEvent);
             events.push(newEvent);
         }
     }
 
-    createEvents(events, (error, value) => {
+    createEvents(events, async (error, value) => {
         if (error) {
             console.log(error);
             return;
         }
 
         console.log(value);
-        // let blob = new Blob([value], { type: "text/calendar" });
-        // let url = window.URL.createObjectURL(blob);
-        // let a = document.createElement("a");
-        // a.href = url;
-        // a.download = "schedule.ics";
-        // a.click();
+        let title = crypto.randomUUID() + ".ics";
+
+        // Push to supabase storage
+        const { data, error: supabaseError } = await supabase.storage
+            .from("calendars")
+            .upload(title, value, {
+                cacheControl: "900",
+                upsert: true,
+                contentType: "text/calendar",
+            });
+            
+        if (supabaseError) {
+            console.log(supabaseError);
+            return;
+        }
+
+        console.log(data);
     });
 
 }
