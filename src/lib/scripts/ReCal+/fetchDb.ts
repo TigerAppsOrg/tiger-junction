@@ -11,25 +11,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  * was an error, and null if the data was already loaded
  */
 const fetchRawCourseData = async (supabase: SupabaseClient, term: number): 
-Promise<boolean | null> => {
-    const FIELDS = "id, listing_id, term, code, title, status, basis, dists, rating, num_evals, grading_info";
-    
+Promise<boolean | null> => {    
     if (rawCourseData.check(term)) return null;
 
-    // const { data, error } = await supabase
-    //     .from("courses")
-    //     .select(FIELDS)
-    //     .eq("term", term)
-    //     // .limit(10)
-    //     .order("code", { ascending: true });
-
-    // if (error) return false;
-
+    // Fetch course data from Redis
     const data = await fetch("/api/client/courses/" + term);
     if (!data.ok) return false;
     const json = await data.json();
-    console.log(typeof json);
 
+    // Calculate adjusted rating
     json.forEach((x: any) => {
         let adj_evals = (x.num_evals + 1) * 1.5;
         x.adj_rating = x.rating !== null && x.num_evals !== null ?
@@ -37,13 +27,14 @@ Promise<boolean | null> => {
         : 0;
     })
 
+    // Update raw course data store
     rawCourseData.update((x) => {
         x[term as keyof RawCourseData] = json as CourseData[];
         return x;
     });
 
+    // Update search course data store
     searchCourseData.reset(term);
-
     return true;
 }
 

@@ -3,16 +3,29 @@ import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
-import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
+import { fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { isMobile, showCal } from "$lib/stores/mobile";
-import { ready, schedules, searchCourseData } from "$lib/stores/recal.js";
+import { rawCourseData, ready, schedules, searchCourseData } from "$lib/stores/recal.js";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
+import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
 
 export let data;
 
 onMount(async () => {
-    await fetchRawCourseData(data.supabase, CURRENT_TERM_ID);
+    rawCourseData.update(x => {
+        let cur: CourseData[] = (data.body as CourseData[]).map(y => {
+            let adj_evals = (y.num_evals + 1) * 1.5;
+            y.adj_rating = y.rating !== null && y.num_evals !== null ?
+            Math.round(((y.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
+            : 0;
+            return y;
+        })
+        x[CURRENT_TERM_ID] = cur;
+        return x;
+    })
+    searchCourseData.reset(CURRENT_TERM_ID);
+    
     await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
 
