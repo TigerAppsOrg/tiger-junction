@@ -9,8 +9,8 @@ import { rMeta } from "$lib/stores/rmeta";
 import CalBox from "./elements/save/CalBox.svelte";
 import { valueToDays } from "$lib/scripts/convert";
 import { calColors, type CalColors } from "$lib/stores/styles";
-    import { slide } from "svelte/transition";
-    import { linear } from "svelte/easing";
+import { slide } from "svelte/transition";
+import { linear } from "svelte/easing";
 
 export let supabase: SupabaseClient;
 
@@ -208,12 +208,12 @@ const findOverlaps = (calboxes: CalBoxParam[]) => {
     }
 };
 
-    // Check for conflicts
-    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
-        return (a.section.start_time < b.section.end_time 
-        && a.section.end_time > b.section.start_time
-        && a.day === b.day);
-    }
+// Check for conflicts
+const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
+    return (a.section.start_time < b.section.end_time 
+    && a.section.end_time > b.section.start_time
+    && a.day === b.day);
+}
 
 // Set the left and right positions for each calbox in the connected group
 const packEvents = (cols: CalBoxParam[][]) => {
@@ -274,7 +274,8 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
                 {#each MARKERS as marker}
                 <div class="text-xs font-light
                 outline outline-[1px] outline-slate-600/30
-                dark:outline-slate-200/30 pt-[1px] pl-[1px]">
+                dark:outline-slate-200/30 pt-[1px] pl-[1px]
+                overflow-y-hidden">
                     {marker}
                 </div>
                 {/each}
