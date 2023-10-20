@@ -48,7 +48,7 @@ const createIcal = async () => {
                 title: `${course.code} - ${section.title}`,
                 start: [...calInfo.start, 
                     Math.trunc(section.start_time / 6) + 8, 
-                    section.start_time % 6] as DateArray,
+                    section.start_time % 6 * 10] as DateArray,
                 duration: { hours: Math.trunc(dur / 6), minutes: dur % 6 * 10 },
                 recurrenceRule: valueToRRule(section.days, calInfo.end),
                 busyStatus: "BUSY",
@@ -59,6 +59,7 @@ const createIcal = async () => {
 
             if (section.room) newEvent.location = section.room;
             
+            console.log(newEvent);
             events.push(newEvent);
         }
     }
