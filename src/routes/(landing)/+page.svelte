@@ -1,11 +1,6 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import ViewCard from '$lib/components/elements/ViewCard.svelte';
-
-import CalendarPic from "$lib/img/calendar.png";
-import TreePic from "$lib/img/tree.png";
-import CertificatePic from "$lib/img/certificate.png";
-import RoadPic from "$lib/img/road.png";
 import { EMAIL_LIST_FORM_LINK } from '$lib/constants';
 
 export let data;
@@ -26,74 +21,67 @@ const handleLogin = async () => {
 }
 </script>
 
-<div class="overflow-x-hidden">
-<div class="area overflow-x-hidden">
 
-    <nav class="flex justify-between items-center text-xl h-[10vh]">
-        <div id="left">
-            <a href="/" class="flex items-center">
-                <img src="tjlogolarge.png" alt="Tiger Junction logo"
-                class="w-16 h-16">
-                <span>TigerJunction</span>
-            </a>
-        </div>
-        <div id="right" class="space-x-6">
-            <!-- <a href="#about" class="hover:text-gray-500 duration-150">
-                About
-            </a> -->
-            <button class="btn-cool"
-            on:click={handleLogin}>
-                Login
-            </button>
-        </div>
-    </nav>
+<nav class="flex justify-between items-center text-xl h-20 std-padding">
+    <div id="left">
+        <a href="/" class="flex items-center">
+            <img src="tjlogolarge.png" alt="Tiger Junction logo"
+            class="w-16 h-16">
+            <span class="text-std-darkOrange">TigerJunction</span>
+        </a>
+    </div>
+    <div id="right" class="space-x-6">
+        <button class="btn btn-green"
+        on:click={handleLogin}>
+            Login
+        </button>
+    </div>
+</nav>
 
-    <main class="grid h-[70vh] py-20">
-        <div class="my-auto h-[60vh]">
-            <p class="text-xl mb-2 font-bold">
-                TigerJunction
-            </p>
-            <h1 class="text-5xl font-bold glow mb-6">
-                <span class="rainbow">NEXT GENERATION</span> 
-                COURSE PLANNING
-            </h1>
-            <p class="mb-6 font-light text-xl">
-                Your All-in-One Solution for Effortless Course 
-                Planning at Princeton University. Experience a 
-                seamless blend of modern design and integrated features, 
-                simplifying your academic journey. Explore, plan, and 
-                succeed.
-            </p>
-            <button on:click={handleLogin}
-            class="btn-cool text-xl space-y-0">
-            <div>
-                Get Started →
-            </div>
-            <div class="font-light text-xs italic">
-                Princeton Email Required
-            </div>
-
-            </button>
+<main class="grid h-[70vh] py-20 std-padding">
+    <div class="my-auto h-[60vh]">
+        <p class="text-xl mb-2 font-bold">
+            TigerJunction
+        </p>
+        <h1 class="text-5xl font-bold mb-6">
+            <span class="text-std-darkBlue">NEXT</span>
+            <span class="text-std-darkOrange">GENERATION</span>
+            <span class="text-std-darkPink">COURSE</span>
+            <span class="text-std-darkPurple">PLANNING</span>
+        </h1>
+        <p class="mb-6 font-light text-xl">
+            Your All-in-One Solution for Effortless Course 
+            Planning at Princeton University. Experience a 
+            seamless blend of modern design and integrated features, 
+            simplifying your academic journey. Explore, plan, and 
+            succeed.
+        </p>
+        <button on:click={handleLogin}
+        class="btn btn-green text-xl space-y-0">
+        <div>
+            Get Started →
         </div>
-        <!-- <div class="flex justify-end">
-            <img src={RoadPic} alt="3d road sign model"
-            class="max-h-[70vh] w-auto">
-        </div> -->
-    </main>
-</div>
-<div id="about" class="py-20 area">
+        <div class="font-light text-xs italic">
+            Princeton Email Required
+        </div>
+
+        </button>
+    </div>
+</main>
+    
+<div id="about" class="py-20 std-padding">
     <div class="text-center mb-6">
-        <h1 class="text-5xl font-bold glow mb-2">
-            Three apps, <span class="rainbow">one platform</span>
+        <h1 class="text-5xl font-bold mb-2">
+            Three apps, <span class="text-std-darkRed">one platform</span>
         </h1>
         <h2 class="text-xl font-light">    
             Effortlessly plan your courses with seamless integration
         </h2>
     </div>
+    
     <div class="grid grid-cols-1 lg:grid-cols-3 max-w-6xl gap-6 mx-auto">
         <ViewCard 
-        className="bg-gradient-to-br from-[#6157FF] to-[#EE49FD] text-white">
-            <img slot="image" src={CalendarPic} alt="Calendar 3d model">
+        className="bg-std-pink text-black">
             <span slot="title">ReCal+</span>
             <span slot="description">
                 <div class="mb-2">
@@ -116,8 +104,7 @@ const handleLogin = async () => {
             </span>
         </ViewCard>
         <ViewCard 
-        className="bg-gradient-to-br from-[#103CE7] to-[#64E9FF] text-white">
-            <img slot="image" src={CertificatePic} alt="Certificate 3d model">
+        className="bg-std-blue text-black">
             <span slot="title">CourseGenie (Coming Soon)</span>
             <span slot="description">
                 <div class="mb-2">
@@ -144,8 +131,7 @@ const handleLogin = async () => {
             </span>
         </ViewCard>
         <ViewCard 
-        className="bg-gradient-to-br from-[#0172AF] to-[#74FEBD] text-white">
-            <img slot="image" src={TreePic} alt="Tree 3d model">
+        className="bg-std-orange text-black">
             <span slot="title">ReqTree (Coming Soon)</span>
             <span slot="description">
                 <div class="mb-2">
@@ -171,56 +157,47 @@ const handleLogin = async () => {
     </div>
     
     <div class="mt-16">
-        <div class="bg-slate-600 text-white p-8 rounded-lg shadow-lg
+        <div class="bg-std-darkGray text-white p-8 rounded-lg shadow-lg
         text-xl flex justify-between items-center gap-6">
-            <div>
+            <div class="flex items-center gap-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                class="w-10 h-10">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                </svg>                  
                 Join our emailing list to receive updates about
                 TigerJunction feature releases and other news!
             </div>
             <a href={EMAIL_LIST_FORM_LINK} target="_blank">
-                <button class="btn-cool">
+                <button class="btn btn-green">
                     Get Updated
                 </button>
             </a>
         </div>
     </div>
+    
 </div>
+
 <footer class="bg-black dark:bg-white text-center text-white 
 dark:text-black text-sm font-light py-4">
     Made with 
     <a href="https://svelte.dev/" target="_blank" class="link">
         Svelte
     </a> 
-    by @motoaki.
-    <a href="https://www.vecteezy.com/free-png/3d" target="_blank" class="link">
-        3d PNGs by Vecteezy
-    </a>
+    by @motoaki
 </footer>
-</div>
 
 <style lang="postcss">
-.rainbow {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.btn {
+    @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg;
 }
 
-.glow {
-    text-shadow: 0 0 80px rgb(192 219 255 / 75%), 0 0 32px rgb(65 120 255 / 24%);
+.std-padding {
+    @apply px-4 sm:px-20;
 }
 
-.btn-cool:hover {
-    @apply shadow-lg duration-150;
-}
-
-.btn-cool {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
-    text-white rounded-full px-4 py-2;
-}
-
-.area {
-    @apply bg-white dark:bg-black dark:text-white 
-    text-black px-4 sm:px-20 w-screen;
+.btn-green {
+    @apply bg-std-green text-black
+    hover:bg-std-darkGreen duration-150;
 }
 
 .link {
