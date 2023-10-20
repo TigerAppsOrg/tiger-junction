@@ -453,6 +453,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Always Show Rooms": false,
         "Show Enrollments": false,
         // "Show Tooltips": true,
+        "Show Time Marks": false,
     }
 }
 
