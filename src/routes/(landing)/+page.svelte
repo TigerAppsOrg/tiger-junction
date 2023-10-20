@@ -180,7 +180,8 @@ const handleLogin = async () => {
 <footer class="bg-black dark:bg-white text-center text-white 
 dark:text-black text-sm font-light py-4">
     Made with 
-    <a href="https://svelte.dev/" target="_blank" class="link">
+    <a href="https://svelte.dev/" target="_blank" class="underline
+    duration-150 hover:text-gray-200">
         Svelte
     </a> 
     by @motoaki
@@ -201,6 +202,6 @@ dark:text-black text-sm font-light py-4">
 }
 
 .link {
-    @apply underline hover:text-gray-200 duration-150;
+    @apply underline hover:text-gray-600 duration-150;
 }
 </style>
