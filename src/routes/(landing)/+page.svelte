@@ -1,6 +1,5 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
-import ViewCard from '$lib/components/elements/ViewCard.svelte';
 import { EMAIL_LIST_FORM_LINK } from '$lib/constants';
 
 export let data;
@@ -80,80 +79,73 @@ const handleLogin = async () => {
     </div>
     
     <div class="grid grid-cols-1 lg:grid-cols-3 max-w-6xl gap-6 mx-auto">
-        <ViewCard 
-        className="bg-std-pink text-black">
-            <span slot="title">ReCal+</span>
-            <span slot="description">
-                <div class="mb-2">
-                    Your ultimate semester planning companion, ReCal+
-                    empowers you to 
-                    effortlessly design your ideal academic calendar, 
-                    explore multiple schedules, and pinpoint classes that 
-                    match your time and requirements with powerful 
-                    advanced search capabilities, all while ensuring 
-                    your classes never clash with custom blocks for 
-                    non-course events. Stay updated with notifications 
-                    for class slot openings, while the customizable 
-                    interface simplifies academic scheduling. 
-                </div>
-                <div class="italic">
-                    Inspired by 
-                    <a href="https://recal.io/" target="_blank" class="link">
-                        ReCal</a>.
-                </div>
-            </span>
-        </ViewCard>
-        <ViewCard 
-        className="bg-std-blue text-black">
-            <span slot="title">CourseGenie (Coming Soon)</span>
-            <span slot="description">
-                <div class="mb-2">
-                    With CourseGenie, you can embark on an enriched 
-                    academic journey. Seamlessly chart all four years, 
-                    matching your aspirations with major, minor, and 
-                    certificate requirements, presented in clear 
-                    and comprehensive layouts. Experience data-driven 
-                    insights as you explore course ratings, historical
-                    trends, and other statistics.
-                    Elevate your choices with an AI-driven course 
-                    suggestor, ensuring a personalized and successful 
-                    academic path. 
-                </div>
-                <div class="italic">
-                    Inspired by
-                    <a href="https://www.tigerpath.io/" target="_blank" class="link">
-                        TigerPath</a>, 
-                    <a href="https://www.princetoncourses.com/" target="_blank" class="link">
-                        PrincetonCourses</a>, and 
-                    <a href="https://tigersnatch.com/" target="_blank" class="link">
-                        TigerSnatch</a>.
-                </div>
-            </span>
-        </ViewCard>
-        <ViewCard 
-        className="bg-std-orange text-black">
-            <span slot="title">ReqTree (Coming Soon)</span>
-            <span slot="description">
-                <div class="mb-2">
-                    A visually dynamic app that transforms prerequisites 
-                    into technology trees
-                    (found in games like Civilization), 
-                    ReqTree visually maps out the intricate relationships 
-                    between class prerequisites, allowing you to navigate 
-                    through your academic journey with clarity and foresight. 
-                    Through its intuitive interface, you can easily 
-                    explore the progression of course requirements, 
-                    revealing a comprehensive view of the academic 
-                    landscape and enabling you to make informed 
-                    decisions about your path. 
-                </div>
-                <div class="italic">
-                    Inspired by 
-                    <a href="https://tigermap.tigerapps.org/" target=_blank class="link">
-                    TigerMap</a>.
-                </div>
-            </span>
-        </ViewCard>
+        <div class="card bg-std-pink">
+            <h1>ReCal+</h1>
+            <p class="mb-2">
+                Your ultimate semester planning companion, ReCal+
+                empowers you to 
+                effortlessly design your ideal academic calendar, 
+                explore multiple schedules, and pinpoint classes that 
+                match your time and requirements with powerful 
+                advanced search capabilities, all while ensuring 
+                your classes never clash with custom blocks for 
+                non-course events. Stay updated with notifications 
+                for class slot openings, while the customizable 
+                interface simplifies academic scheduling. 
+            </p>
+            <p class="italic">
+                Inspired by 
+                <a href="https://recal.io/" target="_blank" class="link">
+                    ReCal</a>.
+            </p>
+        </div>
+
+        <div class="card bg-std-blue">
+            <h1>CourseGenie (Coming Soon)</h1>
+            <p class="mb-2">
+                With CourseGenie, you can embark on an enriched 
+                academic journey. Seamlessly chart all four years, 
+                matching your aspirations with major, minor, and 
+                certificate requirements, presented in clear 
+                and comprehensive layouts. Experience data-driven 
+                insights as you explore course ratings, historical
+                trends, and other statistics.
+                Elevate your choices with an AI-driven course 
+                suggestor, ensuring a personalized and successful 
+                academic path. 
+            </p>
+            <p class="italic">
+                Inspired by
+                <a href="https://www.tigerpath.io/" target="_blank" class="link">
+                    TigerPath</a>, 
+                <a href="https://www.princetoncourses.com/" target="_blank" class="link">
+                    PrincetonCourses</a>, and 
+                <a href="https://tigersnatch.com/" target="_blank" class="link">
+                    TigerSnatch</a>.
+            </p>
+        </div>
+
+        <div class="card bg-std-orange">
+            <h1>ReqTree (Coming Soon)</h1>
+            <p class="mb-2">
+                A visually dynamic app that transforms prerequisites 
+                into technology trees
+                (found in games like Civilization), 
+                ReqTree visually maps out the intricate relationships 
+                between class prerequisites, allowing you to navigate 
+                through your academic journey with clarity and foresight. 
+                Through its intuitive interface, you can easily 
+                explore the progression of course requirements, 
+                revealing a comprehensive view of the academic 
+                landscape and enabling you to make informed 
+                decisions about your path. 
+            </p>
+            <p class="italic">
+                Inspired by 
+                <a href="https://tigermap.tigerapps.org/" target=_blank class="link">
+                TigerMap</a>.
+            </p>
+        </div>
     </div>
     
     <div class="mt-16">
@@ -188,6 +180,18 @@ dark:text-black text-sm font-light py-4">
 </footer>
 
 <style lang="postcss">
+.card {
+    @apply p-8 rounded-lg shadow-lg;
+}
+
+.card h1 {
+    @apply font-bold text-2xl mb-2;
+}
+
+.card p {
+    @apply text-xl font-light;
+}
+
 .btn {
     @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg;
 }
