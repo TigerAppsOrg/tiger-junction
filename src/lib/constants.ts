@@ -72,7 +72,34 @@ const STATUS_MAP: Record<string, number> = {
     "Other": 3,
 }
 
-export const RED = "#FF0000";
+
+export const CALENDAR_INFO: Record<string, any> = {
+    "1242": {
+        "name": "Fall 2023",
+        "start":[2023, 9, 5],
+        "end": [2023, 12, 7],
+        "exclusions": [
+            {
+                "start": [2023, 10, 16],
+                "end": [2023, 10, 20],
+            },
+            {
+                "start": [2023, 11, 22],
+                "end": [2023, 11, 24],  
+            }
+        ]
+    },
+    "1234": {
+        "name": "Spring 2023",
+        "start": "2023-02-07",
+        "end": "2023-05-09",
+    },
+    "1232": {
+        "name": "Fall 2022",
+        "start": "2022-09-14",
+        "end": "2022-12-16",
+    },
+}
 
 // Maximum number of schedules in a term for a user
 export const SCHEDULE_CAP = 10;
