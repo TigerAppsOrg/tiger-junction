@@ -23,7 +23,6 @@ export default {
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
-        roboto: ["Roboto", "sans-serif"],
       },
     },
   },
