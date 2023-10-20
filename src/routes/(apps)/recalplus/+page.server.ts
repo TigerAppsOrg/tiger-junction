@@ -4,7 +4,7 @@ import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 
 // Load course data for default term from Redis
-export const load = async ({ url }) => {
+export const load = async () => {
     const redisClient = createClient({
         password: REDIS_PASSWORD,
         socket: {
