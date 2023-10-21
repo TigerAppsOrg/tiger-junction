@@ -1,5 +1,5 @@
 <script lang="ts">
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+import StdButton from "$lib/components/elements/StdButton.svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
 import { CALENDAR_INFO } from "$lib/constants";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";

@@ -14,11 +14,6 @@ $: ({ supabase, session } = data);
 $: dark = $darkTheme;
 
 onMount(() => {
-
-    // Run any time the window is resized
-    // window.addEventListener("resize", () => {
-    //     $isMobile = window.innerWidth < 768;
-    // });
     $isMobile = window.innerWidth < 600;
 
     const {

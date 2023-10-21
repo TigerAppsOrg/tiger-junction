@@ -1,5 +1,4 @@
 // Functions for handling iCal (.ics file) creation
-import type { SectionData } from "$lib/stores/rsections";
 import { valueToDays } from "../convert";
 
 /**
