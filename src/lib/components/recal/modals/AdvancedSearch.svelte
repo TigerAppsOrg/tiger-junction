@@ -141,11 +141,8 @@ const resetSearchSettings = () => {
             </div>
         </div> <!-- * End Container -->
         <div class="flex gap-2 border-t-2 mt-2 pt-2">
-            <button class="btn bg-black text-white dark:bg-slate-200
-            dark:text-black hover:bg-black/80 flex-1" 
-            on:click={resetSearchSettings}>
-                Reset to Default
-            </button>
+            <StdButton message="Reset to Default" onClick={resetSearchSettings}
+            scheme="orange" />
             <StdButton message="Close" onClick={saveSettings} />
         </div> <!-- * End Nav -->
     </div>

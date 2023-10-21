@@ -5,7 +5,7 @@ import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
 import { onMount } from "svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+import StdButton from "$lib/components/elements/StdButton.svelte";
 
 export let showModal: boolean = false;
 
@@ -81,19 +81,14 @@ onMount(() => {
     </div>
 
     <div class="flex gap-2 border-t-2 mt-2 pt-2" slot="buttons">
-        <button class="btn border-2 border-slate-600/30 flex-1" 
-        on:click={() => modalStore.close()}>
-            Cancel
-        </button>
-        <button class="btn bg-black text-white
-        dark:bg-slate-200 dark:text-black
-        hover:bg-black/80 
-        flex-1" 
-        on:click={resetColors}>
-            Reset to Default
-        </button>
+        <StdButton message="Cancel" onClick={() => modalStore.close()}
+        scheme="neutral" />
+
+        <StdButton message="Reset to Default" onClick={resetColors}
+        scheme="orange" />
+
         <StdButton message="Save" onClick={saveColors} />
-    </div> <!-- * End Nav -->
+    </div> 
 </StdModal>
 
 
@@ -102,9 +97,5 @@ onMount(() => {
 .settings-area {
     @apply p-4 border-t-2
     border-slate-600/30 dark:border-slate-200/30;
-}
-
-.btn {
-    @apply rounded-md py-2 text-center;
 }
 </style>

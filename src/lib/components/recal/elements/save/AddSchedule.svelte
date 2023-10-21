@@ -95,14 +95,12 @@ const saveSchedule = async () => {
                 </div>
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
-                <button class="btn border-2 border-slate-600/30 flex-1
-                hover:bg-slate-200/30 dark:hover:bg-slate-600/30 duration-150" 
-                type="button"
-                on:click={() => modalStore.close()}>
-                    Cancel
-                </button>
 
-                <StdButton message="Create" onClick={saveSchedule} />
+                <StdButton message="Cancel" onClick={() => modalStore.close()}
+                scheme="neutral" />
+
+                <StdButton message="Create" onClick={saveSchedule}
+                submit={true} />
             </div> <!-- * End Nav -->
         </form>
     </div>
@@ -112,9 +110,5 @@ const saveSchedule = async () => {
 .settings-area {
     @apply p-4 border-t-2
     border-slate-600/30 dark:border-slate-200/30;
-}
-
-.btn {
-    @apply rounded-md py-2 text-center;
 }
 </style>
