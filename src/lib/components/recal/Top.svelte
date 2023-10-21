@@ -229,10 +229,6 @@ dark:border-slate-200/60">
     @apply bg-slate-200 dark:bg-slate-700 duration-150;
 }
 
-.selected:hover {
-    @apply bg-std-darkGreen dark:bg-std-darkOrange duration-150;
-}
-
 .btn-circ {
     @apply rounded-full p-1 border-slate-600/30 border-2 duration-150
     dark:border-slate-200/60 h-8 w-8;
