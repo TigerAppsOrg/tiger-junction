@@ -71,8 +71,33 @@ const createIcal = async () => {
             return;
         }
 
-        console.log(value);
         let title = crypto.randomUUID() + ".ics";
+
+        // Check if user already has a calendar
+        const userId = await supabase.auth.getUser();
+        if (!userId || !userId.data || !userId.data.user) return;
+        const { data: curCal, error: supabaseError2 } = await supabase
+            .from("icals")
+            .select("id")
+            .eq("user_id", userId.data.user.id);
+
+        if (supabaseError2) {
+            console.log(supabaseError2);
+            return;
+        }
+
+        // Delete old calendar (if exists)
+        if (curCal && curCal.length > 0) {
+            const { error: supabaseError3 } = await supabase
+                .from("icals")
+                .delete()
+                .eq("id", curCal[0].id);
+
+            if (supabaseError3) {
+                console.log(supabaseError3);
+                return;
+            }
+        }
 
         // Push to supabase storage
         const { data, error: supabaseError } = await supabase.storage
@@ -88,7 +113,20 @@ const createIcal = async () => {
             return;
         }
 
-        console.log(data);
+        // Push to supabase database
+        const { error: supabaseError4 } = await supabase
+            .from("icals")
+            .insert([
+                {
+                    id: data.path.split(".")[0],
+                    user_id: userId.data.user.id,
+                },
+            ]);
+
+        if (supabaseError4) {
+            console.log(supabaseError4);
+            return;
+        }
     });
 
 }
