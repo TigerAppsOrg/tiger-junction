@@ -1,7 +1,7 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
-    import StdButton from "./StdButton.svelte";
+import StdButton from "./StdButton.svelte";
 
 export let title: string = "Modal";
 export let stdClose: boolean = true;

@@ -4,7 +4,6 @@ import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import addIcon from "$lib/img/icons/addicon.svg";
-import editIcon from "$lib/img/icons/editicon.svg"
 import logoutIcon from "$lib/img/icons/logouticon.svg";
 import moonIcon from "$lib/img/icons/moonicon.svg";
 import sunIcon from "$lib/img/icons/sunicon.svg";
@@ -18,6 +17,8 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
+import { calColors, calculateCssVars } from "$lib/stores/styles";
+import { darkenHSL } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
 
@@ -64,16 +65,19 @@ const handleAddSchedule = () => {
     modalStore.open("addSchedule", { clear: true });
 }
 
+// Handle theme changes
+$: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<div class="h-20 mt-2 p-1
+<div style={cssVarStyles}
+class="h-20 mt-2 p-1
 rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
 dark:text-white border-2 border-slate-600/30
 dark:border-slate-200/60">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
-            <button class="termchoice" 
+            <button class="card termchoice" 
             class:selected={$currentTerm === 1232}
             on:click={() => handleTermChange(1232)}>
                 {#if $isMobile}
@@ -82,7 +86,7 @@ dark:border-slate-200/60">
                 Fall 2022
                 {/if}
             </button>
-            <button class="termchoice" 
+            <button class="card termchoice" 
             class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
                 {#if $isMobile}
@@ -91,7 +95,7 @@ dark:border-slate-200/60">
                 Spring 2023
                 {/if}
             </button>
-            <button class="termchoice" 
+            <button class="card termchoice" 
             class:selected={$currentTerm === 1242}
             on:click={() => handleTermChange(1242)}>
                 {#if $isMobile}
@@ -155,7 +159,7 @@ dark:border-slate-200/60">
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
-    p-1 rounded-md h-8 font-light">
+    p-1 rounded-md h-8 font-normal">
     {#key $retop}
         {#await fetchUserSchedules(supabase, $currentTerm)}
             <Loader />
@@ -164,17 +168,19 @@ dark:border-slate-200/60">
             {#each $schedules[$currentTerm] as schedule}
 
             {#if $currentSchedule === schedule.id}
-                <button class="flex items-center gap-4
-                {$currentSchedule === schedule.id ? "selected" : "termchoice"}" 
+                <button class="flex items-center gap-4 card
+                {$currentSchedule === schedule.id ? "" : "termchoice"}" 
+                class:selected={$currentSchedule === schedule.id}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
                     <span class="whitespace-nowrap">{schedule.title}</span>
-                    <img src={editIcon} alt="Edit Icon" 
-                    class="w-4 h-4 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                    stroke="currentColor" class="w-4 h-4 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                    </svg>                      
                 </button>
             {:else}
-                <button class="termchoice" 
-                class:selected={$currentSchedule === schedule.id}
+                <button class="card termchoice" 
                 on:click={() => handleScheduleChange(schedule.id)}>
                     <span class="whitespace-nowrap">
                         {schedule.title}
@@ -183,7 +189,7 @@ dark:border-slate-200/60">
             {/if}
 
             {/each}
-                <button class="termchoice"
+                <button class="card termchoice"
                 on:click={handleAddSchedule}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="h-5 w-5 dark:text-slate-300 text-slate-500">
@@ -192,7 +198,7 @@ dark:border-slate-200/60">
                 </button>
             {/key}
         {:catch error}
-            <button class="termchoice"
+            <button class="card termchoice"
             on:click={() => 
             modalStore.open("addSchedule", { clear: true })}>
                 <img src={addIcon} alt="Add Icon"
@@ -205,8 +211,12 @@ dark:border-slate-200/60">
 </div>
 
 <style lang="postcss">
-.termchoice {
+.card {
     @apply px-3 rounded-md text-sm;
+}
+
+.card:active {
+    @apply transform scale-95;
 }
 
 .termchoice:hover {
@@ -214,11 +224,13 @@ dark:border-slate-200/60">
 }
 
 .selected {
-    @apply bg-std-green dark:bg-std-orange text-black px-3 rounded-md text-sm;
+    background-color: var(--bg);
+    color: var(--text);
+    transition-duration: 150ms;
 }
 
 .selected:hover {
-    @apply bg-std-darkGreen dark:bg-std-darkOrange duration-150;
+    background-color: var(--bg-hover);
 }
 
 .btn-circ {

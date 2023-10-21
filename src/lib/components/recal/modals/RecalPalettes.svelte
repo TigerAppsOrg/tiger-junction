@@ -1,5 +1,7 @@
 <script lang="ts">
 import StdModal from "$lib/components/elements/StdModal.svelte";
+import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
+import Palette from "../elements/cards/Palette.svelte";
 
 export let showModal: boolean = false;
 
@@ -8,10 +10,11 @@ export let showModal: boolean = false;
 <StdModal title="Theme Palettes" stdClose={true} {showModal}>
     <div class="flex flex-col gap-2" slot="main">
 
-        <div class="settings-area" id="options">
-            <h2 class="text-lg font-bold mb-2">Palettes</h2>
+        <div class="settings-area flex gap-2 flex-wrap justify-center">
+            {#each Object.keys(colorPalettes) as palette}
+                <Palette colors={colorPalettes[palette]} title={palette} />
+            {/each}
         </div>
-
     </div>
 </StdModal>
 

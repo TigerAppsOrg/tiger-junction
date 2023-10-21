@@ -1,6 +1,6 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+import StdButton from "$lib/components/elements/StdButton.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
@@ -245,7 +245,7 @@ const saveSchedule = async () => {
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
 
                 <StdButton message="Cancel" onClick={() => modalStore.close()} 
-                scheme="neutral" />
+                scheme="-1" />
 
                 <!-- Hidden Button for Enter Submission -->
                 <button type="submit" class="default" 
@@ -255,11 +255,11 @@ const saveSchedule = async () => {
                 <!-- Disallow delete if only 1 schedule -->
                 {#if $schedules[$currentTerm].length > 1}
                 <StdButton message="Delete" onClick={deleteSchedule} 
-                scheme="red" submit={true} />
+                scheme="4" submit={true} />
                 {/if}
             
                 <StdButton message="Duplicate" onClick={duplicateSchedule} 
-                scheme="blue" submit={true} />
+                scheme="2" submit={true} />
 
                 <StdButton message="Save" onClick={saveSchedule}
                 submit={true} />

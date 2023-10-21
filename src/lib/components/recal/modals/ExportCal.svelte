@@ -1,4 +1,5 @@
 <script lang="ts">
+import StdButton from "$lib/components/elements/StdButton.svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
 import { CALENDAR_INFO } from "$lib/constants";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
@@ -161,27 +162,25 @@ const createIcal = async () => {
             </p>
 
             <div class="flex flex-col sm:flex-row gap-2">
-                <button class="btn bg-std-blue hover:bg-std-darkBlue text-black"
-                on:click={() => {
+
+                <StdButton message="Copy Link" scheme="2"
+                onClick={() => {
                     navigator.clipboard.writeText(`https://tigerjunction.com/api/client/calendar/${link}`);
                     toastStore.add("success", "Copied link to clipboard!")
-                }}>
-                    Copy Link
-                </button>
-    
-                <button class="btn bg-std-orange hover:bg-std-darkOrange text-black">
-                    <a href={`https://tigerjunction.com/api/client/calendar/${link}`} 
-                    target="_blank" rel="noopener noreferrer">
-                        Download File
-                    </a>
-                </button>
+                }} />
+
+                <StdButton message="Download File" scheme="1"
+                onClick={() => {
+                    let a = document.createElement("a");
+                    a.href = `https://tigerjunction.com/api/client/calendar/${link}`;
+                    a.download = "ReCal+.ics";
+                    a.click();
+                }} />
             </div>
         </div>
         {:else}
-            <button class="btn bg-std-blue hover:bg-std-darkBlue text-black" 
-            on:click={createIcal}>
-                Export
-            </button>
+            <StdButton message="Export" scheme="2"
+            onClick={createIcal} />
         {/if}
     </div>
 </StdModal>
