@@ -20,6 +20,10 @@ button {
     @apply rounded-md py-2 text-center flex-1 duration-150;
 }
 
+button:active {
+    @apply transform scale-95;
+}
+
 .green {
     @apply bg-std-green hover:bg-std-darkGreen text-black;
 }
@@ -40,5 +44,4 @@ button {
     @apply border-2 border-slate-600/30
     hover:bg-slate-200/30 dark:hover:bg-slate-600/30;
 }
-
 </style>
