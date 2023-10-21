@@ -85,6 +85,24 @@ const resetSearchSettings = () => {
                                     name={value} 
                                     category={filter} />
                                 {/each}
+
+                            </div>
+                            <!-- All and None Buttons-->
+                            <div class="flex gap-2 mt-4">
+                                <StdButton message="Check All" 
+                                onClick={() => {
+                                    Object.keys($searchSettings.filters[filter].values)
+                                    .forEach(value => {
+                                        $searchSettings.filters[filter].values[value] = true;
+                                    })
+                                }} scheme="2" />
+                                <StdButton message="Check None" 
+                                onClick={() => {
+                                    Object.keys($searchSettings.filters[filter].values)
+                                    .forEach(value => {
+                                        $searchSettings.filters[filter].values[value] = false;
+                                    })
+                                }} scheme="4" />
                             </div>
                         </div>
                     {/if}
