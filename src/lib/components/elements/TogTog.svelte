@@ -1,5 +1,6 @@
 <script lang="ts">
 import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
+import { calColors, calculateCssVars } from "$lib/stores/styles";
 export let name: string = "";
 
 const handleToggle = () => {
@@ -26,10 +27,14 @@ const handleFilterChange = (s: null | string) => {
         sortParam.value = 0;
     }
 }
+
+$: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
 
-<button class="info flex items-center gap-2" class:checked={sortParam.enabled}
+<button class="info flex items-center gap-2 select-none" 
+class:checked={sortParam.enabled}
+style={cssVarStyles}
 on:click={handleToggle}>
     {name}
     {sortParam.enabled ? " — " + sortParam.options[sortParam.value] : ""}
@@ -51,8 +56,19 @@ on:click={handleToggle}>
     dark:border-slate-200/30;
 }
 
+.info:hover {
+    @apply bg-slate-200 dark:bg-slate-700 border-slate-600/30
+    dark:border-slate-200/30 duration-150;
+}
+
 .checked {
-    @apply bg-std-green dark:bg-std-orange border-std-green
-    dark:border-std-orange text-black;
+    color: var(--text);
+    background-color: var(--bg);
+    border-color: var(--bg)
+}
+
+.checked:hover {
+    transition-duration: 150ms;
+    background-color: var(--bg-hover);
 }
 </style>

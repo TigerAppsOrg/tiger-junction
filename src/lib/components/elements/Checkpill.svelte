@@ -1,11 +1,23 @@
 <script lang="ts">
 import { searchSettings } from "$lib/stores/recal";
+import { calColors, calculateCssVars } from "$lib/stores/styles";
 export let name: string = "";
 export let category: string;
 
+$: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<label for={name}>
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<label tabindex="0" for={name} style={cssVarStyles}
+on:keydown={(event) => {
+    if (event.key === "Enter" || event.key === " ") {
+        category === "filters" ? $searchSettings.filters[name].enabled = !$searchSettings.filters[name].enabled :
+        category === "options" ? $searchSettings.options[name] = !$searchSettings.options[name] :
+        category === "style" ? $searchSettings.style[name] = !$searchSettings.style[name] :
+        $searchSettings.filters[category].values[name] = !$searchSettings.filters[category].values[name];
+    }
+}}>
     {#if category === "filters"}
         <input type="checkbox" name={name} id={name}
         bind:checked={$searchSettings.filters[name].enabled}>
@@ -46,9 +58,20 @@ input[type="checkbox"] {
     dark:border-slate-200/30;
 }
 
+.info:hover {
+    @apply bg-slate-200 dark:bg-slate-700 border-slate-600/30
+    dark:border-slate-200/30 duration-150;
+}
+
 input[type="checkbox"]:checked ~ .info {
-    @apply bg-std-green dark:bg-std-orange border-std-green
-    dark:border-std-orange text-black;
+    color: var(--text);
+    background-color: var(--bg);
+    border-color: var(--bg)
+}
+
+input[type="checkbox"]:checked ~ .info:hover {
+    transition-duration: 150ms;
+    background-color: var(--bg-hover);
 }
 
 .icon {
