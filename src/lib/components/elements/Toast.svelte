@@ -1,8 +1,6 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 import { fade } from "svelte/transition";
-import infoIcon from "$lib/img/icons/infoicon.svg"
-import errorIcon from "$lib/img/icons/blockicon.svg";
 
 const dispatch = createEventDispatcher();
 
