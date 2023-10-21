@@ -127,6 +127,14 @@ const resetSearchSettings = () => {
                             placeholder="Max Rating" 
                             class="p-2 h-10 std-area w-36"
                             on:input={handleMax}>
+
+                            <StdButton message="Reset"
+                            onClick={() => {
+                                minInput = 0;
+                                maxInput = 5;
+                                $searchSettings.filters["Rating"].min = 0;
+                                $searchSettings.filters["Rating"].max = 5;
+                            }} scheme="4" />
                         </div>
                     </div>
                     {/if}
