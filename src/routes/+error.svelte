@@ -4,12 +4,15 @@ import { page } from "$app/stores";
 
 <div class="h-[80vh] flex justify-center items-center">
     <div class="text-center">
-        <h1 class="gradient-text text-9xl mb-2 font-bold">Oh noes!</h1>
+        <h1 class="text-9xl mb-2 font-bold">
+            <span class="text-std-darkPink">Oh</span>
+            <span class="text-std-darkPurple">noes!</span>
+        </h1>
         <h2 class="text-5xl mb-8 text-gray-700 font-light">
             {$page.status} {$page.error?.message}
         </h2>
         <a href="/">
-            <button class="btn-cool text-2xl">
+            <button class="btn text-2xl">
                 Go To Homepage →
             </button>
         </a>
@@ -17,19 +20,8 @@ import { page } from "$app/stores";
 </div>
 
 <style lang="postcss">
-.gradient-text {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark;
-    -webkit-background-clip: text; /* For Safari */
-    background-clip: text;
-    color: transparent;
-}
-
-.btn-cool {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
-    text-white rounded-full px-4 py-2;
-}
-
-.btn-cool:hover {
-    @apply shadow-lg duration-150;
+.btn {
+    @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg
+    bg-std-green text-black hover:bg-std-darkGreen duration-150;
 }
 </style>
