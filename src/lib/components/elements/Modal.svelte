@@ -45,17 +45,4 @@ dialog[open] {
         transform: scale(1);
     }
 }
-
-dialog[open]::backdrop {
-    animation: fade 0.2s ease-out;
-}
-
-@keyframes fade {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
 </style>
