@@ -18,7 +18,6 @@ import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
 import { calColors, calculateCssVars } from "$lib/stores/styles";
-import { darkenHSL } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
 
