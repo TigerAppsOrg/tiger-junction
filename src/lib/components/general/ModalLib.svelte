@@ -36,7 +36,7 @@ export let supabase: SupabaseClient;
 {/if}
 
 {#if $modalStore === "exportCal"}
-<ExportCal showModal={$modalStore === "exportCal"} />
+<ExportCal showModal={$modalStore === "exportCal"} {supabase} />
 {/if}
 
 {#if $modalStore === "addSchedule"}

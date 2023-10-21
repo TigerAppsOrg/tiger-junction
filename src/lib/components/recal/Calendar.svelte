@@ -267,7 +267,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
         <div class="w-10 h-full"
         transition:slide={{ axis: 'x', duration: 150, easing: linear }}>
             <div class="h-[4%] outline outline-[1px] outline-slate-600/30
-            dark:outline-slate-200/30">
+            dark:outline-slate-200/30 overflow-hidden">
                 
             </div>
             <div class="h-[96%] grid grid-cols-1">
@@ -275,7 +275,7 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
                 <div class="text-xs font-light
                 outline outline-[1px] outline-slate-600/30
                 dark:outline-slate-200/30 pt-[1px] pl-[1px]
-                overflow-y-hidden">
+                overflow-hidden">
                     {marker}
                 </div>
                 {/each}
