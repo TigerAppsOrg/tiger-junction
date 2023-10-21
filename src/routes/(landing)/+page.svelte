@@ -45,7 +45,7 @@ const handleLogin = async () => {
     </div>
 </nav>
 
-<main class="grid h-[65vh] py-20 std-padding">
+<main class="grid h-[55vh] sm:h-[65vh] py-20 std-padding">
     <div class="my-auto h-[60vh]">
         <p class="text-xl mb-2 font-bold">
             TigerJunction
