@@ -17,8 +17,8 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
-import { calColors } from "$lib/stores/styles";
-    import { darkenHSL } from "$lib/scripts/convert";
+import { calColors, calculateCssVars } from "$lib/stores/styles";
+import { darkenHSL } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
 
@@ -66,21 +66,11 @@ const handleAddSchedule = () => {
 }
 
 // Handle theme changes
-$: calculateSelectedStyle($calColors[0])
-let selectedStyle = "";
-const calculateSelectedStyle = (...params: any) => {
-    if (params.length === 0 || params[0] === "") return;
-
-    let textColor = (parseInt($calColors[0].split(",")[2].split("%")[0]) > 50) ? 
-    darkenHSL($calColors[0], 60)
-    : darkenHSL($calColors[0], -60);
-
-    selectedStyle = "background-color: " + $calColors[0] 
-    + "; color: " +  textColor + ";"
-}
+$: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<div class="h-20 mt-2 p-1
+<div style={cssVarStyles}
+class="h-20 mt-2 p-1
 rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
 dark:text-white border-2 border-slate-600/30
 dark:border-slate-200/60">
@@ -88,7 +78,7 @@ dark:border-slate-200/60">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
             <button class="card termchoice" 
-            style={$currentTerm === 1232 ? selectedStyle : ""}
+            class:selected={$currentTerm === 1232}
             on:click={() => handleTermChange(1232)}>
                 {#if $isMobile}
                 F22
@@ -97,7 +87,7 @@ dark:border-slate-200/60">
                 {/if}
             </button>
             <button class="card termchoice" 
-            style={$currentTerm === 1234 ? selectedStyle : ""}
+            class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
                 {#if $isMobile}
                 S23
@@ -106,7 +96,7 @@ dark:border-slate-200/60">
                 {/if}
             </button>
             <button class="card termchoice" 
-            style={$currentTerm === 1242 ? selectedStyle : ""}
+            class:selected={$currentTerm === 1242}
             on:click={() => handleTermChange(1242)}>
                 {#if $isMobile}
                 F23
@@ -180,7 +170,7 @@ dark:border-slate-200/60">
             {#if $currentSchedule === schedule.id}
                 <button class="flex items-center gap-4 card
                 {$currentSchedule === schedule.id ? "" : "termchoice"}" 
-                style={selectedStyle}
+                class:selected={$currentSchedule === schedule.id}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
                     <span class="whitespace-nowrap">{schedule.title}</span>
@@ -225,8 +215,22 @@ dark:border-slate-200/60">
     @apply px-3 rounded-md text-sm;
 }
 
+.card:active {
+    @apply transform scale-95;
+}
+
 .termchoice:hover {
     @apply bg-slate-200 dark:bg-slate-700 duration-150;
+}
+
+.selected {
+    background-color: var(--bg);
+    color: var(--text);
+    transition-duration: 150ms;
+}
+
+.selected:hover {
+    background-color: var(--bg-hover);
 }
 
 .btn-circ {

@@ -1,4 +1,5 @@
-import { writable, type Writable } from "svelte/store";
+import { darkenHSL } from "$lib/scripts/convert";
+import { get, writable, type Writable } from "svelte/store";
 
 //----------------------------------------------------------------------
 // ReCal+
@@ -40,4 +41,23 @@ export const calColors = {
         ccSet(value);
         localStorage.setItem("calColors", JSON.stringify(value));
     }
+}
+
+/**
+ * Calculates the CSS variables for a color scheme
+ * @param scheme index of the color in the palette
+ * @returns CSS variables for the color scheme
+ */
+export const calculateCssVars = (scheme: keyof CalColors, ...params: any): string => {
+    const cc = get(calColors);
+
+    let textColor = (parseInt(cc[scheme].split(",")[2].split("%")[0]) > 50) ? 
+    darkenHSL(cc[scheme], 60)
+    : darkenHSL(cc[scheme], -60);
+
+    return Object.entries({
+        "bg": cc[scheme],
+        "bg-hover": darkenHSL(cc[scheme], 10),
+        "text": textColor,
+    }).map(([key, value]) => `--${key}:${value}`).join(';');
 }

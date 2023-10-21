@@ -69,15 +69,15 @@ onMount(() => {
             current: true,
             front: true,
             force: true,
-        })} scheme="blue" />
+        })} scheme="2" />
     </div>
 
     <div class="flex gap-2 border-t-2 mt-2 pt-2" slot="buttons">
         <StdButton message="Cancel" onClick={() => modalStore.close()}
-        scheme="neutral" />
+        scheme="-1"/>
 
         <StdButton message="Reset to Default" onClick={resetColors}
-        scheme="orange" />
+        scheme="1"/>
 
         <StdButton message="Save" onClick={saveColors} />
     </div> 
