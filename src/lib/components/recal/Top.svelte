@@ -29,9 +29,10 @@ const handleTermChange = async (term: number) => {
     await fetchUserSchedules(supabase, term);
     await populatePools(supabase, term);
     
-    if ($schedules[term].length > 0)
+    if ($schedules[term].length > 0 && term === $currentTerm) {
         currentSchedule.set($schedules[term][0].id);
-
+    }
+        
     $ready = true;
 }
 
