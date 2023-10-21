@@ -160,7 +160,7 @@ const createIcal = async () => {
             </p>
 
             <div class="flex flex-col sm:flex-row gap-2">
-                <button class="btn bg-std-blue hover:bg-std-darkBlue"
+                <button class="btn bg-std-blue hover:bg-std-darkBlue text-black"
                 on:click={() => {
                     navigator.clipboard.writeText(`https://tigerjunction.com/api/client/calendar/${link}`);
                     toastStore.add("success", "Copied link to clipboard!")
@@ -168,7 +168,7 @@ const createIcal = async () => {
                     Copy Link
                 </button>
     
-                <button class="btn bg-std-orange hover:bg-std-darkOrange">
+                <button class="btn bg-std-orange hover:bg-std-darkOrange text-black">
                     <a href={`https://tigerjunction.com/api/client/calendar/${link}`} 
                     target="_blank" rel="noopener noreferrer">
                         Download File
@@ -177,7 +177,7 @@ const createIcal = async () => {
             </div>
         </div>
         {:else}
-            <button class="btn bg-std-green hover:bg-std-darkGreen" 
+            <button class="btn bg-std-green hover:bg-std-darkGreen text-black" 
             on:click={createIcal}>
                 Export
             </button>
