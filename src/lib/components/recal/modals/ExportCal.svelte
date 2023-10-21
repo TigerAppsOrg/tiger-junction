@@ -1,7 +1,7 @@
 <script lang="ts">
 import StdModal from "$lib/components/elements/StdModal.svelte";
 import { CALENDAR_INFO } from "$lib/constants";
-import { calculateExclusions, valueToRRule } from "$lib/scripts/convert";
+import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { currentSchedule, currentTerm } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { savedCourses } from "$lib/stores/rpool";
@@ -53,12 +53,12 @@ const createIcal = async () => {
 
             let newEvent: EventAttributes = {
                 title: `${course.code.split("/")[0]} - ${section.title}`,
-                start: [...calInfo.start, 
+                start: [...calculateStart(calInfo.start, calInfo.start_day, section.days), 
                     Math.trunc(section.start_time / 6) + 8, 
                     section.start_time % 6 * 10] as DateArray,
                 duration: { hours: Math.trunc(dur / 6), minutes: dur % 6 * 10 },
                 recurrenceRule: valueToRRule(section.days, calInfo.end),
-                exclusionDates: calculateExclusions(calInfo.exclusions),
+                // exclusionDates: calculateExclusions(calInfo.exclusions),
                 busyStatus: "BUSY",
                 transp: "OPAQUE",
                 productId: "tigerjunction/ics",

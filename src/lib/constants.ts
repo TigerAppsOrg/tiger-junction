@@ -75,6 +75,7 @@ const STATUS_MAP: Record<string, number> = {
 type Calendar_Info = {
     name: string,
     start: number[],
+    start_day: number,
     end: number[],
     exclusions: number[][],
 }
@@ -84,18 +85,21 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
     "1242": {
         "name": "Fall 2023",
         "start":[2023, 9, 5],
+        "start_day": 2,
         "end": [2023, 12, 8],
         "exclusions": [[2023, 10, 16, 6], [2023, 11, 22, 4]]
     },
     "1234": {
         "name": "Spring 2023",
         "start": [2023, 2, 7], 
+        "start_day": 1,
         "end": [2023, 5, 10], 
         "exclusions": [],
     },
     "1232": {
         "name": "Fall 2022",
         "start": [2022, 9, 14], 
+        "start_day": 2,
         "end": [2022, 12, 17],
         "exclusions": []
     },
