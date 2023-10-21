@@ -204,6 +204,10 @@ dark:text-black text-sm font-light py-4">
     @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg;
 }
 
+.btn:active {
+    @apply transform scale-95;
+}
+
 .std-padding {
     @apply px-4 sm:px-20;
 }
