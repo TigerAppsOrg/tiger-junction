@@ -156,7 +156,7 @@ const createIcal = async () => {
 
         {#if link}
         <div class="flex flex-col md:flex-row items-center justify-between gap-2">
-            <p class="bg-std-gray btn flex-1 text-center break-all text-sm">
+            <p class="bg-std-darkGray text-white btn flex-1 text-center break-all text-sm">
                 https://tigerjunction.com/api/client/calendar/{link}
             </p>
 
