@@ -45,7 +45,7 @@ const handleLogin = async () => {
     </div>
 </nav>
 
-<main class="grid h-[70vh] py-20 std-padding">
+<main class="grid h-[65vh] py-20 std-padding">
     <div class="my-auto h-[60vh]">
         <p class="text-xl mb-2 font-bold">
             TigerJunction
@@ -177,8 +177,7 @@ const handleLogin = async () => {
     
 </div>
 
-<footer class="bg-black dark:bg-white text-center text-white 
-dark:text-black text-sm font-light py-4">
+<footer class="bg-std-darkPurple text-center text-white text-normal font-light py-4">
     Made with 
     <a href="https://svelte.dev/" target="_blank" class="underline
     duration-150 hover:text-gray-200">
