@@ -72,32 +72,32 @@ const STATUS_MAP: Record<string, number> = {
     "Other": 3,
 }
 
-
+// Dates for each term
 export const CALENDAR_INFO: Record<string, any> = {
     "1242": {
         "name": "Fall 2023",
         "start":[2023, 9, 5],
-        "end": [2023, 12, 7],
+        "end": [2023, 12, 8],
         "exclusions": [
             {
                 "start": [2023, 10, 16],
-                "end": [2023, 10, 20],
+                "end": [2023, 10, 21],
             },
             {
                 "start": [2023, 11, 22],
-                "end": [2023, 11, 24],  
+                "end": [2023, 11, 25],  
             }
         ]
     },
     "1234": {
         "name": "Spring 2023",
-        "start": "2023-02-07",
-        "end": "2023-05-09",
+        "start": [2023, 2, 7], 
+        "end": [2023, 5, 10], 
     },
     "1232": {
         "name": "Fall 2022",
-        "start": "2022-09-14",
-        "end": "2022-12-16",
+        "start": [2022, 9, 14], 
+        "end": [2022, 12, 17]
     },
 }
 
