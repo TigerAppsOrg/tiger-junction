@@ -10,7 +10,7 @@ export let showModal: boolean = false;
 <StdModal title="Theme Palettes" stdClose={true} {showModal}>
     <div class="flex flex-col gap-2" slot="main">
 
-        <div class="settings-area" id="options">
+        <div class="settings-area flex gap-2 flex-wrap justify-center">
             {#each Object.keys(colorPalettes) as palette}
                 <Palette colors={colorPalettes[palette]} title={palette} />
             {/each}
