@@ -1,6 +1,7 @@
 <script lang="ts">
 import Checkpill from "$lib/components/elements/Checkpill.svelte";
 import Modal from "$lib/components/elements/Modal.svelte";
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 import TogTog from "$lib/components/elements/TogTog.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_SETTINGS, searchSettings } from "$lib/stores/recal";
@@ -145,11 +146,7 @@ const resetSearchSettings = () => {
             on:click={resetSearchSettings}>
                 Reset to Default
             </button>
-            <button class="btn flex-1 bg-gradient-to-r 
-            from-deepblue-light to-deepblue-dark text-white"
-            on:click={saveSettings}>
-                Close
-            </button>
+            <StdButton message="Close" onClick={saveSettings} />
         </div> <!-- * End Nav -->
     </div>
 </Modal>

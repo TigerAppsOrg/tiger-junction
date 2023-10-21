@@ -5,6 +5,7 @@ import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
 import { onMount } from "svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 
 export let showModal: boolean = false;
 
@@ -91,11 +92,7 @@ onMount(() => {
         on:click={resetColors}>
             Reset to Default
         </button>
-        <button class="btn flex-1 bg-gradient-to-r 
-        from-deepblue-light to-deepblue-dark text-white"
-        on:click={saveColors}>
-            Save
-        </button>
+        <StdButton message="Save" onClick={saveColors} />
     </div> <!-- * End Nav -->
 </StdModal>
 

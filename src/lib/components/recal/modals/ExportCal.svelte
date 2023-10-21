@@ -178,7 +178,7 @@ const createIcal = async () => {
             </div>
         </div>
         {:else}
-            <button class="btn bg-std-green hover:bg-std-darkGreen text-black" 
+            <button class="btn bg-std-blue hover:bg-std-darkBlue text-black" 
             on:click={createIcal}>
                 Export
             </button>

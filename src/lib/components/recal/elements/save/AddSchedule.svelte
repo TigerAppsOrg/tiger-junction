@@ -5,6 +5,7 @@ import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { toastStore } from "$lib/stores/toast";
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 
 export let showModal: boolean = false;
 export let supabase: SupabaseClient;
@@ -94,17 +95,14 @@ const saveSchedule = async () => {
                 </div>
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
-                <button class="btn border-2 border-slate-600/30 flex-1" 
+                <button class="btn border-2 border-slate-600/30 flex-1
+                hover:bg-slate-200/30 dark:hover:bg-slate-600/30 duration-150" 
                 type="button"
                 on:click={() => modalStore.close()}>
                     Cancel
                 </button>
-                <button class="btn flex-1 bg-gradient-to-r 
-                from-deepblue-light to-deepblue-dark text-white"
-                type="submit"
-                on:click={saveSchedule}>
-                    Create
-                </button>
+
+                <StdButton message="Create" onClick={saveSchedule} />
             </div> <!-- * End Nav -->
         </form>
     </div>

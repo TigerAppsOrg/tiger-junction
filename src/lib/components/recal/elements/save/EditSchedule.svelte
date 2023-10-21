@@ -1,5 +1,6 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
@@ -267,12 +268,8 @@ const saveSchedule = async () => {
                 on:click={duplicateSchedule}>
                     Duplicate
                 </button>
-                <button type="submit"
-                class="btn flex-1 bg-gradient-to-r 
-                from-deepblue-light to-deepblue-dark text-white"
-                on:click={saveSchedule}>
-                    Save
-                </button>
+
+                <StdButton message="Save" onClick={saveSchedule} />
             </div> <!-- * End Nav -->
         </form>
     </div>

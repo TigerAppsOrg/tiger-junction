@@ -1,6 +1,7 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
+    import StdButton from "./StdButton.svelte";
 
 export let title: string = "Modal";
 export let stdClose: boolean = true;
@@ -17,13 +18,7 @@ export let showModal: boolean = false;
         
         {#if stdClose}
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
-                <button class="rounded-md py-2 text-center
-                flex-1 bg-gradient-to-r btn
-                from-deepblue-light to-deepblue-dark text-white"
-                type="submit"
-                on:click={() => modalStore.close()}>
-                    Close
-                </button>
+                <StdButton message="Close" onClick={() => modalStore.close()} />
             </div> 
         {:else}
             <slot name="buttons" />
