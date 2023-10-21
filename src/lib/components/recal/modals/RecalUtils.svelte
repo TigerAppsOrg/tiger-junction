@@ -63,4 +63,8 @@ export let showModal: boolean = false;
     padding: 8px;
     @apply hover:bg-slate-100 dark:hover:bg-slate-800 duration-100;
 }
+
+.btn-util:active {
+    @apply transform scale-95;
+}
 </style>
