@@ -153,8 +153,4 @@ const resetSearchSettings = () => {
     @apply p-4 border-t-2
     border-slate-600/30 dark:border-slate-200/30;
 }
-
-.btn {
-    @apply rounded-md py-2 text-center;
-}
 </style>

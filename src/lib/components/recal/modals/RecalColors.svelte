@@ -65,8 +65,10 @@ onMount(() => {
         </div>
 
         <StdButton message="View Color Palettes" 
-        on:click={() => modalStore.open("rpalettes", {
-            current: true
+        onClick={() => modalStore.open("rpalettes", {
+            current: true,
+            front: true,
+            force: true,
         })} scheme="blue" />
     </div>
 
