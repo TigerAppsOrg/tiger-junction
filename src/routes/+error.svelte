@@ -2,6 +2,11 @@
 import { page } from "$app/stores";
 </script>
 
+<svelte:head>
+    <title>TigerJunction | Oh Noes!</title>
+    <meta property="og:title" content="TigerJunction | Oh Noes!" />
+</svelte:head>
+
 <div class="h-[80vh] flex justify-center items-center">
     <div class="text-center">
         <h1 class="text-9xl mb-2 font-bold">
