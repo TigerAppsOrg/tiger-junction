@@ -20,6 +20,14 @@ const handleLogin = async () => {
 }
 </script>
 
+<svelte:head>
+    <title>TigerJunction</title>
+    <meta name="description" content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed.">
+    <meta property="og:title" content="TigerJunction" />
+    <meta property="og:description" content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed." />
+    <meta property="og:image" content="https://tigerjunction.com/tjlogo.png" />
+    <meta property="og:url" content="https://tigerjunction.com/" />
+</svelte:head>
 
 <nav class="flex justify-between items-center text-xl h-20 std-padding">
     <div id="left">

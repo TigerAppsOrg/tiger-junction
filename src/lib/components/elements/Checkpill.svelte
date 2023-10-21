@@ -47,8 +47,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked ~ .info {
-    @apply bg-green-300 dark:bg-synth-accent border-green-300
-    dark:border-synth-accent;
+    @apply bg-std-green dark:bg-std-orange border-std-green
+    dark:border-std-orange text-black;
 }
 
 .icon {

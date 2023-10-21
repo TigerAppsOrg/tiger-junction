@@ -164,13 +164,13 @@ dark:border-slate-200/60">
             {#each $schedules[$currentTerm] as schedule}
 
             {#if $currentSchedule === schedule.id}
-                <button class="termchoice flex items-center gap-4" 
-                class:selected={$currentSchedule === schedule.id}
+                <button class="flex items-center gap-4
+                {$currentSchedule === schedule.id ? "selected" : "termchoice"}" 
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
                     <span class="whitespace-nowrap">{schedule.title}</span>
                     <img src={editIcon} alt="Edit Icon" 
-                    class="w-4 h-4 invert mr-2">
+                    class="w-4 h-4 mr-2">
                 </button>
             {:else}
                 <button class="termchoice" 
@@ -210,12 +210,15 @@ dark:border-slate-200/60">
 }
 
 .termchoice:hover {
-    @apply bg-slate-200 dark:bg-slate-700;
+    @apply bg-slate-200 dark:bg-slate-700 duration-150;
 }
 
 .selected {
-    @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
-    text-white;
+    @apply bg-std-green dark:bg-std-orange text-black px-3 rounded-md text-sm;
+}
+
+.selected:hover {
+    @apply bg-std-darkGreen dark:bg-std-darkOrange duration-150;
 }
 
 .btn-circ {

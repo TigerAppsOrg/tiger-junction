@@ -1,5 +1,6 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
@@ -242,11 +243,9 @@ const saveSchedule = async () => {
                 </div>
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
-                <button type="button"
-                class="btn border-2 border-slate-600/30 flex-1" 
-                on:click={() => modalStore.close()}>
-                    Cancel
-                </button>
+
+                <StdButton message="Cancel" onClick={() => modalStore.close()} 
+                scheme="neutral" />
 
                 <!-- Hidden Button for Enter Submission -->
                 <button type="submit" class="default" 
@@ -255,24 +254,15 @@ const saveSchedule = async () => {
 
                 <!-- Disallow delete if only 1 schedule -->
                 {#if $schedules[$currentTerm].length > 1}
-                <button type="submit"
-                class="btn flex-1 hover:bg-red-600 bg-red-500 text-white"
-                on:click={deleteSchedule}>
-                    Delete
-                </button>
+                <StdButton message="Delete" onClick={deleteSchedule} 
+                scheme="red" submit={true} />
                 {/if}
+            
+                <StdButton message="Duplicate" onClick={duplicateSchedule} 
+                scheme="blue" submit={true} />
 
-                <button type="submit"
-                class="btn hover:bg-blue-600 flex-1 bg-blue-500 text-white"
-                on:click={duplicateSchedule}>
-                    Duplicate
-                </button>
-                <button type="submit"
-                class="btn flex-1 bg-gradient-to-r 
-                from-deepblue-light to-deepblue-dark text-white"
-                on:click={saveSchedule}>
-                    Save
-                </button>
+                <StdButton message="Save" onClick={saveSchedule}
+                submit={true} />
             </div> <!-- * End Nav -->
         </form>
     </div>
@@ -282,10 +272,6 @@ const saveSchedule = async () => {
 .settings-area {
     @apply p-4 border-t-2
     border-slate-600/30 dark:border-slate-200/30;
-}
-
-.btn {
-    @apply rounded-md py-2 text-center;
 }
 
 .default {
