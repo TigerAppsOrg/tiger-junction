@@ -1,5 +1,5 @@
 <script lang="ts">
-import { currentSchedule, isResult, ready, recal, retop, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, isResult, ready, recal, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 // import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
@@ -35,7 +35,7 @@ $: colorChange = $calColors;
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-xl 
-    {$isResult ? "max-h-[10vh]" : "max-h-[75vh]"}">
+    {$isResult ? "max-h-[18vh]" : "max-h-[75vh]"}">
         <div class="overflow-y-auto">
             {#key saved && colorChange}
             {#each saved as course}
