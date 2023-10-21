@@ -18,6 +18,8 @@ import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
+import { calColors } from "$lib/stores/styles";
+    import { darkenHSL } from "$lib/scripts/convert";
 
 export let supabase: SupabaseClient;
 
@@ -64,6 +66,19 @@ const handleAddSchedule = () => {
     modalStore.open("addSchedule", { clear: true });
 }
 
+// Handle theme changes
+$: calculateSelectedStyle($calColors[0])
+let selectedStyle = "";
+const calculateSelectedStyle = (...params: any) => {
+    if (params.length === 0 || params[0] === "") return;
+
+    let textColor = (parseInt($calColors[0].split(",")[2].split("%")[0]) > 50) ? 
+    darkenHSL($calColors[0], 60)
+    : darkenHSL($calColors[0], -60);
+
+    selectedStyle = "background-color: " + $calColors[0] 
+    + "; color: " +  textColor + ";"
+}
 </script>
 
 <div class="h-20 mt-2 p-1
@@ -73,8 +88,8 @@ dark:border-slate-200/60">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
-            <button class="termchoice" 
-            class:selected={$currentTerm === 1232}
+            <button class="card termchoice" 
+            style={$currentTerm === 1232 ? selectedStyle : ""}
             on:click={() => handleTermChange(1232)}>
                 {#if $isMobile}
                 F22
@@ -82,8 +97,8 @@ dark:border-slate-200/60">
                 Fall 2022
                 {/if}
             </button>
-            <button class="termchoice" 
-            class:selected={$currentTerm === 1234}
+            <button class="card termchoice" 
+            style={$currentTerm === 1234 ? selectedStyle : ""}
             on:click={() => handleTermChange(1234)}>
                 {#if $isMobile}
                 S23
@@ -91,8 +106,8 @@ dark:border-slate-200/60">
                 Spring 2023
                 {/if}
             </button>
-            <button class="termchoice" 
-            class:selected={$currentTerm === 1242}
+            <button class="card termchoice" 
+            style={$currentTerm === 1242 ? selectedStyle : ""}
             on:click={() => handleTermChange(1242)}>
                 {#if $isMobile}
                 F23
@@ -164,8 +179,9 @@ dark:border-slate-200/60">
             {#each $schedules[$currentTerm] as schedule}
 
             {#if $currentSchedule === schedule.id}
-                <button class="flex items-center gap-4
-                {$currentSchedule === schedule.id ? "selected" : "termchoice"}" 
+                <button class="flex items-center gap-4 card
+                {$currentSchedule === schedule.id ? "" : "termchoice"}" 
+                style={selectedStyle}
                 on:click={() => 
                 modalStore.open("editSchedule", { clear: true })}>
                     <span class="whitespace-nowrap">{schedule.title}</span>
@@ -173,8 +189,7 @@ dark:border-slate-200/60">
                     class="w-4 h-4 mr-2">
                 </button>
             {:else}
-                <button class="termchoice" 
-                class:selected={$currentSchedule === schedule.id}
+                <button class="card termchoice" 
                 on:click={() => handleScheduleChange(schedule.id)}>
                     <span class="whitespace-nowrap">
                         {schedule.title}
@@ -183,7 +198,7 @@ dark:border-slate-200/60">
             {/if}
 
             {/each}
-                <button class="termchoice"
+                <button class="card termchoice"
                 on:click={handleAddSchedule}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                     class="h-5 w-5 dark:text-slate-300 text-slate-500">
@@ -192,7 +207,7 @@ dark:border-slate-200/60">
                 </button>
             {/key}
         {:catch error}
-            <button class="termchoice"
+            <button class="card termchoice"
             on:click={() => 
             modalStore.open("addSchedule", { clear: true })}>
                 <img src={addIcon} alt="Add Icon"
@@ -205,16 +220,12 @@ dark:border-slate-200/60">
 </div>
 
 <style lang="postcss">
-.termchoice {
+.card {
     @apply px-3 rounded-md text-sm;
 }
 
 .termchoice:hover {
     @apply bg-slate-200 dark:bg-slate-700 duration-150;
-}
-
-.selected {
-    @apply bg-std-green dark:bg-std-orange text-black px-3 rounded-md text-sm;
 }
 
 .selected:hover {
