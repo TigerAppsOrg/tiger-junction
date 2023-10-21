@@ -7,7 +7,17 @@ export let category: string;
 $: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<label for={name} style={cssVarStyles}>
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<label tabindex="0" for={name} style={cssVarStyles}
+on:keydown={(event) => {
+    if (event.key === "Enter" || event.key === " ") {
+        category === "filters" ? $searchSettings.filters[name].enabled = !$searchSettings.filters[name].enabled :
+        category === "options" ? $searchSettings.options[name] = !$searchSettings.options[name] :
+        category === "style" ? $searchSettings.style[name] = !$searchSettings.style[name] :
+        $searchSettings.filters[category].values[name] = !$searchSettings.filters[category].values[name];
+    }
+}}>
     {#if category === "filters"}
         <input type="checkbox" name={name} id={name}
         bind:checked={$searchSettings.filters[name].enabled}>
