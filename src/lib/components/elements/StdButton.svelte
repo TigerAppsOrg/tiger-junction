@@ -24,7 +24,7 @@ type={submit ? "submit" : "button"}>
 
 <style lang="postcss">
 button {
-    @apply rounded-md py-2 text-center flex-1 duration-150;
+    @apply rounded-md py-2 px-4 text-center flex-1 duration-150;
     background-color: var(--bg);
     color: var(--text);
 }
