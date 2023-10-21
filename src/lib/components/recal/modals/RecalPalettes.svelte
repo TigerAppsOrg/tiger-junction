@@ -1,5 +1,6 @@
 <script lang="ts">
 import StdModal from "$lib/components/elements/StdModal.svelte";
+import Palette from "../elements/cards/Palette.svelte";
 
 export let showModal: boolean = false;
 
@@ -9,7 +10,7 @@ export let showModal: boolean = false;
     <div class="flex flex-col gap-2" slot="main">
 
         <div class="settings-area" id="options">
-            <h2 class="text-lg font-bold mb-2">Palettes</h2>
+            <Palette></Palette>
         </div>
 
     </div>
