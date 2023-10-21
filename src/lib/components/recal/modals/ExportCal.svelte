@@ -72,6 +72,11 @@ const createIcal = async () => {
         }
     }
 
+    if (events.length === 0) {
+        toastStore.add("warning", "No confirmed courses to export!");
+        return;
+    }
+
     await createEvents(events, async (error, value) => {
         if (error) {
             console.log(error);
