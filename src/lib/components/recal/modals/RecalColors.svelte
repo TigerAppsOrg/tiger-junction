@@ -62,22 +62,12 @@ onMount(() => {
                     </div>
                 {/each}
             </div>
-
-            
-            <!-- <button class="btn flex items-center bg-gradient-to-r 
-            from-deepblue-light to-deepblue-dark text-white
-            mx-auto gap-2 p-4 mt-6"
-            on:click={() => modalStore.open("rpalettes", {
-                current: true
-            })}>
-                <img src={paletteIcon} alt="palette Icon" 
-                class="invert h-8 w--8">
-                <span>
-                    View Color Palettes
-                </span>
-            </button> -->
-
         </div>
+
+        <StdButton message="View Color Palettes" 
+        on:click={() => modalStore.open("rpalettes", {
+            current: true
+        })} scheme="blue" />
     </div>
 
     <div class="flex gap-2 border-t-2 mt-2 pt-2" slot="buttons">
