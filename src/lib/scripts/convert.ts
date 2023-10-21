@@ -210,7 +210,7 @@ const valueToDays = (value: number) => {
  * @param until 
  * @returns RRule string
  */
-const valueToRRule = (value: number, until: number[]) => {
+export const valueToRRule = (value: number, until: number[]) => {
     let days = valueToDays(value);
     let rrule = "FREQ=WEEKLY;BYDAY=";
     for (let day of days) {
@@ -228,6 +228,27 @@ const valueToRRule = (value: number, until: number[]) => {
         + until[2].toString().padStart(2, '0') 
         + "T000000Z";
     return rrule;
+}
+
+/**
+ * Converts an array of exclusions to a string
+ * @param exclArr 
+ * @returns string of exclusions
+ */
+export const calculateExclusions = (exclArr: number[][]): string => {
+    if (exclArr.length === 0) return "";
+    let ret = "";
+
+    for (const exclusion of exclArr) {
+        for (let i = 0; i < exclusion[3]; i++) {
+            ret += exclusion[0] 
+                + (exclusion[1]).toString().padStart(2, '0') 
+                + (exclusion[2] + i).toString().padStart(2, '0') 
+                + "T000000Z,";
+        }
+    }
+
+    return ret.slice(0, -1);
 }
 
 
@@ -314,7 +335,6 @@ export {
     testTimeToValue,
     daysToValue,
     valueToDays,
-    valueToRRule,
     normalizeText,
     darkenHSL,
     hslToRGB,
