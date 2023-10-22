@@ -157,7 +157,6 @@ export const searchResults = {
 
                 // Sort through sections and add to sectionData
                 for (let i = 0; i < sections.length; i++) {
-                    delete sections[i].courses;
                     let sec = sections[i];
                     let courseId = sec.course_id;
 
