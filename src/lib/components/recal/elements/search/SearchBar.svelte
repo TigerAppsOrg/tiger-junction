@@ -1,9 +1,10 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse, research } from "$lib/stores/recal";
+import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse, research, ready } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { sectionData } from "$lib/stores/rsections";
+    import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let supabase: SupabaseClient;
@@ -44,7 +45,10 @@ const triggerSearch = () => {
         class="search-input std-area" bind:this={inputBar}
         on:input={triggerSearch}>
         <button class="adv-search"
-        on:click={() => modalStore.open("adv", { clear: true })}>
+        on:click={() => {
+            if (!$ready) toastStore.add("error", "Please wait for the data to load");
+            else modalStore.open("adv", { clear: true });
+        }}>
             <img src={settingsIcon} alt="Settings Icon" 
             class="w-6 h-6 dark:invert-[.7] invert-[.5]">
         </button>
