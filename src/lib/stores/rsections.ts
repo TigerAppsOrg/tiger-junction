@@ -73,3 +73,9 @@ export const sectionData = {
         return true;
     }
 }
+
+export const sectionDone = writable({
+    1242: false,
+    1234: false,
+    1232: false
+});

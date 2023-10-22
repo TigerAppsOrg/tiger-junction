@@ -1,7 +1,8 @@
 // Stores for ReCal+ app
 import { normalizeText } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
-import { writable, type Writable } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
+import { sectionData, sectionDone } from "./rsections";
 
 //----------------------------------------------------------------------
 // Forcers
@@ -61,7 +62,7 @@ export const searchResults = {
      * @param query input
      * @param term id of the term
      */
-    search: (query: string, term: number, settings: SearchSettings): void => {
+    search: async (query: string, term: number, settings: SearchSettings) => {
         // Current current search data
         if (!searchCourseData.get(term)) 
             searchCourseData.reset(term);
@@ -138,7 +139,34 @@ export const searchResults = {
 
         // * Does Not Conflict
         if (settings.filters["Does Not Conflict"].enabled) {
-            
+            // Fetch all sections for all courses in term
+            if (!get(sectionDone)[term as 1242 | 1234 | 1232]) {
+                let termSec = get(sectionData)[term];
+
+                // Fetch Sections
+                const secs = await fetch(`/api/client/sections/${term}`);
+                const sections = await secs.json();
+                console.log(sections);
+
+                // Sort through sections and add to sectionData
+                for (let i = 0; i < sections.length; i++) {
+                    let sec = sections[i];
+                    let courseId = sec.course_id;
+
+                    // Add course to sectionData
+                    if (!termSec[courseId]) {
+                        termSec[courseId] = [];
+                    }
+                    termSec[courseId].push(sec);
+                }
+                console.log(Object.keys(get(sectionData)[term]).length);
+                    
+                // Mark sections for term as fully loaded
+                sectionDone.update(x => {
+                    x[term as 1242 | 1234 | 1232] = true;
+                    return x;
+                });
+            }
 
 
         }
