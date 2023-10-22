@@ -235,7 +235,10 @@ export const searchResults = {
                     });
 
                 // Check if any conflicts and filter
-                data = data.filter(x => !doesConflict(x, conflictList));
+                data = data.filter(x => !doesConflict(x, 
+                    conflictList, 
+                    settings.filters["Does Not Conflict"]
+                        .values["Only Available Sections"]));
 
             } // ! End of if (saved && meta)
         } // ! End of "Does Not Conflict" filter
@@ -471,7 +474,6 @@ type SortBy = {
 }
 
 export type SearchSettings = {
-    options: Record<string, boolean>,
     filters: Record<string, Filter>,
     sortBy: Record<string, SortBy>,
     style: Record<string, boolean>,
@@ -480,12 +482,6 @@ export type SearchSettings = {
 export const currentSortBy: Writable<string | null> = writable(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
-    "options": {
-        // "Title": true,
-        // "Code": true,
-        // "Instructor": true,
-        // "Smart Search": false,
-    }, 
     "filters": {
         "Show All": {
             "enabled": false,
@@ -537,6 +533,10 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         },
         "Does Not Conflict": {
             "enabled": false,
+            "values": {
+                "Only Available Sections": false,
+                // "Include Custom Blocks": false,
+            }
         },
     },
     "sortBy": {

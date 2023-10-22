@@ -18,6 +18,7 @@ type RegSection = WeekDays & {
     enrl_cap: string,
     start_time: string,
     end_time: string,
+    status: string,
     [key: string]: any,
 };
 

@@ -63,14 +63,16 @@ Deno.serve(async (req) => {
     }
   });
 
-  // Remove duplicate course ids from courselist
   const removeDup = (arr: IdStatus[]) => {
-    const ids: string[] = [];
+    const ids = [];
     const toReturn: {id: string, status: number}[] = [];
     for (const course of arr) {
         if (!ids.includes(course.id)) {
             ids.push(course.id);
             toReturn.push(course);
+        } else {
+          const index = toReturn.findIndex(x => x.id === course.id);
+          if (course.status === 0) toReturn[index] = course;
         }
     }
     return toReturn;
@@ -282,6 +284,7 @@ const updateInstructors = async (supabase: SupabaseClient,
               days: daysToValue(section),
               start_time: timeToValue(section.start_time),
               end_time: timeToValue(section.end_time),
+              status: calculateStatus(section.calculated_status),
             };
 
             supabase.from("sections")
@@ -303,6 +306,7 @@ const updateInstructors = async (supabase: SupabaseClient,
                   room: parseBuilding(section),
                   tot: section.enrl_tot,
                   cap: section.enrl_cap,
+                  status: calculateStatus(section.calculated_status),
                 })
                 .eq("id", res.data[0].id)
                 .then(res => {

@@ -41,7 +41,7 @@ const handleLogout = async () => {
  * Hit an API endpoint and handle loading and postloading
  * @param fetcher The fetcher function to use
  */
-const submitEvent = async (fetcher: () => Promise<Response>) => {
+const submitEvent = async (fetcher: () => Promise<Response>) => {    
     // Check for valid term code
     if (!Object.values(TERM_MAP).includes(parseInt(term))) {
         alert("Invalid term code!");
