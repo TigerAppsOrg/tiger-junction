@@ -282,6 +282,7 @@ const updateInstructors = async (supabase: SupabaseClient,
               days: daysToValue(section),
               start_time: timeToValue(section.start_time),
               end_time: timeToValue(section.end_time),
+              status: calculateStatus(section.calculated_status),
             };
 
             supabase.from("sections")
@@ -303,6 +304,7 @@ const updateInstructors = async (supabase: SupabaseClient,
                   room: parseBuilding(section),
                   tot: section.enrl_tot,
                   cap: section.enrl_cap,
+                  status: calculateStatus(section.calculated_status),
                 })
                 .eq("id", res.data[0].id)
                 .then(res => {

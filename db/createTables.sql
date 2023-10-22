@@ -82,6 +82,7 @@ CREATE TABLE sections (
   days SMALLINT,
   start_time REAL,
   end_time REAL,
+  status SMALLINT,
   PRIMARY KEY(id)
 );
 

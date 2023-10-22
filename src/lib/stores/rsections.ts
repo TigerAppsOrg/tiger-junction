@@ -25,6 +25,7 @@ export type SectionData = {
     start_time: number,
     title: string,
     tot: number,
+    status: number,
 }
 
 const { set, update, subscribe }: Writable<RawSectionData> = writable({

@@ -537,6 +537,10 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         },
         "Does Not Conflict": {
             "enabled": false,
+            "values": {
+                "Only Available Sections": true,
+                // "Include Custom Blocks": false,
+            }
         },
     },
     "sortBy": {
