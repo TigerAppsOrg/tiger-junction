@@ -136,6 +136,13 @@ export const searchResults = {
             );
         }
 
+        // * Does Not Conflict
+        if (settings.filters["Does Not Conflict"].enabled) {
+            
+
+
+        }
+
         //--------------------------------------------------------------
         // SortBy Settings
         //--------------------------------------------------------------
@@ -429,6 +436,9 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             "enabled": false,
         },
         "No Cancelled": {
+            "enabled": false,
+        },
+        "Does Not Conflict": {
             "enabled": false,
         },
     },

@@ -42,6 +42,18 @@ Deno.serve(async (req) => {
     throw new Error(error2.message);
   }
 
+  const { data: supaSections, error: error3 } = await supabaseClient
+    .from("sections")
+    .select("*, courses(term)")
+    .eq("courses.term", term)
+    .order("id", { ascending: true });
+
+  if (error3) {
+    throw new Error(error3.message);
+  }
+
+  console.log(supaSections)
+
   // Push term data to Redis
   const redisClient = createRedisClient({
     password: Deno.env.get("REDIS_PASSWORD"),
@@ -51,11 +63,12 @@ Deno.serve(async (req) => {
     }
   });
 
-  redisClient.on("error", err => console.log("Redis Client Error", err));
+  // redisClient.on("error", err => console.log("Redis Client Error", err));
 
-  await redisClient.connect();
-  await redisClient.json.set(`courses-${term}`, "$", JSON.stringify(supaCourses));
-  await redisClient.disconnect();
+  // await redisClient.connect();
+  // await redisClient.json.set(`courses-${term}`, "$", JSON.stringify(supaCourses));
+  // await redisClient.json.set(`sections-${term}`, "$", JSON.stringify(supaSections));
+  // await redisClient.disconnect();
 
   return new Response(
     JSON.stringify("Course data for term " + term + " pushed to Redis"),
