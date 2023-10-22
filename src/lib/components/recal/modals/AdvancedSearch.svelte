@@ -76,7 +76,17 @@ const resetSearchSettings = () => {
                         <div class="border-slate-600/30 mx-8 p-2
                         dark:border-slate-200/30 border-t-2 mt-2">
                             <div>
+                                {#if filter === "Does Not Conflict"}
+                                <h3 class="text-lg font-semibold">Does Not Conflict</h3>
+                                <p class="italic mb-2">
+                                    "Only Available Sections" displays 
+                                    only courses that have at least 1 section of
+                                    every section type (lecture, precept, etc.) 
+                                    that does not conflict and is open
+                                </p>
+                                {:else}
                                 <h3 class="text-lg font-semibold mb-2">{filter}</h3>
+                                {/if}
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 {#each Object.keys($searchSettings.filters[filter].values) 
@@ -88,8 +98,8 @@ const resetSearchSettings = () => {
 
                             </div>
                             <!-- All and None Buttons-->
+                            {#if filter !== "Does Not Conflict"}
                             <div class="flex gap-2 mt-4">
-                                {#if filter !== "Does Not Conflict"}
                                 <StdButton message="Check All" 
                                 onClick={() => {
                                     Object.keys($searchSettings.filters[filter].values)
@@ -104,8 +114,8 @@ const resetSearchSettings = () => {
                                         $searchSettings.filters[filter].values[value] = false;
                                     })
                                 }} scheme="4" />
-                                {/if}
                             </div>
+                            {/if}
                         </div>
                     {/if}
                     {/each}
