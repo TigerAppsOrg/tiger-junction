@@ -24,15 +24,13 @@ export const GET: RequestHandler = async (req) => {
 
   const { data: supaSections, error: error3 } = await supabase
     .from("sections")
-    .select("*, courses(term)")
+    .select("*, courses!inner(term)")
     .eq("courses.term", term)
     .order("id", { ascending: true });
 
   if (error3) {
     throw new Error(error3.message);
   }
-
-  console.log(supaSections)
 
   // Push term data to Redis
   const redisClient = createClient({
