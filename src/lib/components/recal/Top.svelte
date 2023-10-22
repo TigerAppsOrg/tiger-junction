@@ -1,6 +1,6 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import addIcon from "$lib/img/icons/addicon.svg";
@@ -8,6 +8,7 @@ import logoutIcon from "$lib/img/icons/logouticon.svg";
 import moonIcon from "$lib/img/icons/moonicon.svg";
 import sunIcon from "$lib/img/icons/sunicon.svg";
 import utilsIcon from "$lib/img/icons/utilsicon.svg";
+import duck from "$lib/img/duck.gif";
 
 import { darkTheme } from "$lib/stores/state";
 import { modalStore } from "$lib/stores/modal";
@@ -208,6 +209,15 @@ dark:border-slate-200/60">
     {/key}
     </div> 
     </div> <!-- * Schedule Select -->
+
+    {#if $searchSettings.style["Duck"]}
+    <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
+    <div class="h-6 relative pointer-events-none ml-[-25%] w-[150%]">
+        <div id="duck" class="w-12 h-12 absolute bottom-[14px]">
+            <img src={duck} alt="duck">
+        </div>
+    </div>
+    {/if}
 </div>
 
 <style lang="postcss">
@@ -245,5 +255,18 @@ dark:border-slate-200/60">
 
 .btn-icon {
     @apply h-5 w-5 invert-[.5] dark:invert-[.7];
+}
+
+#duck {
+    animation: animate-walk 30s infinite linear;
+}
+
+@keyframes animate-walk {
+    0% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform: translateX(150vw);
+    }
 }
 </style>
