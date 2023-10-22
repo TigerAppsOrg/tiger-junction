@@ -210,8 +210,7 @@ export const searchResults = {
                             for (let l = 0; l < conflictList[day].length; l++) {
                                 let start = conflictList[day][l][0];
                                 let end = conflictList[day][l][1];
-                                console.log(nSec.start_time, nSec.end_time, start, end)
-                                if (nSec.start_time <= end && nSec.end_time >= start)
+                                if (nSec.start_time < end && nSec.end_time > start)
                                     break o;
                                 
                             }
