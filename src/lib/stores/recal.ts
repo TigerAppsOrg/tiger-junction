@@ -454,6 +454,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Enrollments": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
+        "Duck": false,
     }
 }
 
