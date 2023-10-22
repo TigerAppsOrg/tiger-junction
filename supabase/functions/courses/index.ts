@@ -63,14 +63,16 @@ Deno.serve(async (req) => {
     }
   });
 
-  // Remove duplicate course ids from courselist
   const removeDup = (arr: IdStatus[]) => {
-    const ids: string[] = [];
+    const ids = [];
     const toReturn: {id: string, status: number}[] = [];
     for (const course of arr) {
         if (!ids.includes(course.id)) {
             ids.push(course.id);
             toReturn.push(course);
+        } else {
+          const index = toReturn.findIndex(x => x.id === course.id);
+          if (course.status === 0) toReturn[index] = course;
         }
     }
     return toReturn;
