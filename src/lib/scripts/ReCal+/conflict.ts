@@ -11,7 +11,9 @@ import { valueToDays } from "../convert";
  * section that does not conflict and true otherwise
  */
 export const doesConflict = (course: CourseData, 
-conflictList: Record<number, [number, number][]>): boolean => {
+conflictList: Record<number, [number, number][]>, 
+onlyAvailable: boolean): boolean => {
+
     // Get sections of the course
     const sections = get(sectionData)[get(currentTerm)][course.id];
 
@@ -25,7 +27,8 @@ conflictList: Record<number, [number, number][]>): boolean => {
     // Check if there is a nonconflicting section for each category
     o: for (const sectionList of Object.values(sectionMap)) {
             for (const section of sectionList) 
-                if (!doesSectionConflict(section, conflictList)) 
+                if (!doesSectionConflict(section, conflictList) 
+                && (!onlyAvailable || section.status === 0)) 
                     continue o;
             return true;
     }

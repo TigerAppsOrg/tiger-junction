@@ -235,7 +235,10 @@ export const searchResults = {
                     });
 
                 // Check if any conflicts and filter
-                data = data.filter(x => !doesConflict(x, conflictList));
+                data = data.filter(x => !doesConflict(x, 
+                    conflictList, 
+                    settings.filters["Does Not Conflict"]
+                        .values["Only Available Sections"]));
 
             } // ! End of if (saved && meta)
         } // ! End of "Does Not Conflict" filter
