@@ -194,6 +194,8 @@ export const searchResults = {
                     let courseSections = termSec[saved[i].id];
                     let courseMeta = meta[saved[i].id];
 
+                    console.log(courseMeta)
+
                     if (!courseMeta || !courseSections) continue;
 
                     for (let j = 0; j < courseSections.length; j++) {
@@ -202,10 +204,10 @@ export const searchResults = {
                         // Continue if not confirmed
                         if (courseMeta.confirms.hasOwnProperty(nSec.category)) 
                             // Legacy compatibility 
-                            if (typeof courseMeta.confirms[nSec.category] === "number") 
+                            if (typeof courseMeta.confirms[nSec.category] === "number") {
                                 if (parseInt(courseMeta.confirms[nSec.category]) !== nSec.id)
                                     continue;
-                             else 
+                            } else 
                                 if (courseMeta.confirms[nSec.category] !== nSec.title)
                                     continue;
                             
@@ -213,13 +215,13 @@ export const searchResults = {
                         let days = valueToDays(nSec.days);
                         o: for (let k = 0; k < days.length; k++) {
                             let day = days[k];
+
                             // Check if time conflicts
                             for (let l = 0; l < conflictList[day].length; l++) {
                                 let start = conflictList[day][l][0];
                                 let end = conflictList[day][l][1];
                                 if (nSec.start_time < end && nSec.end_time > start)
                                     break o;
-                                
                             }
 
                             // Add to conflict list
