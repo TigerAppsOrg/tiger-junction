@@ -20,7 +20,9 @@ section {
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     margin-bottom: 1rem;
     justify-content: center;
