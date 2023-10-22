@@ -82,23 +82,11 @@ const handleClick = () => {
         }
     });
 }
-
-// For cursor-following tooltip
-let mouseX: number = 0;
-let mouseY: number = 0;
-$: {
-    if (hovered) {
-        window.addEventListener("mousemove", (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-    }
-}
-
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex p-[1px] rounded-md" style={cssVarStyles}
+<button id="box" class="absolute text-left flex p-[1px] rounded-md cursor-pointer" 
+style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
@@ -124,20 +112,6 @@ on:mouseleave={() => hovered = false}>
 
     </div>
 </button>
-
-<!-- Tooltip with room and capacity that follows cursor -->
-<!-- {#if $searchSettings.style["Show Tooltips"] && hovered} 
-<div class="fixed z-50 bg-slate-100 dark:bg-slate-800 rounded-md 
-p-1 text-xs opacity-80"
-style={`top: ${mouseY}px; left: ${mouseX + 10}px;`}>
-    <div class="font-light">
-        {section.room ? section.room : ""}
-    </div>
-    <div class="font-light">
-        Enrollments: {section.tot}/{section.cap}
-    </div>
-</div>
-{/if} -->
 
 <style lang="postcss">
 button {
