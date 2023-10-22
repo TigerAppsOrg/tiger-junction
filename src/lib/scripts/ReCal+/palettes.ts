@@ -84,7 +84,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "5": "#231758",
         "6": "#121b67",
     },
-    "Fish": {
+    "Pearl": {
         "-1": "#e6e6e6",
         "0": "#e9b7ce",
         "1": "#e5c1d4",
