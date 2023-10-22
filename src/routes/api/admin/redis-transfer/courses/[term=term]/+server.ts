@@ -32,6 +32,10 @@ export const GET: RequestHandler = async (req) => {
     throw new Error(error3.message);
   }
 
+  supaSections.forEach((section) => {
+    delete section.courses;
+  });
+
   // Push term data to Redis
   const redisClient = createClient({
     password: "xBbdBUPnrm010GJiI0Cw0UMiJZkxUPjG",
