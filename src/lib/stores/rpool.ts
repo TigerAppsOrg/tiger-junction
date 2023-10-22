@@ -117,7 +117,7 @@ scheduleId: number): Promise<boolean> => {
         let category = meta.sections[i];
         let categorySections = sections.filter(x => x.category === category);
         if (categorySections.length === 1) {
-            meta.confirms[category] = categorySections[0].id;
+            meta.confirms[category] = categorySections[0].title;
         } else {
             meta.complete = false;
         }
@@ -198,7 +198,6 @@ term: number) => {
             y[scheduleId][cur.id] = x.metadata;
             return y;
         });
-        // addCourseMetadata(supabase, cur, scheduleId);
 
         // Load section data
         await sectionData.add(supabase, term, cur.id);

@@ -1,7 +1,11 @@
 // Stores for ReCal+ app
-import { normalizeText } from "$lib/scripts/convert";
+import { normalizeText, valueToDays } from "$lib/scripts/convert";
 import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
-import { writable, type Writable } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
+import { sectionData, sectionDone } from "./rsections";
+import { savedCourses } from "./rpool";
+import { rMeta } from "./rmeta";
+import { doesConflict } from "$lib/scripts/ReCal+/conflict";
 
 //----------------------------------------------------------------------
 // Forcers
@@ -61,7 +65,7 @@ export const searchResults = {
      * @param query input
      * @param term id of the term
      */
-    search: (query: string, term: number, settings: SearchSettings): void => {
+    search: async (query: string, term: number, settings: SearchSettings) => {
         // Current current search data
         if (!searchCourseData.get(term)) 
             searchCourseData.reset(term);
@@ -135,6 +139,107 @@ export const searchResults = {
                 .values[x.code.charAt(3)]
             );
         }
+
+        // * Does Not Conflict
+        if (settings.filters["Does Not Conflict"].enabled) {
+            // Fetch all sections for all courses in term
+            let termSec = get(sectionData)[term];
+
+            if (!get(sectionDone)[term as 1242 | 1234 | 1232]) {
+                // Fetch Sections
+                const secs = await fetch(`/api/client/sections/${term}`);
+                const sections = await secs.json();
+
+                // Blacklist of courses that are already loaded
+                let blacklist: number[] = [];
+                for (let courseId in termSec) 
+                    blacklist.push(parseInt(courseId));
+
+                // Sort through sections and add to sectionData
+                for (let i = 0; i < sections.length; i++) {
+                    delete sections[i].courses;
+                    let sec = sections[i];
+                    let courseId = sec.course_id;
+
+                    if (blacklist.includes(courseId)) continue;
+
+                    // Add course to sectionData 
+                    if (!termSec[courseId]) {
+                        termSec[courseId] = [];
+                    }
+                    termSec[courseId].push(sec);
+                }
+
+                // Mark sections for term as fully loaded
+                sectionDone.update(x => {
+                    x[term as 1242 | 1234 | 1232] = true;
+                    return x;
+                });
+            }
+
+            // Get confirmed sections and format into array
+            let conflictList: Record<number, [number, number][]> = {
+                1: [],
+                2: [],
+                3: [],
+                4: [],
+                5: [],
+            };
+            let curSched = get(currentSchedule);
+            let saved = get(savedCourses)[curSched];
+            let meta = get(rMeta)[curSched];
+
+            if (saved && meta) {
+                for (let i = 0; i < saved.length; i++) {
+                    let courseSections = termSec[saved[i].id];
+                    let courseMeta = meta[saved[i].id];
+
+                    if (!courseMeta || !courseSections) continue;
+
+                    for (let j = 0; j < courseSections.length; j++) {
+                        let nSec = courseSections[j];
+
+                        // Continue if not confirmed
+                        if (courseMeta.confirms.hasOwnProperty(nSec.category)) {
+                            // Legacy compatibility 
+                            if (typeof courseMeta.confirms[nSec.category] === "number") {
+                                if (parseInt(courseMeta.confirms[nSec.category]) !== nSec.id)
+                                    continue;
+                            } else 
+                                if (courseMeta.confirms[nSec.category] !== nSec.title)
+                                    continue;
+                        } else continue;
+                            
+                        // Add to conflict list if confirmed
+                        let days = valueToDays(nSec.days);
+                        o: for (let k = 0; k < days.length; k++) {
+                            let day = days[k];
+
+                            // Check if time conflicts
+                            for (let l = 0; l < conflictList[day].length; l++) {
+                                let start = conflictList[day][l][0];
+                                let end = conflictList[day][l][1];
+                                if (nSec.start_time < end && nSec.end_time > start)
+                                    break o;
+                            }
+
+                            // Add to conflict list
+                            conflictList[day].push([nSec.start_time, nSec.end_time]);
+                        } // ! End of days loop
+                    } // ! End of courseSections loop
+                } // ! End of saved courses loop
+
+                // Sort conflict list
+                for (let day in conflictList) 
+                    conflictList[day] = conflictList[day].sort((a, b) => {
+                        return a[0] - b[0];
+                    });
+
+                // Check if any conflicts and filter
+                data = data.filter(x => !doesConflict(x, conflictList));
+
+            } // ! End of if (saved && meta)
+        } // ! End of "Does Not Conflict" filter
 
         //--------------------------------------------------------------
         // SortBy Settings
@@ -429,6 +534,9 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             "enabled": false,
         },
         "No Cancelled": {
+            "enabled": false,
+        },
+        "Does Not Conflict": {
             "enabled": false,
         },
     },

@@ -2,6 +2,7 @@
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse, research } from "$lib/stores/recal";
+import { rMeta } from "$lib/stores/rmeta";
 import { sectionData } from "$lib/stores/rsections";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -13,7 +14,8 @@ let inputBar: HTMLInputElement;
 const THRESHOLD = 20;
 
 // Update search results when params change
-$: autoTrig($searchSettings, $searchCourseData, $currentTerm, $currentSchedule, $research);
+$: autoTrig($searchSettings, $searchCourseData, $currentTerm,
+ $currentSchedule, $research, $rMeta);
 const autoTrig = (...params: any[]) => {
     triggerSearch();
 }
