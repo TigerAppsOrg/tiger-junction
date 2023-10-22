@@ -150,13 +150,20 @@ export const searchResults = {
                 const secs = await fetch(`/api/client/sections/${term}`);
                 const sections = await secs.json();
 
+                // Blacklist of courses that are already loaded
+                let blacklist: number[] = [];
+                for (let courseId in termSec) 
+                    blacklist.push(parseInt(courseId));
+
                 // Sort through sections and add to sectionData
                 for (let i = 0; i < sections.length; i++) {
                     delete sections[i].courses;
                     let sec = sections[i];
                     let courseId = sec.course_id;
 
-                    // Add course to sectionData
+                    if (blacklist.includes(courseId)) continue;
+
+                    // Add course to sectionData 
                     if (!termSec[courseId]) {
                         termSec[courseId] = [];
                     }
