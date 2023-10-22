@@ -89,6 +89,7 @@ const resetSearchSettings = () => {
                             </div>
                             <!-- All and None Buttons-->
                             <div class="flex gap-2 mt-4">
+                                {#if filter !== "Does Not Conflict"}
                                 <StdButton message="Check All" 
                                 onClick={() => {
                                     Object.keys($searchSettings.filters[filter].values)
@@ -103,6 +104,7 @@ const resetSearchSettings = () => {
                                         $searchSettings.filters[filter].values[value] = false;
                                     })
                                 }} scheme="4" />
+                                {/if}
                             </div>
                         </div>
                     {/if}
