@@ -2,6 +2,7 @@ import { CURRENT_TERM_ID } from "$lib/constants";
 import { createClient } from "redis";
 import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
+import type { SectionData } from "$lib/stores/rsections";
 
 // Load course data for default term from Redis
 export const load = async () => {
@@ -15,13 +16,18 @@ export const load = async () => {
     
     redisClient.on("error", err => console.log("Redis Client Error", err));
     await redisClient.connect();
-    const data = await redisClient.json.get(`courses-${CURRENT_TERM_ID}`);
+    const courses = await redisClient.json.get(`courses-${CURRENT_TERM_ID}`);
+    const sections = await redisClient.json.get(`sections-${CURRENT_TERM_ID}`);
     await redisClient.disconnect();
 
-    if (!data) return { status: 500, body: "Error fetching courses" };
+    if (!courses) return { status: 500, body: "Error fetching courses" };
+    if (!sections) return { status: 500, body: "Error fetching sections" };
 
     return {
         status: 200,
-        body: data as CourseData[]
+        body: {
+            courses: courses as CourseData[],
+            sections: sections as SectionData[]
+        }
     }
 };

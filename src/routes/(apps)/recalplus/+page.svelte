@@ -7,6 +7,7 @@ import { fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { rawCourseData, ready, schedules, searchCourseData } from "$lib/stores/recal.js";
 import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
+import { sectionData } from "$lib/stores/rsections.js";
 import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
 
@@ -14,7 +15,7 @@ export let data;
 
 onMount(async () => {
     rawCourseData.update(x => {
-        let cur: CourseData[] = (data.body as CourseData[]).map(y => {
+        let cur: CourseData[] = (data.body.courses as CourseData[]).map(y => {
             let adj_evals = (y.num_evals + 1) * 1.5;
             y.adj_rating = y.rating !== null && y.num_evals !== null ?
             Math.round(((y.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
@@ -25,6 +26,20 @@ onMount(async () => {
         return x;
     })
     searchCourseData.reset(CURRENT_TERM_ID);
+
+    // Sort through sections and add to sectionData
+    let sections = data.body.sections;
+    let termSec = $sectionData[CURRENT_TERM_ID];
+    for (let i = 0; i < sections.length; i++) {
+        let sec = sections[i];
+        let courseId = sec.course_id;
+
+        // Add course to sectionData 
+        if (!termSec[courseId]) {
+            termSec[courseId] = [];
+        }
+        termSec[courseId].push(sec);
+    }
     
     await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
