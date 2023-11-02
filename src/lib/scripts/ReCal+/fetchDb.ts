@@ -72,13 +72,14 @@ Promise<boolean | null> => {
         // Create default schedule
         const { data, error } = await supabase
             .from("schedules")
-            .insert([{ user_id: user.data.user.id, term, title: "My Schedule" }]);
+            .insert([{ user_id: user.data.user.id, term, title: "My Schedule" }])
+            .single();
 
         if (error) return false;
 
         // Update schedules store
         schedules.update(x => {
-            x[term as keyof RawCourseData] = data[0].id;
+            x[term as keyof RawCourseData] = data.id;
             return x;
         });
     }

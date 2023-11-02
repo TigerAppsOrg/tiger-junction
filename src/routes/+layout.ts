@@ -20,5 +20,5 @@ export const load = async ({ fetch, data, depends }) => {
 }
 
 export const config: Config = {
-    runtime: "edge"
+    runtime: "nodejs18.x"
 };

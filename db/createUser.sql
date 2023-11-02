@@ -12,7 +12,9 @@ BEGIN
   INSERT INTO public.schedules (user_id, title, term)
   VALUES (new.id, 'My Schedule', 1242),
          (new.id, 'My Schedule', 1234),
-         (new.id, 'My Schedule', 1232);
+         (new.id, 'My Schedule', 1232),
+         (new.id, 'My Schedule', 1244);
+
 
   RETURN new;
 END;
