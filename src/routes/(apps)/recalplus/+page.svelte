@@ -55,7 +55,7 @@ onMount(async () => {
 
 
 <svelte:head>
-    <title>TigerJunction | ReCal+</title>
+    <title>TigerJunction</title>
 </svelte:head>
 
 
