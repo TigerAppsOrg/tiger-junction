@@ -78,7 +78,7 @@ dark:border-slate-200/60">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
-            <button class="card termchoice" 
+            <button class="card {$currentTerm === 1232 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1232}
             on:click={() => handleTermChange(1232)}>
                 {#if $isMobile}
@@ -87,7 +87,7 @@ dark:border-slate-200/60">
                 Fall 2022
                 {/if}
             </button>
-            <button class="card termchoice" 
+            <button class="card {$currentTerm === 1232 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
                 {#if $isMobile}
@@ -96,7 +96,7 @@ dark:border-slate-200/60">
                 Spring 2023
                 {/if}
             </button>
-            <button class="card termchoice" 
+            <button class="card {$currentTerm === 1232 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1242}
             on:click={() => handleTermChange(1242)}>
                 {#if $isMobile}
@@ -105,11 +105,11 @@ dark:border-slate-200/60">
                 Fall 2023
                 {/if}
             </button>
-            <button class="card termchoice" 
+            <button class="card {$currentTerm === 1244 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1244}
             on:click={() => handleTermChange(1244)}>
                 {#if $isMobile}
-                F23
+                S24
                 {:else}
                 Spring 2024
                 {/if}
