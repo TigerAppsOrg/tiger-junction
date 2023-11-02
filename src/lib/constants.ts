@@ -13,6 +13,7 @@ const EVALUATION_URL = "https://registrarapps.princeton.edu/course-evaluation?";
 
 // Terms
 const TERM_MAP: Record<string, number> = {
+    "SPRING_2024": 1244,
     "FALL_2023": 1242,
     "SPRING_2023": 1234,
     "FALL_2022": 1232,
@@ -27,6 +28,7 @@ const TERM_MAP: Record<string, number> = {
 }
 
 const EVALS_TERM_MAP: Record<number, string> = {
+    1244: "2023-2024 Spring Course Evaluation Results",
     1242: "2023-2024 Fall Course Evaluation Results",
     1234: "2022-2023 Spring Course Evaluation Results",
     1232: "2022-2023 Fall Course Evaluation Results",
@@ -40,8 +42,8 @@ const EVALS_TERM_MAP: Record<number, string> = {
     1192: "2018-2019 Fall Course Evaluation Results",
 }
 
-const CURRENT_TERM_NAME = "FALL_2023";
-const CURRENT_TERM_ID = 1242;
+const CURRENT_TERM_NAME = "SPRING_2024";
+const CURRENT_TERM_ID = 1244;
 
 const GENERIC_GRADING_INFO: RegGradingInfo = {
     grading_design_projects: "Design Project", 
@@ -82,6 +84,13 @@ type Calendar_Info = {
 
 // Dates for each term
 export const CALENDAR_INFO: Record<string, Calendar_Info> = {
+    "1244": {
+        "name": "Spring 2024",
+        "start":[2024, 1, 29],
+        "start_day": 1,
+        "end": [2024, 4, 26],
+        "exclusions": [],
+    },
     "1242": {
         "name": "Fall 2023",
         "start":[2023, 9, 5],
@@ -95,13 +104,6 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         "start_day": 1,
         "end": [2023, 5, 10], 
         "exclusions": [],
-    },
-    "1232": {
-        "name": "Fall 2022",
-        "start": [2022, 9, 14], 
-        "start_day": 2,
-        "end": [2022, 12, 17],
-        "exclusions": []
     },
 }
 

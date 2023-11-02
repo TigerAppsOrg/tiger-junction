@@ -2,7 +2,6 @@
 
 import type { SectionData } from "$lib/stores/rsections"
 import type { CalColors } from "$lib/stores/styles"
-import type { RegSeatReservation } from "./regTypes"
 
 type Listing = {
     id: string,
@@ -62,6 +61,7 @@ type CourseData = {
 }
 
 type RawCourseData = {
+    1244: CourseData[]
     1242: CourseData[] 
     1234: CourseData[] 
     1232: CourseData[]

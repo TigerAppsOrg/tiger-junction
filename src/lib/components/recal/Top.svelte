@@ -105,6 +105,15 @@ dark:border-slate-200/60">
                 Fall 2023
                 {/if}
             </button>
+            <button class="card termchoice" 
+            class:selected={$currentTerm === 1244}
+            on:click={() => handleTermChange(1244)}>
+                {#if $isMobile}
+                F23
+                {:else}
+                Spring 2024
+                {/if}
+            </button>
         </div> <!-- * Semester Select -->
 
         <div class="flex gap-2">

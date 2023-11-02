@@ -131,7 +131,7 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 
                 <!-- Courses -->
                 <button
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}listings/${term}`))}
+                on:click={() => submitEvent(() => fetch(`${API_PREFIX}courses/${term}`))}
                 class="btn btn-blue">
                     Post Term Listings 
                 </button>
@@ -179,6 +179,19 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                 </button>
             </form>
         </div> <!-- * End Static DB Management -->
+        
+        <div class="area area-std">
+            <form method="POST">
+                <button formaction="?/pushListings"
+                class="btn">
+                   Push Listings
+                </button>
+                <button formaction="?/pushRatings"
+                class="btn">
+                   Push Ratings
+                </button>
+            </form>
+        </div>
 
         <!-- <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>

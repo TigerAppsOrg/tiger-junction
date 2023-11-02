@@ -68,6 +68,21 @@ Promise<boolean | null> => {
 
     if (error) return false;
 
+    if (data.length === 0) {
+        // Create default schedule
+        const { data, error } = await supabase
+            .from("schedules")
+            .insert([{ user_id: user.data.user.id, term, title: "My Schedule" }]);
+
+        if (error) return false;
+
+        // Update schedules store
+        schedules.update(x => {
+            x[term as keyof RawCourseData] = data[0].id;
+            return x;
+        });
+    }
+
     let ids = data.map(x => { 
         return {
             id: x.id,

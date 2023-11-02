@@ -22,8 +22,9 @@ export const load = async ({ locals }) => {
 
 export const actions: Actions = {
     // ! Pushers
-    pushListings: async ({ request, locals }) => {
-        return await populateField(request, locals, populateListings);
+    pushListings: async ({ locals }) => {
+        console.log("FEWF")
+        return await populateListings(locals.supabase, 1244);
     },
     pushCourses: async ({ request, locals }) => {
         return await populateField(request, locals, populateCourses);
@@ -32,7 +33,8 @@ export const actions: Actions = {
         return await populateField(request, locals, populateEvaluations);
     },
     pushRatings: async ({ request, locals }) => {
-        return await populateField(request, locals, populateRatings);
+        console.log("RERFEW")
+        return await populateRatings(locals.supabase, 1244);
     },
     pushPrograms: async ({ locals }) => {
 

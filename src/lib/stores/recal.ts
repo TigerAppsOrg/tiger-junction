@@ -31,7 +31,7 @@ export const research: Writable<boolean> = writable(false);
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
 
 // Current term id
-export const currentTerm: Writable<number> = writable(1242);
+export const currentTerm: Writable<number> = writable(1244);
 
 // Current schedule id
 export const currentSchedule: Writable<number> = writable();
@@ -41,6 +41,7 @@ export const schedules: Writable<Record<number, {
     id: number,
     title: string,
 }[]>> = writable({
+    1244: [],
     1242: [],
     1234: [],
     1232: []
@@ -145,7 +146,7 @@ export const searchResults = {
             // Fetch all sections for all courses in term
             let termSec = get(sectionData)[term];
 
-            if (!get(sectionDone)[term as 1242 | 1234 | 1232]) {
+            if (!get(sectionDone)[term as 1242 | 1234 | 1232 | 1244]) {
                 // Fetch Sections
                 const secs = await fetch(`/api/client/sections/${term}`);
                 const sections = await secs.json();
@@ -171,7 +172,7 @@ export const searchResults = {
 
                 // Mark sections for term as fully loaded
                 sectionDone.update(x => {
-                    x[term as 1242 | 1234 | 1232] = true;
+                    x[term as 1242 | 1234 | 1232 | 1244] = true;
                     return x;
                 });
             }
@@ -307,6 +308,7 @@ are many pinned/saved courses. */
 
 const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
 Writable<RawCourseData> = writable({
+    1244: [],
     1242: [],
     1234: [],
     1232: []
@@ -336,6 +338,7 @@ export const rawCourseData = {
      */
     getAll: (): RawCourseData => {
         let data: RawCourseData = {
+            1244: [],
             1242: [],
             1234: [],
             1232: []
@@ -366,6 +369,7 @@ export const rawCourseData = {
 
 const { set: setSearch, update: updateSearch, subscribe: subscribeSearch }:
 Writable<RawCourseData> = writable({
+    1244: [],
     1242: [],
     1234: [],
     1232: []
@@ -395,6 +399,7 @@ export const searchCourseData = {
      */
     getAll: (): RawCourseData => {
         let data: RawCourseData = {
+            1244: [],
             1242: [],
             1234: [],
             1232: []

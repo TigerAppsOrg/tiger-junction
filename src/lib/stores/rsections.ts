@@ -29,6 +29,7 @@ export type SectionData = {
 }
 
 const { set, update, subscribe }: Writable<RawSectionData> = writable({
+    1244: {},
     1242: {},
     1234: {},
     1232: {}
@@ -76,7 +77,8 @@ export const sectionData = {
 }
 
 export const sectionDone = writable({
-    1242: true,
+    1244: true,
+    1242: false,
     1234: false,
     1232: false
 });
