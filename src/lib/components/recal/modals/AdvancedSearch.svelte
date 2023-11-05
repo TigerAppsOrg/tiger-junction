@@ -7,7 +7,6 @@ import { modalStore } from "$lib/stores/modal";
 import { DEFAULT_SETTINGS, searchSettings } from "$lib/stores/recal";
 
 export let showModal: boolean = false;
-
 /**
  * Save settings and close modal
  */

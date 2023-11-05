@@ -48,6 +48,28 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
 
         counts.total++;
 
+        // Add Instructor to Course
+        let { data: data5, error: err5 } = await supabase
+            .from("course_instructor_associations")
+            .select("instructors (name)")
+            .eq("course_id", ids[index].id);
+
+        if (err5) {
+            console.log("Line PNR5")
+            throw new Error(err5.message);
+        }
+
+        let instructors: string[] = [];
+        if (data5 !== null || data5 !== undefined) {
+            instructors = data5.map(x => x.instructors).map(x => x.name);
+
+            await supabase.from("courses")
+                .update({ instructors: instructors })
+                .eq("id", ids[index].id)
+        }
+
+            
+
         // * Case 1: Check for evaluation entry with matching course_id
         let { data: data1, error: err1 } = await supabase
             .from("evaluations")

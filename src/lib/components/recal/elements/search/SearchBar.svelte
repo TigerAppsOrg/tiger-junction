@@ -4,8 +4,8 @@ import { modalStore } from "$lib/stores/modal";
 import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse, research, ready, rawCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
 import { sectionData } from "$lib/stores/rsections";
-    import { toastStore } from "$lib/stores/toast";
-    import type { RawCourseData } from "$lib/types/dbTypes";
+import { toastStore } from "$lib/stores/toast";
+import type { RawCourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export let supabase: SupabaseClient;
@@ -24,39 +24,8 @@ const autoTrig = (...params: any[]) => {
 
 const triggerSearch = () => {
     if (!inputBar || inputBar.value === undefined) return;
-    searchResults.search(inputBar.value, $currentTerm, $searchSettings);
+    searchResults.search(inputBar.value, $currentTerm, $searchSettings, supabase);
 
-    // Load instructors
-    if ($searchSettings.style["Show Instructor(s)"]) {
-        for (let i = 0; i < $searchResults.length; i++) {
-            let course = $searchResults[i];
-            if (course.instructors === null || course.instructors === undefined) {
-                supabase.from("course_instructor_associations")
-                    .select("instructors (name)")
-                    .eq("course_id", course.id)
-                    .then(({ data, error }) => {
-                        if (error) console.log(error);
-                        else {
-                            let instructors = data.map(x => x.instructors).map((x: any) => x.name);
-                            // Update rawCourseData
-                            rawCourseData.update(x => {
-                                let entry = x[$currentTerm as keyof RawCourseData].find(x => x.id === course.id);
-                                if (entry) entry.instructors = instructors;
-                                return x;
-                            });
-
-                            // Update searchCourseData
-                            searchCourseData.update(x => {
-                                let entry = x[$currentTerm as keyof RawCourseData].find(x => x.id === course.id);
-                                if (entry) entry.instructors = instructors;
-                                return x;
-                            });
-                        }
-                    })
-            }
-        }
-    }
-    
     // Handle isResult flag
     if ($searchResults.length > 0) isResult.set(true);
     else {
