@@ -58,6 +58,7 @@ type CourseData = {
     num_evals: number,
     adj_rating: number,
     grading_info: Record<string, string>,
+    instructors: string[] | null,
 }
 
 type RawCourseData = {
