@@ -173,6 +173,14 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
                     [{course.adj_rating} adj]
                 {/if}
             </div>
+
+            {#if $searchSettings.style["Show Instructor(s)"]}
+            <div class="text-xs italic font-light">
+                <!-- {course.instructors.map((instructor, i) => {
+                    return instructor + (i === course.instructors.length - 1 ? "" : ", ");
+                })} -->
+            </div>
+            {/if}
             
         </button>
 

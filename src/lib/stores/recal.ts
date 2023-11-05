@@ -564,6 +564,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Color by Rating": false,
         "Always Show Rooms": false,
         "Show Enrollments": false,
+        "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
         "Duck": false,
