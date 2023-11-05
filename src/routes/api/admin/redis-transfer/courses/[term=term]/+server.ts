@@ -10,7 +10,7 @@ export const GET: RequestHandler = async (req) => {
   let term = req.params.term;
 
   // Fetch term data from Supabase
-  const FIELDS = "id, listing_id, term, code, title, status, basis, dists, rating, num_evals, grading_info";
+  const FIELDS = "id, listing_id, term, code, title, status, basis, dists, rating, num_evals, grading_info, instructors";
 
   const { data: supaCourses, error: error2 } = await req.locals.supabase
     .from("courses")

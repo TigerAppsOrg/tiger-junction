@@ -6,6 +6,7 @@ import { sectionData, sectionDone } from "./rsections";
 import { savedCourses } from "./rpool";
 import { rMeta } from "./rmeta";
 import { doesConflict } from "$lib/scripts/ReCal+/conflict";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 //----------------------------------------------------------------------
 // Forcers
@@ -66,7 +67,8 @@ export const searchResults = {
      * @param query input
      * @param term id of the term
      */
-    search: async (query: string, term: number, settings: SearchSettings) => {
+    search: async (query: string, term: number, settings: SearchSettings, 
+    supabase: SupabaseClient) => {
         // Current current search data
         if (!searchCourseData.get(term)) 
             searchCourseData.reset(term);
@@ -564,6 +566,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Color by Rating": false,
         "Always Show Rooms": false,
         "Show Enrollments": false,
+        "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
         "Duck": false,
