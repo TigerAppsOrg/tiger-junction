@@ -5,8 +5,8 @@ import { EMAIL_LIST_FORM_LINK } from '$lib/constants';
 export let data;
 
 const handleLogin = async () => { 
-
-    if ((await data.supabase.auth.getUser()).data.user) {
+    // Redirect if user is already logged in
+    if (data.session) {
         goto("/recalplus");
         return;
     }
