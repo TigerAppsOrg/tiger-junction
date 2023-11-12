@@ -267,6 +267,10 @@ dark:border-slate-200/60">
     dark:bg-slate-700 dark:border-slate-200/90;
 }
 
+.btn-circ:active {
+    @apply transform scale-95;
+}
+
 .btn-icon {
     @apply h-5 w-5 dark:text-slate-300 text-slate-500;
 }
