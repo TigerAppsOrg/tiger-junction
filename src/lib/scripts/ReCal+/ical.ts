@@ -7,7 +7,7 @@ import { valueToDays } from "../convert";
  * @param until 
  * @returns RRule string
  */
-export const valueToRRule = (value: number, until: number[]) => {
+export const valueToRRule = (value: number, until: readonly number[]) => {
     let days = valueToDays(value);
     let rrule = "FREQ=WEEKLY;BYDAY=";
     for (let day of days) {
@@ -55,15 +55,38 @@ export const calculateExclusions = (exclArr: number[][]): string => {
  * @param sectionDays section days value
  * @returns adjusted start date in array
  */
-export const calculateStart = (start: number[], startDay: number, 
+export const calculateStart = (start: readonly number[], startDay: number, 
 sectionDays: number): number[] => {
+    // Deep copy start
+    let startCopy = JSON.parse(JSON.stringify(start));
+
     let dayArr = valueToDays(sectionDays);
-    if (dayArr.includes(startDay)) return start;
+    if (dayArr.includes(startDay)) return startCopy;
 
     dayArr.sort();
+
     for (let i = 0; i < dayArr.length; i++) 
-        if (dayArr[i] > startDay) 
-            return [start[0], start[1], start[2] + (dayArr[i] - startDay)];
+        if (dayArr[i] > startDay) {
+            let dayDay = startCopy[2] + (dayArr[i] - startDay);
+            if (dayDay > 31) {
+                dayDay -= 31;
+                startCopy[1]++;
+                if (startCopy[1] > 12) {
+                    startCopy[1] -= 12;
+                    startCopy[0]++;
+                }
+            }
+            return [startCopy[0], startCopy[1], dayDay];
+        }
     
-    return [start[0], start[1], start[2] + (7 - startDay + dayArr[0])];
+    let dayDay = startCopy[2] + (7 - startDay + dayArr[0]);
+    if (dayDay > 31) {
+        dayDay -= 31;
+        startCopy[1]++;
+        if (startCopy[1] > 12) {
+            startCopy[1] -= 12;
+            startCopy[0]++;
+        }
+    }
+    return [startCopy[0], startCopy[1], dayDay];
 }

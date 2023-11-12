@@ -64,6 +64,12 @@ const createIcal = async () => {
                 transp: "OPAQUE",
                 productId: "tigerjunction/ics",
                 calName: "ReCal+ " + calInfo.name,
+                startOutputType: "local",
+                endOutputType: "local",
+                startInputType: "local",
+                endInputType: "local",
+                location: section.room ? section.room : "",
+
             };
 
             if (section.room) newEvent.location = section.room;
@@ -110,6 +116,9 @@ const createIcal = async () => {
                 return;
             }
         }
+
+        // Append time zone info to start time
+        value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
 
         // Push to supabase storage
         const { data, error: supabaseError } = await supabase.storage

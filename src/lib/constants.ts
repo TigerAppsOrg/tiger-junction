@@ -77,10 +77,10 @@ const STATUS_MAP: Record<string, number> = {
 
 type Calendar_Info = {
     name: string,
-    start: number[],
+    start: readonly number[],
     start_day: number,
-    end: number[],
-    exclusions: number[][],
+    end: readonly number[],
+    exclusions: readonly number[][],
 }
 
 // Dates for each term
@@ -106,7 +106,7 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         "end": [2023, 5, 10], 
         "exclusions": [],
     },
-}
+} as const;
 
 // Maximum number of schedules in a term for a user
 export const SCHEDULE_CAP = 10;
