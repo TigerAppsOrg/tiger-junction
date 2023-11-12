@@ -7,7 +7,7 @@ export let showModal: boolean = false;
 
 </script>
 
-<StdModal title="Theme Palettes" stdClose={true} {showModal}>
+<StdModal title="Themes" stdClose={true} {showModal}>
     <div class="flex flex-col gap-2" slot="main">
 
         <div class="settings-area flex gap-2 flex-wrap justify-center">

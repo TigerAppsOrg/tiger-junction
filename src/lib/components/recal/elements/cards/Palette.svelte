@@ -1,5 +1,6 @@
 <script lang="ts">
 import { rgbToHSL } from "$lib/scripts/convert";
+    import { darkTheme } from "$lib/stores/state";
 import { calColors, type CalColors } from "$lib/stores/styles";
 
 // 8 Colors in rgb format
@@ -24,6 +25,10 @@ const handleClick = () => {
         .map(([key, value]) => [key, rgbToHSL(value)])
         .reduce((acc, [key, value]) => ({...acc, [key]: value}), {}) as CalColors;
 
+    if (title === "Midnight" || title === "Cobalt" || title === "Shadow") 
+        darkTheme.set(true);
+    else darkTheme.set(false);
+    
     calColors.set(hslColors);
 }
 </script>
