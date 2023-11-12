@@ -14,33 +14,35 @@ import { onMount } from "svelte";
 export let data;
 
 onMount(async () => {
-    rawCourseData.update(x => {
-        let cur: CourseData[] = (data.body.courses as CourseData[]).map(y => {
-            let adj_evals = (y.num_evals + 1) * 1.5;
-            y.adj_rating = y.rating !== null && y.num_evals !== null ?
-            Math.round(((y.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
-            : 0;
-            return y;
-        })
-        x[CURRENT_TERM_ID] = cur;
-        return x;
-    })
+    if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
+        rawCourseData.update(x => {
+            let cur: CourseData[] = (data.body.courses as CourseData[]).map(y => {
+                let adj_evals = (y.num_evals + 1) * 1.5;
+                y.adj_rating = y.rating !== null && y.num_evals !== null ?
+                Math.round(((y.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
+                : 0;
+                return y;
+            })
+            x[CURRENT_TERM_ID] = cur;
+            return x;
+        });
+
+        // Sort through sections and add to sectionData
+        let sections = data.body.sections;
+        let termSec = $sectionData[CURRENT_TERM_ID];
+        for (let i = 0; i < sections.length; i++) {
+            let sec = sections[i];
+            let courseId = sec.course_id;
+
+            // Add course to sectionData 
+            if (!termSec[courseId]) {
+                termSec[courseId] = [];
+            }
+            termSec[courseId].push(sec);
+        }
+    }
     searchCourseData.reset(CURRENT_TERM_ID);
 
-    // Sort through sections and add to sectionData
-    let sections = data.body.sections;
-    let termSec = $sectionData[CURRENT_TERM_ID];
-    for (let i = 0; i < sections.length; i++) {
-        let sec = sections[i];
-        let courseId = sec.course_id;
-
-        // Add course to sectionData 
-        if (!termSec[courseId]) {
-            termSec[courseId] = [];
-        }
-        termSec[courseId].push(sec);
-    }
-    
     await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
     await populatePools(data.supabase, CURRENT_TERM_ID);
 

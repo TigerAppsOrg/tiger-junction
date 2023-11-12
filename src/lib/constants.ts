@@ -1,3 +1,4 @@
+import type { RawCourseData } from "./types/dbTypes";
 import type { RegGradingInfo } from "./types/regTypes";
 
 // Emailing List Form
@@ -43,7 +44,7 @@ const EVALS_TERM_MAP: Record<number, string> = {
 }
 
 const CURRENT_TERM_NAME = "SPRING_2024";
-const CURRENT_TERM_ID = 1244;
+const CURRENT_TERM_ID: keyof RawCourseData = 1244;
 
 const GENERIC_GRADING_INFO: RegGradingInfo = {
     grading_design_projects: "Design Project", 
