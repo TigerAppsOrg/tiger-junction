@@ -2,8 +2,6 @@
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-
-import addIcon from "$lib/img/icons/addicon.svg";
 import duck from "$lib/img/duck.gif";
 
 import { darkTheme } from "$lib/stores/state";
