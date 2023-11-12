@@ -64,7 +64,7 @@ onMount(() => {
             </div>
         </div>
 
-        <StdButton message="View Color Palettes" 
+        <StdButton message="View Themes" 
         onClick={() => modalStore.open("rpalettes", {
             current: true,
             front: true,
