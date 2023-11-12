@@ -16,6 +16,9 @@ onlyAvailable: boolean): boolean => {
 
     // Get sections of the course
     const sections = get(sectionData)[get(currentTerm)][course.id];
+    if (sections === undefined) {
+        return false;
+    }
 
     // Separate into section categories (Category -> Title -> Data[])
     // Data[] = [days, start_time, end_time, status]
