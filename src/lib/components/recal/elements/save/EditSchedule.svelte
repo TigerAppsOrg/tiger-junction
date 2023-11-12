@@ -31,7 +31,15 @@ const duplicateSchedule = async () => {
         return;
     };
 
-    let newTitle = input + " (Copy)";
+    let newTitle: string;
+    let schedule = $schedules[$currentTerm].find(x => 
+        x.id === $currentSchedule);
+    if (schedule && schedule.title === input.trim()) {
+        newTitle = input.trim() + " (Copy)";
+    } else {
+        newTitle = input.trim();
+    }
+
     if (newTitle.length > 100) {
         newTitle = newTitle.substring(0, 100);
     }
@@ -203,7 +211,7 @@ const saveSchedule = async () => {
     // Update database
     supabase.from("schedules")
         .update({ 
-            title: input, 
+            title: input.trim(), 
         })
         .match({ id: $currentSchedule })
         .select("id, title")

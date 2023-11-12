@@ -33,7 +33,7 @@ const saveSchedule = async () => {
     // Upload to database
     supabase.from("schedules")
         .insert({ 
-            title: input, 
+            title: input.trim(), 
             term: $currentTerm,
             user_id: user.id,
         })
