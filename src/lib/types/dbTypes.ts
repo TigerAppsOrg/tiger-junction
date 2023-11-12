@@ -65,7 +65,6 @@ type RawCourseData = {
     1244: CourseData[]
     1242: CourseData[] 
     1234: CourseData[] 
-    1232: CourseData[]
 }
 
 type CourseLinks = {

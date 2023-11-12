@@ -45,7 +45,6 @@ export const schedules: Writable<Record<number, {
     1244: [],
     1242: [],
     1234: [],
-    1232: []
 })
 
 export const isResult: Writable<boolean> = writable(false);
@@ -148,7 +147,7 @@ export const searchResults = {
             // Fetch all sections for all courses in term
             let termSec = get(sectionData)[term];
 
-            if (!get(sectionDone)[term as 1242 | 1234 | 1232 | 1244]) {
+            if (!get(sectionDone)[term as 1242 | 1234 | 1244]) {
                 // Fetch Sections
                 const secs = await fetch(`/api/client/sections/${term}`);
                 const sections = await secs.json();
@@ -174,7 +173,7 @@ export const searchResults = {
 
                 // Mark sections for term as fully loaded
                 sectionDone.update(x => {
-                    x[term as 1242 | 1234 | 1232 | 1244] = true;
+                    x[term as 1242 | 1234 | 1244] = true;
                     return x;
                 });
             }
@@ -313,7 +312,6 @@ Writable<RawCourseData> = writable({
     1244: [],
     1242: [],
     1234: [],
-    1232: []
 });
 
 export const rawCourseData = {
@@ -343,7 +341,6 @@ export const rawCourseData = {
             1244: [],
             1242: [],
             1234: [],
-            1232: []
         };
         rawCourseData.subscribe((x) => (
             data = JSON.parse(JSON.stringify(x))
@@ -374,7 +371,6 @@ Writable<RawCourseData> = writable({
     1244: [],
     1242: [],
     1234: [],
-    1232: []
 });
 
 export const searchCourseData = {
@@ -404,7 +400,6 @@ export const searchCourseData = {
             1244: [],
             1242: [],
             1234: [],
-            1232: []
         };
         searchCourseData.subscribe((x) => (
             data = x
