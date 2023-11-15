@@ -43,10 +43,15 @@ Deno.serve(async (req) => {
     throw new Error("Invalid request body");
   }
 
+  // Get token
+  const tokenRes = await fetch("https://registrar.princeton.edu/course-offerings");
+  const text = await tokenRes.text();
+  const token = "Bearer " + text.split("apiToken\":\"")[1].split("\"")[0];
+
   const rawCourselist = await fetch(`https://api.princeton.edu/registrar/course-offerings/classes/${term}`, {
     method: "GET",
     headers: {
-        "Authorization": Deno.env.get("REG_AUTH") as string
+        "Authorization": token
     }
   });
 
@@ -92,7 +97,7 @@ Deno.serve(async (req) => {
       `https://api.princeton.edu/registrar/course-offerings/1.0.2/course-details?term=${term}&course_id=${courselist[index].id}`, {
         method: "GET",
         headers: {
-            "Authorization": Deno.env.get("REG_AUTH") as string
+            "Authorization": token
         }
       }
     )
