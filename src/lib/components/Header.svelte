@@ -16,7 +16,8 @@
 
 </script>
 
-<nav class="w-screen h-10 mb-2 border-b-[1px]" style={cssVarStyles}>
+<nav class="w-screen h-10 mb-2 border-b-[1px]
+dark:border-zinc-700 border-zinc-200" style={cssVarStyles}>
     <div class="flex justify-between items-center px-4">
         <div id="left">
             <div class="flex items-center">
