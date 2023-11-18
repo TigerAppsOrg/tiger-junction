@@ -172,8 +172,8 @@ dark:text-white text-sm">
     
         {#if $searchSettings.style["Duck"]}
         <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
-        <div class="h-6 relative pointer-events-none ml-[-25%] w-[150%]">
-            <div id="duck" class="w-12 h-12 absolute bottom-[14px]">
+        <div class="h-6 relative pointer-events-none ml-[-10%] w-[120%]">
+            <div id="duck" class="w-12 h-12 absolute bottom-[6px]">
                 <img src={duck} alt="duck">
             </div>
         </div>
