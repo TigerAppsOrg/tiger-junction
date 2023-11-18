@@ -64,9 +64,9 @@ const handleAddSchedule = () => {
 $: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<div style={cssVarStyles} id="fwww"
-class="h-20 p-1 pt-0 overflow-clip bg-white dark:bg-slate-900 text-slate-900
-dark:text-white ">
+<div style={cssVarStyles} id="parent"
+class="h-20 px-1 overflow-clip  text-slate-900
+dark:text-white">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
          flex gap-2 w-fit p-1 h-8 mb-1">
@@ -171,7 +171,7 @@ dark:text-white ">
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
     <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
-    p-1 rounded-md h-8 font-normal">
+    p-1 h-8 font-normal">
     {#key $retop}
         {#await fetchUserSchedules(supabase, $currentTerm)}
             <Loader />
@@ -221,22 +221,18 @@ dark:text-white ">
     {/key}
     </div> 
     </div> <!-- * Schedule Select -->
-
-    {#if $searchSettings.style["Duck"]}
-    <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
-    <div class="h-6 relative pointer-events-none ml-[-25%] w-[150%]">
-        <div id="duck" class="w-12 h-12 absolute bottom-[14px]">
-            <img src={duck} alt="duck">
+    
+        {#if $searchSettings.style["Duck"]}
+        <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
+        <div class="h-6 relative pointer-events-none ml-[-25%] w-[150%]">
+            <div id="duck" class="w-12 h-12 absolute bottom-[14px]">
+                <img src={duck} alt="duck">
+            </div>
         </div>
-    </div>
-    {/if}
+        {/if}
 </div>
 
 <style lang="postcss">
-/* #fwww {
-    border-width: 1px; */
-/* } */
-
 .card {
     @apply px-3 text-sm;
 }

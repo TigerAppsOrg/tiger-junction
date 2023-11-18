@@ -61,13 +61,13 @@ onMount(async () => {
 </svelte:head>
 
 
-<div class="h-screen flex flex-col flex-1 max-w-[1400px] mx-auto
-bg-white dark:bg-black max-h-screen overflow-clip">
+<div class="flex flex-col flex-1 max-w-[1400px] mx-auto
+ dark:bg-black max-h-screen overflow-clip">
     <div class="mx-2">
         <Top supabase={data.supabase} />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
-    <div id="main" class="flex flex-1 m-2 max-h-[calc(100vh-80px)]">
+    <div id="main" class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-80px)]">
         {#if $isMobile}
             {#if !$showCal}
                 <div class="flex-1 min-w-[200px]">

@@ -15,7 +15,7 @@ $: resetKey = [$searchResults, $darkTheme, $research]
         {$searchResults.length === 1 ? "Result" : "Results"}
     </div> <!-- * End Head -->
 
-    <div class="flex flex-col overflow-auto border-2 rounded-xl
+    <div class="flex flex-col overflow-auto border-2 rounded-sm
     max-h-[52vh]">
         <div class="overflow-y-auto">
             {#key resetKey}
