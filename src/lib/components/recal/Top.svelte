@@ -69,7 +69,7 @@ class="h-20 px-1 overflow-clip  text-zinc-900
 dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div class="bg-zinc-100 dark:bg-zinc-800
-         flex gap-2 w-fit p-1 h-8 mb-1">
+         flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
             <button class="card {$currentTerm === 1234 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
@@ -119,7 +119,7 @@ dark:text-zinc-100 text-sm">
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
     <div class="bg-zinc-100 dark:bg-zinc-800 flex gap-2 w-fit
-    p-1 h-8 font-normal">
+    p-1 h-8 font-normal rounded-sm">
     {#key $retop}
         {#await fetchUserSchedules(supabase, $currentTerm)}
             <Loader />
@@ -182,7 +182,7 @@ dark:text-zinc-100 text-sm">
 
 <style lang="postcss">
 .card {
-    @apply px-3 text-sm;
+    @apply px-3 text-sm rounded-sm;
 }
 
 .card:active {

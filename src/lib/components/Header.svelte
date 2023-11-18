@@ -19,11 +19,11 @@
 <nav class="w-screen h-10 mb-2 border-b-[1px]" style={cssVarStyles}>
     <div class="flex justify-between items-center px-4">
         <div id="left">
-            <a href="/home" class="flex items-center">
+            <div class="flex items-center">
                 <img src="tjlogolarge.png" alt="Tiger Junction logo"
                 class="w-10 h-10">
                 <span class="text-xl dark:text-zinc-100">TigerJunction</span>
-            </a>
+            </div>
         </div>
         <div id="right" class="space-x-6 flex items-center">
             <button on:click={() => $darkTheme = !$darkTheme}

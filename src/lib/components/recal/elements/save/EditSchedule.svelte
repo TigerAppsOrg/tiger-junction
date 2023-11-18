@@ -247,7 +247,7 @@ const saveSchedule = async () => {
                     <h2 class="text-lg font-bold mb-2">Title</h2>
                     <input bind:value={input}
                     type="text" placeholder="Search" name="title"
-                    class="flex-1 p-2 h-10 w-full std-area">
+                    class="flex-1 p-2 h-10 w-full std-area roudned-sm">
                 </div>
             </div> <!-- * End Container -->
             <div class="flex gap-2 border-t-2 mt-2 pt-2">
