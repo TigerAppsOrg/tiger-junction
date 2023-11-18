@@ -64,14 +64,12 @@ const handleAddSchedule = () => {
 $: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
-<div style={cssVarStyles}
-class="h-20 mt-2 p-1
-rounded-xl overflow-clip bg-white dark:bg-slate-900 text-slate-900
-dark:text-white border-2 border-slate-600/30
-dark:border-slate-200/60">
+<div style={cssVarStyles} id="fwww"
+class="h-20 p-1 pt-0 overflow-clip bg-white dark:bg-slate-900 text-slate-900
+dark:text-white ">
     <div class="justify-between flex">
         <div class="bg-slate-100 dark:bg-slate-800
-         flex gap-2 w-fit p-1 rounded-md h-8 mb-1">
+         flex gap-2 w-fit p-1 h-8 mb-1">
             <button class="card {$currentTerm === 1234 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1234}
             on:click={() => handleTermChange(1234)}>
@@ -235,8 +233,12 @@ dark:border-slate-200/60">
 </div>
 
 <style lang="postcss">
+/* #fwww {
+    border-width: 1px; */
+/* } */
+
 .card {
-    @apply px-3 rounded-md text-sm;
+    @apply px-3 text-sm;
 }
 
 .card:active {

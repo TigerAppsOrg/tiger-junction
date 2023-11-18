@@ -34,7 +34,7 @@ $: colorChange = $calColors;
     </div> 
 
     {#if saved.length > 0}
-    <div class="flex flex-col overflow-hidden rounded-xl 
+    <div class="flex flex-col overflow-hidden rounded-sm
     {$isResult ? "max-h-[18vh]" : "max-h-[75vh]"}">
         <div class="overflow-y-auto">
             {#key saved && colorChange}

@@ -43,7 +43,7 @@ const triggerSearch = () => {
 <div>
     <div class="flex gap-2">
         <input type="text" placeholder="Search" 
-        class="search-input std-area" bind:this={inputBar}
+        class="search-input std-area rounded-lg" bind:this={inputBar}
         on:input={triggerSearch}>
         <button class="adv-search"
         on:click={() => {
