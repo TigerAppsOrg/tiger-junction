@@ -206,20 +206,6 @@ dark:text-zinc-100 text-sm">
     background-color: var(--bg-hover);
 }
 
-.btn-circ {
-    @apply rounded-full p-1 border-zinc-600/30 border-2 duration-150
-    dark:border-zinc-200/60 h-8 w-8;
-}
-
-.btn-circ:hover {
-    @apply bg-zinc-100 border-zinc-600/40
-    dark:bg-zinc-700 dark:border-zinc-200/90;
-}
-
-.btn-circ:active {
-    @apply transform scale-95;
-}
-
 .btn-icon {
     @apply h-5 w-5 dark:text-zinc-300 text-zinc-500;
 }
