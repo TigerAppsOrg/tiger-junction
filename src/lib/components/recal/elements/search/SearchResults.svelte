@@ -10,7 +10,7 @@ $: resetKey = [$searchResults, $darkTheme, $research]
 
 {#if $searchResults.length > 0}
 <div class="max-h-full mt-2">
-    <div class="text-base font-normal dark:text-white ml-1">
+    <div class="text-base font-normal dark:text-zinc-100 ml-1">
         {$searchResults.length} Search 
         {$searchResults.length === 1 ? "Result" : "Results"}
     </div> <!-- * End Head -->

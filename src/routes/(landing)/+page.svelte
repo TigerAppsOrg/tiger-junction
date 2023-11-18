@@ -157,7 +157,7 @@ const handleLogin = async () => {
     </div>
     
     <div class="mt-16">
-        <div class="bg-std-darkzinc text-white p-8 rounded-lg shadow-lg
+        <div class="bg-zinc-300 p-8 rounded-lg shadow-lg
         text-xl flex justify-between items-center gap-6">
             <div class="flex items-center gap-4">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -177,7 +177,7 @@ const handleLogin = async () => {
     
 </div>
 
-<footer class="bg-std-darkPurple text-center text-white font-light py-4">
+<footer class="bg-std-darkPurple text-center text-slate-100 font-light py-4">
     Made with 
     <a href="https://svelte.dev/" target="_blank" class="underline
     duration-150 hover:text-zinc-200">

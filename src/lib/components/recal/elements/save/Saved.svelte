@@ -24,7 +24,7 @@ $: colorChange = $calColors;
 {#key saved && $recal}
 {#if saved && $ready}
 <div class="max-h-full mt-2">
-    <div class="text-base font-normal dark:text-white ml-1
+    <div class="text-base font-normal dark:text-zinc-100 ml-1
     flex items-center justify-between">
         <span>
             {saved.length} Saved 
@@ -70,10 +70,10 @@ $: colorChange = $calColors;
 
 <style lang="postcss">
 .calbut {
-    @apply text-zinc-600 dark:text-zinc-300;
+    @apply dark:text-zinc-100;
 }
 
 .calbut:hover {
-    @apply text-zinc-800 duration-150 dark:text-zinc-100;
+    @apply text-zinc-600 duration-150 dark:text-zinc-300;
 }
 </style>
