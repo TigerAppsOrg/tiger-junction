@@ -61,7 +61,7 @@ export let showModal: boolean = false;
     align-items: center;
     gap: 8px;
     padding: 8px;
-    @apply hover:bg-slate-100 dark:hover:bg-slate-800 duration-100;
+    @apply hover:bg-zinc-100 dark:hover:bg-zinc-800 duration-100;
 }
 
 .btn-util:active {

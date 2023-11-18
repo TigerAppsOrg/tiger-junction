@@ -65,10 +65,10 @@ $: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
 <div style={cssVarStyles} id="parent"
-class="h-20 px-1 overflow-clip  text-slate-900
+class="h-20 px-1 overflow-clip  text-zinc-900
 dark:text-white">
     <div class="justify-between flex">
-        <div class="bg-slate-100 dark:bg-slate-800
+        <div class="bg-zinc-100 dark:bg-zinc-800
          flex gap-2 w-fit p-1 h-8 mb-1">
             <button class="card {$currentTerm === 1234 ? "" : "termchoice"}" 
             class:selected={$currentTerm === 1234}
@@ -102,7 +102,7 @@ dark:text-white">
         <div class="flex gap-2">
             {#if $isMobile}
             <button on:click={() => $showCal = !$showCal}
-                class="btn-circ text-slate-600 dark:text-slate-300
+                class="btn-circ text-zinc-600 dark:text-zinc-300
                 flex items-center justify-center">
                     {#if $showCal}
                         ←
@@ -144,12 +144,12 @@ dark:text-white">
             </button>
 
             {#if !$isMobile}
-                <button class="p-2 border-slate-600/30 border-2 duration-150
-                dark:border-slate-200/60 h-8
-                hover:bg-slate-100 hover:border-slate-600/40
-                hover:dark:bg-slate-700 hover:dark:border-slate-200/90
+                <button class="p-2 border-zinc-600/30 border-2 duration-150
+                dark:border-zinc-200/60 h-8
+                hover:bg-zinc-100 hover:border-zinc-600/40
+                hover:dark:bg-zinc-700 hover:dark:border-zinc-200/90
                 rounded-full flex items-center gap-2
-                text-sm font-light text-slate-600 dark:text-slate-300"
+                text-sm font-light text-zinc-600 dark:text-zinc-300"
                 on:click={handleLogout}>
                     Logout
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
@@ -170,7 +170,7 @@ dark:text-white">
     </div>
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
-    <div class="bg-slate-100 dark:bg-slate-800 flex gap-2 w-fit
+    <div class="bg-zinc-100 dark:bg-zinc-800 flex gap-2 w-fit
     p-1 h-8 font-normal">
     {#key $retop}
         {#await fetchUserSchedules(supabase, $currentTerm)}
@@ -204,7 +204,7 @@ dark:text-white">
                 <button class="card termchoice"
                 on:click={handleAddSchedule}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                    class="h-5 w-5 dark:text-slate-300 text-slate-500">
+                    class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                 </button>
@@ -242,7 +242,7 @@ dark:text-white">
 }
 
 .termchoice:hover {
-    @apply bg-slate-200 dark:bg-slate-700 duration-150;
+    @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
 }
 
 .selected {
@@ -256,13 +256,13 @@ dark:text-white">
 }
 
 .btn-circ {
-    @apply rounded-full p-1 border-slate-600/30 border-2 duration-150
-    dark:border-slate-200/60 h-8 w-8;
+    @apply rounded-full p-1 border-zinc-600/30 border-2 duration-150
+    dark:border-zinc-200/60 h-8 w-8;
 }
 
 .btn-circ:hover {
-    @apply bg-slate-100 border-slate-600/40
-    dark:bg-slate-700 dark:border-slate-200/90;
+    @apply bg-zinc-100 border-zinc-600/40
+    dark:bg-zinc-700 dark:border-zinc-200/90;
 }
 
 .btn-circ:active {
@@ -270,7 +270,7 @@ dark:text-white">
 }
 
 .btn-icon {
-    @apply h-5 w-5 dark:text-slate-300 text-slate-500;
+    @apply h-5 w-5 dark:text-zinc-300 text-zinc-500;
 }
 
 #duck {
@@ -279,10 +279,10 @@ dark:text-white">
 
 @keyframes animate-walk {
     0% {
-        transform: translateX(0px);
+        transform: tranzincX(0px);
     }
     100% {
-        transform: translateX(150vw);
+        transform: tranzincX(150vw);
     }
 }
 </style>

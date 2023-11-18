@@ -72,8 +72,8 @@ const resetSearchSettings = () => {
                     {#each Object.keys($searchSettings.filters) as filter}
                     {#if $searchSettings.filters[filter].enabled 
                     && $searchSettings.filters[filter].hasOwnProperty("values")}
-                        <div class="border-slate-600/30 mx-8 p-2
-                        dark:border-slate-200/30 border-t-2 mt-2">
+                        <div class="border-zinc-600/30 mx-8 p-2
+                        dark:border-zinc-200/30 border-t-2 mt-2">
                             <div>
                                 {#if filter === "Does Not Conflict"}
                                 <h3 class="text-lg font-semibold">Does Not Conflict</h3>
@@ -120,8 +120,8 @@ const resetSearchSettings = () => {
                     {/each}
 
                     {#if $searchSettings.filters["Rating"].enabled}
-                    <div class="border-slate-600/30 mx-8 p-2
-                    dark:border-slate-200/30 border-t-2 mt-2">
+                    <div class="border-zinc-600/30 mx-8 p-2
+                    dark:border-zinc-200/30 border-t-2 mt-2">
                         <div class="mb-2 flex items-center gap-4">
                             <h3 class="text-lg font-semibold">Rating</h3>
                             <p class="italic">Note: courses with no rating correspond to 0</p>
@@ -180,6 +180,6 @@ const resetSearchSettings = () => {
 <style lang="postcss">
 .settings-area {
     @apply p-4 border-t-2
-    border-slate-600/30 dark:border-slate-200/30;
+    border-zinc-600/30 dark:border-zinc-200/30;
 }
 </style>

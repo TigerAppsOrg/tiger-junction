@@ -31,8 +31,8 @@ const toggleSidebar = () => {
 
                 <button class="
                 w-full flex items-center justify-between h-12
-                text-slate-800
-                dark:text-slate-200 text-lg"
+                text-zinc-800
+                dark:text-zinc-200 text-lg"
                 on:click={toggleSidebar}>
                     <div class="flex justify-center items-center gap-1">
                         <img src="tjlogolarge.png" alt="Tiger Junction Logo"
@@ -46,16 +46,16 @@ const toggleSidebar = () => {
                 </button>
 
                 <div class="h-12 w-full 
-                flex justify-start items-center text-slate-600
-                dark:text-slate-400">
+                flex justify-start items-center text-zinc-600
+                dark:text-zinc-400">
                     <LightButton />
                     <h2 class="text-lg font-light">
                         Toggle Dark Mode
                     </h2>
                 </div>
 
-                <div class="h-12 w-full pl-2 dark:text-slate-400
-                text-slate-600 text-start flex items-end">
+                <div class="h-12 w-full pl-2 dark:text-zinc-400
+                text-zinc-600 text-start flex items-end">
                     <h2>
                         APPS
                     </h2>

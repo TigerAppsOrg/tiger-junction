@@ -40,7 +40,7 @@ $: pinned = $pinnedCourses[$currentSchedule];
     {/if}
 
     <div class="flex gap-2 border-t-2 mt-2 pt-2">
-        <!-- <button class="btn border-2 border-slate-600/30 flex-1" 
+        <!-- <button class="btn border-2 border-zinc-600/30 flex-1" 
         on:click={() => modalStore.close()}>
             Cancel
         </button> -->
