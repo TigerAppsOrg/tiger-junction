@@ -102,12 +102,15 @@ dark:text-zinc-100 text-sm">
         <div class="flex gap-2">
             {#if $isMobile}
             <button on:click={() => $showCal = !$showCal}
-                class="btn-circ text-zinc-600 dark:text-zinc-300
+                class="h-6 w-20 bg-zinc-100 rounded-sm 
+                hover:text-zinc-600
+                dark:bg-zinc-800
+                 dark:text-zinc-100 hover:dark:text-zinc-300
                 flex items-center justify-center">
                     {#if $showCal}
-                        ←
+                        ← List
                     {:else}
-                        →
+                        → Calendar
                     {/if}
             </button>
             {/if}
