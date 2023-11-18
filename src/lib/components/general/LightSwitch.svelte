@@ -23,7 +23,7 @@
 }
 
 .toggle {
-    background-color: gray;
+    background-color: zinc;
     width: 64px;
     height: 32px;
     border-radius: 16px;

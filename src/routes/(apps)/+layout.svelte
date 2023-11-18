@@ -1,17 +1,13 @@
 <script lang='ts'>
+import Header from "$lib/components/Header.svelte";
 import ModalLib from "$lib/components/general/ModalLib.svelte";
-import Sidebar from "$lib/components/general/Sidebar.svelte";
 
 export let data;
-$: currentApp = data.currentApp || "";
 
-let sidebar_show = false;
 </script>
 
 <ModalLib supabase={data.supabase} />
-<div class="h-screen w-screen flex bg-white dark:bg-black">
-    <!-- <div class="my-2">
-        <Sidebar bind:show={sidebar_show} {currentApp} />
-    </div> -->
-    <slot />
+<div class="h-screen w-screen flex flex-col bg-zinc-50 dark:bg-black">
+<Header supabase={data.supabase} />
+<slot />
 </div>

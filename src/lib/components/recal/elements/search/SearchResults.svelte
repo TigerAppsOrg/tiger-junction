@@ -10,13 +10,13 @@ $: resetKey = [$searchResults, $darkTheme, $research]
 
 {#if $searchResults.length > 0}
 <div class="max-h-full mt-2">
-    <div class="text-base font-normal dark:text-white ml-1">
+    <div class="text-base font-normal dark:text-zinc-100 ml-1">
         {$searchResults.length} Search 
         {$searchResults.length === 1 ? "Result" : "Results"}
     </div> <!-- * End Head -->
 
-    <div class="flex flex-col overflow-auto border-2 rounded-xl
-    max-h-[52vh]">
+    <div class="flex flex-col overflow-auto border-2 rounded-sm
+    max-h-[49vh]">
         <div class="overflow-y-auto">
             {#key resetKey}
             {#each $searchResults as course}

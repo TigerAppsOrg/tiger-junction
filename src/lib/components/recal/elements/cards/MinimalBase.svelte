@@ -291,7 +291,7 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
     opacity: var(--alpha);
     background-color: var(--color);
     color: var(--text);
-    border-left: 6px var(--trans) var(--border);
+    border-left: 4px var(--trans) var(--border);
 }
 
 #topcard:hover {
