@@ -266,14 +266,14 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
         {#if $searchSettings.style["Show Time Marks"]}
         <div class="w-10 h-full"
         transition:slide={{ axis: 'x', duration: 150, easing: linear }}>
-            <div class="h-[4%] outline outline-[1px] outline-zinc-200
+            <div class="h-[4%] outline outline-[0.5px] outline-zinc-200
             dark:outline-zinc-700 overflow-hidden">
                 
             </div>
             <div class="h-[96%] grid grid-cols-1">
                 {#each MARKERS as marker}
                 <div class="text-xs font-light
-                outline outline-[1px] outline-zinc-200
+                outline outline-[0.5px] outline-zinc-200
                 dark:outline-zinc-700 pt-[1px] pl-[1px]
                 overflow-hidden">
                     {marker}
