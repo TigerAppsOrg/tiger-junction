@@ -61,7 +61,7 @@ onMount(async () => {
 </svelte:head>
 
 
-<div class="flex flex-col flex-1 w-full max-w-[1600px] mx-auto
+<div class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto
  dark:bg-black max-h-screen overflow-clip">
     <div class="mx-2">
         <Top supabase={data.supabase} />

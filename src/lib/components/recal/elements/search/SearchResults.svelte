@@ -16,7 +16,7 @@ $: resetKey = [$searchResults, $darkTheme, $research]
     </div> <!-- * End Head -->
 
     <div class="flex flex-col overflow-auto border-2 rounded-sm
-    max-h-[52vh]">
+    max-h-[49vh]">
         <div class="overflow-y-auto">
             {#key resetKey}
             {#each $searchResults as course}
