@@ -25,13 +25,13 @@ class="h-12 w-full justify-center items-center flex border-l-4">
 
 <style lang="postcss">
     .selected {
-        @apply dark:border-zinc-200 border-primary 
-        text-primary dark:text-zinc-200;
+        @apply dark:border-slate-200 border-primary 
+        text-primary dark:text-slate-200;
     }
 
     .unselected {
-        @apply dark:border-synth-dark border-zinc-300
-        dark:text-zinc-400 text-zinc-600;
+        @apply dark:border-synth-dark border-slate-300
+        dark:text-slate-400 text-slate-600;
     }
 
     /* Utilizes: https://codepen.io/sosuke/pen/Pjoqqp */

@@ -109,6 +109,6 @@ const saveSchedule = async () => {
 <style lang="postcss">
 .settings-area {
     @apply p-4 border-t-2
-    border-zinc-600/30 dark:border-zinc-200/30;
+    border-slate-600/30 dark:border-slate-200/30;
 }
 </style>

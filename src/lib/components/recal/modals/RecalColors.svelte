@@ -51,7 +51,7 @@ onMount(() => {
                 {#each Object.keys($calColors) as color}
                     <div class="flex flex-col items-center">
                         <input type="color" 
-                        class="dark:bg-zinc-800/50 bg-zinc-200/50
+                        class="dark:bg-slate-800/50 bg-slate-200/50
                         w-14 h-8 2 cursor-pointer"
                         bind:value={rgbColors[color]}/>
                         <div class="text-sm font-light">{
@@ -88,6 +88,6 @@ onMount(() => {
 <style lang="postcss">
 .settings-area {
     @apply p-4 border-t-2
-    border-zinc-600/30 dark:border-zinc-200/30;
+    border-slate-600/30 dark:border-slate-200/30;
 }
 </style>

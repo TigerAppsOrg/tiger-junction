@@ -50,11 +50,11 @@ const handleClick = () => {
 <style lang="postcss">
 .border {
     @apply border-2 rounded-md overflow-clip
-    border-zinc-600/30 dark:border-zinc-200/30;
+    border-slate-600/30 dark:border-slate-200/30;
 }
 
 .border:hover {
-    @apply border-zinc-600/50 dark:border-zinc-200/50
+    @apply border-slate-600/50 dark:border-slate-200/50
     transform  duration-150;
 }
 </style>
