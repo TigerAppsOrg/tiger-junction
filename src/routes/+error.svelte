@@ -13,7 +13,7 @@ import { page } from "$app/stores";
             <span class="text-std-darkPink">Oh</span>
             <span class="text-std-darkPurple">noes!</span>
         </h1>
-        <h2 class="text-5xl mb-8 text-gray-700 font-light">
+        <h2 class="text-5xl mb-8 text-zinc-700 font-light">
             {$page.status} {$page.error?.message}
         </h2>
         <a href="/">

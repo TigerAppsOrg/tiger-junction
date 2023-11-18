@@ -64,12 +64,12 @@ const triggerSearch = () => {
 }
 
 .adv-search {
-    @apply h-10 w-10 flex justify-center items-center duration-150
-    text-zinc-500 dark:text-zinc-300;
+    @apply h-10 w-10 flex justify-center items-center 
+    text-zinc-600 dark:text-zinc-300;
 }
 
 .adv-search:hover {
-    @apply text-zinc-700 duration-150;
+    @apply text-zinc-800 dark:text-zinc-100 duration-150;
     animation: rainbow-border 2s linear infinite;
 }
 

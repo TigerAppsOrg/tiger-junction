@@ -157,7 +157,7 @@ const handleLogin = async () => {
     </div>
     
     <div class="mt-16">
-        <div class="bg-std-darkGray text-white p-8 rounded-lg shadow-lg
+        <div class="bg-std-darkzinc text-white p-8 rounded-lg shadow-lg
         text-xl flex justify-between items-center gap-6">
             <div class="flex items-center gap-4">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -180,7 +180,7 @@ const handleLogin = async () => {
 <footer class="bg-std-darkPurple text-center text-white font-light py-4">
     Made with 
     <a href="https://svelte.dev/" target="_blank" class="underline
-    duration-150 hover:text-gray-200">
+    duration-150 hover:text-zinc-200">
         Svelte
     </a> 
     by @motoaki
@@ -217,6 +217,6 @@ const handleLogin = async () => {
 }
 
 .link {
-    @apply underline hover:text-gray-600 duration-150;
+    @apply underline hover:text-zinc-600 duration-150;
 }
 </style>
