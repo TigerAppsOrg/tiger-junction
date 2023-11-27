@@ -261,20 +261,20 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
 <!--!------------------------------------------------------------------>
 
 <div class="h-full">
-    <div class="h-full w-full std-area flex">
+    <div class="h-full w-full std-area flex rounded-md">
 
         {#if $searchSettings.style["Show Time Marks"]}
         <div class="w-10 h-full"
         transition:slide={{ axis: 'x', duration: 150, easing: linear }}>
-            <div class="h-[4%] outline outline-[1px] outline-slate-600/30
-            dark:outline-slate-200/30 overflow-hidden">
+            <div class="h-[4%] outline outline-[0.5px] outline-zinc-200
+            dark:outline-zinc-700 overflow-hidden">
                 
             </div>
             <div class="h-[96%] grid grid-cols-1">
                 {#each MARKERS as marker}
                 <div class="text-xs font-light
-                outline outline-[1px] outline-slate-600/30
-                dark:outline-slate-200/30 pt-[1px] pl-[1px]
+                outline outline-[0.5px] outline-zinc-200
+                dark:outline-zinc-700 pt-[1px] pl-[1px]
                 overflow-hidden">
                     {marker}
                 </div>
@@ -287,8 +287,8 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
             <div class="grid grid-cols-5 w-full h-[4%] text-center 
             font-semibold overflow-x-clip">
                 {#each ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] as day}
-                    <div class="outline outline-[1px] outline-slate-600/30
-                    dark:outline-slate-200/30 flex justify-center 
+                    <div class="outline outline-[0.5px] outline-zinc-200
+                    dark:outline-zinc-700 flex justify-center 
                     items-center text-sm">{day}</div>
                 {/each}
             </div>
@@ -300,8 +300,8 @@ const calculateDimensions = (calboxes: CalBoxParam[]) => {
                 overflow-x-clip">
                     <!-- * Grid Lines -->
                     {#each {length: 75} as _}
-                        <div class="outline outline-[1px] outline-slate-600/30
-                        dark:outline-slate-200/30"></div>
+                        <div class="outline outline-[0.5px] outline-zinc-200
+                        dark:outline-zinc-700"></div>
                     {/each}
         
                     <!-- * CalBoxes-->

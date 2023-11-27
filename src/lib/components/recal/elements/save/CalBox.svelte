@@ -85,7 +85,8 @@ const handleClick = () => {
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
-<button id="box" class="absolute text-left flex p-[1px] rounded-md cursor-pointer" 
+<button id="box" class="absolute text-left flex p-[1px] cursor-pointer
+rounded-sm" 
 style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
@@ -117,7 +118,7 @@ on:mouseleave={() => hovered = false}>
 button {
     background-image: var(--stripes);
     background-color: var(--bg);
-    border-left: 4px solid var(--border);
+    border-left: 3px solid var(--border);
     color: var(--text);
     opacity: var(--alpha);
     top: var(--top);

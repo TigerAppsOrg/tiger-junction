@@ -4,11 +4,12 @@
 @tailwind utilities;
 
 .std-area {
-    @apply rounded-xl overflow-auto 
+    @apply overflow-auto 
     focus:outline-std-blue
-    bg-white dark:bg-slate-900
-    text-slate-900 dark:text-white
-    border-2 border-slate-600/30 dark:border-slate-200/60;
+    bg-white dark:bg-zinc-900
+    text-zinc-900 dark:text-zinc-100
+     border-zinc-200 dark:border-zinc-700;
+     border-width: 1px
 }
 
 ::-webkit-scrollbar {
@@ -20,9 +21,9 @@
 }
 
 ::-webkit-scrollbar-track-piece {
-    @apply bg-slate-400/40;
+    @apply bg-zinc-400/40;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-slate-400/40;
+    @apply bg-zinc-400/40;
 }

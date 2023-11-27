@@ -29,6 +29,6 @@ items-center gradient-text text-5xl font-bold gap-2 text-center">
 
 .btn-cool {
     @apply bg-gradient-to-r from-deepblue-light to-deepblue-dark
-    text-white rounded-full px-4 py-2;
+    text-zinc-100 rounded-full px-4 py-2;
 }
 </style>
