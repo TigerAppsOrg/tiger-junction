@@ -186,9 +186,17 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                 class="btn">
                    Push Listings
                 </button>
+                <button formaction="?/pushCourses"
+                class="btn">
+                   Push Courses
+                </button>
                 <button formaction="?/pushRatings"
                 class="btn">
                    Push Ratings
+                </button>
+                <button formaction="?/rapidPush"
+                class="btn">
+                   RAPID RECAL!!!!
                 </button>
             </form>
         </div>

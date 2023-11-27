@@ -1,3 +1,4 @@
+import { REDIS_PASSWORD } from "$env/static/private";
 import { checkAdmin } from "$lib/supabase";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { RequestHandler } from "@sveltejs/kit";
@@ -38,7 +39,7 @@ export const GET: RequestHandler = async (req) => {
 
   // Push term data to Redis
   const redisClient = createClient({
-    password: "xBbdBUPnrm010GJiI0Cw0UMiJZkxUPjG",
+    password: REDIS_PASSWORD,
     socket: {
       host: 'redis-10705.c12.us-east-1-4.ec2.cloud.redislabs.com',
       port: 10705

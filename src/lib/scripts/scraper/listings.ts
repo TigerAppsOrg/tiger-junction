@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { TERM_MAP, TERM_URL } from "$lib/constants";
 import type { Listing } from "$lib/types/dbTypes";
-import { REG_AUTH } from "$env/static/private";
+import { getToken } from "./getToken";
 
 const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
@@ -31,11 +31,13 @@ const populateAllListings = async (supabase: SupabaseClient) => {
  * @returns success or failure message
  */
 const populateListings = async (supabase: SupabaseClient, term: number) => {
+    const token = await getToken();
+
     // Fetch course data for term
     const res = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": REG_AUTH
+            "Authorization": token
         }
     });
 
@@ -177,6 +179,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             updateCount++;
         }
     }
+
+    console.log("Finished populating listings for term " + term);
 
     return {
         message: SUCCESS_MESSAGE + term,

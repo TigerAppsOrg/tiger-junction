@@ -3,10 +3,10 @@ import { COURSE_URL, GENERIC_GRADING_INFO, TERM_URL } from "$lib/constants";
 import type { CourseInsert, InstructorInsert } from "$lib/types/dbTypes";
 import { daysToValue, timeToValue } from "../convert";
 import type { RegGradingInfo, RegCourse, RegSeatReservation, RegSection } from "$lib/types/regTypes";
-import { REG_AUTH } from "$env/static/private";
+import { getToken } from "./getToken";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
-const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
+const PARALLEL_REQUESTS = 20; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
 /**
@@ -16,11 +16,13 @@ const RATE = 0; // Number of milliseconds between requests
  * @returns success or failure message
  */
 const populateCourses = async (supabase: SupabaseClient, term: number) => {
+    const token = await getToken();
+
     // Fetch all course ids and open status for the given term
     const rawCourselist = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": REG_AUTH
+            "Authorization": token
         }
     });
 
@@ -64,7 +66,7 @@ const populateCourses = async (supabase: SupabaseClient, term: number) => {
             `${COURSE_URL}term=${term}&course_id=${courselist[index].id}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": REG_AUTH
+                    "Authorization": token
                 }
             }
         ) 
@@ -325,6 +327,8 @@ course_id: number, sections: RegSection[]) => {
                         days: daysToValue(section),
                         start_time: timeToValue(section.start_time),
                         end_time: timeToValue(section.end_time),
+                        status: parseInt(section.enrl_cap) === 0 ? 2 : 
+                        (parseInt(section.enrl_tot) >= parseInt(section.enrl_cap) ? 1 : 0)
                     };
 
                     supabase.from("sections")
@@ -346,6 +350,8 @@ course_id: number, sections: RegSection[]) => {
                             room: parseBuilding(section),
                             tot: section.enrl_tot,
                             cap: section.enrl_cap,
+                            status: parseInt(section.enrl_cap) === 0 ? 2 : 
+                            (parseInt(section.enrl_tot) >= parseInt(section.enrl_cap) ? 1 : 0)
                         })
                         .eq("id", res.data[0].id)
                         .then(res => {

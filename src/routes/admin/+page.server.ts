@@ -4,6 +4,7 @@ import { populateCourses } from "$lib/scripts/scraper/courses.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { updateEnrollments } from "$lib/scripts/scraper/localcourses.js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -27,7 +28,7 @@ export const actions: Actions = {
         return await populateListings(locals.supabase, 1244);
     },
     pushCourses: async ({ request, locals }) => {
-        return await populateField(request, locals, populateCourses);
+        await populateCourses(locals.supabase, 1244);
     },
     pushEvaluations: async ({ request, locals }) => {
         return await populateField(request, locals, populateEvaluations);
@@ -41,6 +42,9 @@ export const actions: Actions = {
     },
     pushPrereqs: async ({ request, locals }) => {
 
+    },
+    rapidPush: async ({ locals }) => {
+        updateEnrollments(locals.supabase, 1244);
     },
 
     // ! Deleters (Be aware of cascades)
