@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @fileoverview Scraper for updating ONLY enrollment data rapidly.
  * Meant to be run on a local machine during extremely critical times
@@ -15,49 +16,49 @@ import { getToken } from "./getToken"
  * @param {number} term 
  */
 export const updateEnrollments = async(supabase, term) => {
-    // Get course list from registrar
-    const token = await getToken();
-    const rawCourseList = await fetch(`${TERM_URL}${term}`, {
-        method: "GET",
-        headers: {
-            "Authorization": token
-        }
-    });
+    // Get supabase data
+    const { data: courseHeap, error: error2 } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("term", term)
+        .order("code", { ascending: true });
 
-    // Calculate status
-    const jsonCourseList = await rawCourseList.json();
-    let courseList = jsonCourseList.classes.class.map(
-    (/** @type {{ course_id: number; calculated_status: string; }} */ x) => {
-        return {
-            id: x.course_id,
-            status: calculateStatus(x.calculated_status)
-        }
-    });
-
-    // Remove duplicates
-    /**
-     * @type {number[]}
-     */
-    let ids = [];
-    /**
-     * @type {{ id: number; status: number; }[]}
-     */
-    let newCourses = [];
-    for (let course of courseList) {
-        if (!ids.includes(course.id)) {
-            ids.push(course.id);
-            newCourses.push(course);
-        }
+    if (error2) {
+        console.log("Error fetching courses from Supabase.")
+        throw new Error(error2.message);
     }
-    courseList = newCourses;
 
-    let count = 0;
+    const { data: sectionHeap, error: error3 } = await supabase
+        .from("sections")
+        .select("*, courses!inner(term)")
+        .eq("courses.term", term)
+        .order("id", { ascending: true });
 
-    /**
-     * Process the course at the given index.
-     * @param {number} index 
-     */
-    const processCourse = async (index) => {
+    if (error3) {
+        console.log("Error fetching sections from Supabase.")
+        throw new Error(error3.message);
+    }
+
+    sectionHeap.forEach((section) => {
+        delete section.courses;
+    });
+
+    // Create Redis client
+    const redisClient = createClient({
+        password: REDIS_PASSWORD,
+        socket: {
+            host: 'redis-10705.c12.us-east-1-4.ec2.cloud.redislabs.com',
+            port: 10705
+        }
+    });
+
+    redisClient.on("error", err => console.log("Redis Client Error", err));
+    await redisClient.connect();
+    
+    //------------------------------------------------------------------
+    // Individual Course Processing
+    //------------------------------------------------------------------
+    const processCourse = async (index, token) => {
         // Check base case
         if (index >= courseList.length) return;
         count++;
@@ -84,6 +85,58 @@ export const updateEnrollments = async(supabase, term) => {
         const course = {
             
         }
+    }
+
+    //------------------------------------------------------------------
+    // Cycle
+    //------------------------------------------------------------------
+
+    const PARALLEL_PROCESSES = 20;  // Number of parallel processes
+    const PARALLEL_WAIT_TIME = 50;  // Mean waiting time between parallel processes (ms)
+    const WAIT_TIME_NOISE = 10;     // Random noise in waiting time (ms)
+    const CYCLE_WAIT_TIME = 5000;   // Waiting time between cycles (ms)
+    let cycleCount = 0              // Number of cycles completed
+
+    const cycle = async () => {
+        // Update courseHeap with refreshed data
+        const token = await getToken();
+
+        const rawCourselist = await fetch(`${TERM_URL}${term}`, {
+            method: "GET",
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        const regCourses = (await rawCourselist.json()).classes.class.map((course) => {
+            return {
+                id: course.course_id,
+                status: calculateStatus(course.calculateStatus),
+            }
+        });
+
+        // Update course statuses
+        courseHeap.forEach((course) => {
+            const regCourse = regCourses.find((regCourse) => regCourse.id === course.listing_id);
+            if (regCourse) course.status = regCourse.status;
+        });
+
+        // Push courseHeap to Supabase and Redis
+        await supabase.from("courses").upsert(courseHeap);
+        await redisClient.json.set(`courses-${term}`, "$", courseHeap);
+
+        // Update sectionHeap with refreshed data (parallel)
+
+        cycleCount++;
+    }
+
+    // Lock in infinite loop
+    while (true) {
+        let startTime = Date.now();
+        await cycle();
+        let timeElapsed = (Date.now() - startTime) / 1000;
+        console.log("Cycle " + cycleCount + " completed in " + timeElapsed + " seconds.");
+        await new Promise((resolve) => setTimeout(resolve, CYCLE_WAIT_TIME));
     }
 }
 
