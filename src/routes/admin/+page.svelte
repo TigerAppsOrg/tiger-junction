@@ -190,6 +190,10 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                 class="btn">
                    Push Ratings
                 </button>
+                <button formaction="?/rapidPush"
+                class="btn">
+                   RAPID RECAL!!!!
+                </button>
             </form>
         </div>
 

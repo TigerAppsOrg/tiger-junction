@@ -8,10 +8,12 @@
 
 import { COURSE_URL, TERM_URL } from "$lib/constants";
 import { getToken } from "./getToken"
+import { createClient } from "redis";
+import { REDIS_PASSWORD } from "$env/static/private";
 
 /**
  * Updates the enrollment numbers for all courses in the Redis database 
- * for the given term.
+ * for the given term
  * @param {any} supabase 
  * @param {number} term 
  */
@@ -54,6 +56,8 @@ export const updateEnrollments = async(supabase, term) => {
 
     redisClient.on("error", err => console.log("Redis Client Error", err));
     await redisClient.connect();
+
+    let globCount = 0;
     
     //------------------------------------------------------------------
     // Individual Course Processing
@@ -61,6 +65,7 @@ export const updateEnrollments = async(supabase, term) => {
     const processCourse = async (index, token) => {
         // Check base case
         if (index >= courseHeap.length) return;
+        globCount++;
 
         // Get specific course data
         const resRaw = await fetch(
@@ -79,18 +84,50 @@ export const updateEnrollments = async(supabase, term) => {
             return;
         }
 
-        // Update tot, cap, 
+        const course = res.course_details.course_detail[0];
+        if (course.course_sections.course_section) {
+            const sections = course.course_sections.course_section;
+            for (let k = 0; k < sections.length; k++) {
+                const section = sections[k];
+                // console.log(section);
+                const sectionIndex = sectionHeap.findIndex((section2) => 
+                    section2.num === parseInt(section.class_number));
+    
+                if (sectionIndex >= 0) {
+                    sectionHeap[sectionIndex].tot = parseInt(section.enrl_tot);
+                    sectionHeap[sectionIndex].cap = parseInt(section.enrl_cap);
+                    sectionHeap[sectionIndex].status = 
+                        parseInt(section.enrl_cap) === 0 ? 2 : 
+                        (parseInt(section.enrl_tot) >= parseInt(section.enrl_cap) ? 1 : 0);
+    
+                    // Update supabase
+                    await supabase.from("sections").update({
+                        tot: sectionHeap[sectionIndex].tot,
+                        cap: sectionHeap[sectionIndex].cap,
+                        status: sectionHeap[sectionIndex].status
+                    })
+                    .eq("id", sectionHeap[sectionIndex].id);
+                }
+            }
+        }
+
+        // Wait for PARALLEL_WAIT_TIME + random noise
+        await new Promise((resolve) => setTimeout(resolve, 
+            PARALLEL_WAIT_TIME + Math.random() * WAIT_TIME_NOISE));
         
-    }
+        // Recurse
+        await processCourse(index + PARALLEL_PROCESSES, token);
+    }   
+
 
     //------------------------------------------------------------------
     // Cycle
     //------------------------------------------------------------------
 
-    const PARALLEL_PROCESSES = 20;  // Number of parallel processes
+    const PARALLEL_PROCESSES = 100;  // Number of parallel processes
     const PARALLEL_WAIT_TIME = 50;  // Mean waiting time between parallel processes (ms)
-    const WAIT_TIME_NOISE = 10;     // Random noise in waiting time (ms)
-    const CYCLE_WAIT_TIME = 5000;   // Waiting time between cycles (ms)
+    const WAIT_TIME_NOISE = 20;     // Random noise in waiting time (ms)
+    const CYCLE_WAIT_TIME = 1000;   // Waiting time between cycles (ms)
     let cycleCount = 0              // Number of cycles completed
 
     const cycle = async () => {
@@ -104,10 +141,11 @@ export const updateEnrollments = async(supabase, term) => {
             }
         });
 
-        const regCourses = (await rawCourselist.json()).classes.class.map((course) => {
+        const courseList = await rawCourselist.json();
+        const regCourses = courseList.classes.class.map((course) => {
             return {
                 id: course.course_id,
-                status: calculateStatus(course.calculateStatus),
+                status: calculateStatus(course.calculated_status),
             }
         });
 
@@ -118,22 +156,48 @@ export const updateEnrollments = async(supabase, term) => {
             if (regCourse) course.status = regCourse.status;
         });
 
-        // Push courseHeap to Supabase and Redis
-        await supabase.from("courses").upsert(courseHeap);
+
+        const updateSupaCourse = async (index) => {
+            if (index >= courseHeap.length) return;
+            await supabase.from("courses").update({
+                status: courseHeap[index].status
+            })
+            .eq("id", courseHeap[index].id);
+            await new Promise((resolve) => setTimeout(resolve, 
+                Math.random() * WAIT_TIME_NOISE));
+            await updateSupaCourse(index + PARALLEL_PROCESSES);
+        }
+
+
+        // Update supabase in parallel
+        for (let i = 0; i < PARALLEL_PROCESSES; i++) {
+            updateSupaCourse(i);
+        }
+
         await redisClient.json.set(`courses-${term}`, "$", courseHeap);
 
+        globCount = 0;
         // Update sectionHeap with refreshed data (parallel) 
         for (let i = 0; i < PARALLEL_PROCESSES; i++) {
-            processCourse(i, token);
+            processCourse(i, token, PARALLEL_PROCESSES);
             await new Promise((resolve) => setTimeout(resolve, 
                 PARALLEL_WAIT_TIME + Math.random() * WAIT_TIME_NOISE));
         }
+
+        // wait for all processes to finish
+        while (globCount < courseHeap.length) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+
+        console.log("Processed " + globCount + " courses.");
 
         // Push sectionHeap to Redis once all processes are done
         await redisClient.json.set(`sections-${term}`, "$", sectionHeap);
 
         cycleCount++;
     }
+
+    console.log("Starting scraper for term " + term + "...")
 
     // Lock in infinite loop
     while (true) {
