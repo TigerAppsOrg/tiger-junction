@@ -60,12 +60,11 @@ export const updateEnrollments = async(supabase, term) => {
     //------------------------------------------------------------------
     const processCourse = async (index, token) => {
         // Check base case
-        if (index >= courseList.length) return;
-        count++;
+        if (index >= courseHeap.length) return;
 
         // Get specific course data
         const resRaw = await fetch(
-            `${COURSE_URL}term=${term}&course_id=${newCourses[index].id}`, {
+            `${COURSE_URL}term=${term}&course_id=${courseHeap[index].listing_id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": token
@@ -80,11 +79,8 @@ export const updateEnrollments = async(supabase, term) => {
             return;
         }
 
-        // Format Course Data
-        const data = res.course_details.course_detail[0];
-        const course = {
-            
-        }
+        // Update tot, cap, 
+        
     }
 
     //------------------------------------------------------------------
@@ -117,7 +113,8 @@ export const updateEnrollments = async(supabase, term) => {
 
         // Update course statuses
         courseHeap.forEach((course) => {
-            const regCourse = regCourses.find((regCourse) => regCourse.id === course.listing_id);
+            const regCourse = regCourses.find((regCourse) => 
+                regCourse.id === course.listing_id);
             if (regCourse) course.status = regCourse.status;
         });
 
@@ -125,7 +122,15 @@ export const updateEnrollments = async(supabase, term) => {
         await supabase.from("courses").upsert(courseHeap);
         await redisClient.json.set(`courses-${term}`, "$", courseHeap);
 
-        // Update sectionHeap with refreshed data (parallel)
+        // Update sectionHeap with refreshed data (parallel) 
+        for (let i = 0; i < PARALLEL_PROCESSES; i++) {
+            processCourse(i, token);
+            await new Promise((resolve) => setTimeout(resolve, 
+                PARALLEL_WAIT_TIME + Math.random() * WAIT_TIME_NOISE));
+        }
+
+        // Push sectionHeap to Redis once all processes are done
+        await redisClient.json.set(`sections-${term}`, "$", sectionHeap);
 
         cycleCount++;
     }
