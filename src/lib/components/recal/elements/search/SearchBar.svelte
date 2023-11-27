@@ -65,22 +65,11 @@ const triggerSearch = () => {
 
 .adv-search {
     @apply h-10 w-10 flex justify-center items-center 
-    text-zinc-600 dark:text-zinc-300;
+    dark:text-zinc-100;
 }
 
 .adv-search:hover {
-    @apply text-zinc-800 dark:text-zinc-100 duration-150;
-    animation: rainbow-border 2s linear infinite;
+    @apply text-zinc-600 dark:text-zinc-300 duration-150;
 }
 
-@keyframes rainbow-border {
-  0% {
-    border-image-slice: 1;
-    transform: rotate(0deg);
-  }
-  100% {
-    border-image-slice: 8;
-    transform: rotate(360deg);
-  }
-}
 </style>
