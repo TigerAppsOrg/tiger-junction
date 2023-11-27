@@ -98,6 +98,23 @@ dark:text-zinc-100 text-sm">
                 {/if}
             </button>
         </div> 
+
+        <div class="flex gap-2">
+            {#if $isMobile}
+            <button on:click={() => $showCal = !$showCal}
+                class="h-6 w-20 bg-zinc-100 rounded-sm 
+                hover:text-zinc-600
+                dark:bg-zinc-800
+                 dark:text-zinc-100 hover:dark:text-zinc-300
+                flex items-center justify-center">
+                    {#if $showCal}
+                        ← List
+                    {:else}
+                        → Calendar
+                    {/if}
+            </button>
+            {/if}
+        </div> 
     </div>
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
