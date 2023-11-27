@@ -28,7 +28,7 @@ export const actions: Actions = {
         return await populateListings(locals.supabase, 1244);
     },
     pushCourses: async ({ request, locals }) => {
-        return await populateField(request, locals, populateCourses);
+        await populateCourses(locals.supabase, 1244);
     },
     pushEvaluations: async ({ request, locals }) => {
         return await populateField(request, locals, populateEvaluations);

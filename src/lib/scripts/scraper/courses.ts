@@ -6,7 +6,7 @@ import type { RegGradingInfo, RegCourse, RegSeatReservation, RegSection } from "
 import { getToken } from "./getToken";
 
 const SUCCESS_MESSAGE = "Successfully began populating courses for term: ";
-const PARALLEL_REQUESTS = 10; // Number of parallel requests to send
+const PARALLEL_REQUESTS = 20; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
 /**
@@ -327,6 +327,8 @@ course_id: number, sections: RegSection[]) => {
                         days: daysToValue(section),
                         start_time: timeToValue(section.start_time),
                         end_time: timeToValue(section.end_time),
+                        status: parseInt(section.enrl_cap) === 0 ? 2 : 
+                        (parseInt(section.enrl_tot) >= parseInt(section.enrl_cap) ? 1 : 0)
                     };
 
                     supabase.from("sections")
@@ -348,6 +350,8 @@ course_id: number, sections: RegSection[]) => {
                             room: parseBuilding(section),
                             tot: section.enrl_tot,
                             cap: section.enrl_cap,
+                            status: parseInt(section.enrl_cap) === 0 ? 2 : 
+                            (parseInt(section.enrl_tot) >= parseInt(section.enrl_cap) ? 1 : 0)
                         })
                         .eq("id", res.data[0].id)
                         .then(res => {
