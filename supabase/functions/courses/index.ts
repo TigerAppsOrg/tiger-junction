@@ -206,7 +206,7 @@ Deno.serve(async (req) => {
     supabaseClient.functions.invoke("courses", {
       body: { term, round: round + 1 },
     });
-  }
+  } 
 
   // Return information about course scrapings
   return new Response(
