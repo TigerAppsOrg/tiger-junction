@@ -69,7 +69,7 @@ dark:border-zinc-700 border-zinc-200" style={cssVarStyles}>
 
 <style lang="postcss">
 .btn-circ {
-    @apply flex items-center gap-2 dark:text-zinc-100;
+    @apply flex items-center gap-1 dark:text-zinc-100;
 }
 
 .btn-circ:hover {
