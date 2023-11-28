@@ -4,6 +4,7 @@
  * Meant to be run on a local machine during extremely critical times
  * (e.g. during registration period, start of add-drop) where the
  * enrollment numbers need to be updated every minute (or faster).
+ * ! DO NOT RUN THIS SCRIPT ON THE SERVER!!!
  */
 
 import { COURSE_URL, TERM_URL } from "$lib/constants";
@@ -89,11 +90,16 @@ export const updateEnrollments = async(supabase, term) => {
             const sections = course.course_sections.course_section;
             for (let k = 0; k < sections.length; k++) {
                 const section = sections[k];
-                // console.log(section);
                 const sectionIndex = sectionHeap.findIndex((section2) => 
                     section2.num === parseInt(section.class_number));
     
                 if (sectionIndex >= 0) {
+                    // Check if enrollment numbers have changed
+                    if (parseInt(section.enrl_tot) === sectionHeap[sectionIndex].tot
+                    && parseInt(section.enrl_cap) === sectionHeap[sectionIndex].cap) {
+                        continue;
+                    }
+
                     sectionHeap[sectionIndex].tot = parseInt(section.enrl_tot);
                     sectionHeap[sectionIndex].cap = parseInt(section.enrl_cap);
                     sectionHeap[sectionIndex].status = 
@@ -124,7 +130,7 @@ export const updateEnrollments = async(supabase, term) => {
     // Cycle
     //------------------------------------------------------------------
 
-    const PARALLEL_PROCESSES = 100;  // Number of parallel processes
+    const PARALLEL_PROCESSES = 50;  // Number of parallel processes
     const PARALLEL_WAIT_TIME = 50;  // Mean waiting time between parallel processes (ms)
     const WAIT_TIME_NOISE = 20;     // Random noise in waiting time (ms)
     const CYCLE_WAIT_TIME = 1000;   // Waiting time between cycles (ms)
