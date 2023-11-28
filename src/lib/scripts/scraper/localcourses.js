@@ -82,6 +82,13 @@ export const updateEnrollments = async(supabase, term) => {
         if (!res || !res.course_details || !res.course_details.course_detail
         || res.course_details.course_detail.length === 0) {
             console.error("Error fetching course data: " + index);
+            
+            // Wait for PARALLEL_WAIT_TIME + random noise
+            await new Promise((resolve) => setTimeout(resolve, 
+                CYCLE_WAIT_TIME + PARALLEL_WAIT_TIME + Math.random() * WAIT_TIME_NOISE));
+
+            // Try again
+            await processCourse(index, token);
             return;
         }
 

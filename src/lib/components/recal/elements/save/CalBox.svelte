@@ -105,7 +105,7 @@ on:mouseleave={() => hovered = false}>
             </div>
         {/if}
 
-        {#if $searchSettings.style["Show Enrollments"]}
+        {#if $searchSettings.style["Show Enrollments"] || hovered}
             <div class="font-light">
                 Enrollment: {section.tot}/{section.cap}
             </div>
