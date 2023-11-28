@@ -137,10 +137,10 @@ export const updateEnrollments = async(supabase, term) => {
     // Cycle
     //------------------------------------------------------------------
 
-    const PARALLEL_PROCESSES = 50;  // Number of parallel processes
-    const PARALLEL_WAIT_TIME = 50;  // Mean waiting time between parallel processes (ms)
-    const WAIT_TIME_NOISE = 20;     // Random noise in waiting time (ms)
-    const CYCLE_WAIT_TIME = 1000;   // Waiting time between cycles (ms)
+    const PARALLEL_PROCESSES = 2;  // Number of parallel processes
+    const PARALLEL_WAIT_TIME = 200;  // Mean waiting time between parallel processes (ms)
+    const WAIT_TIME_NOISE = 25;     // Random noise in waiting time (ms)
+    const CYCLE_WAIT_TIME = 20000;   // Waiting time between cycles (ms)
     let cycleCount = 0              // Number of cycles completed
 
     const cycle = async () => {
