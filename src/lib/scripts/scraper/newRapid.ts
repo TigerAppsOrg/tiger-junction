@@ -150,58 +150,54 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
                 const newCap = parseInt(course.classes[j].capacity);
                 const newStatus = convertStatus(course.classes[j].status);
 
+                if (section.tot !== newTot || section.cap !== newCap || section.status !== newStatus) {
+                    sectionHeap[sectionIndex].tot = newTot;
+                    sectionHeap[sectionIndex].cap = newCap;
+                    sectionHeap[sectionIndex].status = newStatus;
 
-                sectionHeap[sectionIndex].tot = newTot;
-                sectionHeap[sectionIndex].cap = newCap;
-                sectionHeap[sectionIndex].status = newStatus;
+                    numUpdates++;
 
-                numUpdates++;
+                    // Update the section in supabase
+                    await supabase.from("sections").update({
+                        tot: sectionHeap[sectionIndex].tot,
+                        cap: sectionHeap[sectionIndex].cap,
+                        status: sectionHeap[sectionIndex].status
+                    })
+                    .eq("id", sectionHeap[sectionIndex].id);
 
-                // Update the section in supabase
-                await supabase.from("sections").update({
-                    tot: sectionHeap[sectionIndex].tot,
-                    cap: sectionHeap[sectionIndex].cap,
-                    status: sectionHeap[sectionIndex].status
-                })
-                .eq("id", sectionHeap[sectionIndex].id);
-
-                // Calculate course status
-                const courseEE = courseHeap.find(course => course.id === section.course_id);
-                if (!courseEE) {
-                    console.log("Course not found: ", section.course_id);
-                    continue;
-                }
-
-
-                const sections = sectionHeap.filter(section => section.course_id === courseEE.id);
-                const categories = [...new Set(sections.map(section => section.category))];
-                let isOpen = 0;
-
-                if (courseEE.id === "15342") {
-                    console.log("Sections: ", sections);
-                    console.log("Categories: ", categories);
-                }
-
-                for (let c = 0; c < categories.length; c++) {
-                    const categorySections = sections.filter(section => 
-                        section.category === categories[c]);
-                    const categoryClosed = categorySections.every(section => 
-                        section.status === 1);
-                    if (categoryClosed) {
-                        closures++;
-                        isOpen = 1;
-                        break;
+                    // Calculate course status
+                    const course = courseHeap.find(course => course.id === section.course_id);
+                    if (!course) {
+                        console.log("Course not found: ", section.course_id);
+                        continue;
                     }
-                }
 
-                courseEE.status = isOpen;
-                const { error: newErr} = await supabase.from("courses").update({
-                    status: courseEE.status
-                }).eq("id", courseEE.id);
 
-                if (newErr) {
-                    console.log("Error updating course status in supabase");
-                    throw new Error(newErr.message);
+                    const sections = sectionHeap.filter(section => section.course_id === course.id);
+                    const categories = [...new Set(sections.map(section => section.category))];
+                    let isOpen = 0;
+
+                    for (let c = 0; c < categories.length; c++) {
+                        const categorySections = sections.filter(section => 
+                            section.category === categories[c]);
+                        const categoryClosed = categorySections.every(section => 
+                            section.status === 1);
+                        if (categoryClosed) {
+                            closures++;
+                            isOpen = 1;
+                            break;
+                        }
+                    }
+
+                    course.status = isOpen;
+                    const { error: newErr} = await supabase.from("courses").update({
+                        status: course.status
+                    }).eq("id", course.id);
+
+                    if (newErr) {
+                        console.log("Error updating course status in supabase");
+                        throw new Error(newErr.message);
+                    }
                 }
             }
         }
