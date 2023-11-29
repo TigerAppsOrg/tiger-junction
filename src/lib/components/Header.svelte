@@ -27,6 +27,10 @@ dark:border-zinc-700 border-zinc-200" style={cssVarStyles}>
                 <span class="text-xl dark:text-zinc-100">TigerJunction</span>
             </div>
         </div>
+
+        <div class="text-sm italic">
+            "Does not conflict" is currently broken
+        </div>
         <div id="right" class="sm:space-x-6 space-x-4 flex items-center">
             <button on:click={() => $darkTheme = !$darkTheme}
                 class="btn-circ">

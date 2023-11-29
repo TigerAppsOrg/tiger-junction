@@ -129,6 +129,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
         const data: SeatInfo[] = [...data1.course, ...data2.course, ...data3.course, ...data4.course];
         let numUpdates = 0;
+        let closures = 0;
 
         // Update the section heap 
         for (let i = 0; i < data.length; i++) {
@@ -180,6 +181,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
                         const categoryClosed = categorySections.every(section => 
                             section.status === 1);
                         if (categoryClosed) {
+                            closures++;
                             isOpen = false;
                             break;
                         }
@@ -197,7 +199,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
         // Update the redis cache
         await redisClient.json.set(`sections-${term}`, "$", JSON.stringify(sectionHeap));
-        console.log("Number of updates:", numUpdates, "Time taken:", Date.now() - startTime);
+        console.log("Number of updates:", numUpdates, "Time taken:", Date.now() - startTime, "Closures:", closures);
     }
 
     // Infinite loop
