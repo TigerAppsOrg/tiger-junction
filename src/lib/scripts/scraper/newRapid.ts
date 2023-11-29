@@ -22,12 +22,12 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
         throw new Error(error2.message);
     }
 
-    // const courseIds = courseHeap.map(course => course.listing_id);
-    // const courseIdsLength = courseIds.length;
-    // const partOneOfFour = courseIds.slice(0, courseIdsLength / 4).join(",");
-    // const partTwoOfFour = courseIds.slice(courseIdsLength / 4, courseIdsLength / 2).join(",");
-    // const partThreeOfFour = courseIds.slice(courseIdsLength / 2, courseIdsLength * 3 / 4).join(",");
-    // const partFourOfFour = courseIds.slice(courseIdsLength * 3 / 4).join(",");
+    const courseIds = courseHeap.map(course => course.listing_id);
+    const courseIdsLength = courseIds.length;
+    const partOneOfFour = courseIds.slice(0, courseIdsLength / 4).join(",");
+    const partTwoOfFour = courseIds.slice(courseIdsLength / 4, courseIdsLength / 2).join(",");
+    const partThreeOfFour = courseIds.slice(courseIdsLength / 2, courseIdsLength * 3 / 4).join(",");
+    const partFourOfFour = courseIds.slice(courseIdsLength * 3 / 4).join(",");
 
     const { data: sectionHeap, error: error3 } = await supabase
         .from("sections")
@@ -60,59 +60,58 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
         const WAITING_TIME = 1000;
 
         const startTime = Date.now();
-        console.log("Cycling")
-        // const res1 = await fetch(
-        //     `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partOneOfFour}`, {
-        //         method: "GET",
-        //         headers: {
-        //             "Authorization": API_ACCESS_TOKEN
-        //         }
-        //     }
-        // );
+        const res1 = await fetch(
+            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partOneOfFour}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": API_ACCESS_TOKEN
+                }
+            }
+        );
 
-        // await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
+        await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
-        // const res2 = await fetch(
-        //     `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partTwoOfFour}`, {
-        //         method: "GET",
-        //         headers: {
-        //             "Authorization": API_ACCESS_TOKEN
-        //         }
-        //     }
-        // );
+        const res2 = await fetch(
+            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partTwoOfFour}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": API_ACCESS_TOKEN
+                }
+            }
+        );
 
-        // await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
+        await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
-        // const res3 = await fetch(
-        //     `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partThreeOfFour}`, {
-        //         method: "GET",
-        //         headers: {
-        //             "Authorization": API_ACCESS_TOKEN
-        //         }
-        //     }
-        // );
+        const res3 = await fetch(
+            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partThreeOfFour}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": API_ACCESS_TOKEN
+                }
+            }
+        );
 
-        // await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
+        await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
 
-        // const res4 = await fetch(
-        //     `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partFourOfFour}`, {
-        //         method: "GET",
-        //         headers: {
-        //             "Authorization": API_ACCESS_TOKEN
-        //         }
-        //     }
-        // );
+        const res4 = await fetch(
+            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partFourOfFour}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": API_ACCESS_TOKEN
+                }
+            }
+        );
 
-        // await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
+        await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
-        // const data1 = await res1.json();
-        // const data2 = await res2.json();
-        // const data3 = await res3.json();
-        // const data4 = await res4.json();
+        const data1 = await res1.json();
+        const data2 = await res2.json();
+        const data3 = await res3.json();
+        const data4 = await res4.json();
 
         // Read data from src/lib/scripts/scraper/localcache/seatcache.json
-        const data: SeatInfo[] = JSON.parse(fs.readFileSync("src/lib/scripts/scraper/localcache/seatcache.json", "utf-8"));
+        // const data: SeatInfo[] = JSON.parse(fs.readFileSync("src/lib/scripts/scraper/localcache/seatcache.json", "utf-8"));
 
         type SeatInfo = {
             course_id: string,
@@ -128,14 +127,11 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
             "seat_status": string
         }
 
-        // const data: SeatInfo[] = [...data1.course, ...data2.course, ...data3.course, ...data4.course];
-        console.log("Data length:", data.length);
-        console.log("Time taken:", Date.now() - startTime);
-
+        const data: SeatInfo[] = [...data1.course, ...data2.course, ...data3.course, ...data4.course];
         let numUpdates = 0;
 
         // Update the section heap 
-        for (let i = 0; i < sectionHeap.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             const course = data[i];
             for (let j = 0; j < course.classes.length; j++) {
                 const sectionIndex = sectionHeap.findIndex(section => {
@@ -160,15 +156,6 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
                     numUpdates++;
 
-                    console.log(
-                        "Updated section",
-                        sectionHeap[sectionIndex].id,
-                        sectionHeap[sectionIndex].num,
-                        sectionHeap[sectionIndex].tot,
-                        sectionHeap[sectionIndex].cap,
-                        sectionHeap[sectionIndex].status
-                    )
-
                     // Update the section in supabase
                     await supabase.from("sections").update({
                         tot: sectionHeap[sectionIndex].tot,
@@ -176,14 +163,51 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
                         status: sectionHeap[sectionIndex].status
                     })
                     .eq("id", sectionHeap[sectionIndex].id);
+
+                    // Calculate course status
+                    const course = courseHeap.find(course => course.id === section.course_id);
+                    if (!course) {
+                        console.log("Course not found: ", section.course_id);
+                        continue;
+                    }
+
+                    const sections = sectionHeap.filter(section => section.course_id === course.id);
+                    const categories = [...new Set(sections.map(section => section.category))];
+                    let isOpen = true;
+                    for (let c = 0; c < categories.length; c++) {
+                        const categorySections = sections.filter(section => 
+                            section.category === categories[c]);
+                        const categoryClosed = categorySections.every(section => 
+                            section.status === 1);
+                        if (categoryClosed) {
+                            isOpen = false;
+                            break;
+                        }
+                    }
+
+                    if (course.status !== isOpen) {
+                        course.status = isOpen;
+                        await supabase.from("courses").update({
+                            status: course.status
+                        });
+                    }
                 }
             }
         }
 
-        console.log("Num updates:", numUpdates);
+        // Update the redis cache
+        await redisClient.json.set(`sections-${term}`, "$", JSON.stringify(sectionHeap));
+        console.log("Number of updates:", numUpdates, "Time taken:", Date.now() - startTime);
     }
 
-    await cycle();
+    // Infinite loop
+    let count = 0;
+    const CYCLE_PAUSE = 10000;
+    while (true) {
+        console.log("Cycle", ++count);
+        await cycle();
+        await new Promise(resolve => setTimeout(resolve, CYCLE_PAUSE));
+    }
 }
 
 const convertStatus = (status: string) => {
