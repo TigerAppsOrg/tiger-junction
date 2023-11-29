@@ -204,6 +204,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
         // Update the redis cache
         await redisClient.json.set(`sections-${term}`, "$", JSON.stringify(sectionHeap));
+        await redisClient.json.set(`courses-${term}`, "$", JSON.stringify(courseHeap));
         console.log("Number of updates:", numUpdates, "Time taken:", Date.now() - startTime, "Closures:", closures);
     }
 
