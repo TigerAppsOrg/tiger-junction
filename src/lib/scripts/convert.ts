@@ -22,7 +22,7 @@ const timeToValue = (time: string) => {
         return TIME_CONVERSION.NULL_TIME;
 
     let dig = time.split(" ")[0].split(":").map((x) => parseInt(x));
-    let pm = time.split(" ")[1] === "pm";
+    let pm = time.split(" ")[1] === "PM" || time.split(" ")[1] === "pm";
 
     if (dig[0] === 12) dig[0] = 0;
 

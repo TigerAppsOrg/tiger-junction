@@ -11,3 +11,4 @@ vite.config.ts.timestamp-*
 storybook.log
 .VSCODECounter
 .vercel
+/src/lib/scripts/scraper/localcache

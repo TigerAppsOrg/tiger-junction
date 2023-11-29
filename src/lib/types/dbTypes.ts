@@ -13,6 +13,7 @@ type Listing = {
 }
 
 type CourseInsert = {
+    id?: number,
     listing_id: string,
     term: number,
     code: string,
@@ -21,8 +22,9 @@ type CourseInsert = {
     // course_info: Record<string, string | RegSeatReservation[]>,
     // reading_info: Record<string, string> | null,
     status: number,
-    basis: string,
+    // basis: string,
     dists: string[] | null,
+    instructors: string[] | null,
 }
 
 type Course = CourseInsert & {

@@ -1,10 +1,11 @@
 import { redirect, type Actions } from "@sveltejs/kit";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
-import { populateCourses } from "$lib/scripts/scraper/courses.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { updateEnrollments } from "$lib/scripts/scraper/localcourses.js";
+import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
+import { populateCourses } from "$lib/scripts/scraper/newCourses.js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -44,7 +45,8 @@ export const actions: Actions = {
 
     },
     rapidPush: async ({ locals }) => {
-        updateEnrollments(locals.supabase, 1244);
+        // updateEnrollments(locals.supabase, 1244);
+        updateSeats(locals.supabase, 1244);
     },
 
     // ! Deleters (Be aware of cascades)

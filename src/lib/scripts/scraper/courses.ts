@@ -10,6 +10,7 @@ const PARALLEL_REQUESTS = 20; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
 
 /**
+ * @deprecated
  * Pushes all courses for a given term to the database
  * @param supabase 
  * @param term 
