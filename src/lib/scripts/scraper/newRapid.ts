@@ -210,7 +210,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
     // Infinite loop
     let count = 0;
-    const CYCLE_PAUSE = 10000;
+    const CYCLE_PAUSE = 60000;
     while (true) {
         console.log("Cycle", ++count);
         await cycle();
