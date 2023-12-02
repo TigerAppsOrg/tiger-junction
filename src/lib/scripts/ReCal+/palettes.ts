@@ -5,6 +5,16 @@ import type { CalColors } from "$lib/stores/styles";
 export const colorPalettes: Record<string, CalColors> = {
     // From ReCal
     "Original": {       
+        "-1": "#e6e6e6",
+        "0": "#D0DECF",
+        "1": "#d5dcec",
+        "2": "#ebd2db",
+        "3": "#faf4cb",
+        "4": "#e7dcce",
+        "5": "#d1e7e4",
+        "6": "#dcd5e2",
+    },
+    "Bright": {
         "-1": "#a8a8a8",
         "0": "#9ee09e",
         "1": "#feb44d",
@@ -13,16 +23,6 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#ff6461",
         "5": "#ff99cc",
         "6": "#cc99c8",
-    },
-    "Bright": {
-        "-1": "#e6e6e6",
-        "0": "#D6CCC2",
-        "1": "#DED6CE",
-        "2": "#E5DED8",
-        "3": "#EEEAE6",
-        "4": "#F5EBE0",
-        "5": "#E3D5CA",
-        "6": "#D1BFB4",
     },
     "Crayon": {
         "-1": "#e6e6e6",
