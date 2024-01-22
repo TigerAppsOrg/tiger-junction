@@ -110,7 +110,7 @@ Promise<boolean | null> => {
 }
 
 /**
- * Populate the saved and pinned course pools for a given term
+ * Populate the saved course pools for a given term
  * @param supabase 
  * @param scheduleIds 
  * @param term 

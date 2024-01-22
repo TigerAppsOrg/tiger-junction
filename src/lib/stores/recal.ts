@@ -304,8 +304,8 @@ export const searchResults = {
 //----------------------------------------------------------------------
 /* Note: Raw course data is data for all courses from db, while
 search course data is data for all courses excluding those that
-are pinned or saved. This speeds up search results when there
-are many pinned/saved courses. */
+are saved. This speeds up search results when there
+are many saved courses. */
 
 const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
 Writable<RawCourseData> = writable({

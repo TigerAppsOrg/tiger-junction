@@ -158,7 +158,6 @@ CREATE TABLE cb_schedule_associations (
 CREATE TABLE course_schedule_associations (
   course_id INTEGER REFERENCES public.courses(id) on DELETE CASCADE NOT NULL,
   schedule_id INTEGER REFERENCES public.schedules(id) on DELETE CASCADE NOT NULL,
-  is_pinned BOOLEAN DEFAULT FALSE NOT NULL,
   metadata JSONB,
   PRIMARY KEY(course_id, schedule_id)
 );

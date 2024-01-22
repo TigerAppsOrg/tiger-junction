@@ -6,7 +6,7 @@ import { CURRENT_TERM_ID } from "$lib/constants";
 import { fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { rawCourseData, ready, schedules, searchCourseData } from "$lib/stores/recal.js";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
+import { savedCourses } from "$lib/stores/rpool.js";
 import { sectionData } from "$lib/stores/rsections.js";
 import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
@@ -43,12 +43,31 @@ onMount(async () => {
     }
     searchCourseData.reset(CURRENT_TERM_ID);
 
-    await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
-    await populatePools(data.supabase, CURRENT_TERM_ID);
+    // Populate user schedules
+    schedules.update(x => {
+        x[CURRENT_TERM_ID] = data.body.schedules;
+        return x;
+    });
+
+    // Populate saved courses
+    savedCourses.update(x => {
+        for (const scheduleId in data.body.associations) {
+            x[scheduleId] = data.body.associations[scheduleId];
+        }
+        return x;
+    });
+
+
+    console.log($schedules)
+    console.log($savedCourses)
+
+
+    // await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
+    // await populatePools(data.supabase, CURRENT_TERM_ID);
 
     searchCourseData.resetAll();
     let id = $schedules[CURRENT_TERM_ID][0].id;
-    let courses = [...$savedCourses[id], ...$pinnedCourses[id]];
+    let courses = [...$savedCourses[id]];
     searchCourseData.remove(CURRENT_TERM_ID, courses);
 
     $ready = true;
