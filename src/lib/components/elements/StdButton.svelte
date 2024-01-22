@@ -9,13 +9,14 @@ export let scheme: keyof CalColors = "0";
 export let message = "DEFAULT MESSAGE";
 export let onClick = () => {};
 export let submit = false;
+export let className = "";
 
 // Handle theme changes
 $: cssVarStyles = calculateCssVars(scheme, $calColors)
 </script>
 
 <button 
-class={scheme} 
+class={scheme + " " + className} 
 on:click={onClick} 
 style={cssVarStyles}
 type={submit ? "submit" : "button"}>

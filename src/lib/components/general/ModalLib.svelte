@@ -68,5 +68,5 @@ export let supabase: SupabaseClient;
 {/if}
 
 {#if $modalStore === "feedback"}
-<Feedback showModal={$modalStore === "feedback"} />
+<Feedback showModal={$modalStore === "feedback"} {supabase} />
 {/if}
