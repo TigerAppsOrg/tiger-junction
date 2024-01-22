@@ -3,10 +3,10 @@ import Calendar from "$lib/components/recal/Calendar.svelte";
 import Left from "$lib/components/recal/Left.svelte";
 import Top from "$lib/components/recal/Top.svelte";
 import { CURRENT_TERM_ID } from "$lib/constants";
-import { fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { rawCourseData, ready, schedules, searchCourseData } from "$lib/stores/recal.js";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool.js";
+import { rMeta } from "$lib/stores/rmeta.js";
+import { savedCourses } from "$lib/stores/rpool.js";
 import { sectionData } from "$lib/stores/rsections.js";
 import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
@@ -43,12 +43,45 @@ onMount(async () => {
     }
     searchCourseData.reset(CURRENT_TERM_ID);
 
-    await fetchUserSchedules(data.supabase, CURRENT_TERM_ID);
-    await populatePools(data.supabase, CURRENT_TERM_ID);
+    // Populate user schedules
+    schedules.update(x => {
+        x[CURRENT_TERM_ID] = data.body.schedules;
+        return x;
+    });
+    
+    // Populate saved courses
+    for (const scheduleId in data.body.associations) {
+        if ($savedCourses[scheduleId] && $savedCourses[scheduleId].length > 0) 
+            continue;
+
+        const assocs = data.body.associations[scheduleId];
+
+        for (const x of assocs) {
+            const rawCourses = $rawCourseData[CURRENT_TERM_ID];
+            let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
+    
+            // Add metadata
+            rMeta.update(y => {
+                if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
+                y[scheduleId][cur.id] = x.metadata;
+                return y;
+            });
+    
+            // Load section data
+            await sectionData.add(data.supabase, CURRENT_TERM_ID, cur.id);
+    
+            // Update savedCourses
+            savedCourses.update(z => {
+                if (!z[scheduleId]) z[scheduleId] = [];
+                z[scheduleId] = [...z[scheduleId], cur];
+                return z;
+            });
+        }
+    }
 
     searchCourseData.resetAll();
     let id = $schedules[CURRENT_TERM_ID][0].id;
-    let courses = [...$savedCourses[id], ...$pinnedCourses[id]];
+    let courses = [...$savedCourses[id]];
     searchCourseData.remove(CURRENT_TERM_ID, courses);
 
     $ready = true;

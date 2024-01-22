@@ -8,7 +8,7 @@ import { darkTheme } from "$lib/stores/state";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { savedCourses } from "$lib/stores/rpool";
 import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
@@ -36,7 +36,7 @@ const handleScheduleChange = (scheduleId: number) => {
     currentSchedule.set(scheduleId);
     searchCourseData.reset($currentTerm);
 
-    let courses = [...$savedCourses[scheduleId], ...$pinnedCourses[scheduleId]];
+    let courses = [...$savedCourses[scheduleId]];
     searchCourseData.remove($currentTerm, courses);
 }
 

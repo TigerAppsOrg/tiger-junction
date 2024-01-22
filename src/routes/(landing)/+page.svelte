@@ -109,7 +109,7 @@ const handleLogin = async () => {
         </div>
 
         <div class="card bg-std-blue">
-            <h1>CourseGenie (Coming Soon)</h1>
+            <h1>CourseGenie (Coming 3/17)</h1>
             <p class="mb-2">
                 With CourseGenie, you can embark on an enriched 
                 academic journey. Seamlessly chart all four years, 
@@ -134,7 +134,7 @@ const handleLogin = async () => {
         </div>
 
         <div class="card bg-std-orange">
-            <h1>ReqTree (Coming Soon)</h1>
+            <h1>ReqTree (Coming Summer 2024)</h1>
             <p class="mb-2">
                 A visually dynamic app that transforms prerequisites 
                 into technology trees

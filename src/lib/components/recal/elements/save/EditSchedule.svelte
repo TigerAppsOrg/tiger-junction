@@ -4,7 +4,7 @@ import StdButton from "$lib/components/elements/StdButton.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { savedCourses } from "$lib/stores/rpool";
 import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { onMount } from "svelte";
@@ -66,7 +66,6 @@ const duplicateSchedule = async () => {
 
         // Update course schedule associations
         let saved = $savedCourses[$currentSchedule];
-        let pinned = $pinnedCourses[$currentSchedule];        
         let meta = $rMeta[$currentSchedule];
 
         let newId = res.data[0].id.toString();
@@ -75,25 +74,12 @@ const duplicateSchedule = async () => {
         for (let i = 0; i < saved.length; i++) assocUploads.push({
             schedule_id: newId,
             course_id: saved[i].id,
-            is_pinned: false,
             metadata: meta[saved[i].id],
-        });
-        
-        for (let i = 0; i < pinned.length; i++) assocUploads.push({
-            schedule_id: newId,
-            course_id: pinned[i].id,
-            is_pinned: true,
-            metadata: meta[pinned[i].id],
         });
 
         // Update stores 
         savedCourses.update(x => {
             x[newId] = saved;
-            return x;
-        });
-
-        pinnedCourses.update(x => {
-            x[newId] = pinned;
             return x;
         });
 
@@ -112,7 +98,7 @@ const duplicateSchedule = async () => {
         // Upload to database
         supabase.from("course_schedule_associations")
             .insert(assocUploads)
-            .select("schedule_id, course_id, is_pinned, metadata")
+            .select("schedule_id, course_id, metadata")
         .then(res2 => {
             // Revert if error
             if (res2.error) {
@@ -123,10 +109,6 @@ const duplicateSchedule = async () => {
                     return x;
                 });
                 savedCourses.update(x => {
-                    delete x[newId];
-                    return x;
-                });
-                pinnedCourses.update(x => {
                     delete x[newId];
                     return x;
                 });
@@ -142,7 +124,7 @@ const duplicateSchedule = async () => {
             // Update current schedule
             currentSchedule.set(res.data[0].id);
                 searchCourseData.reset($currentTerm);
-                let courses = [...$savedCourses[res.data[0].id], ...$pinnedCourses[res.data[0].id]];
+                let courses = [...$savedCourses[res.data[0].id]];
                 searchCourseData.remove($currentTerm, courses);
             
 
@@ -250,7 +232,8 @@ const saveSchedule = async () => {
                     class="flex-1 p-2 h-10 w-full std-area roudned-sm">
                 </div>
             </div> <!-- * End Container -->
-            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+            <div class="flex gap-2 border-t-2 mt-2 pt-2
+            border-zinc-200 dark:border-zinc-600">
 
                 <StdButton message="Cancel" onClick={() => modalStore.close()} 
                 scheme="-1" />

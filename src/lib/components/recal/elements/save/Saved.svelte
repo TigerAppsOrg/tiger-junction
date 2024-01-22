@@ -1,20 +1,16 @@
 <script lang="ts">
 import { currentSchedule, isResult, ready, recal, searchSettings } from "$lib/stores/recal";
 import type { SupabaseClient } from "@supabase/supabase-js";
-// import ClassicSearch from "../cards/ClassicSearch.svelte";
 import MinimalBase from "../cards/MinimalBase.svelte";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { savedCourses } from "$lib/stores/rpool";
 import { calColors } from "$lib/stores/styles";
-    import Loader from "$lib/components/elements/Loader.svelte";
-    import { modalStore } from "$lib/stores/modal";
+import Loader from "$lib/components/elements/Loader.svelte";
+import { modalStore } from "$lib/stores/modal";
 
 export let supabase: SupabaseClient;
 
 $: saved = $savedCourses[$currentSchedule] ? 
     $savedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code))
-    : [];
-$: pinned = $pinnedCourses[$currentSchedule] ?
-    $pinnedCourses[$currentSchedule].sort((a, b) => a.code.localeCompare(b.code))
     : [];
 
 $: colorChange = $calColors;
@@ -29,9 +25,6 @@ $: colorChange = $calColors;
         <span>
             {saved.length} Saved 
             {saved.length === 1 ? "Course" : "Courses"}
-            {#if pinned.length > 0}
-            ({pinned.length} Pin{pinned.length === 1 ? "" : "s"})
-            {/if}   
         </span>
         <button on:click={() => modalStore.open("exportCal", { clear: true})}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
@@ -43,7 +36,7 @@ $: colorChange = $calColors;
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-sm
-    {$isResult ? "max-h-[18vh]" : "max-h-[75vh]"}">
+    {$isResult ? "max-h-[18vh]" : "max-h-[70vh]"}">
         <div class="overflow-y-auto">
             {#key saved && colorChange}
             {#each saved as course}

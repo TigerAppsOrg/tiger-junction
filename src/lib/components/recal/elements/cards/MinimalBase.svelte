@@ -59,7 +59,7 @@ const fillStyles = () => {
 }
 
 // Color by rating
-if (category === "search" || category === "pinned") {
+if (category === "search") {
     styles.stripes = "";
     if ($searchSettings.style["Color by Rating"]) {
         if (!course.rating) {
@@ -189,16 +189,6 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
 
         <div class="w-[20%] flex justify-evenly">
             {#if category === "saved"}
-                <!-- <button class="pin-button
-                z-50 h-full w-full flex items-center justify-center
-                duration-100"
-                on:click={() => {
-                    cf.pinCourseFromSaved(supabase, course);
-                }}>
-                    <img src={pinIcon} alt="Pin" 
-                    class="ic" />
-                </button> -->
-
                 <button class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
@@ -207,32 +197,8 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
                     class="ic" />
                 </button>
 
-            {:else if category === "pinned"}
-
-                <button class="add-button
-                z-50 h-full w-full flex items-center justify-center
-                duration-100"
-                on:click={() => cf.saveCourseFromPinned(supabase, course)}>
-                    <img src={plusIcon} alt="Save" 
-                    class="ic" />
-                </button>
-
-                <button class="remove-button
-                z-50 h-full w-full flex items-center justify-center
-                duration-100"
-                on:click={() => cf.removeCourseFromPinned(supabase, course)}>
-                    <img src={removeIcon} alt="Remove" 
-                    class="ic" />
-                </button>
 
             {:else}
-                <!-- <button class="pin-button
-                z-50 h-full w-full flex items-center justify-center
-                duration-100"
-                on:click={() => cf.pinCourseFromSearch(supabase, course)}>
-                    <img src={pinIcon} alt="Pin" 
-                    class="ic" />
-                </button> -->
 
                 <button class="add-button
                 z-50 h-full w-full flex items-center justify-center

@@ -2,7 +2,7 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
 import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from "$lib/stores/recal";
-import { pinnedCourses, savedCourses } from "$lib/stores/rpool";
+import { savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { toastStore } from "$lib/stores/toast";
 import StdButton from "$lib/components/elements/StdButton.svelte";
@@ -59,15 +59,10 @@ const saveSchedule = async () => {
             return x;
         });
 
-        pinnedCourses.update(x => {
-            x[newId] = [];
-            return x;
-        }); 
-
         // Update current schedule
         currentSchedule.set(newId);
         searchCourseData.reset($currentTerm);
-        let courses = [...$savedCourses[newId], ...$pinnedCourses[newId]];
+        let courses = [...$savedCourses[newId]];
         searchCourseData.remove($currentTerm, courses);
 
         if ($schedules[$currentTerm].length === 1)
@@ -94,7 +89,8 @@ const saveSchedule = async () => {
                     class="flex-1 p-2 h-10 w-full std-area rounded-md">
                 </div>
             </div> <!-- * End Container -->
-            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+            <div class="flex gap-2 border-t-2 mt-2 pt-2 
+            border-zinc-200 dark:border-zinc-600">
 
                 <StdButton message="Cancel" onClick={() => modalStore.close()}
                 scheme="-1" />

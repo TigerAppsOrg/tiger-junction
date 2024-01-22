@@ -169,7 +169,8 @@ const resetSearchSettings = () => {
                 </div>
             </div>
         </div> <!-- * End Container -->
-        <div class="flex gap-2 border-t-2 mt-2 pt-2">
+        <div class="flex gap-2 border-t-2 mt-2 pt-2
+        border-zinc-200 dark:border-zinc-600">
             <StdButton message="Reset to Default" onClick={resetSearchSettings}
             scheme="1" />
             <StdButton message="Close" onClick={saveSettings} />

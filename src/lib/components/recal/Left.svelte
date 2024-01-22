@@ -1,6 +1,5 @@
 <script lang="ts">
 import Saved from "./elements/save/Saved.svelte";
-import Pinned from "./elements/save/Pinned.svelte";
 import SearchResults from "./elements/search/SearchResults.svelte";
 import SearchBar from "./elements/search/SearchBar.svelte";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -14,9 +13,6 @@ export let supabase: SupabaseClient;
     </div>
     <div>
         <Saved {supabase} />
-    </div>
-    <div>
-        <Pinned {supabase} />
     </div>
     <div class="top-0">
         <SearchResults {supabase} />
