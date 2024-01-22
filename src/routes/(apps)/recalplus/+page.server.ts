@@ -66,14 +66,7 @@ export const load = async ({ locals: { getSession, supabase } }) => {
         if (assocFetchError) return { status: 500, body: "Error fetching course-schedule associations" };
         associations[schedule.id] = assoc;
     }
-
-    console.log({
-        courses: courses as CourseData[],
-        sections: sections as SectionData[],
-        schedules: userSchedules,
-        associations
-    })
-
+    
     return {
         status: 200,
         body: {
