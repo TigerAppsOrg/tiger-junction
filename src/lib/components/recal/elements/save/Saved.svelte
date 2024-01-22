@@ -36,7 +36,7 @@ $: colorChange = $calColors;
 
     {#if saved.length > 0}
     <div class="flex flex-col overflow-hidden rounded-sm
-    {$isResult ? "max-h-[18vh]" : "max-h-[75vh]"}">
+    {$isResult ? "max-h-[18vh]" : "max-h-[70vh]"}">
         <div class="overflow-y-auto">
             {#key saved && colorChange}
             {#each saved as course}
