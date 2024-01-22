@@ -69,5 +69,10 @@ CREATE POLICY "View: auth" ON public.course_instructor_associations
   TO authenticated
   USING (true);
 
+-- feedback
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."feedback"
+  AS PERMISSIVE FOR INSERT
+  TO authenticated
+  WITH CHECK (true)
 
 -- section_data (admin only)
