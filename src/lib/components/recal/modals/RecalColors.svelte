@@ -72,7 +72,8 @@ onMount(() => {
         })} scheme="2" />
     </div>
 
-    <div class="flex gap-2 border-t-2 mt-2 pt-2" slot="buttons">
+    <div class="flex gap-2 border-t-2 border-zinc-200 dark:border-zinc-600
+     mt-2 pt-2" slot="buttons">
         <StdButton message="Cancel" onClick={() => modalStore.close()}
         scheme="-1"/>
 

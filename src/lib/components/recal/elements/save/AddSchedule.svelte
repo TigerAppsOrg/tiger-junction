@@ -89,7 +89,8 @@ const saveSchedule = async () => {
                     class="flex-1 p-2 h-10 w-full std-area rounded-md">
                 </div>
             </div> <!-- * End Container -->
-            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+            <div class="flex gap-2 border-t-2 mt-2 pt-2 
+            border-zinc-200 dark:border-zinc-600">
 
                 <StdButton message="Cancel" onClick={() => modalStore.close()}
                 scheme="-1" />

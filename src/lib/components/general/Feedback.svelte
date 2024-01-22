@@ -3,6 +3,7 @@ import StdModal from "$lib/components/elements/StdModal.svelte";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import StdButton from "../elements/StdButton.svelte";
 import { toastStore } from "$lib/stores/toast";
+import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
 
 export let supabase: SupabaseClient;
 export let showModal: boolean = false;
@@ -35,12 +36,15 @@ const submitFeedback = () => {
                 Feedback is anonymous, but if you would like a response,
                 please leave your email somewhere in the message.
                 All feedback is greatly appreciated!
+                Join our email list <a href={EMAIL_LIST_FORM_LINK}
+                target="_blank"
+                class="underline hover:opacity-80">here</a>!
             </p>
             {#if isError}
                 <p class="text-red-500">Please enter some feedback!</p>
             {/if}
             <textarea cols="30" rows="10" bind:value={feedback}
-            class="w-full p-2 rounded-md border-2 
+            class="w-full p-2 rounded-sm border-2 dark:bg-zinc-900
             border-zinc-300 dark:border-zinc-700"></textarea>
         </div>
         <StdButton message="Submit" className="w-full" scheme="1"

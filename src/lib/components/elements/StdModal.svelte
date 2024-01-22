@@ -17,7 +17,8 @@ export let showModal: boolean = false;
         </div> 
         
         {#if stdClose}
-            <div class="flex gap-2 border-t-2 mt-2 pt-2">
+            <div class="flex gap-2 border-t-2 mt-2 pt-2
+            border-zinc-200 dark:border-zinc-600">
                 <StdButton message="Close" onClick={() => modalStore.close()} />
             </div> 
         {:else}
