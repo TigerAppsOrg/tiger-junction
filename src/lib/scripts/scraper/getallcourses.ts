@@ -161,7 +161,10 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
                 basis: basis,
                 dists: courseIdCodeDist.dists,
                 instructors: courseSubjectDetails.instructors ? 
-                    courseSubjectDetails.instructors.map((x: any) => x.full_name) : 
+                    courseSubjectDetails.instructors.map((x: any) => {
+                        return x.full_name.split(" ").map((x: string) =>
+                            x[0].toUpperCase() + x.slice(1)).join(" ");
+                    }) : 
                     null,
             }
 
