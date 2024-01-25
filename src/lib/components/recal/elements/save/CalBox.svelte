@@ -92,7 +92,7 @@ on:click={handleClick}
 on:mouseenter={() => hovered = true}
 on:mouseleave={() => hovered = false}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
-        <div class="font-light">
+        <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(section.start_time, section.end_time)}
         </div>
         <div class="font-normal">
@@ -100,13 +100,13 @@ on:mouseleave={() => hovered = false}>
         </div>
         
         {#if ($searchSettings.style["Always Show Rooms"] || hovered) && section.room }
-            <div class="font-light">
+            <div class="font-light text-2xs leading-3 pt-[1px]">
                 {section.room}
             </div>
         {/if}
 
         {#if $searchSettings.style["Show Enrollments"] || hovered}
-            <div class="font-light">
+            <div class="font-light text-2xs leading-3 pt-[1px]">
                 Enrollment: {section.tot}/{section.cap === 999 ? "∞" : section.cap}
             </div>
         {/if}

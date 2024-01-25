@@ -3,6 +3,9 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      fontSize: {
+        "2xs": ".65rem",
+      },
       colors: {
         primary: "#6485fd",
         secondary: "#72c7e9",
