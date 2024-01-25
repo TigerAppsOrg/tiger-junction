@@ -121,7 +121,7 @@ export const searchResults = {
 
         // * No Final
         if (settings.filters["No Scheduled Final"].enabled) {
-            data = data.filter(x => !x.grading_info.hasOwnProperty("Final Scheduled Exam"));
+            data = data.filter(x => !x.has_final);
         }
 
         // * Open Only

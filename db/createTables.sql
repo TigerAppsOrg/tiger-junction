@@ -63,7 +63,7 @@ CREATE TABLE courses (
   basis VARCHAR(100),
   dists VARCHAR(3)[],
   rating REAL,
-  grading_info JSONB,
+  has_final BOOLEAN,
   course_info JSONB,
   reading_info JSONB,
   PRIMARY KEY(id)

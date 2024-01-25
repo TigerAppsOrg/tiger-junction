@@ -46,6 +46,7 @@ type DualId = {
 }
 
 type CourseData = {
+    has_final: any
     id: number,
     listing_id: string,
     term: number,
@@ -57,7 +58,6 @@ type CourseData = {
     rating: number,
     num_evals: number,
     adj_rating: number,
-    grading_info: Record<string, string>,
     instructors: string[] | null,
 }
 
