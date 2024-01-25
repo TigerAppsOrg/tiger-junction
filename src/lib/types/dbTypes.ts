@@ -18,11 +18,9 @@ type CourseInsert = {
     term: number,
     code: string,
     title: string,
-    grading_info: Record<string, string>,
-    // course_info: Record<string, string | RegSeatReservation[]>,
-    // reading_info: Record<string, string> | null,
+    has_final: boolean,
     status: number,
-    // basis: string,
+    basis: string,
     dists: string[] | null,
     instructors: string[] | null,
 }

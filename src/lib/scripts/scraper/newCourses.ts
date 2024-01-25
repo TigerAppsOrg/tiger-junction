@@ -1,11 +1,10 @@
 import { API_ACCESS_TOKEN, REDIS_PASSWORD } from "$env/static/private";
-import { DEPARTMENTS, GENERIC_GRADING_INFO, TERM_URL } from "$lib/constants";
+import { DEPARTMENTS, TERM_URL } from "$lib/constants";
 import type { CourseInsert } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getToken } from "./getToken";
 import { timeToValue } from "../convert";
 import { createClient } from "redis";
-
 
 export const populateCourses = async (supabase: SupabaseClient, term: number) => {
     console.log("Populating courses for term", term);
@@ -19,14 +18,18 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
         }
     });
 
+
+    type RegCourse = {
+        listing_id: string,
+        code: string,
+        dists: string[] | null
+    }
+
     const jsonCourselist = await rawCourselist.json();
-    const courselist = jsonCourselist.classes.class.map((x: any) => {
+    const courselist: RegCourse[] = jsonCourselist.classes.class.map((x: any) => {
         return {
             listing_id: x.course_id,
             code: x.crosslistings.replace(/\s/g, ""),
-            grading_info: calculateGradingInfo(x),
-            status: calculateStatus(x.calculated_status),
-            // basis: x.grading_basis,
             dists: x.distribution_area ?
                 x.distribution_area.split(" or ").sort() :
                 null,
@@ -49,8 +52,14 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
         );
 
         let subjectData = await rawSubjectData.json();
-        if (!subjectData.term[0].subjects) continue;
+        if (!subjectData.term[0].subjects) {
+            console.log("No data for term", term, ":", subject);
+            continue;
+        }
         subjectData = subjectData.term[0];
+
+        // Find the index in the subjects array that matches the subject
+        // (when querying for a subject, the crosslists are also included)
         let correctIndex = subjectData.subjects.findIndex((x: any) => x.code === subject);
         if (correctIndex === -1) {
             console.log("Subject not found for term", term, ":", subject);
@@ -58,21 +67,79 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
         };
         subjectData = subjectData.subjects[correctIndex].courses;
 
+        // Iterate through all courses in the subject
         for (let j = 0; j < subjectData.length; j++) {
-            let courselistEntry = courselist.find((x: any) => x.listing_id === subjectData[j].course_id);
+            let courseIdCodeDist = courselist.find((x: any) => x.listing_id === subjectData[j].course_id);
+            if (!courseIdCodeDist) {
+                console.log("No courselist entry for", subjectData[j].course_id, "in term", term);
+                continue;
+            }
+            const courseSubjectDetails = subjectData[j];
+
+            // Fetch individual course details
+            const rawCourseDetails = await fetch(
+                `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${subjectData[j].course_id}&fmt=json`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": token
+                    }
+                }
+            );
+
+            const courseDetails = await rawCourseDetails.json();
+            if (!courseDetails || !courseDetails.course_details || !courseDetails.course_details.course_detail) {
+                console.log("No course details for", courseSubjectDetails.course_id, "in term", term);
+                continue;
+            }
+
+            const courseDetail = courseDetails.course_details.course_detail;
+            const basis: string = courseDetail.grading_basis;
+            const hasFinal = courseDetail.grading_final_exam && 
+            parseInt(courseDetail.grading_final_exam) > 0;
+
+            // Calculate course status
+            const sections: any[] = courseSubjectDetails.classes;
+            const sectionMap: Record<string, boolean> = {};
+            let allCancelled = true;
+            type Status = "Open" | "Closed" | "Canceled";
+            for (let k = 0; k < sections.length; k++) {
+                const section = sections[k];
+                const sectionStatus: Status = section.status;
+                const sectionType: string = section.section[0];
+                if (sectionStatus !== "Canceled") {
+                    allCancelled = false;
+                }
+                if (sectionStatus === "Open") {
+                    sectionMap[sectionType] = true;
+                }
+                if (!sectionMap[sectionType] && sectionStatus[0] === "C") {
+                    sectionMap[sectionType] = false;
+                }
+            }
+            let status: 0 | 1 | 2 | 3 = 0;
+            if (allCancelled) {
+                status = 2;
+            } else {
+                for (const key in sectionMap) {
+                    if (!sectionMap[key]) {
+                        status = 1;
+                        break;
+                    }
+                }
+            }
 
             // Update course
             let course: CourseInsert = {
-                listing_id: subjectData[j].course_id,
+                listing_id: courseIdCodeDist.listing_id,
                 term: term,
-                code: courselistEntry.code,
-                title: subjectData[j].title,
-                grading_info: courselistEntry.grading_info,
-                status: courselistEntry.status,
-                // basis: courselistEntry.basis,
-                dists: courselistEntry.dists,
-                instructors: subjectData[j].instructors ? 
-                    subjectData[j].instructors.map((x: any) => x.full_name) : 
+                code: courseIdCodeDist.code,
+                title: courseSubjectDetails.title,
+                has_final: hasFinal,
+                status: status,
+                basis: basis,
+                dists: courseIdCodeDist.dists,
+                instructors: courseSubjectDetails.instructors ? 
+                    courseSubjectDetails.instructors.map((x: any) => x.full_name) : 
                     null,
             }
 
@@ -113,11 +180,15 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
                     throw new Error(error.message);
                 }
 
+                if (!data) {
+                    console.log("No data returned from inserting course", course.listing_id, "in term", course.term);
+                    continue;
+                }
                 courseId = data[0].id;
             }
 
-            for (let k = 0; k < subjectData[j].classes.length; k++) {
-                let section = subjectData[j].classes[k];
+            for (let k = 0; k < sections.length; k++) {
+                let section = sections[k];
 
                 for (let l = 0; l < section.schedule.meetings.length; l++) {
                     let meeting = section.schedule.meetings[l];
@@ -132,7 +203,8 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
                         days: daysToValue(meeting.days),
                         start_time: timeToValue(meeting.start_time),
                         end_time: timeToValue(meeting.end_time),
-                        status: section.status === "O" ? 0 : 1
+                        status: section.status === "Open" ? 0 :
+                            section.status === "Closed" ? 1 : 2,
                     }
 
                     // Check if section exists in supabase
@@ -216,33 +288,6 @@ export const populateCourses = async (supabase: SupabaseClient, term: number) =>
     await redisClient.disconnect();
 
     console.log("Finished populating courses in", Date.now() - startTime, "ms");
-}
-
-
-//------------------ Helper Functions ------------------//
-
-const calculateGradingInfo = (data: any) => {
-    let gradingInfo: Record<string, string> = {};
-    for (let key in GENERIC_GRADING_INFO) 
-        if (data[key] && data[key] !== "0")
-            gradingInfo[GENERIC_GRADING_INFO[key as keyof RegGradingInfo]] 
-        = data[key];
-    
-    return gradingInfo;
-}
-
-// Calculate course status
-const calculateStatus = (status: string) => {
-    switch (status) {
-        case "Open":
-            return 0;
-        case "Closed":
-            return 1;
-        case "Canceled":
-            return 2;
-        default:
-            return 3;
-    }
 }
 
 const daysToValue = (days: string[]) => {
