@@ -58,7 +58,7 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     </label>
                     <input type="checkbox" name="refreshGrading" 
                     id="refreshGrading" bind:checked={refreshGrading}
-                    class="w-4 h-4">
+                    class="w-4 h-4 accent-std-green dark:accent-synth-medium">
                 </div>
                 <div class="flex flex-col gap-2 text-base">
                     <button formaction="?/pushListings"
