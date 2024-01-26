@@ -36,7 +36,7 @@ const submitFeedback = () => {
                 Feedback is anonymous, but if you would like a response,
                 please leave your email somewhere in the message.
                 All feedback is greatly appreciated!
-                If you want monthly updates, join our email list <a href={EMAIL_LIST_FORM_LINK}
+                If you would like monthly updates, please join our email list <a href={EMAIL_LIST_FORM_LINK}
                 target="_blank"
                 class="underline hover:opacity-80">here</a>!
             </p>
