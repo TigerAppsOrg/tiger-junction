@@ -6,8 +6,8 @@ import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
 import { TERM_MAP } from "$lib/constants.js";
 
-// Only allow admins to access this page
 export const load = async ({ locals }) => {
+    // Only allow admins to access this page
     let session = await locals.getSession();
     if (!session) throw redirect(303, "/");
 
@@ -19,6 +19,36 @@ export const load = async ({ locals }) => {
     if (error) throw new Error(error.message);
     if (!data) throw new Error("No data found");
     if (!data[0].is_admin) throw redirect(303, "/");
+
+    // Get #users, #schedules, #course_schedule_associations, #unresolved feedback
+    const users = await locals.supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true });
+    if (users.error) throw new Error(users.error.message);
+
+    const schedules = await locals.supabase
+        .from("schedules")
+        .select("*", { count: "exact", head: true });
+    if (schedules.error) throw new Error(schedules.error.message);
+
+    const course_schedule_associations = await locals.supabase
+        .from("course_schedule_associations")
+        .select("*", { count: "exact", head: true });
+    if (course_schedule_associations.error) throw new Error(course_schedule_associations.error.message);
+
+    const feedback = await locals.supabase
+        .from("feedback")
+        .select("*", { count: "exact", head: false })
+        .eq("resolved", false);
+    if (feedback.error) throw new Error(feedback.error.message);
+    
+    return {
+        users: users.count,
+        schedules: schedules.count,
+        course_schedule_associations: course_schedule_associations.count,
+        feedbackCount: feedback.count,
+        feedback: feedback.data
+    }
 }
 
 export const actions: Actions = {
