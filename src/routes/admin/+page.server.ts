@@ -2,11 +2,9 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { updateEnrollments } from "$lib/scripts/scraper/localcourses.js";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
-import { populateCourses } from "$lib/scripts/scraper/newCourses.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
+import { TERM_MAP } from "$lib/constants.js";
 
 // Only allow admins to access this page
 export const load = async ({ locals }) => {
@@ -25,29 +23,93 @@ export const load = async ({ locals }) => {
 
 export const actions: Actions = {
     // ! Pushers
-    pushListings: async ({ locals }) => {
-        console.log("FEWF")
-        return await populateListings(locals.supabase, 1244);
+    pushListings: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing listings for term " + term);
+        await populateListings(locals.supabase, termInt);
+        console.log("Finished pushing listings in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed listings"
+        };
     },
     pushCourses: async ({ request, locals }) => {
-        await getAllCourses(locals.supabase, 1244);
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing courses for term " + term);
+        await getAllCourses(locals.supabase, termInt);
+        console.log("Finished pushing courses in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed courses"
+        };
     },
     pushEvaluations: async ({ request, locals }) => {
-        return await populateField(request, locals, populateEvaluations);
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing evaluations for term " + term);
+        await populateEvaluations(locals.supabase, termInt);
+        console.log("Finished pushing evaluations in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed evaluations"
+        };
     },
     pushRatings: async ({ request, locals }) => {
-        console.log("RERFEW")
-        return await populateRatings(locals.supabase, 1244);
-    },
-    pushPrograms: async ({ locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
 
+        const currentTime = new Date().getTime();
+        console.log("Pushing ratings for term " + term);
+        await populateRatings(locals.supabase, termInt);
+        console.log("Finished pushing ratings in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed ratings"
+        };
     },
-    pushPrereqs: async ({ request, locals }) => {
-
-    },
-    rapidPush: async ({ locals }) => {
-        // updateEnrollments(locals.supabase, 1244);
-        updateSeats(locals.supabase, 1244);
+    rapidPush: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+        updateSeats(locals.supabase, termInt);
     },
 
     // ! Deleters (Be aware of cascades)
@@ -175,13 +237,3 @@ export const actions: Actions = {
         };
     }
 };
-
-// Populates a field in the database based on given function
-const populateField = async (request: Request, locals: App.Locals,
-popFunc: (supabase: SupabaseClient, termId: number) => Promise<any>) => {
-
-    const formData = await request.formData();
-    const term = formData.get("term") as string;
-    let message = await popFunc(locals.supabase, parseInt(term));
-    return message;
-}

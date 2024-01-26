@@ -1,4 +1,5 @@
 <script lang="ts">
+    import StdButton from "$lib/components/elements/StdButton.svelte";
 import { TERM_MAP } from "$lib/constants";
 import AdminHeader from "./AdminHeader.svelte";
 
@@ -53,30 +54,36 @@ let term: string = "";
     <div class="cont">
         <div class="area area-std">
             <h2 class="text-2xl font-bold mb-4">DB Management</h2>
-            <div class="mb-4 space-x-2 flex items-center">
-                <label class="text-lg" for="term">Term: </label>
-                <input type="text" name="term" id="term" bind:value={term}
-                class="rounded-md p-2 flex-1 
-                bg-zinc-300 dark:bg-synth-medium">
-            </div>
-            <form method="POST" class="flex flex-col gap-2">
-                <button formaction="?/pushListings"
-                class="btn btn-blue">
-                   Push Listings
-                </button>
-                <button formaction="?/pushCourses"
-                class="btn btn-blue">
-                   Push Courses
-                </button>
-                <button formaction="?/pushRatings"
-                class="btn btn-blue">
-                   Push Ratings
-                </button>
-                <hr class="my-2 border-zinc-400" />
-                <button formaction="?/rapidPush"
-                class="btn btn-green">
-                   Rapid Seat Refresh
-                </button>
+            <form method="POST">
+                <div class="mb-4 space-x-2 flex items-center">
+                    <label class="text-lg" for="term">Term: </label>
+                    <input type="text" name="term" id="term" bind:value={term}
+                    class="rounded-md p-2 flex-1 
+                    bg-zinc-300 dark:bg-synth-medium">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button formaction="?/pushListings"
+                    class="btn btn-blue">
+                       Push Listings
+                    </button>
+                    <button formaction="?/pushCourses"
+                    class="btn btn-blue">
+                       Push Courses
+                    </button>
+                    <button formaction="?/pushRatings"
+                    class="btn btn-blue">
+                       Push Ratings
+                    </button>
+                    <button formaction="?/pushEvaluations"
+                    class="btn btn-blue">
+                       Push Evaluations
+                    </button>
+                    <hr class="my-2 border-zinc-400" />
+                    <button formaction="?/rapidPush"
+                    class="btn btn-green">
+                       Rapid Seat Refresh
+                    </button>
+                </div>
             </form>
         </div>
 
