@@ -560,7 +560,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Weighted Rating": false,
         "Color by Rating": false,
         "Always Show Rooms": false,
-        "Show Enrollments": false,
+        "Always Show Enrollments": false,
         "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,

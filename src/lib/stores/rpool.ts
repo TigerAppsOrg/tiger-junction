@@ -364,7 +364,7 @@ export const savedCourses: CoursePool = {
     add: async (supabase: SupabaseClient, scheduleId: number, 
     course: CourseData, SCD?: boolean): Promise<boolean> => {
         return await addCourse(supabase, savedCourses, scheduleId, 
-            course, false, SCD);
+            course, SCD);
     },
 
     /**
