@@ -68,7 +68,6 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     class="btn btn-blue">
                        Push Evaluations
                     </button>
-                    <hr class="my-1 border-zinc-400" />
                     <button formaction="?/rapidPush"
                     class="btn btn-green">
                        Rapid Seat Refresh
@@ -103,7 +102,7 @@ const resolveFeedback = async (feedback: { id: number; }) => {
             <h2 class="text-lg font-bold mb-2">Statistics</h2>
             <div class="space-y-1">
                 <div class="flex justify-between text-sm">
-                    <span>Users</span>
+                    <span>Total Users</span>
                     <span class="font-bold">{data.users}</span>
                 </div>
                 <div class="flex justify-between text-sm">

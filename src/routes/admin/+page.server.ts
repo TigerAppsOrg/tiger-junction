@@ -41,7 +41,7 @@ export const load = async ({ locals }) => {
         .select("id, feedback", { count: "exact", head: false })
         .eq("resolved", false);
     if (feedback.error) throw new Error(feedback.error.message);
-    
+
     return {
         users: users.count,
         schedules: schedules.count,
