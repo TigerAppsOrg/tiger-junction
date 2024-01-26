@@ -5,7 +5,6 @@ import AdminHeader from "./AdminHeader.svelte";
 export let data;
 
 let term: string = "";
-let loading: boolean = false;
 
 // Safety on mass deletions
 // let enableMassDelete: boolean = false;
@@ -161,24 +160,24 @@ let loading: boolean = false;
         </div>  -->
 
         <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">Information</h2>
-            <h3 class="text-xl font-bold mb-2">Term Codes</h3>
-            <div class="space-y-2 col grid-cols-2 columns-2">
+            <h2 class="text-2xl font-bold mb-2">Information</h2>
+            <h3 class="text-xl font-semibold mb-1">Term Codes</h3>
+            <div class="space-y-1">
                 {#each Object.keys(TERM_MAP) as term}
-                    <div class="space-x-2">
+                    <div class="flex justify-between">
                         <span>
                             {term.split("_")[0].slice(0, 1) 
                             + term.split("_")[0].slice(1).toLowerCase() 
                             + " " 
-                            + term.split("_")[1]}:
+                            + term.split("_")[1]}
                         </span>
                         <span class="font-bold">{TERM_MAP[term]}</span>
                     </div>
                 {/each}
             </div> <!-- * End Term Codes -->
-            <h3 class="text-xl font-bold mt-8 mb-2">Notes</h3>
+            <h3 class="text-xl font-semibold mt-4 mb-1">Notes</h3>
             <p>
-                Evaluations go to Fall 2020 
+                Evaluations are Fall 2020 and forward
             </p>
         </div> <!-- * End Information -->
     </div> <!-- * End Container -->
