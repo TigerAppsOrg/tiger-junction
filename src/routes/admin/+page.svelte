@@ -1,15 +1,8 @@
 <script lang="ts">
-import { enhance } from "$app/forms";
-import { goto } from "$app/navigation";
-import TogTog from "$lib/components/elements/TogTog.svelte";
-import LightButton from "$lib/components/general/LightButton.svelte";
-// import homeIcon from "$lib/img/icons/homeicon.svg";
 import { TERM_MAP } from "$lib/constants";
 import AdminHeader from "./AdminHeader.svelte";
 
 export let data;
-
-const API_PREFIX = "/api/admin/scraper/"
 
 let term: string = "";
 let loading: boolean = false;
@@ -33,30 +26,6 @@ let loading: boolean = false;
 //     }
 // }
 
-/**
- * Hit an API endpoint and handle loading and postloading
- * @param fetcher The fetcher function to use
- */
-const submitEvent = async (fetcher: () => Promise<Response>) => {    
-    // Check for valid term code
-    if (!Object.values(TERM_MAP).includes(parseInt(term))) {
-        alert("Invalid term code!");
-        term = "";
-        return;
-    }
-
-    // Prelude
-    term = "";
-    loading = true;
-    console.log("loading...");
-
-    // Hit API
-    const result = await fetcher();
-
-    // Postlude
-    loading = false;
-    console.log(result);
-}
 </script>
 
 <svelte:head>
@@ -68,16 +37,16 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 
     <div class="w-screen px-12 pb-4">
     <div class="colored-container">
-        <div class="area bg-yellow-300">
+        <div class="area bg-std-yellow">
             "Study without desire spoils the memory, and it retains nothing that it takes in." - Leonardo da Vinci
         </div>
-        <div class="area bg-pink-400">
+        <div class="area bg-std-pink">
             "Dwell on the beauty of life. Watch the stars, and see yourself running with them." - Marcus Aurelius
         </div>
-        <div class="area bg-cyan-400">
+        <div class="area bg-std-blue">
             "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected." - Steve Jobs
         </div>
-        <div class="area bg-green-400">
+        <div class="area bg-std-green">
             "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
         </div>
     </div> <!-- * End Colored Data -->
@@ -88,7 +57,7 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
             <div class="mb-4 space-x-2 flex items-center">
                 <label class="text-lg" for="term">Term: </label>
                 <input type="text" name="term" id="term" bind:value={term}
-                class="rounded-xl p-2 flex-1 
+                class="rounded-md p-2 flex-1 
                 bg-zinc-300 dark:bg-synth-medium">
             </div>
             <form method="POST" class="flex flex-col gap-2">
@@ -218,7 +187,7 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 
 <style lang="postcss">
 .colored-container {
-    @apply grid gap-4 pt-4 text-sm;
+    @apply grid gap-2 text-sm;
     margin: 0 auto;
     grid-template-columns: 1fr;
 }
@@ -259,13 +228,14 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 }
 
 .cont {
-    @apply grid gap-4 pt-4;
+    @apply grid gap-2 pt-2;
     margin: 0 auto; 
     grid-template-columns: 1fr;
 }
 
 .area {
-    @apply p-6 rounded-xl;
+    @apply p-4 rounded-lg border-[1px] border-zinc-200
+    dark:border-zinc-700;
 }
 
 .area-std {
