@@ -38,7 +38,7 @@ export const load = async ({ locals }) => {
 
     const feedback = await locals.supabase
         .from("feedback")
-        .select("*", { count: "exact", head: false })
+        .select("id, feedback", { count: "exact", head: false })
         .eq("resolved", false);
     if (feedback.error) throw new Error(feedback.error.message);
     

@@ -6,6 +6,16 @@ export let data;
 
 let term: string = "";
 
+// Set a feedback item to resolved and remove it from the list
+const resolveFeedback = async (feedback: { id: number; }) => {
+    await data.supabase.from("feedback")
+        .update({ resolved: true })
+        .match({ id: feedback.id });
+
+    data.feedback = data.feedback.filter((f: { id: number; }) => 
+        f.id !== feedback.id);
+    data.feedbackCount--;
+}
 </script>
 
 <svelte:head>
@@ -89,7 +99,7 @@ let term: string = "";
             </p>
         </div> <!-- * End Information -->
 
-        <div class="area area-std">
+        <div class="area area-std overflow-auto max-h-[600px]">
             <h2 class="text-lg font-bold mb-2">Statistics</h2>
             <div class="space-y-1">
                 <div class="flex justify-between text-sm">
@@ -108,6 +118,25 @@ let term: string = "";
                     <span>Unresolved Feedback</span>
                     <span class="font-bold">{data.feedbackCount}</span>
                 </div>
+
+                {#if data.feedbackCount > 0}
+                <div class="space-y-1">
+                    {#each data.feedback as feedback, i}
+                    <div class="
+                    bg-zinc-200 dark:bg-synth-medium p-2 rounded-md">
+                        <div class="text-sm max-h-48 overflow-y-auto">
+                            <span class="font-bold">#{i + 1}</span>
+                            {feedback.feedback}
+                        </div>
+                        <button class="btn btn-green mt-2 w-full"
+                        on:click={() => resolveFeedback(feedback)}>
+                            Resolve
+                        </button>
+                    </div>
+                    {/each}
+                </div>
+                {/if}
+        
         </div>
     </div> <!-- * End Container -->
     </div>
@@ -123,19 +152,6 @@ let term: string = "";
 .btn {
     @apply py-1 px-4 rounded-full duration-150 border-2 border-solid;
 }
-
-/*
-.btn-danger {
-    @apply bg-red-500/40 border-red-500/50 
-    hover:bg-red-500/80 hover:border-red-500/90;
-}
-*/
-
-/*
-.btn-protected {
-    @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed text-zinc-400;
-}
-*/
 
 .btn-blue {
     @apply bg-blue-500/40 border-blue-500/50 
