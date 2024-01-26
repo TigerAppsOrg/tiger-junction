@@ -59,8 +59,6 @@ refreshGrading: boolean = false) => {
             }
         );
 
-        console.log("Fetched data for: ", subject)
-
         let subjectData = await rawSubjectData.json();
         if (!subjectData.term[0].subjects) {
             console.log("No data for term", term, ":", subject);
@@ -327,7 +325,7 @@ refreshGrading: boolean = false) => {
 
     const endTime = Date.now();
 
-    console.log("Finished fetching courses for term", term, "in", endTime - startTime, "ms");
+    console.log("Finished fetching courses for term", term, "in", (endTime - startTime) / 1000, "s");
 
     // Transfer data from Supabase to Redis
     const redisStart = Date.now(); 
