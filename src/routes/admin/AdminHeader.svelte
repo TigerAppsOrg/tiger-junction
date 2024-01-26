@@ -1,7 +1,5 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import { isMobile } from "$lib/stores/mobile";
-import { modalStore } from "$lib/stores/modal";
 import { darkTheme } from "$lib/stores/state";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -21,11 +19,11 @@ dark:border-zinc-700 border-zinc-200">
             <div class="flex items-center">
                 <img src="tjlogolarge.png" alt="Tiger Junction logo"
                 class="w-10 h-10">
-                <span class="text-xl dark:text-zinc-100">TigerJunction Admin Dashboard</span>
+                <span class="text-xl dark:text-zinc-100">TigerJunction Admin</span>
             </div>
         </div>
 
-        <div id="right" class="sm:space-x-6 space-x-4 flex items-center">
+        <div id="right" class="space-x-6 flex items-center">
             <button on:click={() => $darkTheme = !$darkTheme}
                 class="btn-circ">
                     {#if $darkTheme}
@@ -41,14 +39,44 @@ dark:border-zinc-700 border-zinc-200">
                     {/if}
             </button>
 
+            <button class="btn-circ" on:click={() => goto("/recalplus")}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                </svg>                  
+                <span class="hidden md:block">
+                    ReCal+
+                </span>
+            </button>
+
+            <button class="btn-circ" on:click={() => goto("/coursegenie")}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                </svg>                    
+                <span class="hidden md:block">
+                    CourseGenie
+                </span>
+            </button>
+
+            <button class="btn-circ" on:click={() => goto("/reqtree")}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                </svg>                            
+                <span class="hidden md:block">
+                    ReqTree
+                </span>
+            </button>
+
             <button class="btn-circ" on:click={handleLogout}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
                 class="btn-icon">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
                 </svg>
-                {#if !$isMobile}
-                Logout
-                {/if}
+                <span class="hidden md:block">
+                    Logout
+                </span>
             </button>
         </div>
     </div>

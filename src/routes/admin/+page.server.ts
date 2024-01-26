@@ -2,14 +2,12 @@ import { redirect, type Actions } from "@sveltejs/kit";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { updateEnrollments } from "$lib/scripts/scraper/localcourses.js";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
-import { populateCourses } from "$lib/scripts/scraper/newCourses.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
+import { TERM_MAP } from "$lib/constants.js";
 
-// Only allow admins to access this page
 export const load = async ({ locals }) => {
+    // Only allow admins to access this page
     let session = await locals.getSession();
     if (!session) throw redirect(303, "/");
 
@@ -21,123 +19,131 @@ export const load = async ({ locals }) => {
     if (error) throw new Error(error.message);
     if (!data) throw new Error("No data found");
     if (!data[0].is_admin) throw redirect(303, "/");
+
+    // Get #users, #schedules, #course_schedule_associations, #unresolved feedback
+    const users = await locals.supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true });
+    if (users.error) throw new Error(users.error.message);
+
+    const schedules = await locals.supabase
+        .from("schedules")
+        .select("*", { count: "exact", head: true });
+    if (schedules.error) throw new Error(schedules.error.message);
+
+    const course_schedule_associations = await locals.supabase
+        .from("course_schedule_associations")
+        .select("*", { count: "exact", head: true });
+    if (course_schedule_associations.error) throw new Error(course_schedule_associations.error.message);
+
+    const feedback = await locals.supabase
+        .from("feedback")
+        .select("id, feedback", { count: "exact", head: false })
+        .eq("resolved", false);
+    if (feedback.error) throw new Error(feedback.error.message);
+
+    return {
+        users: users.count,
+        schedules: schedules.count,
+        course_schedule_associations: course_schedule_associations.count,
+        feedbackCount: feedback.count,
+        feedback: feedback.data
+    }
 }
 
 export const actions: Actions = {
     // ! Pushers
-    pushListings: async ({ locals }) => {
-        console.log("FEWF")
-        return await populateListings(locals.supabase, 1244);
+    pushListings: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing listings for term " + term);
+        await populateListings(locals.supabase, termInt);
+        console.log("Finished pushing listings in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed listings"
+        };
     },
     pushCourses: async ({ request, locals }) => {
-        await getAllCourses(locals.supabase, 1244);
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const refreshGradingField = formData.get("refreshGrading") as string;
+        let refreshGrading = false;
+        if (refreshGradingField === "on") refreshGrading = true;
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing courses for term " + term + " with refreshGrading = " + refreshGrading);
+        await getAllCourses(locals.supabase, termInt, refreshGrading);
+        console.log("Finished pushing courses in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed courses"
+        };
     },
     pushEvaluations: async ({ request, locals }) => {
-        return await populateField(request, locals, populateEvaluations);
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+
+        const currentTime = new Date().getTime();
+        console.log("Pushing evaluations for term " + term);
+        await populateEvaluations(locals.supabase, termInt);
+        console.log("Finished pushing evaluations in " + (new Date().getTime() - currentTime) + "ms");
+        return {
+            message: "Successfully pushed evaluations"
+        };
     },
     pushRatings: async ({ request, locals }) => {
-        console.log("RERFEW")
-        return await populateRatings(locals.supabase, 1244);
-    },
-    pushPrograms: async ({ locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
 
-    },
-    pushPrereqs: async ({ request, locals }) => {
-
-    },
-    rapidPush: async ({ locals }) => {
-        // updateEnrollments(locals.supabase, 1244);
-        updateSeats(locals.supabase, 1244);
-    },
-
-    // ! Deleters (Be aware of cascades)
-    deleteAllListings: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("listings")
-            .delete()
-            .neq("id", "0");
-
-        if (error) throw new Error(error.message);
-        return { 
-            message: "Successfully deleted all listings" 
-        };
-    },
-    deleteAllCourses: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("courses")
-            .delete()
-            .neq("id", "0");
-        
-        if (error) throw new Error(error.message);
-        return { 
-            message: "Successfully deleted all courses" 
-        };    
-    },
-    deleteAllInstructors: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("instructors")
-            .delete()
-            .neq("netid", "0");
-        
-        if (error) throw new Error(error.message);
-        return { 
-            message: "Successfully deleted all instructors" 
-        };
-    },
-    deleteAllEvaluations: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("evaluations")
-            .delete()
-            .neq("course_id", "0");
-        
-        if (error) throw new Error(error.message);
-        return {    
-            message: "Successfully deleted all evaluations"
-        };
-    },
-    resetAllRatings: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("courses")
-            .update({ rating: null })
-            .neq("id", "0");
-        
-        if (error) throw new Error(error.message);
+        const currentTime = new Date().getTime();
+        console.log("Pushing ratings for term " + term);
+        await populateRatings(locals.supabase, termInt);
+        console.log("Finished pushing ratings in " + (new Date().getTime() - currentTime) + "ms");
         return {
-            message: "Successfully reset all ratings to null"
+            message: "Successfully pushed ratings"
         };
     },
-    deleteAllPrograms: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("programs")
-            .delete()
-            .neq("id", "0");
-
-        if (error) throw new Error(error.message);
-        return {    
-            message: "Successfully deleted all programs"
-        };
-    },
-    deleteAllPrereqs: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("prereqs")
-            .delete()
-            .neq("course_id", "0");
-        
-        if (error) throw new Error(error.message);
-        return {
-            message: "Successfully deleted all prereqs"
-        };
-    },
-    deleteAllSectionData: async ({ locals }) => {
-        let { error } = await locals.supabase
-            .from("section_data")
-            .delete()
-            .neq("id", "0");
-        
-        if (error) throw new Error(error.message);
-        return {
-            message: "Successfully deleted all section data"
-        };
+    rapidPush: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+        updateSeats(locals.supabase, termInt);
     },
     // ! Tests
     test: async () => {
@@ -175,13 +181,3 @@ export const actions: Actions = {
         };
     }
 };
-
-// Populates a field in the database based on given function
-const populateField = async (request: Request, locals: App.Locals,
-popFunc: (supabase: SupabaseClient, termId: number) => Promise<any>) => {
-
-    const formData = await request.formData();
-    const term = formData.get("term") as string;
-    let message = await popFunc(locals.supabase, parseInt(term));
-    return message;
-}

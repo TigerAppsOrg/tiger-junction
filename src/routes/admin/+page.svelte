@@ -1,61 +1,21 @@
 <script lang="ts">
-import { enhance } from "$app/forms";
-import { goto } from "$app/navigation";
-import TogTog from "$lib/components/elements/TogTog.svelte";
-import LightButton from "$lib/components/general/LightButton.svelte";
-// import homeIcon from "$lib/img/icons/homeicon.svg";
 import { TERM_MAP } from "$lib/constants";
 import AdminHeader from "./AdminHeader.svelte";
 
 export let data;
 
-const API_PREFIX = "/api/admin/scraper/"
-
 let term: string = "";
-let loading: boolean = false;
+let refreshGrading: boolean = false;
 
-// Safety on mass deletions
-// let enableMassDelete: boolean = false;
-// let massDeleteTimeout: NodeJS.Timeout;
+// Set a feedback item to resolved and remove it from the list
+const resolveFeedback = async (feedback: { id: number; }) => {
+    await data.supabase.from("feedback")
+        .update({ resolved: true })
+        .match({ id: feedback.id });
 
-// Toggle mass delete and handle timeout for auto-disable
-// const toggleMassDelete = () => {
-//     enableMassDelete = !enableMassDelete;
-//     if (enableMassDelete) {
-//         alert("WARNING: Mass deletion enabled!");
-
-//         // Disable mass delete after 10 seconds
-//         massDeleteTimeout = setTimeout(() => {
-//             enableMassDelete = false;
-//         }, 10000);
-//     } else {
-//         clearTimeout(massDeleteTimeout);
-//     }
-// }
-
-/**
- * Hit an API endpoint and handle loading and postloading
- * @param fetcher The fetcher function to use
- */
-const submitEvent = async (fetcher: () => Promise<Response>) => {    
-    // Check for valid term code
-    if (!Object.values(TERM_MAP).includes(parseInt(term))) {
-        alert("Invalid term code!");
-        term = "";
-        return;
-    }
-
-    // Prelude
-    term = "";
-    loading = true;
-    console.log("loading...");
-
-    // Hit API
-    const result = await fetcher();
-
-    // Postlude
-    loading = false;
-    console.log(result);
+    data.feedback = data.feedback.filter((f: { id: number; }) => 
+        f.id !== feedback.id);
+    data.feedbackCount--;
 }
 </script>
 
@@ -68,177 +28,138 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 
     <div class="w-screen px-12 pb-4">
     <div class="colored-container">
-        <div class="area bg-yellow-300">
+        <div class="area bg-std-yellow">
             "Study without desire spoils the memory, and it retains nothing that it takes in." - Leonardo da Vinci
         </div>
-        <div class="area bg-pink-400">
+        <div class="area bg-std-pink">
             "Dwell on the beauty of life. Watch the stars, and see yourself running with them." - Marcus Aurelius
         </div>
-        <div class="area bg-cyan-400">
+        <div class="area bg-std-blue">
             "Be a yardstick of quality. Some people aren't used to an environment where excellence is expected." - Steve Jobs
         </div>
-        <div class="area bg-green-400">
+        <div class="area bg-std-green">
             "When you believe in a thing, believe in it all the way, implicitly and unquestionable." - Walt Disney
         </div>
     </div> <!-- * End Colored Data -->
 
     <div class="cont">
         <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">DB Management</h2>
-            <div class="mb-4 space-x-2 flex items-center">
-                <label class="text-lg" for="term">Term: </label>
-                <input type="text" name="term" id="term" bind:value={term}
-                class="rounded-xl p-2 flex-1 
-                bg-zinc-300 dark:bg-synth-medium">
-            </div>
-            <form method="POST" class="flex flex-col gap-2">
-                <button formaction="?/pushListings"
-                class="btn btn-blue">
-                   Push Listings
-                </button>
-                <button formaction="?/pushCourses"
-                class="btn btn-blue">
-                   Push Courses
-                </button>
-                <button formaction="?/pushRatings"
-                class="btn btn-blue">
-                   Push Ratings
-                </button>
-                <hr class="my-2 border-zinc-400" />
-                <button formaction="?/rapidPush"
-                class="btn btn-green">
-                   Rapid Seat Refresh
-                </button>
+            <h2 class="text-lg font-bold mb-2">DB Management</h2>
+            <form method="POST">
+                <div class="mb-2 space-x-2 flex items-center">
+                    <label class="text-base" for="term">Term: </label>
+                    <input type="text" name="term" id="term" bind:value={term}
+                    class="rounded-md p-1 flex-1 
+                    bg-zinc-300 dark:bg-synth-medium">
+                </div>
+                <div class="mb-4 flex items-center gap-2">
+                    <label class="text-base select-none" for="refreshGrading">
+                        Refresh Grading: 
+                    </label>
+                    <input type="checkbox" name="refreshGrading" 
+                    id="refreshGrading" bind:checked={refreshGrading}
+                    class="w-4 h-4">
+                </div>
+                <div class="flex flex-col gap-2 text-base">
+                    <button formaction="?/pushListings"
+                    class="btn btn-blue">
+                       Push Listings
+                    </button>
+                    <button formaction="?/pushCourses"
+                    class="btn btn-blue">
+                       Push Courses
+                    </button>
+                    <button formaction="?/pushRatings"
+                    class="btn btn-blue">
+                       Push Ratings
+                    </button>
+                    <button formaction="?/pushEvaluations"
+                    class="btn btn-blue">
+                       Push Evaluations
+                    </button>
+                    <button formaction="?/rapidPush"
+                    class="btn btn-green">
+                       Rapid Seat Refresh
+                    </button>
+                </div>
             </form>
         </div>
 
-        <!-- <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>
-            <div class="flex flex-col gap-1">
-                <form method="POST"
-                class="flex flex-col gap-2"
-                use:enhance={() => {
-                    term = "";
-                    loading = true;
-                    console.log("loading...");
-    
-                    return async ({ result }) => {
-                        loading = false;
-                        console.log(result);
-                    }
-                }}>
-                    <button formaction="?/deleteAllListings"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}"
-                    disabled={!enableMassDelete}>
-                        Delete All Listings
-                    </button>
-                    <button formaction="?/deleteAllCourses"
-                    class="btn 
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}"
-                    disabled={!enableMassDelete}>
-                        Delete All Courses
-                    </button>
-                    <button formaction="?/deleteAllInstructors"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Instructors
-                    </button>
-                    <button formaction="?/deleteAllEvaluations"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Evaluations
-                    </button>
-                    <button formaction="?/resetAllRatings"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Reset all Ratings
-                    </button>
-                    <button formaction="?/deleteAllPrograms"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Programs
-                    </button>
-                    <button formaction="?/deleteAllPrereqs"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Prereqs
-                    </button>
-                    <button formaction="?/deleteAllSectionData"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Section Data
-                    </button>
-                </form>
-                
-                <hr class="my-2 border-slate-400" />
-                <button
-                class="btn 
-                {enableMassDelete ? "btn-danger": "btn-green"}" 
-                on:click={toggleMassDelete}>
-                    {#if enableMassDelete}
-                        Disable Mass Delete
-                    {:else}
-                        Enable Mass Delete
-                    {/if}
-                </button>
-            </div>
-        </div>  -->
-
         <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">Information</h2>
-            <h3 class="text-xl font-bold mb-2">Term Codes</h3>
-            <div class="space-y-2 col grid-cols-2 columns-2">
+            <h2 class="text-lg font-bold mb-2">Information</h2>
+            <h3 class="text-lg font-semibold">Term Codes</h3>
+            <div class="space-y-1">
                 {#each Object.keys(TERM_MAP) as term}
-                    <div class="space-x-2">
+                    <div class="flex justify-between text-sm">
                         <span>
                             {term.split("_")[0].slice(0, 1) 
                             + term.split("_")[0].slice(1).toLowerCase() 
                             + " " 
-                            + term.split("_")[1]}:
+                            + term.split("_")[1]}
                         </span>
                         <span class="font-bold">{TERM_MAP[term]}</span>
                     </div>
                 {/each}
             </div> <!-- * End Term Codes -->
-            <h3 class="text-xl font-bold mt-8 mb-2">Notes</h3>
-            <p>
-                Evaluations go to Fall 2020 
+            <h3 class="text-lg font-semibold mt-2">Notes</h3>
+            <p class="text-sm">
+                Evaluations are Fall 2020 and forward
             </p>
         </div> <!-- * End Information -->
+
+        <div class="area area-std overflow-auto max-h-[600px]">
+            <h2 class="text-lg font-bold mb-2">Statistics</h2>
+            <div class="space-y-1">
+                <div class="flex justify-between text-sm">
+                    <span>Total Users</span>
+                    <span class="font-bold">{data.users}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Schedules Created</span>
+                    <span class="font-bold">{data.schedules}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Courses Added</span>
+                    <span class="font-bold">{data.course_schedule_associations}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Unresolved Feedback</span>
+                    <span class="font-bold">{data.feedbackCount}</span>
+                </div>
+
+                {#if data.feedbackCount > 0}
+                <div class="space-y-1">
+                    {#each data.feedback as feedback, i}
+                    <div class="
+                    bg-zinc-200 dark:bg-synth-medium p-2 rounded-md">
+                        <div class="text-sm max-h-48 overflow-y-auto">
+                            <span class="font-bold">#{i + 1}</span>
+                            {feedback.feedback}
+                        </div>
+                        <button class="btn btn-green mt-2 w-full"
+                        on:click={() => resolveFeedback(feedback)}>
+                            Resolve
+                        </button>
+                    </div>
+                    {/each}
+                </div>
+                {/if}
+        
+        </div>
     </div> <!-- * End Container -->
     </div>
 </main>
 
 <style lang="postcss">
 .colored-container {
-    @apply grid gap-4 pt-4 text-sm;
+    @apply grid gap-2 text-sm;
     margin: 0 auto;
     grid-template-columns: 1fr;
 }
 
 .btn {
-    @apply py-2 px-4 rounded-full duration-150 border-2 border-solid;
+    @apply py-1 px-4 rounded-full duration-150 border-2 border-solid;
 }
-
-/*
-.btn-danger {
-    @apply bg-red-500/40 border-red-500/50 
-    hover:bg-red-500/80 hover:border-red-500/90;
-}
-*/
-
-/*
-.btn-protected {
-    @apply  bg-red-900/20 border-red-900/30 cursor-not-allowed text-zinc-400;
-}
-*/
 
 .btn-blue {
     @apply bg-blue-500/40 border-blue-500/50 
@@ -259,13 +180,14 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
 }
 
 .cont {
-    @apply grid gap-4 pt-4;
+    @apply grid gap-2 pt-2;
     margin: 0 auto; 
     grid-template-columns: 1fr;
 }
 
 .area {
-    @apply p-6 rounded-xl;
+    @apply p-4 rounded-lg border-[1px] border-zinc-200
+    dark:border-zinc-700;
 }
 
 .area-std {
