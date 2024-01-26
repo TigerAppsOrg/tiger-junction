@@ -5,6 +5,7 @@ import AdminHeader from "./AdminHeader.svelte";
 export let data;
 
 let term: string = "";
+let refreshGrading: boolean = false;
 
 // Set a feedback item to resolved and remove it from the list
 const resolveFeedback = async (feedback: { id: number; }) => {
@@ -45,11 +46,19 @@ const resolveFeedback = async (feedback: { id: number; }) => {
         <div class="area area-std">
             <h2 class="text-lg font-bold mb-2">DB Management</h2>
             <form method="POST">
-                <div class="mb-4 space-x-2 flex items-center">
+                <div class="mb-2 space-x-2 flex items-center">
                     <label class="text-base" for="term">Term: </label>
                     <input type="text" name="term" id="term" bind:value={term}
                     class="rounded-md p-1 flex-1 
                     bg-zinc-300 dark:bg-synth-medium">
+                </div>
+                <div class="mb-4 flex items-center gap-2">
+                    <label class="text-base select-none" for="refreshGrading">
+                        Refresh Grading: 
+                    </label>
+                    <input type="checkbox" name="refreshGrading" 
+                    id="refreshGrading" bind:checked={refreshGrading}
+                    class="w-4 h-4">
                 </div>
                 <div class="flex flex-col gap-2 text-base">
                     <button formaction="?/pushListings"

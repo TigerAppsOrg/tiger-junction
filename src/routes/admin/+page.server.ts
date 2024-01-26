@@ -83,9 +83,13 @@ export const actions: Actions = {
             };
         }
 
+        const refreshGradingField = formData.get("refreshGrading") as string;
+        let refreshGrading = false;
+        if (refreshGradingField === "on") refreshGrading = true;
+
         const currentTime = new Date().getTime();
-        console.log("Pushing courses for term " + term);
-        await getAllCourses(locals.supabase, termInt);
+        console.log("Pushing courses for term " + term + " with refreshGrading = " + refreshGrading);
+        await getAllCourses(locals.supabase, termInt, refreshGrading);
         console.log("Finished pushing courses in " + (new Date().getTime() - currentTime) + "ms");
         return {
             message: "Successfully pushed courses"
