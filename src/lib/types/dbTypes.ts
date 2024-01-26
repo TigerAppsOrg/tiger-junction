@@ -18,11 +18,11 @@ type CourseInsert = {
     term: number,
     code: string,
     title: string,
-    has_final: boolean,
     status: number,
-    basis: string,
     dists: string[] | null,
     instructors: string[] | null,
+    basis?: string,
+    has_final?: boolean,
 }
 
 type Course = CourseInsert & {

@@ -12,7 +12,14 @@ type RegCourse = {
     dists: string[] | null
 }
 
-export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
+/**
+ * Fetches all courses for the given term and inserts them into the database
+ * @param supabase Supabase client
+ * @param term The term id to fetch courses for
+ * @param refreshGrading refresh grading basis and final exam data
+ */
+export const getAllCourses = async (supabase: SupabaseClient, term: number, 
+refreshGrading: boolean = false) => {
     console.log("Populating courses for term", term);
 
     // Fetch all course ids and open status for the given term
@@ -83,41 +90,6 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
                 console.log("Course not found for term", term, ":", courseSubjectDetails.course_id);
                 return;
             }
-            
-            // Fetch individual course details
-            let rawCourseDetails;
-            let courseDetails;
-
-            if (courseIdCodeDist.listing_id !== "010855") {
-                rawCourseDetails = await fetch(
-                    `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${courseSubjectDetails.course_id}&fmt=json`, {
-                        method: "GET",
-                        headers: {
-                            "Authorization": token
-                        }
-                    }
-                );
-                courseDetails = await rawCourseDetails.json();
-            } else {
-                courseDetails = {
-                    course_details: {
-                        course_detail: {
-                            grading_basis: "NAU",
-                            grading_final_exam: "0"
-                        }
-                    }
-                }
-            }
-
-            if (!courseDetails || !courseDetails.course_details || !courseDetails.course_details.course_detail) {
-                console.log("No course details for", courseSubjectDetails.course_id, "in term", term);
-                return;
-            }
-
-            const courseDetail = courseDetails.course_details.course_detail;
-            const basis: string = courseDetail.grading_basis;
-            const hasFinal = courseDetail.grading_final_exam && 
-            parseInt(courseDetail.grading_final_exam) > 0;
 
             // Calculate course status
             const sections: any[] = courseSubjectDetails.classes;
@@ -156,9 +128,7 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
                 term: term,
                 code: courseIdCodeDist.code,
                 title: courseSubjectDetails.title,
-                has_final: hasFinal,
                 status: status,
-                basis: basis,
                 dists: courseIdCodeDist.dists,
                 instructors: courseSubjectDetails.instructors ? 
                     courseSubjectDetails.instructors.map((x: any) => {
@@ -166,6 +136,49 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
                             x[0].toUpperCase() + x.slice(1)).join(" ");
                     }) : 
                     null,
+            }
+            
+            if (refreshGrading) {
+                // Fetch individual course details
+                let rawCourseDetails;
+                let courseDetails;
+
+                if (courseIdCodeDist.listing_id !== "010855") {
+                    rawCourseDetails = await fetch(
+                        `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${courseSubjectDetails.course_id}&fmt=json`, {
+                            method: "GET",
+                            headers: {
+                                "Authorization": token
+                            }
+                        }
+                    );
+                    courseDetails = await rawCourseDetails.json();
+                } else {
+                    courseDetails = {
+                        course_details: {
+                            course_detail: {
+                                grading_basis: "NAU",
+                                grading_final_exam: "0"
+                            }
+                        }
+                    }
+                }
+
+                if (!courseDetails || !courseDetails.course_details || !courseDetails.course_details.course_detail) {
+                    console.log("No course details for", courseSubjectDetails.course_id, "in term", term);
+                    return;
+                }
+    
+                const courseDetail = courseDetails.course_details.course_detail;
+                const basis: string = courseDetail.grading_basis;
+                const hasFinal = courseDetail.grading_final_exam && 
+                parseInt(courseDetail.grading_final_exam) > 0;
+
+                course = {
+                    ...course,
+                    basis: basis,
+                    has_final: hasFinal,
+                }
             }
 
             // Check if course exists in supabase
@@ -274,20 +287,24 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
         } // ? End handleCourse
 
         // Fetch data for each course in the subject in parallel with a delay
-        const PARALLEL_REQUESTS = 6;
-        const WAIT_INTERVAL = 3000;
-        const courseChunks: Record<string, number>[] = [];
-        for (let i = 0; i < subjectData.length; i += PARALLEL_REQUESTS) {
-            const tempArr: any[] = subjectData.slice(i, i + PARALLEL_REQUESTS);
-            const tempObj: Record<string, number> = {};
-            tempArr.forEach((x, i) => tempObj[x.course_id] = i * WAIT_INTERVAL);
-            courseChunks.push(tempObj);
-        }
-
-        for (let i = 0; i < courseChunks.length; i++) {
-            await Promise.all(Object.keys(courseChunks[i]).map(x => 
-                handleCourse(subjectData.find((y: any) => 
-                    y.course_id === x), courseChunks[i][x])));
+        if (refreshGrading) {
+            const PARALLEL_REQUESTS = 6;
+            const WAIT_INTERVAL = 3000;
+            const courseChunks: Record<string, number>[] = [];
+            for (let i = 0; i < subjectData.length; i += PARALLEL_REQUESTS) {
+                const tempArr: any[] = subjectData.slice(i, i + PARALLEL_REQUESTS);
+                const tempObj: Record<string, number> = {};
+                tempArr.forEach((x, i) => tempObj[x.course_id] = i * WAIT_INTERVAL);
+                courseChunks.push(tempObj);
+            }
+    
+            for (let i = 0; i < courseChunks.length; i++) {
+                await Promise.all(Object.keys(courseChunks[i]).map(x => 
+                    handleCourse(subjectData.find((y: any) => 
+                        y.course_id === x), courseChunks[i][x])));
+            }
+        } else {
+            await Promise.all(subjectData.map((x: any) => handleCourse(x, 0)));
         }
 
     } // ? End handleDepartment
@@ -355,7 +372,7 @@ export const getAllCourses = async (supabase: SupabaseClient, term: number) => {
     await redisClient.disconnect();
 
     const redisEnd = Date.now();
-    console.log("Finished transferring data to Redis for term", term, "in", redisEnd - redisStart, "ms");
+    console.log("Finished transferring data to Redis for term", term, "in", (redisEnd - redisStart) / 1000, "s");
 }
 
 const daysToValue = (days: string[]) => {
