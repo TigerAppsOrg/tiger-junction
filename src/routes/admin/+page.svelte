@@ -1,30 +1,10 @@
 <script lang="ts">
-    import StdButton from "$lib/components/elements/StdButton.svelte";
 import { TERM_MAP } from "$lib/constants";
 import AdminHeader from "./AdminHeader.svelte";
 
 export let data;
 
 let term: string = "";
-
-// Safety on mass deletions
-// let enableMassDelete: boolean = false;
-// let massDeleteTimeout: NodeJS.Timeout;
-
-// Toggle mass delete and handle timeout for auto-disable
-// const toggleMassDelete = () => {
-//     enableMassDelete = !enableMassDelete;
-//     if (enableMassDelete) {
-//         alert("WARNING: Mass deletion enabled!");
-
-//         // Disable mass delete after 10 seconds
-//         massDeleteTimeout = setTimeout(() => {
-//             enableMassDelete = false;
-//         }, 10000);
-//     } else {
-//         clearTimeout(massDeleteTimeout);
-//     }
-// }
 
 </script>
 
@@ -53,15 +33,15 @@ let term: string = "";
 
     <div class="cont">
         <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">DB Management</h2>
+            <h2 class="text-lg font-bold mb-2">DB Management</h2>
             <form method="POST">
                 <div class="mb-4 space-x-2 flex items-center">
-                    <label class="text-lg" for="term">Term: </label>
+                    <label class="text-base" for="term">Term: </label>
                     <input type="text" name="term" id="term" bind:value={term}
-                    class="rounded-md p-2 flex-1 
+                    class="rounded-md p-1 flex-1 
                     bg-zinc-300 dark:bg-synth-medium">
                 </div>
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 text-base">
                     <button formaction="?/pushListings"
                     class="btn btn-blue">
                        Push Listings
@@ -78,7 +58,7 @@ let term: string = "";
                     class="btn btn-blue">
                        Push Evaluations
                     </button>
-                    <hr class="my-2 border-zinc-400" />
+                    <hr class="my-1 border-zinc-400" />
                     <button formaction="?/rapidPush"
                     class="btn btn-green">
                        Rapid Seat Refresh
@@ -87,91 +67,12 @@ let term: string = "";
             </form>
         </div>
 
-        <!-- <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-4">Mass Deletion</h2>
-            <div class="flex flex-col gap-1">
-                <form method="POST"
-                class="flex flex-col gap-2"
-                use:enhance={() => {
-                    term = "";
-                    loading = true;
-                    console.log("loading...");
-    
-                    return async ({ result }) => {
-                        loading = false;
-                        console.log(result);
-                    }
-                }}>
-                    <button formaction="?/deleteAllListings"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}"
-                    disabled={!enableMassDelete}>
-                        Delete All Listings
-                    </button>
-                    <button formaction="?/deleteAllCourses"
-                    class="btn 
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}"
-                    disabled={!enableMassDelete}>
-                        Delete All Courses
-                    </button>
-                    <button formaction="?/deleteAllInstructors"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Instructors
-                    </button>
-                    <button formaction="?/deleteAllEvaluations"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Evaluations
-                    </button>
-                    <button formaction="?/resetAllRatings"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Reset all Ratings
-                    </button>
-                    <button formaction="?/deleteAllPrograms"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Programs
-                    </button>
-                    <button formaction="?/deleteAllPrereqs"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Prereqs
-                    </button>
-                    <button formaction="?/deleteAllSectionData"
-                    class="btn
-                    {enableMassDelete ? "btn-danger" : "btn-protected"}" 
-                    disabled={!enableMassDelete}>
-                        Delete All Section Data
-                    </button>
-                </form>
-                
-                <hr class="my-2 border-slate-400" />
-                <button
-                class="btn 
-                {enableMassDelete ? "btn-danger": "btn-green"}" 
-                on:click={toggleMassDelete}>
-                    {#if enableMassDelete}
-                        Disable Mass Delete
-                    {:else}
-                        Enable Mass Delete
-                    {/if}
-                </button>
-            </div>
-        </div>  -->
-
         <div class="area area-std">
-            <h2 class="text-2xl font-bold mb-2">Information</h2>
-            <h3 class="text-xl font-semibold mb-1">Term Codes</h3>
+            <h2 class="text-lg font-bold mb-2">Information</h2>
+            <h3 class="text-lg font-semibold">Term Codes</h3>
             <div class="space-y-1">
                 {#each Object.keys(TERM_MAP) as term}
-                    <div class="flex justify-between">
+                    <div class="flex justify-between text-sm">
                         <span>
                             {term.split("_")[0].slice(0, 1) 
                             + term.split("_")[0].slice(1).toLowerCase() 
@@ -182,11 +83,16 @@ let term: string = "";
                     </div>
                 {/each}
             </div> <!-- * End Term Codes -->
-            <h3 class="text-xl font-semibold mt-4 mb-1">Notes</h3>
-            <p>
+            <h3 class="text-lg font-semibold mt-2">Notes</h3>
+            <p class="text-sm">
                 Evaluations are Fall 2020 and forward
             </p>
         </div> <!-- * End Information -->
+
+        <div class="area area-std">
+            <h2 class="text-lg font-bold mb-2">Statistics</h2>
+
+        </div>
     </div> <!-- * End Container -->
     </div>
 </main>
@@ -199,7 +105,7 @@ let term: string = "";
 }
 
 .btn {
-    @apply py-2 px-4 rounded-full duration-150 border-2 border-solid;
+    @apply py-1 px-4 rounded-full duration-150 border-2 border-solid;
 }
 
 /*
