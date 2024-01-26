@@ -1,9 +1,11 @@
 <script lang="ts">
 import { enhance } from "$app/forms";
 import { goto } from "$app/navigation";
+import TogTog from "$lib/components/elements/TogTog.svelte";
 import LightButton from "$lib/components/general/LightButton.svelte";
 // import homeIcon from "$lib/img/icons/homeicon.svg";
 import { TERM_MAP } from "$lib/constants";
+import AdminHeader from "./AdminHeader.svelte";
 
 export let data;
 
@@ -30,12 +32,6 @@ let loading: boolean = false;
 //         clearTimeout(massDeleteTimeout);
 //     }
 // }
-
-// Logout the user
-const handleLogout = async () => { 
-    const { error } = await data.supabase.auth.signOut();
-    if (!error) goto("/");
-}
 
 /**
  * Hit an API endpoint and handle loading and postloading
@@ -67,39 +63,8 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
     <title>TigerJunction Admin Dashboard</title>
 </svelte:head>
 
-<main class="h-screen flex flex-col bg-slate-100 dark:bg-synth-medium">
-    <div class="px-4 flex justify-between items-center 
-    {loading ? "bg-red-500" : 
-    "bg-slate-300 text-black dark:text-white dark:bg-synth-dark"} rounded-xl mx-12 mt-4">
-        <div class="flex items-center gap-2">
-            <img src="tjlogolarge.png" alt="Tiger Junction logo"
-            class="w-16 h-16">
-            <h1 class="text-xl">TigerJunction Admin Dashboard</h1>
-        </div>
-        <div class="flex gap-4">
-            <a href="/home" class="flex justify-center items-center 
-            hover:text-slate-600
-            gap-1 text-xl duration-150 dark:hover:text-zinc-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                </svg>              
-                Home
-            </a>
-            <button class="dark:hover:text-zinc-200
-            hover:text-slate-600
-            duration-150 text-xl
-            flex items-center gap-1"
-            on:click={handleLogout}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
-                class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                </svg>          
-                Logout
-            </button>
-            <LightButton></LightButton>
-        </div>
-    </div> <!-- * End Navbar -->
+<main class="h-screen flex flex-col bg-zinc-100 dark:bg-synth-medium">
+    <AdminHeader supabase={data.supabase} />
 
     <div class="w-screen px-12 pb-4">
     <div class="colored-container">
@@ -124,79 +89,25 @@ const submitEvent = async (fetcher: () => Promise<Response>) => {
                 <label class="text-lg" for="term">Term: </label>
                 <input type="text" name="term" id="term" bind:value={term}
                 class="rounded-xl p-2 flex-1 
-                bg-slate-300 dark:bg-synth-medium">
+                bg-zinc-300 dark:bg-synth-medium">
             </div>
-            <div class="flex flex-col gap-2">
-                <hr class="my-2" />
-
-                <!-- Courses -->
-                <button
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}courses/${term}`))}
-                class="btn btn-blue">
-                    Post Term Listings 
-                </button>
-                <button 
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}courses/${term}`))}
-                class="btn btn-blue">
-                    Post Term Courses 
-                </button>
-                <button 
-                on:click={() => submitEvent(() => fetch(`/api/admin/redis-transfer/courses/${term}`))}
-                class="btn btn-blue">
-                    Transfer Courses to Redis
-                </button>
-                <button 
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}evaluations/${term}`))}
-                class="btn btn-blue">
-                    Post Term Evaluations
-                </button>
-                <button
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}ratings/${term}`))}
-                class="btn btn-blue">
-                    Post Course Ratings
-                </button>
-                <button 
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}programs/${term}`))}
-                class="btn btn-blue">
-                    Post Programs 
-                </button>
-                <button 
-                on:click={() => submitEvent(() => fetch(`${API_PREFIX}prereqs/${term}`))}
-                class="btn btn-blue">
-                    Post Prereqs
-                </button>
-                <hr class="mt-2 mb-3 border-slate-400" />
-            </div>
-
-            <!-- * Testing -->
-            <form action="?/test" method="POST" use:enhance={() => {
-                return async ({ result }) => {
-                    console.log(result);
-                } 
-            }}>
-                <button class="btn btn-green w-full">
-                    Run Tests
-                </button>
-            </form>
-        </div> <!-- * End Static DB Management -->
-        
-        <div class="area area-std">
-            <form method="POST">
+            <form method="POST" class="flex flex-col gap-2">
                 <button formaction="?/pushListings"
-                class="btn">
+                class="btn btn-blue">
                    Push Listings
                 </button>
                 <button formaction="?/pushCourses"
-                class="btn">
+                class="btn btn-blue">
                    Push Courses
                 </button>
                 <button formaction="?/pushRatings"
-                class="btn">
+                class="btn btn-blue">
                    Push Ratings
                 </button>
+                <hr class="my-2 border-zinc-400" />
                 <button formaction="?/rapidPush"
-                class="btn">
-                   RAPID RECAL!!!!
+                class="btn btn-green">
+                   Rapid Seat Refresh
                 </button>
             </form>
         </div>
