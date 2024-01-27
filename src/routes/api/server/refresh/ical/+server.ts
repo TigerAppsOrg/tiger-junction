@@ -9,9 +9,9 @@ import { CALENDAR_INFO } from '$lib/changeme.js';
 export async function GET(req: Request) {
 
     // Deny access if not from cron
-    // if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-    //     return new Response("Unauthorized", { status: 401 });
-    // }
+    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
     const supabase = createClient(PUBLIC_SUPABASE_URL, SERVICE_KEY, {
         auth: {
