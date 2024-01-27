@@ -104,8 +104,6 @@ export async function GET(req: Request) {
             // Append time zone info to start time
             value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
 
-            console.log(i);
-
             // Push to supabase storage
             supabase.storage
                 .from("calendars")
@@ -117,5 +115,6 @@ export async function GET(req: Request) {
         });
     }
 
-    return new Response(JSON.stringify(data), { status: 200 });
+    const returnString = "Successfully refreshed " + data.length + " calendars";
+    return new Response(JSON.stringify(returnString), { status: 200 });
 }
