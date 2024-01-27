@@ -2,7 +2,7 @@
 import StdButton from "$lib/components/elements/StdButton.svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
 import { CALENDAR_INFO } from "$lib/changeme";
-import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
+import { calculateExclusions, calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { currentSchedule } from "$lib/stores/recal";
 import { currentTerm } from "$lib/changeme";
 import { rMeta } from "$lib/stores/rmeta";
@@ -51,7 +51,9 @@ const createIcal = async () => {
             } else continue outer;
             
             const calInfo = CALENDAR_INFO[$currentTerm];
-            let dur = section.end_time - section.start_time;
+            const dur = section.end_time - section.start_time;
+            const description = course.instructors && course.instructors.length > 0 ? 
+                course.title + "\nInstructors: " + course.instructors.join(", ") : course.title;
 
             let newEvent: EventAttributes = {
                 title: `${course.code.split("/")[0]} - ${section.title}`,
@@ -60,7 +62,6 @@ const createIcal = async () => {
                     section.start_time % 6 * 10] as DateArray,
                 duration: { hours: Math.trunc(dur / 6), minutes: dur % 6 * 10 },
                 recurrenceRule: valueToRRule(section.days, calInfo.end),
-                // exclusionDates: calculateExclusions(calInfo.exclusions),
                 busyStatus: "BUSY",
                 transp: "OPAQUE",
                 productId: "tigerjunction/ics",
@@ -70,7 +71,7 @@ const createIcal = async () => {
                 startInputType: "local",
                 endInputType: "local",
                 location: section.room ? section.room : "",
-
+                description: description
             };
 
             if (section.room) newEvent.location = section.room;
