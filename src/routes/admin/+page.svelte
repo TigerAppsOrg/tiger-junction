@@ -90,7 +90,7 @@ const resolveFeedback = async (feedback: { id: number; }) => {
             <h3 class="text-lg font-semibold">Term Codes</h3>
             <div class="space-y-1">
                 <!-- TODO FIX -->
-                {#each Object.keys(TERM_MAP).toReversed() as term}
+                {#each Object.keys(TERM_MAP).reverse() as term}
                     <div class="flex justify-between text-sm">
                         <span>
                             {TERM_MAP[parseInt(term)].name}
