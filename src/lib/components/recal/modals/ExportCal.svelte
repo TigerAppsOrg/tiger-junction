@@ -173,21 +173,21 @@ const createIcal = async () => {
         {#if link}
         <div class="flex flex-col md:flex-row items-center justify-between gap-2">
             <p class="text-black dark:text-zinc-100 btn flex-1 text-center break-all text-sm">
-                https://tigerjunction.com/api/client/calendar/{link}
+                https://junction.tigerapps.org/api/client/calendar/{link}
             </p>
 
             <div class="flex flex-col sm:flex-row gap-2">
 
                 <StdButton message="Copy Link" scheme="2"
                 onClick={() => {
-                    navigator.clipboard.writeText(`https://tigerjunction.com/api/client/calendar/${link}`);
+                    navigator.clipboard.writeText(`https://junction.tigerapps.org/api/client/calendar/${link}`);
                     toastStore.add("success", "Copied link to clipboard!")
                 }} />
 
                 <StdButton message="Download File" scheme="1"
                 onClick={() => {
                     let a = document.createElement("a");
-                    a.href = `https://tigerjunction.com/api/client/calendar/${link}`;
+                    a.href = `https://junction.tigerapps.org/api/client/calendar/${link}`;
                     a.download = "ReCal+.ics";
                     a.click();
                 }} />
