@@ -32,7 +32,7 @@ export const valueToRRule = (value: number, until: readonly number[]) => {
  * @param exclArr 
  * @returns string of exclusions
  */
-export const calculateExclusions = (exclArr: number[][]): string => {
+export const calculateExclusions = (exclArr: readonly number[][]): string => {
     if (exclArr.length === 0) return "";
     let ret = "";
 

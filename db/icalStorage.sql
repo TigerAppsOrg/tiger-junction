@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS icals;
 CREATE TABLE icals (
     id UUID PRIMARY KEY,
     user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL UNIQUE
+    schedule_id INTEGER REFERENCES schedules(id)
 );
 
 ENABLE ROW LEVEL SECURITY ON icals;

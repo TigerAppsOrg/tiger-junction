@@ -2,7 +2,7 @@
 import StdButton from "$lib/components/elements/StdButton.svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
 import { CALENDAR_INFO } from "$lib/changeme";
-import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
+import { calculateExclusions, calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { currentSchedule } from "$lib/stores/recal";
 import { currentTerm } from "$lib/changeme";
 import { rMeta } from "$lib/stores/rmeta";
@@ -51,7 +51,9 @@ const createIcal = async () => {
             } else continue outer;
             
             const calInfo = CALENDAR_INFO[$currentTerm];
-            let dur = section.end_time - section.start_time;
+            const dur = section.end_time - section.start_time;
+            const description = course.instructors && course.instructors.length > 0 ? 
+                course.title + "\nInstructors: " + course.instructors.join(", ") : course.title;
 
             let newEvent: EventAttributes = {
                 title: `${course.code.split("/")[0]} - ${section.title}`,
@@ -60,7 +62,6 @@ const createIcal = async () => {
                     section.start_time % 6 * 10] as DateArray,
                 duration: { hours: Math.trunc(dur / 6), minutes: dur % 6 * 10 },
                 recurrenceRule: valueToRRule(section.days, calInfo.end),
-                // exclusionDates: calculateExclusions(calInfo.exclusions),
                 busyStatus: "BUSY",
                 transp: "OPAQUE",
                 productId: "tigerjunction/ics",
@@ -70,7 +71,7 @@ const createIcal = async () => {
                 startInputType: "local",
                 endInputType: "local",
                 location: section.room ? section.room : "",
-
+                description: description
             };
 
             if (section.room) newEvent.location = section.room;
@@ -135,7 +136,6 @@ const createIcal = async () => {
             return;
         }
 
-
         // Push to supabase database
         const { error: supabaseError4 } = await supabase
             .from("icals")
@@ -143,6 +143,7 @@ const createIcal = async () => {
                 {
                     id: data.path.split(".")[0],
                     user_id: userId.data.user.id,
+                    schedule_id: $currentSchedule,
                 },
             ]);
 
@@ -158,17 +159,27 @@ const createIcal = async () => {
 
 <StdModal title="Export Schedule" stdClose={true} {showModal}>
     <div class="flex flex-col space-y-2 md:space-y-4" slot="main">
-        <p class="text-sm">
-            This will create a new iCal file with all your confirmed courses, 
+        {#if !link}
+        <p>
+            Clicking "Create New Export" will create a new iCal file 
+            with all your confirmed courses, 
             which you can add to your calendar app of choice by 
-            downloading the file or using the link.
-            To update your calendar, simply export again.
+            downloading the file or copying the link.
+            If you use the lin, your calendar will automatically
+            update approximately every 24 hours.
+            To update your calendar export immediately, simply export again.
             <span class="underline">
-                Note: creating a new export will
-                overwrite any existing 
+                Warning: creating a new export will
+                overwrite any existing ReCal+
                 calendar exports.
             </span>
         </p>
+        {:else}
+        <p>
+            Your calendar export is ready! You can download the file or 
+            copy the link below.
+        </p>
+        {/if}
 
         {#if link}
         <div class="flex flex-col md:flex-row items-center justify-between gap-2">
@@ -194,7 +205,7 @@ const createIcal = async () => {
             </div>
         </div>
         {:else}
-            <StdButton message="Export" scheme="2"
+            <StdButton message="Create New Export" scheme="2"
             onClick={createIcal} />
         {/if}
     </div>

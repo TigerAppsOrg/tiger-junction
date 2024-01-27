@@ -82,7 +82,7 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         "start":[2024, 1, 29],
         "start_day": 1,
         "end": [2024, 4, 26],
-        "exclusions": [],
+        "exclusions": [[2024, 3, 4]],
     },
     "1242": {
         "name": "Fall 2023",

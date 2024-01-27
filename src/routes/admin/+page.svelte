@@ -83,6 +83,11 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     </button>
                 </div>
             </form>
+            <button class="btn btn-green" on:click={() => {
+                fetch("/api/server/refresh/ical")
+            }}>
+                API Test
+            </button>
         </div>
 
         <div class="area area-std">

@@ -50,6 +50,8 @@ refreshGrading: boolean = false) => {
      */
     const handleDepartment = async (subject: string, waitTime: number) => {
         await new Promise(resolve => setTimeout(resolve, waitTime));
+
+        const fetchStart = Date.now();
         const rawSubjectData = await fetch(
             `https://api.princeton.edu/student-app/courses/courses?term=${term}&fmt=json&subject=${subject}`, {
                 method: "GET",
@@ -58,6 +60,8 @@ refreshGrading: boolean = false) => {
                 }
             }
         );
+
+        console.log("Fetched data for", subject, "in", (Date.now() - fetchStart) / 1000, "s");
 
         let subjectData = await rawSubjectData.json();
         if (!subjectData.term[0].subjects) {
