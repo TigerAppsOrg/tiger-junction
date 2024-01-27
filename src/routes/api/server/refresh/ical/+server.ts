@@ -4,12 +4,13 @@ import { SERVICE_KEY } from '$env/static/private';
 import { createEvents, type DateArray, type EventAttributes } from 'ics';
 import { calculateStart, valueToRRule } from '$lib/scripts/ReCal+/ical';
 import { CALENDAR_INFO } from '$lib/changeme.js';
+import type { RequestEvent } from './$types';
 
 // Refresh all icals if they are associated with a schedule
-export async function GET(req: Request) {
+export async function GET(req: RequestEvent) {
 
     // Deny access if not from cron
-    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (req.request.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
         return new Response("Unauthorized", { status: 401 });
     }
 
