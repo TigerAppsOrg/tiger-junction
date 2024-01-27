@@ -1,5 +1,5 @@
 <h1 align="center">
-<a href="https://tigerjunction.com/">
+<a href="https://junction.tigerapps.org/">
   <img src="static/tigerjunctiontextlogo.png" alt="ReCal+ Logo" width="80%">
 </a>
 </h1>

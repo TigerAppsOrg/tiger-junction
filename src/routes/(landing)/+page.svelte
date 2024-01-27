@@ -15,7 +15,7 @@ const handleLogin = async () => {
     await data.supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-            redirectTo: "https://tigerjunction.com/auth/callback"
+            redirectTo: "https://junction.tigerapps.org/auth/callback"
         }
     });
 }
@@ -26,8 +26,8 @@ const handleLogin = async () => {
     <meta name="description" content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed.">
     <meta property="og:title" content="TigerJunction" />
     <meta property="og:description" content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed." />
-    <meta property="og:image" content="https://tigerjunction.com/tjlogo.png" />
-    <meta property="og:url" content="https://tigerjunction.com/" />
+    <meta property="og:image" content="https://junction.tigerapps.org/tjlogo.png" />
+    <meta property="og:url" content="https://junction.tigerapps.org/" />
 </svelte:head>
 
 <nav class="flex justify-between items-center text-xl h-20 std-padding">
