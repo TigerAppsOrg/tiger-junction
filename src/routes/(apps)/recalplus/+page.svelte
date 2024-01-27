@@ -99,11 +99,9 @@ onMount(async () => {
 });
 </script>
 
-
 <svelte:head>
     <title>TigerJunction</title>
 </svelte:head>
-
 
 <div class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto
  dark:bg-black max-h-screen overflow-clip">
@@ -132,10 +130,3 @@ onMount(async () => {
         {/if}
     </div>
 </div>
-
-<style lang="postcss">
-/* On mobile, one toggles the views back and forth */
-#main {
-    
-}
-</style>
