@@ -1,6 +1,7 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, ready, retop, searchCourseData, searchSettings } from "$lib/stores/recal";
+import { currentTerm, schedules } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import duck from "$lib/img/duck.gif";
 

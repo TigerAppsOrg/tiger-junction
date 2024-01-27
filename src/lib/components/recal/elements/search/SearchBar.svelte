@@ -1,7 +1,8 @@
 <script lang="ts">
 import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
-import { searchSettings, searchResults, currentTerm, searchCourseData, currentSchedule, isResult, hoveredCourse, research, ready, rawCourseData } from "$lib/stores/recal";
+import { searchSettings, searchResults, searchCourseData, currentSchedule, isResult, hoveredCourse, research, ready } from "$lib/stores/recal";
+import { currentTerm } from "$lib/changeme";
 import { rMeta } from "$lib/stores/rmeta";
 import { sectionData } from "$lib/stores/rsections";
 import { toastStore } from "$lib/stores/toast";

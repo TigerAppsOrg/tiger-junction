@@ -4,7 +4,8 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 // import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { currentSchedule, currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentTerm } from "$lib/changeme";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";

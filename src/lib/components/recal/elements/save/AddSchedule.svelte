@@ -1,7 +1,8 @@
 <script lang="ts">
 import Modal from "$lib/components/elements/Modal.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { currentSchedule, currentTerm, retop, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, retop, searchCourseData } from "$lib/stores/recal";
+import { currentTerm, schedules } from "$lib/changeme";
 import { savedCourses } from "$lib/stores/rpool";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { toastStore } from "$lib/stores/toast";

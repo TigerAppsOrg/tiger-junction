@@ -2,7 +2,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { savedCourses } from "$lib/stores/rpool";
 import { get } from "svelte/store";
-import { currentSchedule, currentTerm, hoveredCourse, ready, recal, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, hoveredCourse, ready, recal, searchSettings } from "$lib/stores/recal";
+import { currentTerm } from "$lib/changeme";
 import { sectionData } from "$lib/stores/rsections";
 import type { CalBoxParam } from "$lib/types/dbTypes";
 import { rMeta } from "$lib/stores/rmeta";

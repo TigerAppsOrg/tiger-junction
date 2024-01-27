@@ -17,7 +17,7 @@ const FAILURE_MESSAGE = "Failed to populate listings for term ";
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
     let resultMessage: Record<number, any> = {};
-    for (let term in Object.values(TERM_MAP)) {
+    for (let term in Object.keys(TERM_MAP)) {
         let termId = parseInt(term)
         let result = await populateListings(supabase, termId);
         resultMessage[termId] = result;
@@ -119,8 +119,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
             formatted[i].aka = currentListings[index].aka;
 
-            const termCodes = Object.values(TERM_MAP);
-            const newIndex = termCodes.indexOf(term);
+            const termCodes = Object.keys(TERM_MAP);
+            const newIndex = termCodes.indexOf(String(term));
             const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
             const penIndex = termCodes.indexOf(currentListings[index].pen_term);
             let newTitle: string = formatted[i].title;

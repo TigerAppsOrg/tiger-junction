@@ -1,6 +1,8 @@
-import { currentSchedule, rawCourseData, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, rawCourseData, searchCourseData } from "$lib/stores/recal";
+import { schedules } from "$lib/changeme";
 import { initSchedule } from "$lib/stores/rpool";
-import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
+import type { CourseData } from "$lib/types/dbTypes";
+import type { RawCourseData } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**

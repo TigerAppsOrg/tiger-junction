@@ -1,21 +1,59 @@
 // When adding a new semester, you only need to change this file
 // not counting database changes.
 // ! For the objects and arrays, order DOES matter.
-import type { RawCourseData } from "./types/dbTypes";
+import { writable, type Writable } from "svelte/store";
+import type { CourseData } from "./types/dbTypes";
+import type { RawSectionData } from "./stores/rsections";
 
-export const TERM_MAP: Record<string, number> = {
-    "SPRING_2024": 1244,
-    "FALL_2023": 1242,
-    "SPRING_2023": 1234,
-    "FALL_2022": 1232,
-    "SPRING_2022": 1224,
-    "FALL_2021": 1222,
-    "SPRING_2021": 1214,
-    "FALL_2020": 1212,
-    "SPRING_2020": 1204,
-    "FALL_2019": 1202,
-    "SPRING_2019": 1194,
-    "FALL_2018": 1192,
+export const TERM_MAP: Record<number, Record<string, string>> = {
+    1244: {
+        "name": "Spring 2024",
+        "mobile_name": "S24"
+    },
+    1242: {
+        "name": "Fall 2023",
+        "mobile_name": "F23"
+    },
+    1234: {
+        "name": "Spring 2023",
+        "mobile_name": "S23"
+    },
+    1232: {
+        "name": "Fall 2022",
+        "mobile_name": "F22"
+    },
+    1224: {
+        "name": "Spring 2022",
+        "mobile_name": "S22"
+    },
+    1222: {
+        "name": "Fall 2021",
+        "mobile_name": "F21"
+    },
+    1214: {
+        "name": "Spring 2021",
+        "mobile_name": "S21"
+    },
+    1212: {
+        "name": "Fall 2020",
+        "mobile_name": "F20"
+    },
+    1204: {
+        "name": "Spring 2020",
+        "mobile_name": "S20"
+    },
+    1202: {
+        "name": "Fall 2019",
+        "mobile_name": "F19"
+    },
+    1194: {
+        "name": "Spring 2019",
+        "mobile_name": "S19"
+    },
+    1192: {
+        "name": "Fall 2018",
+        "mobile_name": "F18"
+    },
 }
 
 export const EVALS_TERM_MAP: Record<number, string> = {
@@ -31,32 +69,6 @@ export const EVALS_TERM_MAP: Record<number, string> = {
     1202: "2019-2020 Fall Course Evaluation Results",
     1194: "2018-2019 Spring Course Evaluation Results",
     1192: "2018-2019 Fall Course Evaluation Results",
-}
-
-export const ACTIVE_TERMS: Record<number, Record<string, string>> = {
-    1234: {
-        "name": "Spring 2023",
-        "mobile_name": "S23"
-    },
-    1242: {
-        "name": "Fall 2023",
-        "mobile_name": "F23"
-    },
-    1244: {
-        "name": "Spring 2024",
-        "mobile_name": "S24"
-    }
-}
-
-export const CURRENT_TERM_NAME = "SPRING_2024";
-export const CURRENT_TERM_ID: keyof RawCourseData = 1244;
-
-type Calendar_Info = {
-    name: string,
-    start: readonly number[],
-    start_day: number,
-    end: readonly number[],
-    exclusions: readonly number[][],
 }
 
 // Dates for each term
@@ -83,3 +95,54 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         "exclusions": [],
     },
 } as const;
+
+export type ActiveTerms = 1234 | 1242 | 1244;
+
+// Set the most recent term to true, and the rest to false
+export const sectionDone = writable({
+    1244: true,
+    1242: false,
+    1234: false,
+});
+
+//----------------------------------------------------------------------
+// ! DO NOT EDIT BELOW THIS LINE
+//----------------------------------------------------------------------
+
+export type RawCourseData = Record<ActiveTerms, CourseData[]>;
+
+// Last 3 terms
+export const ACTIVE_TERMS: Record<number, Record<string, string>> = 
+    Object.fromEntries(Object.entries(TERM_MAP)
+    .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0)));
+
+// Current term
+export const CURRENT_TERM_ID: keyof RawCourseData = 
+    parseInt(Object.keys(TERM_MAP)[Object.keys(TERM_MAP).length - 1]) as keyof RawCourseData;
+
+export const currentTerm: Writable<number> = writable(CURRENT_TERM_ID);
+
+// Types
+type Calendar_Info = {
+    name: string,
+    start: readonly number[],
+    start_day: number,
+    end: readonly number[],
+    exclusions: readonly number[][],
+}
+
+// Base objects
+export const BASE_OBJ: RawCourseData = 
+    Object.keys(TERM_MAP).map(x => parseInt(x))
+    .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0))
+    .reduce((o, key) => Object.assign(o, { [key]: [] }), {}) as RawCourseData;
+
+export const SECTION_OBJ: RawSectionData =
+    Object.keys(TERM_MAP).map(x => parseInt(x))
+    .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0))
+    .reduce((o, key) => Object.assign(o, { [key]: {} }), {}) as RawSectionData;
+
+export const schedules: Writable<Record<number, {
+    id: number,
+    title: string,
+}[]>> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
