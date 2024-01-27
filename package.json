@@ -43,6 +43,7 @@
     "@supabase/auth-helpers-sveltekit": "^0.10.1",
     "@supabase/supabase-js": "^2.26.0",
     "@sveltejs/adapter-vercel": "^3.0.3",
+    "@vercel/analytics": "^1.1.2",
     "ics": "^3.5.0",
     "jsdom": "^22.1.0",
     "redis": "^4.6.10",
