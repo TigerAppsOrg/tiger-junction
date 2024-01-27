@@ -58,6 +58,14 @@ onMount(async () => {
         x[CURRENT_TERM_ID] = data.body.schedules;
         return x;
     });
+
+    // For each schedule, add to savedCourses
+    savedCourses.update(x => {
+        for (const schedule of data.body.schedules) {
+            x[schedule.id] = [];
+        }
+        return x;
+    });
     
     // Populate saved courses
     for (const scheduleIdS in data.body.associations) {

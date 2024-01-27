@@ -243,34 +243,36 @@ refreshGrading: boolean = false) => {
             for (let k = 0; k < exisSectionNums.length; k++) {
                 const num = exisSectionNums[k];
                 if (duplicateSections.includes(num)) continue;
+
                 if (exisSectionNums.indexOf(num) !== k) 
                     duplicateSections.push(num);
+
             }
 
             // Prune duplicate sections
-            if (duplicateSections.length > 0) {
-                // Remove duplicateSections from removedSections
-                duplicateSections.forEach(x => {
-                    const index = removedSections.indexOf(x);
-                    if (index > -1) removedSections.splice(index, 1);
-                });
+            // if (duplicateSections.length > 0) {
+            //     // Remove duplicateSections from removedSections
+            //     duplicateSections.forEach(x => {
+            //         const index = removedSections.indexOf(x);
+            //         if (index > -1) removedSections.splice(index, 1);
+            //     });
 
-                // Remove only the first instance of each duplicate section
-                for (let k = 0; k < duplicateSections.length; k++) {
-                    const { error } = await supabase
-                        .from("sections")
-                        .delete()
-                        .eq("num", duplicateSections[k])
-                        .eq("course_id", courseId)
-                        .limit(1)
-                        .order("id", { ascending: true })
+            //     // Remove only the first instance of each duplicate section
+            //     for (let k = 0; k < duplicateSections.length; k++) {
+            //         const { error } = await supabase
+            //             .from("sections")
+            //             .delete()
+            //             .eq("num", duplicateSections[k])
+            //             .eq("course_id", courseId)
+            //             .limit(1)
+            //             .order("id", { ascending: true })
 
-                    if (error) {
-                        console.log("Error deleting duplicate section", duplicateSections[k], "for course", course.listing_id, "in term", course.term);
-                        throw new Error(error.message);
-                    }
-                }
-            }
+            //         if (error) {
+            //             console.log("Error deleting duplicate section", duplicateSections[k], "for course", course.listing_id, "in term", course.term);
+            //             throw new Error(error.message);
+            //         }
+            //     }
+            // }
 
             // Prune removed sections
             if (removedSections.length > 0) {
