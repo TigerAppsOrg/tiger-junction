@@ -86,15 +86,6 @@ CREATE TABLE sections (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE section_data (
-  id INTEGER GENERATED ALWAYS AS IDENTITY,
-  section_id INTEGER REFERENCES public.sections(id) on DELETE CASCADE NOT NULL,
-  recorded_at TIMESTAMP,
-  tot SMALLINT,
-  cap SMALLINT,
-  PRIMARY KEY(id)
-);
-
 CREATE TABLE evaluations (
   course_id INTEGER REFERENCES public.courses(id) ON DELETE CASCADE UNIQUE NOT NULL,
   listing_id TEXT REFERENCES public.listings(id) ON DELETE CASCADE NOT NULL,
