@@ -8,11 +8,20 @@ import { rawCourseData, ready, searchCourseData } from "$lib/stores/recal.js";
 import { schedules } from "$lib/changeme.js";
 import { rMeta } from "$lib/stores/rmeta.js";
 import { savedCourses } from "$lib/stores/rpool.js";
-import { sectionData } from "$lib/stores/rsections.js";
+import { sectionData, type SectionData } from "$lib/stores/rsections.js";
 import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-export let data;
+export let data: {
+    supabase: SupabaseClient;
+    body: {
+        courses: CourseData[];
+        sections: SectionData[];
+        schedules: any[];
+        associations: any[];
+    }
+};
 
 onMount(async () => {
     if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
@@ -51,7 +60,8 @@ onMount(async () => {
     });
     
     // Populate saved courses
-    for (const scheduleId in data.body.associations) {
+    for (const scheduleIdS in data.body.associations) {
+        const scheduleId = parseInt(scheduleIdS);
         if ($savedCourses[scheduleId] && $savedCourses[scheduleId].length > 0) 
             continue;
 
