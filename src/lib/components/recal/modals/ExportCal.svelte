@@ -1,7 +1,7 @@
 <script lang="ts">
 import StdButton from "$lib/components/elements/StdButton.svelte";
 import StdModal from "$lib/components/elements/StdModal.svelte";
-import { CALENDAR_INFO } from "$lib/constants";
+import { CALENDAR_INFO } from "$lib/changeme";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { currentSchedule, currentTerm } from "$lib/stores/recal";
 import { rMeta } from "$lib/stores/rmeta";

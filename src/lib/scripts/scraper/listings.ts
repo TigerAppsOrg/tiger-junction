@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { TERM_MAP, TERM_URL } from "$lib/constants";
+import { TERM_URL } from "$lib/constants";
+import { TERM_MAP } from "$lib/changeme";
 import type { Listing } from "$lib/types/dbTypes";
 import { getToken } from "./getToken";
 

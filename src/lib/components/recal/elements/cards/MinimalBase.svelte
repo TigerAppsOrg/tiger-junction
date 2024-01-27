@@ -15,7 +15,7 @@ import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
 import { inview } from "svelte-inview";
 import CardLinkButton from "./CardLinkButton.svelte";
-import { CURRENT_TERM_ID } from "$lib/constants";
+import { CURRENT_TERM_ID } from "$lib/changeme";
 
 export let course: CourseData;
 export let category: string = "search";

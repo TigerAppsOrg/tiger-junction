@@ -1,4 +1,4 @@
-import { CURRENT_TERM_ID } from "$lib/constants";
+import { CURRENT_TERM_ID } from "$lib/changeme";
 import { createClient } from "redis";
 import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";

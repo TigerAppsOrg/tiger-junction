@@ -4,7 +4,7 @@ import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
-import { TERM_MAP } from "$lib/constants.js";
+import { TERM_MAP } from "$lib/changeme.js";
 
 export const load = async ({ locals }) => {
     // Only allow admins to access this page

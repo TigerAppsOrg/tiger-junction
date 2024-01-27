@@ -1,5 +1,5 @@
 <script lang="ts">
-import { TERM_MAP } from "$lib/constants";
+import { TERM_MAP } from "$lib/changeme";
 import AdminHeader from "./AdminHeader.svelte";
 
 export let data;

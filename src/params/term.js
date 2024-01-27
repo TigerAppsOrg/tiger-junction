@@ -1,4 +1,4 @@
-import { TERM_MAP } from "$lib/constants";
+import { TERM_MAP } from '$lib/changeme';
 
 /** @type {import('@sveltejs/kit').ParamMatcher} */
 export function match(param) {
