@@ -159,17 +159,27 @@ const createIcal = async () => {
 
 <StdModal title="Export Schedule" stdClose={true} {showModal}>
     <div class="flex flex-col space-y-2 md:space-y-4" slot="main">
-        <p class="text-sm">
-            This will create a new iCal file with all your confirmed courses, 
+        {#if !link}
+        <p>
+            Clicking "Create New Export" will create a new iCal file 
+            with all your confirmed courses, 
             which you can add to your calendar app of choice by 
-            downloading the file or using the link.
-            To update your calendar, simply export again.
+            downloading the file or copying the link.
+            If you use the lin, your calendar will automatically
+            update approximately every 24 hours.
+            To update your calendar export immediately, simply export again.
             <span class="underline">
-                Note: creating a new export will
-                overwrite any existing 
+                Warning: creating a new export will
+                overwrite any existing ReCal+
                 calendar exports.
             </span>
         </p>
+        {:else}
+        <p>
+            Your calendar export is ready! You can download the file or 
+            copy the link below.
+        </p>
+        {/if}
 
         {#if link}
         <div class="flex flex-col md:flex-row items-center justify-between gap-2">
@@ -195,7 +205,7 @@ const createIcal = async () => {
             </div>
         </div>
         {:else}
-            <StdButton message="Export" scheme="2"
+            <StdButton message="Create New Export" scheme="2"
             onClick={createIcal} />
         {/if}
     </div>
