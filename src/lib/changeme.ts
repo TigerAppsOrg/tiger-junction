@@ -1,4 +1,6 @@
-// ! When adding a new semester, you only need to change this file.
+// When adding a new semester, you only need to change this file
+// not counting database changes.
+// ! For the objects and arrays, order DOES matter.
 import type { RawCourseData } from "./types/dbTypes";
 
 export const TERM_MAP: Record<string, number> = {
@@ -29,6 +31,21 @@ export const EVALS_TERM_MAP: Record<number, string> = {
     1202: "2019-2020 Fall Course Evaluation Results",
     1194: "2018-2019 Spring Course Evaluation Results",
     1192: "2018-2019 Fall Course Evaluation Results",
+}
+
+export const ACTIVE_TERMS: Record<number, Record<string, string>> = {
+    1234: {
+        "name": "Spring 2023",
+        "mobile_name": "S23"
+    },
+    1242: {
+        "name": "Fall 2023",
+        "mobile_name": "F23"
+    },
+    1244: {
+        "name": "Spring 2024",
+        "mobile_name": "S24"
+    }
 }
 
 export const CURRENT_TERM_NAME = "SPRING_2024";
