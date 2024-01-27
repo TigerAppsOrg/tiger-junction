@@ -135,7 +135,6 @@ const createIcal = async () => {
             return;
         }
 
-
         // Push to supabase database
         const { error: supabaseError4 } = await supabase
             .from("icals")
@@ -143,6 +142,7 @@ const createIcal = async () => {
                 {
                     id: data.path.split(".")[0],
                     user_id: userId.data.user.id,
+                    schedule_id: $currentSchedule,
                 },
             ]);
 
