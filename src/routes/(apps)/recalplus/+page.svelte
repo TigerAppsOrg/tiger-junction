@@ -92,7 +92,7 @@ onMount(async () => {
 
     searchCourseData.resetAll();
     let id = $schedules[CURRENT_TERM_ID][0].id;
-    let courses = [...$savedCourses[id]];
+    let courses =  $savedCourses[id] ? [...$savedCourses[id]] : [];
     searchCourseData.remove(CURRENT_TERM_ID, courses);
 
     $ready = true;
