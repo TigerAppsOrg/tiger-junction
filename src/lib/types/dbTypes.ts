@@ -61,12 +61,6 @@ type CourseData = {
     instructors: string[] | null,
 }
 
-type RawCourseData = {
-    1244: CourseData[]
-    1242: CourseData[] 
-    1234: CourseData[] 
-}
-
 type CourseLinks = {
     registrar: string,
     tigersnatch: string,
@@ -102,7 +96,6 @@ export type {
     CourseInstructorAssociation,
     DualId,
     CourseData,
-    RawCourseData,
     CourseLinks,
     CalBoxParam,
     CalendarBox

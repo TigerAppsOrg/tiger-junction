@@ -1,6 +1,7 @@
 <script lang="ts">
 import { fetchRawCourseData, fetchUserSchedules, populatePools } from "$lib/scripts/ReCal+/fetchDb";
-import { currentSchedule, currentTerm, ready, retop, schedules, searchCourseData, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, ready, retop, searchCourseData, searchSettings } from "$lib/stores/recal";
+import { currentTerm, schedules } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import duck from "$lib/img/duck.gif";
 
@@ -13,6 +14,7 @@ import { isMobile, showCal } from "$lib/stores/mobile";
 import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
 import { calColors, calculateCssVars } from "$lib/stores/styles";
+import { ACTIVE_TERMS } from "$lib/changeme";
 
 export let supabase: SupabaseClient;
 
@@ -70,33 +72,18 @@ dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div class="bg-zinc-100 dark:bg-zinc-800
          flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
-            <button class="card {$currentTerm === 1234 ? "" : "termchoice"}" 
-            class:selected={$currentTerm === 1234}
-            on:click={() => handleTermChange(1234)}>
-                {#if $isMobile}
-                S23
-                {:else}
-                Spring 2023
-                {/if}
-            </button>
-            <button class="card {$currentTerm === 1242 ? "" : "termchoice"}" 
-            class:selected={$currentTerm === 1242}
-            on:click={() => handleTermChange(1242)}>
-                {#if $isMobile}
-                F23
-                {:else}
-                Fall 2023
-                {/if}
-            </button>
-            <button class="card {$currentTerm === 1244 ? "" : "termchoice"}" 
-            class:selected={$currentTerm === 1244}
-            on:click={() => handleTermChange(1244)}>
-                {#if $isMobile}
-                S24
-                {:else}
-                Spring 2024
-                {/if}
-            </button>
+            {#each Object.keys(ACTIVE_TERMS).map(x => parseInt(x)) as activeTerm}
+                <button class="card 
+                {$currentTerm === activeTerm ? "" : "termchoice"}" 
+                class:selected={$currentTerm === activeTerm}
+                on:click={() => handleTermChange(activeTerm)}>
+                    {#if $isMobile}
+                    {ACTIVE_TERMS[activeTerm].mobile_name}
+                    {:else}
+                    {ACTIVE_TERMS[activeTerm].name}
+                    {/if}
+                </button>
+            {/each}
         </div> 
 
         <div class="flex gap-2">

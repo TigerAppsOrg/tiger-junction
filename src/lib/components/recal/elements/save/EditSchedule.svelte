@@ -2,7 +2,8 @@
 import Modal from "$lib/components/elements/Modal.svelte";
 import StdButton from "$lib/components/elements/StdButton.svelte";
 import { modalStore } from "$lib/stores/modal";
-import { currentSchedule, currentTerm, schedules, searchCourseData } from "$lib/stores/recal";
+import { currentSchedule, searchCourseData } from "$lib/stores/recal";
+import { currentTerm, schedules } from "$lib/changeme";
 import { rMeta } from "$lib/stores/rmeta";
 import { savedCourses } from "$lib/stores/rpool";
 import { toastStore } from "$lib/stores/toast";

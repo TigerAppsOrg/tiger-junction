@@ -4,7 +4,8 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 // import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { currentSchedule, currentTerm, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentTerm } from "$lib/changeme";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -15,7 +16,7 @@ import { darkenHSL } from "$lib/scripts/convert";
 import { darkTheme } from "$lib/stores/state";
 import { inview } from "svelte-inview";
 import CardLinkButton from "./CardLinkButton.svelte";
-import { CURRENT_TERM_ID } from "$lib/constants";
+import { CURRENT_TERM_ID } from "$lib/changeme";
 
 export let course: CourseData;
 export let category: string = "search";

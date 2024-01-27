@@ -1,10 +1,11 @@
 //  Store for drip-style loaded section data
 
+import { SECTION_OBJ } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { writable, type Writable } from "svelte/store";
 
 // term -> SectionMap
-type RawSectionData = {
+export type RawSectionData = {
     [key: number]: SectionMap
 }
 
@@ -28,11 +29,9 @@ export type SectionData = {
     status: number,
 }
 
-const { set, update, subscribe }: Writable<RawSectionData> = writable({
-    1244: {},
-    1242: {},
-    1234: {},
-});
+const { set, update, subscribe }: Writable<RawSectionData> = writable(
+    JSON.parse(JSON.stringify(SECTION_OBJ))
+);
 
 export const sectionData = {
     set,
@@ -74,9 +73,3 @@ export const sectionData = {
         return true;
     }
 }
-
-export const sectionDone = writable({
-    1244: true,
-    1242: false,
-    1234: false,
-});

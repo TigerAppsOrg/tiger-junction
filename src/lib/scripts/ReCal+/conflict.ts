@@ -1,5 +1,5 @@
-import { currentTerm } from "$lib/stores/recal";
-import { sectionData, type SectionData } from "$lib/stores/rsections";
+import { sectionData } from "$lib/stores/rsections";
+import { currentTerm } from "$lib/changeme";
 import type { CourseData } from "$lib/types/dbTypes";
 import { get } from "svelte/store";
 import { valueToDays } from "../convert";

@@ -1,7 +1,6 @@
 import { API_ACCESS_TOKEN, REDIS_PASSWORD } from "$env/static/private";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "redis";
-import * as fs from "node:fs";
 
 /**
  * 
@@ -61,7 +60,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
         const startTime = Date.now();
         const res1 = await fetch(
-            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partOneOfFour}`, {
+            `https://api.princeton.edu/student-app/courses/seats?term=${term}&fmt=json&course_ids=${partOneOfFour}`, {
                 method: "GET",
                 headers: {
                     "Authorization": API_ACCESS_TOKEN
@@ -72,7 +71,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
         await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
         const res2 = await fetch(
-            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partTwoOfFour}`, {
+            `https://api.princeton.edu/student-app/courses/seats?term=${term}&fmt=json&course_ids=${partTwoOfFour}`, {
                 method: "GET",
                 headers: {
                     "Authorization": API_ACCESS_TOKEN
@@ -83,7 +82,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
         await new Promise(resolve => setTimeout(resolve, WAITING_TIME));
 
         const res3 = await fetch(
-            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partThreeOfFour}`, {
+            `https://api.princeton.edu/student-app/courses/seats?term=${term}&fmt=json&course_ids=${partThreeOfFour}`, {
                 method: "GET",
                 headers: {
                     "Authorization": API_ACCESS_TOKEN
@@ -95,7 +94,7 @@ export const updateSeats = async (supabase: SupabaseClient, term: number) => {
 
 
         const res4 = await fetch(
-            `https://api.princeton.edu/student-app/courses/seats?term=1244&fmt=json&course_ids=${partFourOfFour}`, {
+            `https://api.princeton.edu/student-app/courses/seats?term=${term}&fmt=json&course_ids=${partFourOfFour}`, {
                 method: "GET",
                 headers: {
                     "Authorization": API_ACCESS_TOKEN

@@ -1,12 +1,15 @@
 // Stores for ReCal+ app
 import { normalizeText, valueToDays } from "$lib/scripts/convert";
-import type { CourseData, RawCourseData } from "$lib/types/dbTypes";
+import type { CourseData } from "$lib/types/dbTypes";
+import { BASE_OBJ, type RawCourseData } from "$lib/changeme";
 import { get, writable, type Writable } from "svelte/store";
-import { sectionData, sectionDone } from "./rsections";
+import { sectionData } from "./rsections";
+import { sectionDone } from "$lib/changeme";
 import { savedCourses } from "./rpool";
 import { rMeta } from "./rmeta";
 import { doesConflict } from "$lib/scripts/ReCal+/conflict";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { ActiveTerms } from "$lib/changeme";
 
 //----------------------------------------------------------------------
 // Forcers
@@ -31,21 +34,8 @@ export const research: Writable<boolean> = writable(false);
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
 
-// Current term id
-export const currentTerm: Writable<number> = writable(1244);
-
 // Current schedule id
 export const currentSchedule: Writable<number> = writable();
-
-// User schedules
-export const schedules: Writable<Record<number, {
-    id: number,
-    title: string,
-}[]>> = writable({
-    1244: [],
-    1242: [],
-    1234: [],
-})
 
 export const isResult: Writable<boolean> = writable(false);
 
@@ -147,7 +137,7 @@ export const searchResults = {
             // Fetch all sections for all courses in term
             let termSec = get(sectionData)[term];
 
-            if (!get(sectionDone)[term as 1242 | 1234 | 1244]) {
+            if (!get(sectionDone)[term as ActiveTerms]) {
                 // Fetch Sections
                 const secs = await fetch(`/api/client/sections/${term}`);
                 const sections = await secs.json();
@@ -173,7 +163,7 @@ export const searchResults = {
 
                 // Mark sections for term as fully loaded
                 sectionDone.update(x => {
-                    x[term as 1242 | 1234 | 1244] = true;
+                    x[term as ActiveTerms] = true;
                     return x;
                 });
             }
@@ -308,11 +298,7 @@ are saved. This speeds up search results when there
 are many saved courses. */
 
 const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
-Writable<RawCourseData> = writable({
-    1244: [],
-    1242: [],
-    1234: [],
-});
+Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const rawCourseData = {
     set: setRaw,
@@ -337,11 +323,7 @@ export const rawCourseData = {
      * @returns raw course data for all terms
      */
     getAll: (): RawCourseData => {
-        let data: RawCourseData = {
-            1244: [],
-            1242: [],
-            1234: [],
-        };
+        let data: RawCourseData = JSON.parse(JSON.stringify(BASE_OBJ));
         rawCourseData.subscribe((x) => (
             data = JSON.parse(JSON.stringify(x))
         ))();
@@ -367,11 +349,7 @@ export const rawCourseData = {
 //----------------------------------------------------------------------
 
 const { set: setSearch, update: updateSearch, subscribe: subscribeSearch }:
-Writable<RawCourseData> = writable({
-    1244: [],
-    1242: [],
-    1234: [],
-});
+Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const searchCourseData = {
     set: setSearch,
@@ -396,11 +374,7 @@ export const searchCourseData = {
      * @returns search course data for all terms
      */
     getAll: (): RawCourseData => {
-        let data: RawCourseData = {
-            1244: [],
-            1242: [],
-            1234: [],
-        };
+        let data: RawCourseData = JSON.parse(JSON.stringify(BASE_OBJ));
         searchCourseData.subscribe((x) => (
             data = x
         ))();

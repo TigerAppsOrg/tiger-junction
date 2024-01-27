@@ -4,7 +4,7 @@ import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
-import { TERM_MAP } from "$lib/constants.js";
+import { TERM_MAP } from "$lib/changeme.js";
 
 export const load = async ({ locals }) => {
     // Only allow admins to access this page
@@ -45,7 +45,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const term = formData.get("term") as string;
         const termInt = parseInt(term);
-        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
             console.log("Invalid term: " + term);
             return {
                 message: "Invalid term"
@@ -64,7 +64,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const term = formData.get("term") as string;
         const termInt = parseInt(term);
-        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
             console.log("Invalid term: " + term);
             return {
                 message: "Invalid term"
@@ -87,7 +87,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const term = formData.get("term") as string;
         const termInt = parseInt(term);
-        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
             console.log("Invalid term: " + term);
             return {
                 message: "Invalid term"
@@ -106,7 +106,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const term = formData.get("term") as string;
         const termInt = parseInt(term);
-        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
             console.log("Invalid term: " + term);
             return {
                 message: "Invalid term"
@@ -125,7 +125,7 @@ export const actions: Actions = {
         const formData = await request.formData();
         const term = formData.get("term") as string;
         const termInt = parseInt(term);
-        if (isNaN(termInt) || !Object.values(TERM_MAP).includes(termInt)) {
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
             console.log("Invalid term: " + term);
             return {
                 message: "Invalid term"

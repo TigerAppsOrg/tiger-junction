@@ -1,4 +1,5 @@
-import { currentSchedule, currentTerm } from "$lib/stores/recal";
+import { currentSchedule } from "$lib/stores/recal";
+import { currentTerm } from "$lib/changeme";
 
 // Get the current schedule
 const getCurrentSchedule = (): number => {

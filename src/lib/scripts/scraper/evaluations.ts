@@ -1,5 +1,6 @@
 import { PRIVATE_COOKIE } from "$env/static/private";
-import { EVALS_TERM_MAP, EVALUATION_URL } from "$lib/constants";
+import { EVALS_TERM_MAP } from "$lib/changeme";
+import { EVALUATION_URL } from "$lib/constants";
 import type { DualId } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { JSDOM } from "jsdom";

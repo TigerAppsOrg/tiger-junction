@@ -1,7 +1,7 @@
-import { TERM_MAP } from "$lib/constants";
+import { TERM_MAP } from '$lib/changeme';
 
 /** @type {import('@sveltejs/kit').ParamMatcher} */
 export function match(param) {
-    return Object.values(TERM_MAP).includes(parseInt(param)) 
+    return Object.keys(TERM_MAP).map(x => parseInt(x)).includes(parseInt(param)) 
     || param === "all";
 }

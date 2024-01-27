@@ -1,6 +1,7 @@
 <script lang="ts">
 import { goto } from '$app/navigation';
 import { EMAIL_LIST_FORM_LINK } from '$lib/constants';
+import githubIcon from "$lib/img/github-mark-white.svg";
 
 export let data;
 
@@ -177,13 +178,19 @@ const handleLogin = async () => {
     
 </div>
 
-<footer class="bg-std-darkPurple text-center text-slate-100 font-light py-4">
-    Made with 
-    <a href="https://svelte.dev/" target="_blank" class="underline
-    duration-150 hover:text-zinc-200">
-        Svelte
-    </a> 
-    by @motoaki
+<footer class="bg-std-darkPurple text-center text-slate-100 
+font-light py-4 flex items-center justify-center gap-8">
+    <span>
+        Made with 
+        <a href="https://svelte.dev/" target="_blank" class="underline
+        duration-150 hover:text-zinc-200">
+            Svelte
+        </a> 
+        by @motoaki
+    </span>
+    <a href="https://github.com/joshuamotoaki/tiger-junction" target="_blank">
+        <img src={githubIcon} alt="GitHub icon" class="w-6 h-6 inline-block">
+    </a>
 </footer>
 
 <style lang="postcss">

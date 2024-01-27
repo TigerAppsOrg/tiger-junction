@@ -59,8 +59,6 @@ refreshGrading: boolean = false) => {
             }
         );
 
-        console.log("Fetched data for: ", subject)
-
         let subjectData = await rawSubjectData.json();
         if (!subjectData.term[0].subjects) {
             console.log("No data for term", term, ":", subject);
@@ -72,7 +70,7 @@ refreshGrading: boolean = false) => {
         // (when querying for a subject, the crosslists are also included)
         let correctIndex = subjectData.subjects.findIndex((x: any) => x.code === subject);
         if (correctIndex === -1) {
-            console.log("Subject not found for term", term, ":", subject);
+            console.log("Subject not found:", subject);
             return;
         };
         subjectData = subjectData.subjects[correctIndex].courses;
@@ -225,6 +223,69 @@ refreshGrading: boolean = false) => {
                 courseId = data[0].id;
             }
 
+            // Check for removed sections and prune them from supabase
+            const { data: exisSections, error: exisSError } = await supabase.from("sections")
+                .select("id, num")
+                .eq("course_id", courseId)
+                .order("id", { ascending: true });
+
+            if (exisSError) {
+                console.log("Error checking if sections exist in supabase for", course.listing_id, "in term", course.term);
+                throw new Error(exisSError.message);
+            }
+
+            const exisSectionNums = exisSections.map(x => x.num);
+            const newSectionNums = sections.map(x => parseInt(x.class_number));
+            const removedSections = exisSectionNums.filter(x => !newSectionNums.includes(x));
+
+            // Check for duplicate sections and prune them from supabase
+            let duplicateSections: number[] = [];
+            for (let k = 0; k < exisSectionNums.length; k++) {
+                const num = exisSectionNums[k];
+                if (duplicateSections.includes(num)) continue;
+                if (exisSectionNums.indexOf(num) !== k) 
+                    duplicateSections.push(num);
+            }
+
+            // Prune duplicate sections
+            if (duplicateSections.length > 0) {
+                // Remove duplicateSections from removedSections
+                duplicateSections.forEach(x => {
+                    const index = removedSections.indexOf(x);
+                    if (index > -1) removedSections.splice(index, 1);
+                });
+
+                // Remove only the first instance of each duplicate section
+                for (let k = 0; k < duplicateSections.length; k++) {
+                    const { error } = await supabase
+                        .from("sections")
+                        .delete()
+                        .eq("num", duplicateSections[k])
+                        .eq("course_id", courseId)
+                        .limit(1)
+                        .order("id", { ascending: true })
+
+                    if (error) {
+                        console.log("Error deleting duplicate section", duplicateSections[k], "for course", course.listing_id, "in term", course.term);
+                        throw new Error(error.message);
+                    }
+                }
+            }
+
+            // Prune removed sections
+            if (removedSections.length > 0) {
+                const { error } = await supabase
+                    .from("sections")
+                    .delete()
+                    .in("num", removedSections)
+
+                if (error) {
+                    console.log("Error deleting sections", removedSections, "for course", course.listing_id, "in term", course.term);
+                    throw new Error(error.message);
+                }
+            }
+
+            // Update sections
             for (let k = 0; k < sections.length; k++) {
                 let section = sections[k];
 
@@ -251,17 +312,9 @@ refreshGrading: boolean = false) => {
                     }
 
                     // Check if section exists in supabase
-                    const { data: exisSection, error: exisSError } = await supabase.from("sections")
-                        .select("id")
-                        .eq("course_id", sectionData.course_id)
-                        .eq("num", sectionData.num)
-                        .order("id", { ascending: true })
+                    const exisSection = exisSections.filter(x => 
+                        x.num === parseInt(sectionData.num));
 
-                    if (exisSError) {
-                        console.log("Error checking if section exists in supabase for", sectionData.course_id, "in term", term);
-                        throw new Error(exisSError.message);
-                    }
-                    
                     if (exisSection[l] !== undefined) {
                         let { error } = await supabase
                             .from("sections")
@@ -322,12 +375,12 @@ refreshGrading: boolean = false) => {
 
     for (let i = 0; i < departmentChunks.length; i++) {
         await Promise.all(Object.keys(departmentChunks[i]).map(x => handleDepartment(x, departmentChunks[i][x])));
-        console.log("Finished fetching data for", departmentChunks[i]);
+        console.log("Finished fetching data for", Object.keys(departmentChunks[i]).join(", "));
     }
 
     const endTime = Date.now();
 
-    console.log("Finished fetching courses for term", term, "in", endTime - startTime, "ms");
+    console.log("Finished fetching courses for term", term, "in", (endTime - startTime) / 1000, "s");
 
     // Transfer data from Supabase to Redis
     const redisStart = Date.now(); 

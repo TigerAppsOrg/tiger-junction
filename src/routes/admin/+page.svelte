@@ -1,5 +1,5 @@
 <script lang="ts">
-import { TERM_MAP } from "$lib/constants";
+import { TERM_MAP } from "$lib/changeme";
 import AdminHeader from "./AdminHeader.svelte";
 
 export let data;
@@ -89,15 +89,13 @@ const resolveFeedback = async (feedback: { id: number; }) => {
             <h2 class="text-lg font-bold mb-2">Information</h2>
             <h3 class="text-lg font-semibold">Term Codes</h3>
             <div class="space-y-1">
-                {#each Object.keys(TERM_MAP) as term}
+                <!-- TODO FIX -->
+                {#each Object.keys(TERM_MAP).toReversed() as term}
                     <div class="flex justify-between text-sm">
                         <span>
-                            {term.split("_")[0].slice(0, 1) 
-                            + term.split("_")[0].slice(1).toLowerCase() 
-                            + " " 
-                            + term.split("_")[1]}
+                            {TERM_MAP[parseInt(term)].name}
                         </span>
-                        <span class="font-bold">{TERM_MAP[term]}</span>
+                        <span class="font-bold">{term}</span>
                     </div>
                 {/each}
             </div> <!-- * End Term Codes -->
