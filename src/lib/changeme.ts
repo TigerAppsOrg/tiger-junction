@@ -1,10 +1,9 @@
-// When adding a new semester, you only need to change this file
-// not counting database changes.
-// ! For the objects and arrays, order DOES matter.
+// Change this file when adding a new term
 import { writable, type Writable } from "svelte/store";
 import type { CourseData } from "./types/dbTypes";
 import type { RawSectionData } from "./stores/rsections";
 
+// Add the new term at the top of the list
 export const TERM_MAP: Record<number, Record<string, string>> = {
     1244: {
         "name": "Spring 2024",
@@ -56,6 +55,7 @@ export const TERM_MAP: Record<number, Record<string, string>> = {
     },
 }
 
+// Add the new term at the top of the list
 export const EVALS_TERM_MAP: Record<number, string> = {
     1244: "2023-2024 Spring Course Evaluation Results",
     1242: "2023-2024 Fall Course Evaluation Results",
@@ -71,7 +71,11 @@ export const EVALS_TERM_MAP: Record<number, string> = {
     1192: "2018-2019 Fall Course Evaluation Results",
 }
 
-// Dates for each term
+// Add the new term at the top of the list
+// start/end are in the format [year, month, day]
+// start_day is the day of the week the term starts on (1 = Monday, 7 = Sunday)
+// Ignore exclusions for now, they're not used, set to []
+// Delete the old term at the bottom of the list
 export const CALENDAR_INFO: Record<string, Calendar_Info> = {
     "1244": {
         "name": "Spring 2024",
@@ -96,9 +100,12 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
     },
 } as const;
 
+// Add the new term and delete the oldest term (be careful!)
 export type ActiveTerms = 1234 | 1242 | 1244;
 
+// Add the new term at the top of the list
 // Set the most recent term to true, and the rest to false
+// Delete the oldest term (at the bottom)
 export const sectionDone = writable({
     1244: true,
     1242: false,
