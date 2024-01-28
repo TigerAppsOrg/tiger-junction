@@ -96,7 +96,7 @@ export async function GET(req: RequestEvent) {
             }
         }
 
-        createEvents(events, async (error, value) => {
+        await createEvents(events, async (error, value) => {
             if (error) {
                 console.log(error);
                 return new Response(JSON.stringify(error), { status: 500 });
