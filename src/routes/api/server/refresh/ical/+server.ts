@@ -110,13 +110,18 @@ export async function GET(req: RequestEvent) {
             value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
 
             // Push to supabase storage
-            supabase.storage
+            const { error: storageError } = await supabase.storage
                 .from("calendars")
                 .update(data[i].id + ".ics", value, {
                     cacheControl: "900",
                     upsert: true,
                     contentType: "text/calendar",
-                });
+                })
+
+            if (storageError) {
+                console.log(storageError);
+                return new Response(JSON.stringify(storageError), { status: 500 });
+            }
         });
     }
 
