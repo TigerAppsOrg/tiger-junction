@@ -41,6 +41,8 @@ export async function GET(req: RequestEvent) {
         return new Response(JSON.stringify(error), { status: 500 });
     }
 
+    console.log("Found " + data.length + " calendars");
+
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
         const events: EventAttributes[] = [];
@@ -101,6 +103,8 @@ export async function GET(req: RequestEvent) {
                 console.log(error);
                 return new Response(JSON.stringify(error), { status: 500 });
             }
+
+            console.log("Created " + events.length + " events for " + data[i].id);
         
             // Append time zone info to start time
             value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
@@ -117,5 +121,6 @@ export async function GET(req: RequestEvent) {
     }
 
     const returnString = "Successfully refreshed " + data.length + " calendars";
+    console.log(returnString);
     return new Response(JSON.stringify(returnString), { status: 200 });
 }
