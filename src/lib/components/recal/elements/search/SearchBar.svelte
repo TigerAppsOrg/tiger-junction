@@ -95,8 +95,7 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
 }
 
 .togglebutton {
-    @apply flex-1 h-full rounded-sm duration-100 text-zinc-900
-    dark:text-zinc-100;
+    @apply flex-1 h-full rounded-sm duration-100;
 }
 
 .enabled {
@@ -105,7 +104,8 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
 }
 
 .disabled {
-    @apply bg-zinc-200 dark:bg-zinc-700;
+    @apply bg-zinc-200 dark:bg-zinc-700 text-zinc-900
+    dark:text-zinc-100;
 }
 
 .disabled:hover {
