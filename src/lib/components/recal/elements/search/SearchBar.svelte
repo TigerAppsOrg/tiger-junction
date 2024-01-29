@@ -103,6 +103,10 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
     color: var(--text);
 }
 
+.enabled:hover {
+    background-color: var(--bg-hover);
+}
+
 .disabled {
     @apply bg-zinc-200 dark:bg-zinc-700 text-zinc-900
     dark:text-zinc-100;
