@@ -1,5 +1,4 @@
 <script lang="ts">
-import settingsIcon from "$lib/img/icons/settingsicon.svg";
 import { modalStore } from "$lib/stores/modal";
 import { searchSettings, searchResults, searchCourseData, currentSchedule, isResult, hoveredCourse, research, ready } from "$lib/stores/recal";
 import { currentTerm } from "$lib/changeme";
@@ -7,6 +6,7 @@ import { rMeta } from "$lib/stores/rmeta";
 import { sectionData } from "$lib/stores/rsections";
 import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { calColors, calculateCssVars } from "$lib/stores/styles";
 
 export let supabase: SupabaseClient;
 
@@ -38,9 +38,22 @@ const triggerSearch = () => {
         for (let i = 0; i < $searchResults.length; i++)
             sectionData.add(supabase, $currentTerm, $searchResults[i].id);
 }
+
+$: cssVarStyles = calculateCssVars("2", $calColors);
 </script>
 
-<div>
+<div class="flex flex-col gap-2" style={cssVarStyles}>
+    <div class="h-4 text-xs w-full
+    flex justify-between gap-1 items-center">
+        <button class="flex-1 h-full
+        {$searchSettings.filters["Show All"].enabled ? "enabled" : "disabled"}">
+            Show All
+        </button>
+        <button class="flex-1 h-full
+        {$searchSettings.filters["Does Not Conflict"].enabled ? "enabled" : "disabled"}">
+            No Conflicts
+        </button>
+    </div>
     <div class="flex gap-2">
         <input type="text" placeholder="Search" 
         class="search-input std-area rounded-md" bind:this={inputBar}
@@ -73,4 +86,16 @@ const triggerSearch = () => {
     @apply text-zinc-600 dark:text-zinc-300 duration-150;
 }
 
+.enabled {
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+.disabled {
+    @apply bg-zinc-200 dark:bg-zinc-700;
+}
+
+.disabled:hover {
+    @apply bg-zinc-300 dark:bg-zinc-600 duration-150;
+}
 </style>
