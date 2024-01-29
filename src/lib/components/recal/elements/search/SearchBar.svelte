@@ -54,10 +54,10 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
             Show All
         </button>
         <button class="togglebutton
-        {$searchSettings.filters["Does Not Conflict"].enabled ? "enabled" : "disabled"}"
+        {$searchSettings.filters["No Conflicts"].enabled ? "enabled" : "disabled"}"
         on:click={() => 
-            $searchSettings.filters["Does Not Conflict"].enabled = 
-            !$searchSettings.filters["Does Not Conflict"].enabled
+            $searchSettings.filters["No Conflicts"].enabled = 
+            !$searchSettings.filters["No Conflicts"].enabled
         }>
             No Conflicts
         </button>
