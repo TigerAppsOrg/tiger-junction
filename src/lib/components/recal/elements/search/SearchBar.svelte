@@ -45,12 +45,20 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
 <div class="flex flex-col gap-1" style={cssVarStyles}>
     <div class="h-4 text-xs w-full
     flex justify-between gap-1 items-center">
-        <button class="flex-1 h-full rounded-sm
-        {$searchSettings.filters["Show All"].enabled ? "enabled" : "disabled"}">
+        <button class="togglebutton
+        {$searchSettings.filters["Show All"].enabled ? "enabled" : "disabled"}"
+        on:click={() => 
+            $searchSettings.filters["Show All"].enabled = 
+            !$searchSettings.filters["Show All"].enabled
+        }>
             Show All
         </button>
-        <button class="flex-1 h-full rounded-sm
-        {$searchSettings.filters["Does Not Conflict"].enabled ? "enabled" : "disabled"}">
+        <button class="togglebutton
+        {$searchSettings.filters["Does Not Conflict"].enabled ? "enabled" : "disabled"}"
+        on:click={() => 
+            $searchSettings.filters["Does Not Conflict"].enabled = 
+            !$searchSettings.filters["Does Not Conflict"].enabled
+        }>
             No Conflicts
         </button>
     </div>
@@ -86,6 +94,10 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
     @apply text-zinc-600 dark:text-zinc-300 duration-150;
 }
 
+.togglebutton {
+    @apply flex-1 h-full rounded-sm duration-100;
+}
+
 .enabled {
     background-color: var(--bg);
     color: var(--text);
@@ -96,6 +108,6 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
 }
 
 .disabled:hover {
-    @apply bg-zinc-300 dark:bg-zinc-600 duration-150;
+    @apply bg-zinc-300 dark:bg-zinc-600;
 }
 </style>
