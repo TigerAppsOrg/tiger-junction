@@ -42,14 +42,14 @@ const triggerSearch = () => {
 $: cssVarStyles = calculateCssVars("2", $calColors);
 </script>
 
-<div class="flex flex-col gap-2" style={cssVarStyles}>
+<div class="flex flex-col gap-1" style={cssVarStyles}>
     <div class="h-4 text-xs w-full
     flex justify-between gap-1 items-center">
-        <button class="flex-1 h-full
+        <button class="flex-1 h-full rounded-sm
         {$searchSettings.filters["Show All"].enabled ? "enabled" : "disabled"}">
             Show All
         </button>
-        <button class="flex-1 h-full
+        <button class="flex-1 h-full rounded-sm
         {$searchSettings.filters["Does Not Conflict"].enabled ? "enabled" : "disabled"}">
             No Conflicts
         </button>
