@@ -133,7 +133,7 @@ export const searchResults = {
         }
 
         // * Does Not Conflict
-        if (settings.filters["Does Not Conflict"].enabled) {
+        if (settings.filters["No Conflicts"].enabled) {
             // Fetch all sections for all courses in term
             let termSec = get(sectionData)[term];
 
@@ -229,7 +229,7 @@ export const searchResults = {
                 // Check if any conflicts and filter
                 data = data.filter(x => !doesConflict(x, 
                     conflictList, 
-                    settings.filters["Does Not Conflict"]
+                    settings.filters["No Conflicts"]
                         .values["Only Available Sections"]));
 
             } // ! End of if (saved && meta)
@@ -507,7 +507,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "No Cancelled": {
             "enabled": false,
         },
-        "Does Not Conflict": {
+        "No Conflicts": {
             "enabled": false,
             "values": {
                 "Only Available Sections": false,
