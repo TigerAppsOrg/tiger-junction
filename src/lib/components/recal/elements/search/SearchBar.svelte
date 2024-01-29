@@ -95,7 +95,8 @@ $: cssVarStyles = calculateCssVars("2", $calColors);
 }
 
 .togglebutton {
-    @apply flex-1 h-full rounded-sm duration-100;
+    @apply flex-1 h-full rounded-sm duration-100 text-zinc-900
+    dark:text-zinc-100;
 }
 
 .enabled {

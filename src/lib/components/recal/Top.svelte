@@ -67,7 +67,7 @@ $: cssVarStyles = calculateCssVars("0", $calColors);
 </script>
 
 <div style={cssVarStyles} id="parent"
-class="h-20 px-1 overflow-clip  text-zinc-900
+class="h-20 px-1 overflow-clip text-zinc-900
 dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div class="bg-zinc-100 dark:bg-zinc-800
