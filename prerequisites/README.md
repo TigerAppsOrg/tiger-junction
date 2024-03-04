@@ -8,6 +8,7 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 
 - `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
 - `last` is the code for the most recent term that the course was offered.
+- `travel` indicates that the course requires travel outside of the Princeton area.
 - `equiv` is a list of equivalent courses.
 - `notes` is any additional information about the prerequisites.
 - `req_string` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
@@ -15,6 +16,7 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 ```yaml
 - course: PHY 106
   last: 1244
+  travel:
   equiv:
     - PHY 102
     - PHY 104

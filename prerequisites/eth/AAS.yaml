@@ -2,6 +2,7 @@
 code: AAS
 name: African American Studies
 category: Ethnic and Cultural Studies
+updated: 3/4/2024
 ---
 - course: AAS 200
   last: 1244
@@ -13,6 +14,7 @@ category: Ethnic and Cultural Studies
   last: 1244
 - course: AAS 341
   last: 1244
+  travel:
 - course: AAS 354
   last: 1244
 - course: AAS 359
