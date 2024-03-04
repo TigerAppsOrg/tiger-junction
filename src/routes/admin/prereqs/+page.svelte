@@ -16,9 +16,11 @@ type Course = {
 
 let initialized = false;
 let loading = false;
+let locked = false;
 let courselist: RegCourse[] = [];
 let term = 1244;
 
+let previousCourse: Course;
 let currentCourse: Course;
 let nextCourse: Course;
 let currentCourseIndex = 0;
@@ -43,6 +45,7 @@ const handleInit = async () => {
 
     const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
     currentCourse = processRawCourse(await firstRaw.json());
+    previousCourse = currentCourse;
 
     const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
     nextCourse = processRawCourse(await secondRaw.json());
@@ -56,10 +59,36 @@ const handleInit = async () => {
 //----------------------------------------------------------------------
 
 // ! Warning - this is a very naive implementation 
-const handleCourseCycle = async () => {
-    const rawNext = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
+const handleNextCourse = async () => {
+    if (locked) return;
+
+    locked = true;
+    currentCourseIndex++;
+    
+    previousCourse = currentCourse;
     currentCourse = nextCourse;
+
+    const rawNext = await fetch("/api/admin/prereqs/course?term=" 
+        + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
     nextCourse = processRawCourse(await rawNext.json());
+    locked = false;
+}
+
+const handlePreviousCourse = async () => {
+    if (locked) return;
+
+    locked = true;
+    if (currentCourseIndex === 0) return;
+    currentCourseIndex--;
+    
+    nextCourse = currentCourse;
+    currentCourse = previousCourse;
+
+    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
+        + term + "&id=" + courselist[currentCourseIndex - 1].listing_id);
+    previousCourse = processRawCourse(await rawPrevious.json());
+
+    locked = false;
 }
 
 const processRawCourse = (rawCourse: any): Course => {
@@ -72,7 +101,7 @@ const processRawCourse = (rawCourse: any): Course => {
 }
 </script>
 
-<main class="h-screen flex flex-col bg-zinc-900 text-white">
+<main class="h-screen bg-zinc-900 text-white">
     <AdminHeader supabase={data.supabase} />
 
     {#if !initialized}
@@ -117,13 +146,45 @@ const processRawCourse = (rawCourse: any): Course => {
             {/if}
         </div>
     {:else}
-        <div>
-
+        <div class="rounded-lg p-4 border-[1px] border-zinc-600 w-11/12 max-w-5xl mx-auto
+        mt-6">
+            <div class="space-y-2 mb-2">
+                <h1 class="text-xl">
+                    {currentCourseIndex + 1} / {courselist.length} - 
+                    {currentCourse.title || "ERROR"}
+                </h1>
+                <p>
+                    <span class="underline">Description: </span>
+                    {currentCourse.description || "No Descrition"}
+                </p>
+                <p>
+                    <span class="underline">Prerequisites: </span>
+                    {currentCourse.prereqs || "None"}
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <button class="handlerButton bg-orange-400 hover:bg-orange-500"
+                on:click={handlePreviousCourse}>
+                    Previous
+                </button>
+                <button class="handlerButton bg-blue-400 hover:bg-blue-500"
+                on:click={handleNextCourse}>
+                    Next
+                </button>
+            </div>
         </div>
     {/if}
 </main>
 
-<style>
+<style lang="postcss">
+    .handlerButton {
+        @apply rounded-md px-4 py-2 w-40 flex-1 duration-150;
+    }
+
+    .handlerButton:active {
+        @apply transform scale-95;
+    }
+
     :root {
         --hue: 200;
         --bg: hsl(var(--hue),90%,95%);
