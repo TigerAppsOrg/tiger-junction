@@ -2,4 +2,16 @@
 code: BCS
 name: Bosnian-Croatian-Serbian
 category: World Languages
+updated: 3/4/2024
 ---
+- course: BCS 101
+  last: 1232
+- course: BCS 102
+  last: 1234
+  reqs: BCS101
+- course: BCS 105
+  last: 1242
+  reqs: BCS102
+- course: BCS 107
+  last: 1244
+  reqs: BCS105
