@@ -2,4 +2,68 @@
 code: CEE
 name: Civil and Environmental Engineering
 category: Engineering
+updated: 3/4/2024
 ---
+- course: CEE 306
+  last: 1244
+  special: MULTI
+- course: CEE 308
+  last: 1244
+  reqs: CEE207 & $CEE306
+- course: CEE 311
+  last: 1244
+  reqs: CEE207 | CHM303 | CHM304
+- course: CEE 312
+  last: 1244
+  reqs: CEE205 | MAE223
+- course: CEE 325
+  last: 1244
+- course: CEE 334
+  last: 1244
+  reqs: CHM201
+- course: CEE 364
+  last: 1244
+  reqs: CEE205
+- course: CEE 365
+  last: 1244
+  reqs: CEE205
+- course: CEE 376
+  last: 1244
+- course: CEE 460
+  last: 1244
+  notes: >-
+    Basic probability and statistics course.
+- course: CEE 461
+  last: 1244
+  reqs: CEE312 & CEE366
+- course: CEE 464
+  last: 1244
+- course: CEE 476
+  last: 1244
+  reqs: CEE207 & CEE471
+- course: CEE 478
+  last: 1244
+- course: CEE 507
+  last: 1244
+- course: CEE 508
+  last: 1244
+- course: CEE 509
+  last: 1244
+- course: CEE 510
+  last: 1244
+- course: CEE 511
+  last: 1244
+  reqs: CEE312 & CEE366
+- course: CEE 520
+  last: 1244
+- course: CEE 529
+  last: 1244
+  special: PHYS & BSEMATH
+- course: CEE 531
+  last: 1244
+- course: CEE 575
+  last: 1244
+- course: CEE 596
+  last: 1244
+- course: CEE 599
+  last: 1244
