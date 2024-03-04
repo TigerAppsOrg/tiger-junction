@@ -207,10 +207,10 @@ const processRawCourse = (rawCourse: any): Course => {
                     {currentCourseIndex + 1} / {courselist.length} - 
                     {currentCourse.title || "ERROR"}
                 </h1>
-                <p>
+                <!-- <p>
                     <span class="underline">Description: </span>
                     {currentCourse.description || "No Descrition"}
-                </p>
+                </p> -->
                 <p>
                     <span class="underline">Prerequisites: </span>
                     {currentCourse.prereqs || "None"}
