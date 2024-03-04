@@ -2,4 +2,36 @@
 code: AST
 name: Astrophysical Sciences
 category: STEM
+updated: 3/4/2024
 ---
+- course: AST 203
+  last: 1244
+- course: AST 204
+  last: 1244
+  special: CALCULUS & MECH
+- course: AST 251
+  last: 1244
+  reqs: AST250
+- course: AST 309
+  last: 1244
+  special: PHYS & MULTI
+- course: AST 401
+  last: 1244
+  special: BSEMATH
+  reqs: PHY207
+- course: AST 513
+  last: 1244
+- course: AST 542
+  last: 1244
+- course: AST 552
+  last: 1244
+- course: AST 554
+  last: 1244
+- course: AST 555
+  last: 1244
+- course: AST 558
+  last: 1244
+- course: AST 562
+  last: 1244
+- course: AST 568
+  last: 1244
