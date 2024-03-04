@@ -8,14 +8,21 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 
 Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
+## Updating the Data
+
+
 ## Compiling the Data
-Running `node compile.js` in this directory will create a JSON file (called prereqs.json) with the prerequisites for each course. This is the file that TigerJunction uses. Before compilation, the data is validated to ensure that it is in the correct format. If there are any errors, the compiler will print them to the console and stop. The errors must be fixed before the data can be compiled.
+Running `node compile.js` in this directory will create 2 JSON files: `prereqs.json` which contains only the prerequisites of courses and `prereqs_comp.json` which contains both the prerequisites of and for courses. For example, for GER 102, `prereqs.json` will only contain the prerequisites of GER 102 (GER 101), while `prereqs_comp.json` will contain both the prerequisites of GER 102 (GER 101) and the courses that GER 102 is a prerequisite for (GER 105). 
+
+Choosing which file to use depends on if you want more speed (`prereqs_comp.json`) or less space (`prereqs.json`). TigerJunction uses `prereqs_comp.json`.
+
+Before compilation, the data is validated to ensure that it is in the correct format. If there are any errors, the compiler will print them to the console and stop. The errors must be fixed before the data can be compiled.
 
 ## Categories
 For readability, the departments are divided into the following categories. Please leave and issue if you feel that a department is in the wrong category.
 
 ### World Languages (lang)
-ARA, BCS, CHI, CZE, FRE, GER, HEB, HIN, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, URD
+ARA, ASL, BCS, CHI, CZE, FRE, GER, GEZ, HEB, HIN, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, UKR, URD
 
 ### Social Sciences (socsci)
 ANT, CTL, ECO, ENT, FIN, JRN, LIN, POL, POP, PSY, SOC, SPI, STC, TRA, URB
@@ -24,13 +31,13 @@ ANT, CTL, ECO, ENT, FIN, JRN, LIN, POL, POP, PSY, SOC, SPI, STC, TRA, URB
 AAS, AFS, AMS, ASA, EAS, ECS, EPS, GSS, JDS, HLS, LAO, LAS, NES, RES, SAS, SLA
 
 ### Humanities (hum)
-CHV, CLA, CLG, COM, CWR, ENG, HIS, HOS, HPD, HUM, MED, MOD, PAW, PHI, REL
+CDH, CHV, CLA, CLG, COM, CWR, ENG, HIS, HOS, HPD, HUM, MED, MOD, PAW, PHI, REL
 
 ### Visual and Performing Arts (vpa)
 ART, ATL, DAN, LCA, MPP, MTD, MUS, THR, VIS
 
-### BSE (bse)
-CBE, CEE, COS, ECE, EGR, MAE, MSE, ORF
+### Engineering (bse)
+BNG, CBE, CEE, COS, ECE, EGR, MAE, MSE, ORF
 
 ### Non-BSE STEM (stem)
 AOS, APC, ARC, AST, CGS, CHM, EEB, ENE, ENV, GEO, GHP, ISC, MAT, MOL, NEU, PHY, QCB, SML
