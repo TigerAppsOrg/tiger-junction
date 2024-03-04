@@ -2,4 +2,45 @@
 code: CBE
 name: Chemicial and Biological Engineering
 category: Engineering
+updated: 3/4/2024
 ---
+- course: CBE 218
+  last: 1244
+- course: CBE 246
+  last: 1244
+  special: MULTI
+  reqs: CBE245
+- course: CBE 260
+  last: 1244
+- course: CBE 346
+  last: 1244
+  reqs: CBE246 & CBE250 & CBE341
+- course: CBE 352
+  last: 1244
+- course: CBE 419
+  last: 1244
+  reqs: MOL214
+- course: CBE 426
+  last: 1244
+- course: CBE 433
+  last: 1244
+- course: CBE 438
+  last: 1244
+  reqs: $MOL214
+- course: CBE 441
+  last: 1244
+  reqs: CBE341
+- course: CBE 449
+  last: 1244
+- course: CBE 454
+  last: 1244
+- course: CBE 510
+  last: 1244
+  notes: >-
+    The students should have taken an undergraduate course on heat, 
+    mass and momentum transport and an advanced mathematics course 
+    dealing with vector calculus, ordinary and partial differential 
+    equations, eigenvalue problems, Fourier transform and perturbation methods.
+- course: CBE 516
+  last: 1244
+  reqs: AST551
