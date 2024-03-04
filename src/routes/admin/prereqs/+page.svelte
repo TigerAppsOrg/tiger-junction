@@ -56,17 +56,24 @@ const handleInit = async () => {
     initialized = true;
 }
 
+const handleEnter = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+        gotoIndex(parseInt((e.target as HTMLInputElement).value));
+    }
+}
+
 //----------------------------------------------------------------------
 
 // ! Warning - this is a very naive implementation 
 const handleNextCourse = async () => {
+    if (currentCourseIndex === courselist.length - 1) return;
     if (locked) return;
-
     locked = true;
+
     currentCourseIndex++;
-    
     previousCourse = currentCourse;
     currentCourse = nextCourse;
+
 
     const rawNext = await fetch("/api/admin/prereqs/course?term=" 
         + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
@@ -75,19 +82,66 @@ const handleNextCourse = async () => {
 }
 
 const handlePreviousCourse = async () => {
-    if (locked) return;
-
-    locked = true;
     if (currentCourseIndex === 0) return;
+    if (locked) return;
+    locked = true;
+
     currentCourseIndex--;
-    
     nextCourse = currentCourse;
     currentCourse = previousCourse;
+
+    if (currentCourseIndex === 0) {
+        previousCourse = currentCourse;
+        locked = false;
+        return;
+    }
 
     const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
         + term + "&id=" + courselist[currentCourseIndex - 1].listing_id);
     previousCourse = processRawCourse(await rawPrevious.json());
 
+    locked = false;
+}
+
+const gotoIndex = async (index: number) => {
+    if (locked) return;
+    if (index < 1 || index > courselist.length) return;
+    locked = true;
+
+    const rawCurrent = await fetch("/api/admin/prereqs/course?term="
+        + term + "&id=" + courselist[index - 1].listing_id);
+
+    // Yes this is a bit ugly but it doesn't matter it works
+    switch (index) {
+        case 1:
+            const rawNext = await fetch("/api/admin/prereqs/course?term="
+                + term + "&id=" + courselist[index].listing_id);
+            nextCourse = processRawCourse(await rawNext.json());
+            currentCourse = processRawCourse(await rawCurrent.json());
+            previousCourse = currentCourse;
+            currentCourseIndex = 0;
+            locked = false;
+            return;
+        case courselist.length:
+            const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
+                + term + "&id=" + courselist[index - 2].listing_id);
+            previousCourse = processRawCourse(await rawPrevious.json());
+            currentCourse = processRawCourse(await rawCurrent.json());
+            nextCourse = currentCourse;
+            currentCourseIndex = index - 1;
+            locked = false;
+            return;
+    }
+
+    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
+        + term + "&id=" + courselist[index - 2].listing_id);
+    const rawNext = await fetch("/api/admin/prereqs/course?term="
+        + term + "&id=" + courselist[index].listing_id);
+    previousCourse = processRawCourse(await rawPrevious.json());
+    nextCourse = processRawCourse(await rawNext.json());
+    currentCourse = processRawCourse(await rawCurrent.json());
+
+    currentCourseIndex = index - 1;
     locked = false;
 }
 
@@ -167,6 +221,9 @@ const processRawCourse = (rawCourse: any): Course => {
                 on:click={handlePreviousCourse}>
                     Previous
                 </button>
+                <input type="text" class="flex-1 rounded-md px-4 py-2 text-black" 
+                placeholder="Go to index"
+                on:keydown={handleEnter}>
                 <button class="handlerButton bg-blue-400 hover:bg-blue-500"
                 on:click={handleNextCourse}>
                     Next
