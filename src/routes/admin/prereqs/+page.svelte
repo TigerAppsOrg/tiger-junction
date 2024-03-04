@@ -159,10 +159,11 @@ const processRawCourse = (rawCourse: any): Course => {
         prereqs: details.other_restrictions,
         description: details.description,
         other: details.other_information,
-        equiv: details.course_equivalents.course_equivalent.map(
+        equiv: details.course_equivalents.hasOwnProperty("course_equivalent") ? 
+        details.course_equivalents.course_equivalent.map(
             (x: { subject: string; catnum: string; }) => {
             return x.subject + x.catnum
-        }).join(", "),
+        }).join(", ") : null,
     }
 }
 </script>
