@@ -2,4 +2,11 @@
 code: ASL
 name: American Sign Language
 category: World Languages
+updated: 3/4/2024
 ---
+- course: ASL 102
+  last: 1244
+  reqs: ASL101
+- course: ASL 107
+  last: 1244
+  reqs: ASL105
