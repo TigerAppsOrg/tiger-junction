@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { toastStore } from "$lib/stores/toast";
+import { toastStore } from "$lib/stores/toast";
 import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
@@ -69,14 +69,16 @@ const handleEnter = (e: KeyboardEvent) => {
 
 // ! Warning - this is a very naive implementation 
 const handleNextCourse = async () => {
-    if (currentCourseIndex === courselist.length - 1) return;
+    if (currentCourseIndex === courselist.length - 1) {
+        toastStore.add("error", "No next course");
+        return;
+    };
     if (locked) return;
     locked = true;
 
     currentCourseIndex++;
     previousCourse = currentCourse;
     currentCourse = nextCourse;
-
 
     const rawNext = await fetch("/api/admin/prereqs/course?term=" 
         + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
@@ -85,19 +87,16 @@ const handleNextCourse = async () => {
 }
 
 const handlePreviousCourse = async () => {
-    if (currentCourseIndex === 0) return;
+    if (currentCourseIndex === 0) {
+        toastStore.add("error", "No previous course");
+        return;
+    };
     if (locked) return;
     locked = true;
 
     currentCourseIndex--;
     nextCourse = currentCourse;
     currentCourse = previousCourse;
-
-    if (currentCourseIndex === 0) {
-        previousCourse = currentCourse;
-        locked = false;
-        return;
-    }
 
     const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
         + term + "&id=" + courselist[currentCourseIndex - 1].listing_id);
@@ -108,7 +107,10 @@ const handlePreviousCourse = async () => {
 
 const gotoIndex = async (index: number) => {
     if (locked) return;
-    if (index < 1 || index > courselist.length) return;
+    if (index < 1 || index > courselist.length) {
+        toastStore.add("error", "Invalid index");
+        return;
+    };
     locked = true;
 
     const rawCurrent = await fetch("/api/admin/prereqs/course?term="
