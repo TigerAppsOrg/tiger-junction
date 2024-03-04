@@ -12,19 +12,24 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 - `req_string` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
 
 ```yaml
-- course: PHY106
+- course: PHY 106
   equiv:
-    - PHY102
-    - PHY104
-    - PHY110
-    - EGR153
+    - PHY 102
+    - PHY 104
+    - PHY 110
+    - EGR 153
   notes: >-
     All students are required to take the PHY 105 Special Relativity 
     Minicourse, whether or not they are enrolled in PHY 105.
   req_string: PHY103 | PHY105
 ```
 
-Even if a course has no prerequisites, it should still be listed in the file with an empty `req_string`. The `equiv` and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
+Interpreting the prerequisites can be subjective. For this data, the following rules are used:
+- Record the prerequisites exactly as they are written in the course catalog even if they are somewhat incorrect. For example, if a course lists "PHY 103 & PHY 104" as prerequisites, the EGR and ISC sequences should also be accepted, however, this assumption should not be recorded. TigerJunction handles this internally, but for the sake of the data, it should be recorded as "PHY 103 & PHY 104".
+- Do not record recommendations, only requirements.
+- Stylistically, include a space for the course name and equivalent courses, but not in the `req_string` field. This is for readability (the compiler will remove the spaces).
+
+Even if a course has no prerequisites, it should still be listed with no fields. The `equiv` and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
 ## Compiling the Data
 Running `node compile.js` in this directory will create 2 JSON files: `prereqs.json` which contains only the prerequisites of courses and `prereqs_comp.json` which contains both the prerequisites of and for courses. For example, for GER 102, `prereqs.json` will only contain the prerequisites of GER 102 (GER 101), while `prereqs_comp.json` will contain both the prerequisites of GER 102 (GER 101) and the courses that GER 102 is a prerequisite for (GER 105). 
