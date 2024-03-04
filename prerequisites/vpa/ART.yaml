@@ -2,4 +2,56 @@
 code: ART
 name: Art and Archaeology
 category: Visual and Performing Arts
+updated: 3/4/2024
 ---
+- course: ART 102
+  last: 1244
+- course: ART 218
+  last: 1244
+- course: ART 228
+  last: 1244
+- course: ART 273
+  last: 1244
+- course: ART 354
+  last: 1244
+  travel:
+  notes: >-
+    No prerequisites, but ART 100 is strongly recommended as background.
+- course: ART 361
+  last: 1244
+- course: ART 380
+  last: 1244
+- course: ART 401
+  last: 1244
+- course: ART 402
+  last: 1244
+- course: ART 418
+  last: 1244
+- course: ART 419
+  last: 1244
+  travel:
+- course: ART 421
+  last: 1244
+- course: ART 425
+  last: 1244
+  notes: >-
+    At least one lower level course in art history or Japanese studies, or permission of instructor.
+  reqs: ART*** | JPN***
+- course: ART 465
+  last: 1244
+- course: ART 466
+  last: 1244
+- course: ART 474
+  last: 1244
+- course: ART 484
+  last: 1244
+- course: ART 502D
+  last: 1244
+- course: ART 565
+  last: 1244
+- course: ART 566
+  last: 1244
+- course: ART 573
+  last: 1244
+- course: ART 597
+  last: 1244
