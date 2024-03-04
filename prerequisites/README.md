@@ -28,7 +28,7 @@ Each file begins with YAML front matter with the code, name, and other metadata.
   reqs: (ECE202 | ECE205) & ECE100
 ```
 
-Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses.
+Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses. Placing a dollar sign before a course code means it can be taken as a corequisite. For example, `$MAT 202` means that MAT 202 can be taken as a corequisite.
 
 ### Special Fields
 The following prerequisite groupings are common and have been given special tags. If there is also a reqs, the special tag is anded with it:
