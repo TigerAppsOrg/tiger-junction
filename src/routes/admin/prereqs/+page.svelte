@@ -1,5 +1,6 @@
 <script lang="ts">
 import { toastStore } from "$lib/stores/toast";
+    import { onMount } from "svelte";
 import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
@@ -68,16 +69,25 @@ const handleEnter = (e: KeyboardEvent) => {
     }
 }
 
+const watchArrows = (e: KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+        handleNextCourse();
+    } else if (e.key === "ArrowLeft") {
+        handlePreviousCourse();
+    }
+}
+
 //----------------------------------------------------------------------
 
 // ! Warning - this is a very naive implementation 
 const handleNextCourse = async () => {
-    if (currentCourseIndex === courselist.length - 1) {
-        toastStore.add("error", "No next course");
-        return;
-    };
     if (locked) return;
     locked = true;
+    if (currentCourseIndex === courselist.length - 1) {
+        toastStore.add("error", "No next course");
+        locked = false;
+        return;
+    };
 
     currentCourseIndex++;
     previousCourse = currentCourse;
@@ -90,14 +100,23 @@ const handleNextCourse = async () => {
 }
 
 const handlePreviousCourse = async () => {
-    if (currentCourseIndex === 0) {
-        toastStore.add("error", "No previous course");
-        return;
-    };
     if (locked) return;
     locked = true;
+    if (currentCourseIndex === 0) {
+        toastStore.add("error", "No previous course");
+        locked = false;
+        return;
+    };
 
     currentCourseIndex--;
+
+    if (currentCourseIndex === 0) {
+        nextCourse = currentCourse;
+        currentCourse = previousCourse;
+        locked = false;
+        return;
+    }
+
     nextCourse = currentCourse;
     currentCourse = previousCourse;
 
@@ -167,6 +186,10 @@ const processRawCourse = (rawCourse: any): Course => {
         }).join(", ") : null,
     }
 }
+
+onMount(() => {
+    document.addEventListener("keydown", watchArrows);
+})
 </script>
 
 <main class="h-screen bg-zinc-900 text-white">
