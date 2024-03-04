@@ -2,7 +2,7 @@
 import { goto } from "$app/navigation";
 import { darkTheme } from "$lib/stores/state";
 import type { SupabaseClient } from "@supabase/supabase-js";
-
+import logo from "$lib/img/tjlogolarge.png";
 export let supabase: SupabaseClient;
 
 // Logout the user
@@ -17,7 +17,7 @@ dark:border-zinc-700 border-zinc-200">
     <div class="flex justify-between items-center px-4">
         <div id="left">
             <div class="flex items-center">
-                <img src="tjlogolarge.png" alt="Tiger Junction logo"
+                <img src={logo} alt="Tiger Junction logo"
                 class="w-10 h-10">
                 <span class="text-xl dark:text-zinc-100">TigerJunction Admin</span>
             </div>
