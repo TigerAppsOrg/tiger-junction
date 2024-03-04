@@ -7,7 +7,8 @@ export let data;
 
 const handleLogin = async () => { 
     // Redirect if user is already logged in
-    if (data.session) {
+    const user = (await data.supabase.auth.getSession()).data.session?.user;
+    if (user) {
         goto("/recalplus");
         return;
     }
