@@ -2,4 +2,51 @@
 code: CHI
 name: Chinese
 category: World Languages
+updated: 3/4/2024
 ---
+- course: CHI 102
+  last: 1244
+  reqs: CHI101
+- course: CHI 107
+  last: 1244
+  equiv:
+    - CHI 107C
+    - CHI 108
+  reqs: CHI105
+- course: CHI 108
+  last: 1244
+  equiv:
+    - CHI 107
+    - CHI 107C
+  reqs: CHI103
+- course: CHI 302
+  last: 1244
+  reqs: CHI 3**
+- course: CHI 304
+  last: 1244
+  equiv:
+    - CHI 304C
+  reqs: CHI303
+- course: CHI 306
+  last: 1244
+  equiv:
+    - CHI 306C
+  reqs: CHI305
+- course: CHI 404
+  last: 1244
+  equiv:
+    - CHI 404C
+  reqs: CHI403
+- course: CHI 406
+  last: 1244
+  equiv:
+    - CHI 406C
+  reqs: CHI405
+- course: CHI 418
+  last: 1244
+  reqs: CHI 3**
+- course: CHI 452
+  last: 1244
+  reqs: CHI 404 | CHI406 | CHI302
+- course: CHI 1001
+  last: 1244
