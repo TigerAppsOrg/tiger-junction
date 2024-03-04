@@ -231,7 +231,7 @@ const processRawCourse = (rawCourse: any): Course => {
                 on:click={handlePreviousCourse}>
                     Previous
                 </button>
-                <input type="text" class="flex-1 rounded-md px-4 py-2 text-black" 
+                <input type="text" class="textinput flex-1" 
                 placeholder="Go to index"
                 on:keydown={handleEnter}>
                 <button class="handlerButton bg-blue-400 hover:bg-blue-500"
@@ -253,7 +253,7 @@ const processRawCourse = (rawCourse: any): Course => {
         height: 46px;
         width: 150px;
         appearance: none;
-        transition: border 0.15s ease 0s;
+        transition: border 0.1s ease 0s;
     }
 
     .textinput:focus {
