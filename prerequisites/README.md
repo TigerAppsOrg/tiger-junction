@@ -7,12 +7,14 @@ Unfortunately, due to prerequisites not being strictly enforced at Princeton, th
 Each file begins with YAML front matter with the code, name, and other metadata. This is entirely for readability, and the compiler will ignore it. The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
 
 - `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
+- `last` is the code for the most recent term that the course was offered.
 - `equiv` is a list of equivalent courses.
 - `notes` is any additional information about the prerequisites.
 - `req_string` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
 
 ```yaml
 - course: PHY 106
+  last: 1244
   equiv:
     - PHY 102
     - PHY 104
