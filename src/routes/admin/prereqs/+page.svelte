@@ -8,15 +8,26 @@ type RegCourse = {
     code: string,
 }
 
+type Course = {
+    title: string,
+    prereqs: string | null,
+    description: string,
+}
+
 let initialized = false;
 let loading = false;
 let courselist: RegCourse[] = [];
+let term = 1244;
 
-const handleInit = async (term: number = 1244) => {
+let currentCourse: Course;
+let nextCourse: Course;
+let currentCourseIndex = 0;
+
+const handleInit = async () => {
     loading = true;
     console.log("Initializing prereq manager for term: ", term);
 
-    const rawCourselist = await fetch("/api/admin/prereqs?term=" + term)
+    const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
     if (!rawCourselist.ok) {
         console.error("Failed to fetch courselist");
         return;
@@ -30,8 +41,34 @@ const handleInit = async (term: number = 1244) => {
         }
     });
 
+    const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
+    currentCourse = processRawCourse(await firstRaw.json());
+
+    const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
+    nextCourse = processRawCourse(await secondRaw.json());
+
+    console.log("Initialized with courses: ", currentCourse, nextCourse)
+
     loading = false;
     initialized = true;
+}
+
+//----------------------------------------------------------------------
+
+// ! Warning - this is a very naive implementation 
+const handleCourseCycle = async () => {
+    const rawNext = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
+    currentCourse = nextCourse;
+    nextCourse = processRawCourse(await rawNext.json());
+}
+
+const processRawCourse = (rawCourse: any): Course => {
+    const details = rawCourse.course_details.course_detail[0];
+    return {
+        title: details.crosslistings + ": " + details.long_title,
+        prereqs: details.other_restrictions,
+        description: details.description,
+    }
 }
 </script>
 
