@@ -64,6 +64,7 @@ const handleInit = async () => {
 const handleEnter = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
         gotoIndex(parseInt((e.target as HTMLInputElement).value));
+        (e.target as HTMLInputElement).value = "";
     }
 }
 
