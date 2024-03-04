@@ -4,12 +4,27 @@ This directory contains the prerequisites for all courses at Princeton. The data
 Unfortunately, due to prerequisites not being strictly enforced at Princeton, they don't really exist in a structured format. Individual courses list their prerequisites in a paragraph of text, meaning that algorithms struggle to parse them accurately (especially and/or relationships). Another option would be to use some form of AI to parse the texts, but that could also be inaccurate and would be a lot of work to set up. Therefore, the data is manually compiled from the course catalogs.
 
 ## File Structure
-Each file begins with YAML front matter with the code, name, and other metadata. This is entirely for readability, and the compiler will ignore it. The rest of the file is a list of courses in that department with information about their prerequisites.
+Each file begins with YAML front matter with the code, name, and other metadata. This is entirely for readability, and the compiler will ignore it. The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
 
-Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
+- `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
+- `equiv` is a list of equivalent courses.
+- `notes` is any additional information about the prerequisites.
+- `req_string` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
 
-## Updating the Data
+```yaml
+- course: PHY106
+  equiv:
+    - PHY102
+    - PHY104
+    - PHY110
+    - EGR153
+  notes: >-
+    All students are required to take the PHY 105 Special Relativity 
+    Minicourse, whether or not they are enrolled in PHY 105.
+  req_string: PHY103 | PHY105
+```
 
+Even if a course has no prerequisites, it should still be listed in the file with an empty `req_string`. The `equiv` and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
 ## Compiling the Data
 Running `node compile.js` in this directory will create 2 JSON files: `prereqs.json` which contains only the prerequisites of courses and `prereqs_comp.json` which contains both the prerequisites of and for courses. For example, for GER 102, `prereqs.json` will only contain the prerequisites of GER 102 (GER 101), while `prereqs_comp.json` will contain both the prerequisites of GER 102 (GER 101) and the courses that GER 102 is a prerequisite for (GER 105). 
