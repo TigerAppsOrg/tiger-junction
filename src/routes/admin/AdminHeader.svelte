@@ -16,11 +16,11 @@ const handleLogout = async () => {
 dark:border-zinc-700 border-zinc-200">
     <div class="flex justify-between items-center px-4">
         <div id="left">
-            <div class="flex items-center">
+            <button on:click={() => goto("/admin")} class="flex items-center">
                 <img src={logo} alt="Tiger Junction logo"
                 class="w-10 h-10">
                 <span class="text-xl dark:text-zinc-100">TigerJunction Admin</span>
-            </div>
+            </button>
         </div>
 
         <div id="right" class="space-x-6 flex items-center">
