@@ -26,10 +26,11 @@ Each file begins with YAML front matter with the code, name, and other metadata.
   req_string: PHY103 | PHY105
 ```
 
-Interpreting the prerequisites can be subjective. For this data, the following rules are used:
+To update the data, please follow these guidelines:
 - Record the prerequisites exactly as they are written in the course catalog even if they are somewhat incorrect. For example, if a course lists "PHY 103 & PHY 104" as prerequisites, the EGR and ISC sequences should also be accepted, however, this assumption should not be recorded. TigerJunction handles this internally, but for the sake of the data, it should be recorded as "PHY 103 & PHY 104".
 - Do not record recommendations, only requirements.
 - Stylistically, include a space for the course name and equivalent courses, but not in the `req_string` field. This is for readability (the compiler will remove the spaces).
+- Put courses in numeric order.
 
 Even if a course has no prerequisites, it should still be listed with no fields. The `equiv` and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
