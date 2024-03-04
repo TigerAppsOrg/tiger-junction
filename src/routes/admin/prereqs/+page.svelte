@@ -13,6 +13,8 @@ type Course = {
     title: string,
     prereqs: string | null,
     description: string,
+    other: string | null,
+    equiv: string | null,
 }
 
 let initialized = false;
@@ -156,6 +158,11 @@ const processRawCourse = (rawCourse: any): Course => {
         title: details.crosslistings + ": " + details.long_title,
         prereqs: details.other_restrictions,
         description: details.description,
+        other: details.other_information,
+        equiv: details.course_equivalents.course_equivalent.map(
+            (x: { subject: string; catnum: string; }) => {
+            return x.subject + x.catnum
+        }).join(", "),
     }
 }
 </script>
@@ -227,6 +234,18 @@ const processRawCourse = (rawCourse: any): Course => {
                     <span class="underline">Prerequisites: </span>
                     {currentCourse.prereqs || "None"}
                 </p>
+                {#if currentCourse.equiv}
+                <p>
+                    <span class="underline">Equivalents: </span>
+                    {currentCourse.equiv}
+                </p>
+                {/if}
+                {#if currentCourse.other}
+                <p>
+                    <span class="underline">Other: </span>
+                    {currentCourse.other}
+                </p>
+                {/if}
             </div>
             <div class="flex gap-2">
                 <button class="handlerButton bg-orange-400 hover:bg-orange-500"
