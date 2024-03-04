@@ -3,3 +3,66 @@ code: ANT
 name: Anthropology
 category: Social Sciences
 ---
+- course: ANT 206
+  last: 1244
+- course: ANT 217
+  last: 1244
+- course: ANT 228
+  last: 1244
+  travel:
+- course: ANT 233
+  last: 1244
+- course: ANT 238
+  last: 1244
+- course: ANT 240
+  last: 1244
+- course: ANT 246
+  last: 1244
+- course: ANT 256
+  last: 1244
+- course: ANT 301
+  last: 1244
+  notes: >-
+    ANT 300 is strongly recommended.
+  reqs:
+    list:
+      - ANT ***
+- course: ANT 318
+  last: 1244
+- course: ANT 320
+  last: 1244
+  reqs:
+    list:
+      - ANT ***
+- course: ANT 325
+  last: 1244
+- course: ANT 342
+  last: 1244
+- course: ANT 344
+  last: 1244
+- course: ANT 352
+  last: 1244
+- course: ANT 354
+  last: 1244
+- course: ANT 357
+  last: 1244
+- course: ANT 360
+  last: 1244
+- course: ANT 363
+  last: 1244
+- course: ANT 430
+  last: 1244
+- course: ANT 446
+  last: 1244
+- course: ANT 456
+  last: 1244
+- course: ANT 502
+  last: 1244
+- course: ANT 504A
+  last: 1244
+- course: ANT 504B
+  last: 1244
+- course: ANT 522A
+  last: 1244
+- course: ANT 522B
+  last: 1244

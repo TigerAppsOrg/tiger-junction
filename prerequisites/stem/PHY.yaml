@@ -12,4 +12,4 @@ category: STEM
   notes: >-
     All students are required to take the PHY 105 Special Relativity 
     Minicourse, whether or not they are enrolled in PHY 105.
-  req_string: PHY103 | PHY105
+  reqs: PHY103 | PHY105

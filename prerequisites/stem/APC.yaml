@@ -3,3 +3,10 @@ code: APC
 name: Applied and Computational Mathematics
 category: STEM
 ---
+- course: APC 199
+  last: 1244
+- course: APC 350
+  last: 1244
+  special: BSEMATH
+- course: APC 523
+  last: 1244
