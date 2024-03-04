@@ -8,17 +8,16 @@ updated: 3/4/2024
   last: 1244
 - course: AST 204
   last: 1244
-  special: CALCULUS & MECH
+  reqs: CALCULUS & MECH
 - course: AST 251
   last: 1244
   reqs: AST250
 - course: AST 309
   last: 1244
-  special: PHYS & MULTI
+  reqs: PHYS & MULTI
 - course: AST 401
   last: 1244
-  special: BSEMATH
-  reqs: PHY207
+  reqs: PHY207 & BSEMATH
 - course: AST 513
   last: 1244
 - course: AST 542

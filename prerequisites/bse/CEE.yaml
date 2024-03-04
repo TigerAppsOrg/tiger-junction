@@ -6,7 +6,7 @@ updated: 3/4/2024
 ---
 - course: CEE 306
   last: 1244
-  special: MULTI
+  reqs: MULTI
 - course: CEE 308
   last: 1244
   reqs: CEE207 & $CEE306
@@ -58,7 +58,7 @@ updated: 3/4/2024
   last: 1244
 - course: CEE 529
   last: 1244
-  special: PHYS & BSEMATH
+  reqs: PHYS & BSEMATH
 - course: CEE 531
   last: 1244
 - course: CEE 575

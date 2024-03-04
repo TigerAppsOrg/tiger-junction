@@ -9,7 +9,6 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 - `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
 - `last` is the code for the most recent term that the course was offered.
 - `travel` indicates that the course requires travel outside of the Princeton area.
-- `special` is a place to tag common special cases (see below).
 - `equiv` is a list of equivalent courses.
 - `notes` is any additional information about the prerequisites.
 - `reqs` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
@@ -18,7 +17,6 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 - course: ECE 250
   last: 1244
   travel:
-  special: PHYS
   equiv:
     - ECE 220
     - ECE 230
@@ -31,7 +29,7 @@ Each file begins with YAML front matter with the code, name, and other metadata.
 Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses. Placing a dollar sign before a course code means it can be taken as a corequisite. For example, `$MAT 202` means that MAT 202 can be taken as a corequisite.
 
 ### Special Fields
-The following prerequisite groupings are common and have been given special tags. If there is also a reqs, the special tag is anded with it:
+The following prerequisite groupings are common and have been given special tags that can be used like courses in the `reqs` field:
 - `MECH` -- **PHY103 | PHY105 | ISC231 | EGR151** -- classical mechanics is a prerequiste.
 - `EAM` -- **PHY104 | PHY106 | ISC233 | EGR153** -- electricity and magnetism is a prerequisite.
 - `PHYS` -- **MECH & EAM** -- both classical mechanics and electricity and magnetism are prerequisites.

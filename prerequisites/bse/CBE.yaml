@@ -8,8 +8,7 @@ updated: 3/4/2024
   last: 1244
 - course: CBE 246
   last: 1244
-  special: MULTI
-  reqs: CBE245
+  reqs: CBE245 & MULTI
 - course: CBE 260
   last: 1244
 - course: CBE 346
