@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { toastStore } from "$lib/stores/toast";
 import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
@@ -32,6 +33,8 @@ const handleInit = async () => {
     const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
     if (!rawCourselist.ok) {
         console.error("Failed to fetch courselist");
+        loading = false;
+        toastStore.add("error", "Invalid term or failed to fetch courselist");
         return;
     }
 
@@ -164,9 +167,16 @@ const processRawCourse = (rawCourse: any): Course => {
                 Prerequisite Manager of Death
             </h1>
             {#if !loading}
-            <button class="button-85" on:click={() => handleInit()}>
-                Start
-            </button>
+
+            <div class="flex items-center justify-center gap-4">
+                <input type="text" placeholder="Enter term" 
+                class="textinput"
+                bind:value={term}>
+                <button class="button-85" on:click={() => handleInit()}>
+                    Start
+                </button>
+            </div>
+
             {:else}
             <p class="text-xl mb-2">
                 Loading...
@@ -234,6 +244,24 @@ const processRawCourse = (rawCourse: any): Course => {
 </main>
 
 <style lang="postcss">
+    .textinput {
+        padding: 6px 12px;
+        background: rgb(31, 32, 35);
+        border: 1px solid rgb(60, 63, 68);
+        border-radius: 4px;
+        color: rgb(247, 248, 248);
+        height: 46px;
+        width: 150px;
+        appearance: none;
+        transition: border 0.15s ease 0s;
+    }
+
+    .textinput:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: rgb(100, 153, 255);
+    }
+
     .handlerButton {
         @apply rounded-md px-4 py-2 w-40 flex-1 duration-150;
     }
