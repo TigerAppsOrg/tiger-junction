@@ -2,4 +2,78 @@
 code: ARC
 name: Architecture
 category: STEM
+updated: 3/4/2024
 ---
+- course: ARC 204
+  last: 1244
+- course: ARC 206
+  last: 1244
+- course: ARC 314
+  last: 1244
+  travel:
+- course: ARC 322
+  last: 1244
+- course: ARC 351
+  last: 1244
+  notes: >-
+    Open to ARC and CEE concentrators only.
+  reqs: ARC350
+- course: ARC 374
+  last: 1244
+- course: ARC 380
+  last: 1244
+- course: ARC 386
+  last: 1244
+- course: ARC 492
+  last: 1244
+- course: ARC 502
+  last: 1244
+- course: ARC 504
+  last: 1244
+  travel:
+- course: ARC 506A
+  last: 1244
+- course: ARC 506B
+  last: 1244
+- course: ARC 508A
+  last: 1244
+- course: ARC 508B
+  last: 1244
+- course: ARC 509
+  last: 1244
+- course: ARC 511
+  last: 1244
+  reqs: ARC510
+- course: ARC 513
+  last: 1244
+  travel:
+- course: ARC 515
+  last: 1244
+  reqs: ARC514
+- course: ARC 525
+  last: 1244
+- course: ARC 532
+  last: 1244
+- course: ARC 537
+  last: 1244
+- course: ARC 546
+  last: 1244
+- course: ARC 553
+  last: 1244
+- course: ARC 560
+  last: 1244
+  travel:
+- course: ARC 560A
+  last: 1244
+- course: ARC 560B
+  last: 1244
+- course: ARC 563
+  last: 1244
+- course: ARC 572
+  last: 1244
+- course: ARC 575
+  last: 1244
+- course: ARC 576
+  last: 1244
+- course: ARC 596
+  last: 1244
