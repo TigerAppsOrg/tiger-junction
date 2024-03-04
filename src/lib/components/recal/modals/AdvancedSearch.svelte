@@ -75,8 +75,8 @@ const resetSearchSettings = () => {
                         <div class="border-slate-600/30 mx-8 p-2
                         dark:border-slate-200/30 border-t-2 mt-2">
                             <div>
-                                {#if filter === "Does Not Conflict"}
-                                <h3 class="text-lg font-semibold">Does Not Conflict</h3>
+                                {#if filter === "No Conflicts"}
+                                <h3 class="text-lg font-semibold">No Conflicts</h3>
                                 <p class="italic mb-2">
                                     "Only Available Sections" displays 
                                     only courses that have at least 1 section of
@@ -97,7 +97,7 @@ const resetSearchSettings = () => {
 
                             </div>
                             <!-- All and None Buttons-->
-                            {#if filter !== "Does Not Conflict"}
+                            {#if filter !== "No Conflicts"}
                             <div class="flex gap-2 mt-4">
                                 <StdButton message="Check All" 
                                 onClick={() => {

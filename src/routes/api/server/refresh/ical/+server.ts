@@ -41,6 +41,8 @@ export async function GET(req: RequestEvent) {
         return new Response(JSON.stringify(error), { status: 500 });
     }
 
+    console.log("Found " + data.length + " calendars");
+
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
         const events: EventAttributes[] = [];
@@ -96,7 +98,7 @@ export async function GET(req: RequestEvent) {
             }
         }
 
-        createEvents(events, async (error, value) => {
+        await createEvents(events, async (error, value) => {
             if (error) {
                 console.log(error);
                 return new Response(JSON.stringify(error), { status: 500 });
@@ -112,10 +114,11 @@ export async function GET(req: RequestEvent) {
                     cacheControl: "900",
                     upsert: true,
                     contentType: "text/calendar",
-                });
+                })
         });
     }
 
     const returnString = "Successfully refreshed " + data.length + " calendars";
+    console.log(returnString);
     return new Response(JSON.stringify(returnString), { status: 200 });
 }
