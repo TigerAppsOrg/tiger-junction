@@ -4,13 +4,13 @@ import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
 </script>
 
 <svelte:head>
-    <title>TigerJunction | ReqTree</title>
+    <title>TigerJunction | Panthera</title>
 </svelte:head>
 
 <div class="w-full h-[80vh] flex flex-col justify-center
 items-center gradient-text text-5xl font-bold gap-2 text-center">
     <span>
-        ReqTree Coming Soon
+        Panthera Coming Soon
     </span>
     <a href={EMAIL_LIST_FORM_LINK} target="_blank">
         <button class="btn-cool text-xl">
