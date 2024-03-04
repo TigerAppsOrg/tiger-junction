@@ -1,4 +1,4 @@
-import { redirect, type Actions } from "@sveltejs/kit";
+import type { Actions } from "@sveltejs/kit";
 import { populateListings } from "$lib/scripts/scraper/listings.js";
 import { populateEvaluations } from "$lib/scripts/scraper/evaluations";
 import { populateRatings } from "$lib/scripts/scraper/ratings";
@@ -7,19 +7,6 @@ import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
 import { TERM_MAP } from "$lib/changeme.js";
 
 export const load = async ({ locals }) => {
-    // Only allow admins to access this page
-    let session = await locals.getSession();
-    if (!session) throw redirect(303, "/");
-
-    let { data, error } = await locals.supabase
-        .from("private_profiles")
-        .select("is_admin")
-        .eq("id", session.user.id);
-    
-    if (error) throw new Error(error.message);
-    if (!data) throw new Error("No data found");
-    if (!data[0].is_admin) throw redirect(303, "/");
-
     // Get #users, #schedules, #course_schedule_associations, #unresolved feedback
     const users = await locals.supabase
         .from("profiles")
