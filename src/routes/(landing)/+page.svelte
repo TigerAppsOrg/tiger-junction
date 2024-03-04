@@ -7,7 +7,8 @@ export let data;
 
 const handleLogin = async () => { 
     // Redirect if user is already logged in
-    if (data.session) {
+    const user = (await data.supabase.auth.getSession()).data.session?.user;
+    if (user) {
         goto("/recalplus");
         return;
     }
@@ -30,7 +31,7 @@ const handleLogin = async () => {
     <meta property="og:url" content="https://junction.tigerapps.org/" />
 </svelte:head>
 
-<nav class="flex justify-between items-center text-xl h-20 std-padding">
+<nav class="flex justify-between items-center text-lg h-20 std-padding">
     <div id="left">
         <a href="/" class="flex items-center">
             <img src="tjlogolarge.png" alt="Tiger Junction logo"
@@ -48,16 +49,16 @@ const handleLogin = async () => {
 
 <main class="grid h-[80vh] sm:h-[65vh] py-20 std-padding">
     <div class="my-auto h-[60vh]">
-        <p class="text-xl mb-2 font-bold">
+        <p class="text-lg mb-2 font-bold">
             TigerJunction
         </p>
-        <h1 class="text-5xl font-bold mb-6">
+        <h1 class="text-5xl font-bold mb-4">
             <span class="text-std-darkBlue">NEXT</span>
             <span class="text-std-darkOrange">GENERATION</span>
             <span class="text-std-darkPink">COURSE</span>
             <span class="text-std-darkPurple">PLANNING</span>
         </h1>
-        <p class="mb-6 font-light text-xl">
+        <p class="mb-6 font-light text-lg">
             Your All-in-One Solution for Effortless Course 
             Planning at Princeton University. Experience a 
             seamless blend of modern design and integrated features, 
@@ -65,7 +66,7 @@ const handleLogin = async () => {
             succeed.
         </p>
         <button on:click={handleLogin}
-        class="btn btn-green text-xl space-y-0">
+        class="btn btn-green text-lg space-y-0">
         <div>
             Get Started →
         </div>
@@ -82,7 +83,7 @@ const handleLogin = async () => {
         <h1 class="text-5xl font-bold mb-2">
             Three apps, <span class="text-std-darkRed">one platform</span>
         </h1>
-        <h2 class="text-xl font-light">    
+        <h2 class="text-lg font-light">    
             Effortlessly plan your courses with seamless integration
         </h2>
     </div>
@@ -91,75 +92,31 @@ const handleLogin = async () => {
         <div class="card bg-std-pink">
             <h1>ReCal+</h1>
             <p class="mb-2">
-                Your ultimate semester planning companion, ReCal+
-                empowers you to 
-                effortlessly design your ideal academic calendar, 
-                explore multiple schedules, and pinpoint classes that 
-                match your time and requirements with powerful 
-                advanced search capabilities, all while ensuring 
-                your classes never clash with custom blocks for 
-                non-course events. Stay updated with notifications 
-                for class slot openings, while the customizable 
-                interface simplifies academic scheduling. 
-            </p>
-            <p class="italic">
-                Inspired by 
-                <a href="https://recal.io/" target="_blank" class="link">
-                    ReCal</a>.
+                Design and export your ideal schedule with powerful advanced
+                search and filtering capabilities.
             </p>
         </div>
 
         <div class="card bg-std-blue">
-            <h1>CourseGenie (Coming 3/17)</h1>
+            <h1>CourseGenie</h1>
             <p class="mb-2">
-                With CourseGenie, you can embark on an enriched 
-                academic journey. Seamlessly chart all four years, 
-                matching your aspirations with major, minor, and 
-                certificate requirements, presented in clear 
-                and comprehensive layouts. Experience data-driven 
-                insights as you explore course ratings, historical
-                trends, and other statistics.
-                Elevate your choices with an AI-driven course 
-                suggestor, ensuring a personalized and successful 
-                academic path. 
-            </p>
-            <p class="italic">
-                Inspired by
-                <a href="https://www.tigerpath.io/" target="_blank" class="link">
-                    TigerPath</a>, 
-                <a href="https://www.princetoncourses.com/" target="_blank" class="link">
-                    PrincetonCourses</a>, and 
-                <a href="https://tigersnatch.com/" target="_blank" class="link">
-                    TigerSnatch</a>.
+                Craft your four-year academic journey with all the
+                information you need at your fingertips.
             </p>
         </div>
 
         <div class="card bg-std-orange">
-            <h1>ReqTree (Coming Summer 2024)</h1>
+            <h1>Panthera</h1>
             <p class="mb-2">
-                A visually dynamic app that transforms prerequisites 
-                into technology trees
-                (found in games like Civilization), 
-                ReqTree visually maps out the intricate relationships 
-                between class prerequisites, allowing you to navigate 
-                through your academic journey with clarity and foresight. 
-                Through its intuitive interface, you can easily 
-                explore the progression of course requirements, 
-                revealing a comprehensive view of the academic 
-                landscape and enabling you to make informed 
-                decisions about your path. 
-            </p>
-            <p class="italic">
-                Inspired by 
-                <a href="https://tigermap.tigerapps.org/" target=_blank class="link">
-                TigerMap</a>.
+                Visualize prerequisites and degree requirements with a 
+                modern, interactive interface.
             </p>
         </div>
     </div>
     
     <div class="mt-16">
-        <div class="bg-zinc-300 p-8 rounded-lg shadow-lg
-        text-xl flex justify-between items-center gap-6">
+        <div class="bg-zinc-300 p-8 rounded-lg 
+        text-lg flex justify-between items-center gap-6">
             <div class="flex items-center gap-4">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                 class="w-10 h-10 hidden md:block">
@@ -179,23 +136,44 @@ const handleLogin = async () => {
 </div>
 
 <footer class="bg-std-darkPurple text-center text-slate-100 
-font-light py-4 flex items-center justify-center gap-8">
-    <span>
-        Made with 
-        <a href="https://svelte.dev/" target="_blank" class="underline
-        duration-150 hover:text-zinc-200">
-            Svelte
-        </a> 
-        by @motoaki
-    </span>
-    <a href="https://github.com/joshuamotoaki/tiger-junction" target="_blank">
-        <img src={githubIcon} alt="GitHub icon" class="w-6 h-6 inline-block">
-    </a>
+font-light py-4 text-sm">
+    <div>
+        <span>
+            Made with love with
+            <a href="https://svelte.dev/" target="_blank" class="link">
+                Svelte</a>,
+            <a href="https://supabase.com/" target="_blank" class="link">
+                Supabase</a>,
+            <a href="https://tailwindcss.com/" target="_blank" class="link">
+                TailwindCSS</a>,  
+            <a href="https://melt-ui.com/" target="_blank" class="link">
+                MeltUI</a>, and  
+            <a href="https://pixijs.com/" target="_blank" class="link">
+                PixiJS</a>
+            by Joshua Lau
+        </span>
+    </div>
+    <div>
+        Inspired by <a href="https://recal.io/" target="_blank" class="link">
+            ReCal</a>, 
+            <a href="https://www.tigerpath.io/" target="_blank" class="link">
+                TigerPath</a>,
+            <a href="https://www.princetoncourses.com/" target="_blank" class="link">
+                PrincetonCourses</a>, and
+            <a href="https://tigermap.tigerapps.org/" target="_blank" class="link">
+                TigerMap</a>.
+    </div>
+    <div class="mt-2 flex items-center justify-center gap-2">
+        View the source code on
+        <a href="https://github.com/TigerAppsOrg/TigerJunction" target="_blank">
+            <img src={githubIcon} alt="GitHub icon" class="w-6 h-6 inline-block">
+        </a>
+    </div>
 </footer>
 
 <style lang="postcss">
 .card {
-    @apply p-8 rounded-lg shadow-lg;
+    @apply p-8 rounded-lg;
 }
 
 .card h1 {
@@ -203,11 +181,11 @@ font-light py-4 flex items-center justify-center gap-8">
 }
 
 .card p {
-    @apply text-xl font-light;
+    @apply text-lg font-light;
 }
 
 .btn {
-    @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg;
+    @apply rounded-md px-4 py-2;
 }
 
 .btn:active {
@@ -224,6 +202,6 @@ font-light py-4 flex items-center justify-center gap-8">
 }
 
 .link {
-    @apply underline hover:text-zinc-600 duration-150;
+    @apply underline duration-100 hover:text-zinc-300;
 }
 </style>
