@@ -2,4 +2,31 @@
 code: DAN
 name: Dance
 category: Visual and Performing Arts
+updated: 3/5/2024
 ---
+- course: DAN 211
+  last: 1244
+- course: DAN 221
+  last: 1244
+- course: DAN 225
+  last: 1244
+- course: DAN 317
+  last: 1244
+- course: DAN 321
+  last: 1244
+- course: DAN 326
+  last: 1244
+- course: DAN 327
+  last: 1244
+  travel:
+- course: DAN 370
+  last: 1244
+- course: DAN 375
+  last: 1244
+  travel:
+- course: DAN 401
+  last: 1244
+- course: DAN 408
+  last: 1244
+- course: DAN 431
+  last: 1244
