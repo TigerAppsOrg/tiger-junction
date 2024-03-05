@@ -2,4 +2,19 @@
 code: CLG
 name: Classical Greek
 category: Humanities
+updated: 5/3/2024
 ---
+- course: CLG 102
+  last: 1244
+  reqs: CLG101
+- course: CLG 103
+  last: 1244
+- course: CLG 108
+  last: 1244
+  reqs: CLG105
+- course: CLG 214
+  last: 1244
+  reqs: CLG108
+- course: CLG 310
+  last: 1244
+  reqs: CLG108
