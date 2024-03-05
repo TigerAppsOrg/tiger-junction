@@ -37,6 +37,7 @@ The following prerequisite groupings are common and have been given special tags
 - `MULTI` -- **MAT175 | MAT201 | MAT203 | MAT216 | ECO201 | EGR156** -- multivariable calculus is a prerequisite.
 - `LINEAR` -- **MAT202 | MAT204 | MAT217 | MAT218 | EGR154** --linear algebra is a prerequisite.
 - `BSEMATH` -- **MULTI & LINEAR** -- both multivariable calculus and linear algebra are prerequisites.
+- `INTROCOS` -- **COS126 | (ISC231 & ISC232 & ISC233 & ISC234)**
 - `BOTHCOS` -- **COS217 & COS226** -- both COS 217 and COS 226 are prerequisites.
 
 ## Guidelines

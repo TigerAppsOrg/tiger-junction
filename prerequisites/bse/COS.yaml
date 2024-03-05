@@ -2,4 +2,85 @@
 code: COS
 name: Computer Science
 category: Engineering
+updated: 3/5/2024
 ---
+- course: COS 126
+  last: 1244
+- course: COS 217
+  last: 1244
+  reqs: INTROCOS
+- course: COS 226
+  last: 1244
+  reqs: INTROCOS
+- course: COS 240
+  last: 1244
+  reqs: INTROCOS & (LINEAR | MAT175)
+- course: COS 320
+  last: 1244
+  reqs: BOTHCOS & COS326
+- course: COS 324
+  last: 1244
+  reqs: LINEAR & COS226
+- course: COS 333
+  last: 1244
+  reqs: BOTHCOS
+- course: COS 398
+  last: 1244
+  notes: >-
+    Open to COS BSE juniors only.
+- course: COS 418
+  last: 1244
+  reqs: COS217
+- course: COS 423
+  last: 1244
+  reqs: COS226 & COS240
+- course: COS 429
+  last: 1244
+  reqs: BOTHCOS & $COS324
+- course: COS 432
+  last: 1244
+  reqs: BOTHCOS
+- course: COS 445
+  last: 1244
+  reqs: COS226 & COS240
+- course: COS 471
+  last: 1244
+  reqs: BOTHCOS
+- course: COS 484
+  last: 1244
+  reqs: COS324
+- course: COS 485
+  last: 1244
+- course: COS 495
+  last: 1244
+  reqs: COS240
+- course: COS 498
+  last: 1244
+  notes: >-
+    Open to COS BSE Seniors only.
+- course: COS 510
+  last: 1244
+  reqs: COS326
+- course: COS 513
+  last: 1244
+  reqs: COS302 & COS324
+- course: COS 518
+  last: 1244
+  notes: >-
+    Not Open to Undergraduates. This course meets for joint lectures with 
+    COS 418. Graduate students may only take one of COS 418 and COS 518.
+- course: COS 557
+  last: 1244
+  reqs: INTROCOS
+- course: COS 585
+  last: 1244
+  reqs: LINEAR & ORF309
+- course: COS 590
+  last: 1244
+- course: COS 598A
+  last: 1244
+- course: COS 598D
+  last: 1244
+- course: COS598I
+  last: 1244
+  reqs: COS324
