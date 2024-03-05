@@ -2,4 +2,29 @@
 code: CWR
 name: Creative Writing
 category: Humanities
+updated: 3/5/2024
 ---
+- course: CWR 202
+  last: 1244
+- course: CWR 204
+  last: 1244
+- course: CWR 206
+  last: 1244
+- course: CWR 302
+  last: 1244
+  reqs: CWR2** & CW2**
+- course: CWR 304
+  last: 1244
+  reqs: CWR2** & CWR2**
+- course: CWR 306
+  last: 1244
+- course: CWR 310
+  last: 1244
+  reqs: CWR2** & CWR2**
+- course: CWR 347
+  last: 1244
+- course: CWR 349
+  last: 1244
+- course: CWR 405
+  last: 1244
+  reqs: CWR2** & CWR2**
