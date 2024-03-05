@@ -2,4 +2,49 @@
 code: EAS
 name: East Asian Studies
 category: Ethnic and Cultural Studies
+updated: 3/5/2024
 ---
+- course: EAS 219
+  last: 1244
+- course: EAS 224
+  last: 1244
+- course: EAS 242
+  last: 1244
+- course: EAS 262
+  last: 1244
+- course: EAS 279
+  last: 1244
+- course: EAS 311
+  last: 1244
+- course: EAS 326
+  last: 1244
+- course: EAS 347
+  last: 1244
+- course: EAS 502
+  last: 1244
+- course: EAS 506
+  last: 1244
+  notes: >-
+    Modern and Classical Chinese reading knowledge
+- course: EAS 526
+  last: 1244
+- course: EAS 531
+  last: 1244
+  notes: >-
+    Reading proficiency in Classical and Modern Chinese
+- course: EAS 539
+  last: 1244
+  notes: >-
+    ourse assumes basic literacy in Chinese characters (through Japanese or Chinese)
+- course: EAS 544
+  last: 1244
+- course: EAS 546
+  last: 1244
+  reqs: JPN430
+- course: EAS 548
+  last: 1244
+- course: EAS 549
+  last: 1244
+- course: EAS 564
+  last: 1244
+  reqs: EAS 563
