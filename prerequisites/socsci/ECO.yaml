@@ -2,4 +2,173 @@
 code: ECO
 name: Economics
 category: Social Sciences
+updated: 3/5/2024
 ---
+- course: ECO 100
+  last: 1244
+  reqs: MAT100
+- course: ECO 101
+  last: 1244
+  reqs: MAT100
+- course: ECO 201
+  last: 1244
+  equiv:
+    - EGR 156
+    - MAT 175
+    - MAT 201
+    - MAT 203
+  reqs: MAT103
+- course: ECO 202
+  last: 1244
+  reqs: MAT103
+- course: ECO 300
+  last: 1244
+  equiv:
+    - SPI 300
+    - SPI 304
+    - ECO 310
+  reqs: ECO100 & MULTI
+- course: ECO 301
+  last: 1244
+  equiv:
+    - ECO 311
+  reqs: ECO100 & ECO101 & MULTI
+- course: ECO 302
+  last: 1244
+  equiv:
+    - ECO 312
+  reqs: (ECO202 | ORF245 | (POL345 & POL346)) & MULTI
+- course: ECO 310
+  last: 1244
+  equiv:
+    - ECO 300
+    - SPI 300
+    - SPI 304
+  reqs: MULTI
+- course: ECO 311
+  last: 1244
+  equiv:
+    - ECO 301
+  reqs: MULTI
+- course: ECO 312
+  last: 1244
+  equiv:
+    - ECO 302
+  reqs: MULTI & (ECO202 | ORF245)
+- course: ECO 313
+  last: 1244
+  reqs: ECO302 | ECO312
+- course: ECO 323
+  last: 1244
+  reqs: ECO300 | ECO310
+- course: ECO 327
+  last: 1244
+  reqs: (ECO300 | ECO 310) & MAT103
+- course: ECO 332
+  last: 1244
+  reqs: ECO100 & (ECO202 | ORF245 | (POL345 & POL346))
+- course: ECO 355
+  last: 1244
+  reqs: ECO100
+- course: ECO 361
+  last: 1244
+- course: ECO 363
+  last: 1244
+  reqs: (ECO300 | ECO310) & ECO362
+- course: ECO 385
+  last: 1244
+  reqs: ECO100
+- course: ECO 461
+  last: 1244
+  reqs: ECO361 & ECO363
+- course: ECO 464
+  last: 1244
+  reqs: ECO300 | ECO310
+- course: ECO 466
+  last: 1244
+  reqs: ECO362
+- course: ECO 467
+  last: 1244
+  reqs: ECO363 | ECO465 | FIN501 | FIN522
+- course: ECO 492
+  last: 1244
+- course: ECO 493
+  last: 1244
+  reqs: ECO342
+- course: ECO 502
+  last: 1244
+- course: ECO 504
+  last: 1244
+- course: ECO 505
+  last: 1244
+- course: ECO 507
+  last: 1244
+- course: ECO 508
+  last: 1244
+  reqs: ECO506
+- course: ECO 510
+  last: 1244
+  reqs: ECO501 & ECO502
+- course: ECO 512
+  last: 1244
+- course: ECO 513
+  last: 1244
+- course: ECO 514
+  last: 1244
+- course: ECO 516
+  last: 1244
+- course: ECO 518
+  last: 1244
+  reqs: ECO517
+- course: ECO 522
+  last: 1244
+- course: ECO 524
+  last: 1244
+  reqs: ECO523
+- course: ECO 526
+  last: 1244
+  reqs: ECO525
+- course: ECO 527
+  last: 1244
+  reqs: ECO525 & $ECO526
+- course: ECO 532
+  last: 1244
+- course: ECO 539A
+  last: 1244
+  reqs: ECO517 & ECO518
+- course: ECO 539B
+  last: 1244
+  reqs: ECO517 & ECO518
+- course: ECO 542
+  last: 1244
+  reqs: ECO541
+- course: ECO 543
+  last: 1244
+  reqs: ECO541 & $ECO542
+- course: ECO 552
+  last: 1244
+  reqs: ECO551
+- course: ECO 563
+  last: 1244
+- course: ECO 564
+  last: 1244
+- course: ECO 581A
+  last: 1244
+- course: ECO 581B
+  last: 1244
+- course: ECO 581C
+  last: 1244
+- course: ECO 581D
+  last: 1244
+- course: ECO 581E
+  last: 1244
+- course: ECO 581F
+  last: 1244
+- course: ECO 581G
+  last: 1244
+- course: ECO 581H
+  last: 1244
+- course: ECO 581J
+  last: 1244
+- course: ECO 581K
+  last: 1244
