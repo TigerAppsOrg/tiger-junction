@@ -1,3 +1,7 @@
+<svelte:head>
+    <title>TigerJunction Prereq Manager</title>
+</svelte:head>
+
 <script lang="ts">
 import { toastStore } from "$lib/stores/toast";
     import { onMount } from "svelte";
@@ -12,6 +16,7 @@ type RegCourse = {
 
 type Course = {
     title: string,
+    id: string,
     prereqs: string | null,
     description: string,
     other: string | null,
@@ -176,6 +181,7 @@ const processRawCourse = (rawCourse: any): Course => {
     const details = rawCourse.course_details.course_detail[0];
     return {
         title: details.crosslistings + ": " + details.long_title,
+        id: details.course_id,
         prereqs: details.other_restrictions,
         description: details.description,
         other: details.other_information,
@@ -247,10 +253,11 @@ onMount(() => {
         <div class="rounded-lg p-4 border-[1px] border-zinc-600 w-11/12 max-w-5xl mx-auto
         mt-6">
             <div class="space-y-2 mb-2">
-                <h1 class="text-xl">
+                <a class="text-xl hover:text-zinc-200 duration-100" target="_blank" 
+                href={`https://registrar.princeton.edu/course-offerings/course-details?courseid=${currentCourse.id}&term=${term}`}>
                     {currentCourseIndex + 1} / {courselist.length} - 
                     {currentCourse.title || "ERROR"}
-                </h1>
+                </a>
                 <!-- <p>
                     <span class="underline">Description: </span>
                     {currentCourse.description || "No Descrition"}
