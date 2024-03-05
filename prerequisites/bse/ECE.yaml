@@ -3,4 +3,83 @@ code: ECE
 name: Electrical and Computer Engineering
 category: Engineering
 absorbed: ELE
+updated: 3/5/2024
 ---
+- course: ECE 201
+  last: 1244
+  reqs: CALCULUS
+- course: ECE 203
+  last: 1244
+- course: ECE 298
+  last: 1244
+- course: ECE 304
+  last: 1244
+  reqs: ECE201 & ECE203
+- course: ECE 342
+  last: 1244
+  reqs: PHYS & BSEMATH
+- course: ECE 346
+  last: 1244
+  reqs: MAE346
+- course: ECE 368
+  last: 1244
+- course: ECE 398
+  last: 1244
+- course: ECE 433
+  last: 1244
+  reqs: COS324 & ORF309 & ECE435 & LINEAR
+- course: ECE 451
+  last: 1244
+- course: ECE 452
+  last: 1244
+  reqs: PHYS
+- course: ECE 455
+  last: 1244
+- course: ECE 456
+  last: 1244
+  reqs: ECE453 & ECE342
+- course: ECE 457
+  last: 1244
+  reqs: PHY305 | ECE342
+- course: ECE 462
+  last: 1244
+- course: ECE 473
+  last: 1244
+  reqs: BOTHCOS & ORF245
+- course: ECE 475
+  last: 1244
+  reqs: ECE375
+- course: ECE 498
+  last: 1244
+- course: ECE 514
+  last: 1244
+- course: ECE 524
+  last: 1244
+  reqs: LINEAR & ORF309
+- course: ECE 544
+  last: 1244
+- course: ECE 547
+  last: 1244
+  reqs: ECE511 & ECE568 & ECE569
+- course: ECE 547B
+  last: 1244
+- course: ECE 559
+  last: 1244
+- course: ECE 560
+  last: 1244
+- course: ECE 562
+  last: 1244
+- course: ECE 569
+  last: 1244
+  reqs: PHY305 | ECE342
+- course: ECE 571
+  last: 1244
+- course: ECE 575
+  last: 1244
+  reqs: ECE375
+- course: ECE 580
+  last: 1244
+- course: ECE 598
+  last: 1244
+  notes: >-
+    Open to M.Eng students only
