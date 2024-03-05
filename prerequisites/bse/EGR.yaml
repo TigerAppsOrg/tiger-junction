@@ -2,4 +2,66 @@
 code: EGR
 name: Engineering
 category: Engineering
+updated: 3/5/2024
 ---
+- course: EGR 153
+  last: 1244
+  equiv:
+    - PHY 102
+    - PHY 104
+    - PHY 106
+    - PHY 110
+  reqs: EGR151
+- course: EGR 154
+  last: 1244
+  equiv:
+    - MAT 202
+    - MAT 204
+  reqs: EGR152
+- course: EGR 200
+  last: 1244
+- course: EGR 201
+  last: 1244
+- course: EGR 219
+  last: 1244
+- course: EGR 250
+  last: 1244
+- course: EGR 251
+  last: 1244
+  reqs: EGR250
+- course: EGR 277
+  last: 1244
+- course: EGR 301
+  last: 1244
+- course: EGR 314
+  last: 1244
+- course: EGR 350
+  last: 1244
+  reqs: EGR251
+- course: EGR 351
+  last: 1244
+  reqs: EGR350
+- course: EGR 361
+  last: 1244
+- course: EGR 371
+  last: 1244
+- course: EGR 395
+  last: 1244
+- course: EGR 421
+  last: 1244
+- course: EGR 450
+  last: 1244
+  reqs: EGR351
+- course: EGR 451
+  last: 1244
+  reqs: EGR450
+- course: EGR 473
+  last: 1244
+- course: EGR 494
+  last: 1244
+- course: EGR 495
+  last: 1244
+- course: EGR 497
+  last: 1244
+- course: EGR 501
+  last: 1244
