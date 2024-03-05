@@ -2,4 +2,30 @@
 code: EEB
 name: Ecology and Evolutionary Biology
 category: STEM
+updated: 3/5/2024
 ---
+- course: EEB 313
+  last: 1244
+  reqs: EEB211
+- course: EEB 331
+  last: 1244
+  reqs: EEB309
+- course: EEB 338
+  last: 1244
+- course: EEB 346
+  last: 1244
+  reqs: EEB321
+- course: EEB 355
+  last: 1244
+- course: EEB 388
+  last: 1244
+- course: EEB 404
+  last: 1244
+  reqs: EEB 211
+- course: EEB428
+  last: 1244
+  reqs: EEB309
+- course: EEB 521
+  last: 1244
+- course: EEB 522
+  last: 1244
