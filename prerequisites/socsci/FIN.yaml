@@ -2,4 +2,28 @@
 code: FIN
 name: Finance
 category: Social Sciences
+updated: 3/6/2024
 ---
+- course: FIN 502
+  last: 1244
+- course: FIN 519
+  last: 1244
+- course: FIN 521
+  last: 1244
+  reqs: FIN501
+- course: FIN561
+  last: 1244
+- course: FIN 567 
+  last: 1244
+  reqs: ECO363 | FIN501 | ECO465 | FIN522
+- course: FIN 580
+  last: 1244
+  reqs: FIN505
+- course: FIN 581
+  last: 1244
+  notes: >-
+    Completion of Courses in Financial Accounting and Corporate Finance are prerequisites.
+- course: FIN 592
+  last: 1244
+- course: FIN 593
+  last: 1244
