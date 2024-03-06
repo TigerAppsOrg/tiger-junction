@@ -2,4 +2,87 @@
 code: FRE
 name: French
 category: World Languages
+updated: 3/6/2024
 ---
+- course: FRE 101
+  last: 1244
+- course: FRE 102
+  last: 1244
+  reqs: FRE101
+- course: FRE 103
+  last: 1244
+  equiv:
+    - FRE 105
+- course: FRE 107
+  last: 1244
+  equiv:
+    - FRE 108
+    - FRE 1027
+  reqs: FRE102 | FRE103
+- course: FRE 108
+  last: 1244
+  equiv:
+    - FRE 107
+    - FRE 1027
+  reqs: FRE105
+- course: FRE 207
+  last: 1244
+  equiv:
+    - FRE 207F
+  reqs: FRE1027 | FRE107 | FRE108
+- course: FRE 208
+  last: 1244
+  reqs: FRE1027 | FRE107 | FRE108
+- course: FRE 222
+  last: 1244
+  reqs: FRE207 | FRE208
+- course: FRE 227
+  last: 1244
+  reqs: FRE207 | FRE208
+- course: FRE 240
+  last: 1244
+  reqs: FRE1027 | FRE107 | FRE108
+- course: FRE 260
+  last: 1244
+  reqs: FRE1027 | FRE107 | FRE108
+- course: FRE 307
+  last: 1244
+  reqs: FRE2**
+- course: FRE 319
+  last: 1244
+  reqs: FRE2**
+- course: FRE 354
+  last: 1244
+  reqs: FRE2**
+- course: FRE 358
+  last: 1244
+- course: FRE 376
+  last: 1244
+  reqs: FRE2**
+- course: FRE 382
+  last: 1244
+  reqs: FRE2**
+- course: FRE 392
+  last: 1244
+  travel:
+  reqs: FRE2**
+- course: FRE 401
+  last: 1244
+  reqs: FRE 2**
+- course: FRE 500
+  last: 1244
+- course: FRE 502
+  last: 1244
+  reqs: FRE307
+- course: FRE 505
+  last: 1244
+- course: FRE 513
+  last: 1244
+- course: FRE 560
+  last: 1244
+- course: FRE 1027
+  last: 1244
+  equiv:
+    - FRE 107
+    - FRE 108
+  reqs: FRE101
