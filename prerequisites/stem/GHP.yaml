@@ -2,4 +2,8 @@
 code: GHP
 name: Global Health and Health Policy
 category: STEM
+updated: 3/8/2024
 ---
+- course: GHP 351
+  last: 1244
+  reqs: STATS

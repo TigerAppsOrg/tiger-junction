@@ -47,6 +47,7 @@ The following prerequisite groupings are common and have been given special tags
 - `BOTHCOS` -- **COS217 & COS226** -- both COS 217 and COS 226 are prerequisites.
 - `CHEM1` -- **CHM201 | CHM207 | CHM215** -- first semester general chemistry is a prerequisite.
 - `CHEM2` -- **CHM202 | CHM215** -- second semester general chemistry is a prerequisite.
+- `STATS` -- **ECO202 | EEB355 | ORF245 | POL345 | PSY251 | SOC301 | SML101 | SML 201** -- statistics is a prerequisite.
 
 ## Guidelines
 To update the data, please follow these guidelines:
