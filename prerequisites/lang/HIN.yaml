@@ -2,4 +2,14 @@
 code: HIN
 name: Hindi
 category: World Languages
+updated: 3/8/2024
 ---
+- course: HIN 102
+  last: 1244
+  reqs: HIN101
+- course: HIN 107
+  last: 1244
+  reqs: HIN105
+- course: HIN 305
+  last: 1244
+  reqs: HIN107
