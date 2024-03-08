@@ -71,13 +71,13 @@ Before compilation, the data is validated to ensure that it is in the correct fo
 For readability, the departments are divided into the following categories. Please leave and issue if you feel that a department is in the wrong category.
 
 ### World Languages (lang)
-ARA, ASL, BCS, CHI, CZE, FRE, GER, GEZ, HEB, HIN, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, UKR, URD
+ARA, ASL, BCS, CHI, CZE, FRE, GER, GEZ, HEB, HIN, HLS, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, UKR, URD
 
 ### Social Sciences (socsci)
 ANT, CTL, ECO, ENT, FIN, JRN, LIN, POL, POP, PSY, SOC, SPI, STC, TRA, URB
 
 ### Ethnic and Cultural Studies (eth)
-AAS, AFS, AMS, ASA, EAS, ECS, EPS, GSS, JDS, HLS, LAO, LAS, NES, RES, SAS, SLA
+AAS, AFS, AMS, ASA, EAS, ECS, EPS, GSS, JDS, LAO, LAS, NES, RES, SAS, SLA
 
 ### Humanities (hum)
 CDH, CHV, CLA, CLG, COM, CWR, ENG, HIS, HOS, HPD, HUM, MED, MOD, PAW, PHI, REL
