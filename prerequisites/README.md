@@ -4,7 +4,13 @@ This directory contains the prerequisites for all courses at Princeton. The data
 Unfortunately, due to prerequisites not being strictly enforced at Princeton, they don't really exist in a structured format. Individual courses list their prerequisites in a paragraph of text, meaning that algorithms struggle to parse them accurately (especially and/or relationships). Another option would be to use some form of AI to parse the texts, but that could also be inaccurate and would be a lot of work to set up. Therefore, the data is manually compiled from the course catalogs.
 
 ## File Structure
-Each file begins with YAML front matter with the code, name, and other metadata. This is entirely for readability, and the compiler will ignore it. The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
+Each file begins with YAML front matter with the code, name, and other metadata.You can also place local variables here, with the `name` being replaced by the `equ` value in the `reqs` field. For example, in `GER.yaml`:
+```yaml
+vars:
+  - name: ADVGER
+    equ: GER107 | GER107G
+```
+The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
 
 - `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
 - `last` is the code for the most recent term that the course was offered.
