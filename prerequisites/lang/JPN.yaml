@@ -2,4 +2,31 @@
 code: JPN
 name: Japanese
 category: World Languages
+updated: 3/8/2024
 ---
+- course: JPN 102
+  last: 1244
+  reqs: JPN101
+- course: JPN 107
+  last: 1244
+  equiv:
+    - JPN 107J
+  reqs: JPN105
+- course: JPN 302
+  last: 1244
+  equiv:
+    - JPN 302J
+  reqs: JPN301
+- course: JPN 306
+  last: 1244
+  reqs: JPN305
+- course: JPN 402
+  last: 1244
+  reqs: JPN401
+- course: JPN 404
+  last: 1244
+  reqs: JPN403
+- course: JPN 1001
+  last: 1244
+  equiv:
+    - JPN 101
