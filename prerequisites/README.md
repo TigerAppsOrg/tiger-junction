@@ -4,7 +4,13 @@ This directory contains the prerequisites for all courses at Princeton. The data
 Unfortunately, due to prerequisites not being strictly enforced at Princeton, they don't really exist in a structured format. Individual courses list their prerequisites in a paragraph of text, meaning that algorithms struggle to parse them accurately (especially and/or relationships). Another option would be to use some form of AI to parse the texts, but that could also be inaccurate and would be a lot of work to set up. Therefore, the data is manually compiled from the course catalogs.
 
 ## File Structure
-Each file begins with YAML front matter with the code, name, and other metadata. This is entirely for readability, and the compiler will ignore it. The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
+Each file begins with YAML front matter with the code, name, and other metadata.You can also place local variables here, with the `name` being replaced by the `equ` value in the `reqs` field. For example, in `GER.yaml`:
+```yaml
+vars:
+  - name: ADVGER
+    equ: GER107 | GER107G
+```
+The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
 
 - `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
 - `last` is the code for the most recent term that the course was offered.
@@ -39,6 +45,9 @@ The following prerequisite groupings are common and have been given special tags
 - `BSEMATH` -- **MULTI & LINEAR** -- both multivariable calculus and linear algebra are prerequisites.
 - `INTROCOS` -- **COS126 | (ISC231 & ISC232 & ISC233 & ISC234)**
 - `BOTHCOS` -- **COS217 & COS226** -- both COS 217 and COS 226 are prerequisites.
+- `CHEM1` -- **CHM201 | CHM207 | CHM215** -- first semester general chemistry is a prerequisite.
+- `CHEM2` -- **CHM202 | CHM215** -- second semester general chemistry is a prerequisite.
+- `STATS` -- **ECO202 | EEB355 | ORF245 | POL345 | PSY251 | SOC301 | SML101 | SML 201** -- statistics is a prerequisite.
 
 ## Guidelines
 To update the data, please follow these guidelines:
@@ -62,13 +71,13 @@ Before compilation, the data is validated to ensure that it is in the correct fo
 For readability, the departments are divided into the following categories. Please leave and issue if you feel that a department is in the wrong category.
 
 ### World Languages (lang)
-ARA, ASL, BCS, CHI, CZE, FRE, GER, GEZ, HEB, HIN, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, UKR, URD
+ARA, ASL, BCS, CHI, CZE, FRE, GER, GEZ, HEB, HIN, HLS, ITA, JPN, KOR, LAT, MOG, PER, PLS, POR, RUS, SAN, SPA, SWA, TUR, TWI, UKR, URD
 
 ### Social Sciences (socsci)
 ANT, CTL, ECO, ENT, FIN, JRN, LIN, POL, POP, PSY, SOC, SPI, STC, TRA, URB
 
 ### Ethnic and Cultural Studies (eth)
-AAS, AFS, AMS, ASA, EAS, ECS, EPS, GSS, JDS, HLS, LAO, LAS, NES, RES, SAS, SLA
+AAS, AFS, AMS, ASA, EAS, ECS, EPS, GSS, JDS, LAO, LAS, NES, RES, SAS, SLA
 
 ### Humanities (hum)
 CDH, CHV, CLA, CLG, COM, CWR, ENG, HIS, HOS, HPD, HUM, MED, MOD, PAW, PHI, REL

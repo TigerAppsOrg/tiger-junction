@@ -118,7 +118,7 @@ for (let i = 0; i < courselist.length; i++) {
     const courseData = (await rawCourseData.json()).course_details.course_detail[0];
     cacheData.push(courseData);
 
-    const timeout = Math.random() * 2000 + 1000;
+    const timeout = Math.random() * 1000 + 500;
     await new Promise(resolve => setTimeout(resolve, timeout));
 }
 

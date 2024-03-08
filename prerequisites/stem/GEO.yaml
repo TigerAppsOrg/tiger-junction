@@ -2,4 +2,36 @@
 code: GEO
 name: Geosciences
 category: STEM
+updated: 3/8/2024
 ---
+- course: GEO 103
+  last: 1244
+- course: GEO 202
+  last: 1244
+- course: GEO 320
+  last: 1244
+  reqs: MECH
+- course: GEO 360
+  last: 1244
+  reqs: CHEM1
+- course: GEO 366
+  last: 1244
+  reqs: GEO202
+- course: GEO 369
+  last: 1244
+  travel:
+  reqs: CHEM2
+- course: GEO 418
+  last: 1244
+  reqs: CHEM2
+- course: GEO 424
+  last: 1244
+  reqs: $EAM & $MAE305
+- course: GEO 435
+  last: 1244
+- course: GEO 464
+  last: 1244
+- course: GEO 503
+  last: 1244
+- course: GEO 505
+  last: 1244

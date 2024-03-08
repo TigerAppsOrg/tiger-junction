@@ -2,4 +2,14 @@
 code: HEB
 name: Hebrew
 category: World Languages
+updated: 3/8/2024
 ---
+- course: HEB 102
+  last: 1244
+  reqs: HEB101
+- course: HEB 107
+  last: 1244
+  reqs: HEB105
+- course: HEB 312
+  last: 1244
+  reqs: HEB107

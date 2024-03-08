@@ -2,4 +2,60 @@
 code: GER
 name: German
 category: World Languages
+updated: 3/8/2024
+vars:
+  - name: ADVGER
+    equ: GER107 | GER107G
 ---
+- course: GER 101
+  last: 1244
+- course: GER 102
+  last: 1244
+  reqs: GER101
+- course: GER 105
+  last: 1244
+  equiv:
+    - GER 105G
+    - GER 1025
+  reqs: GER102
+- course: GER 107
+  last: 1244
+  equiv:
+    - GER 107G
+  reqs: GER105 | GER105G | GER1025
+- course: GER 206
+  last: 1244
+- course: GER 208
+  last: 1244
+  reqs: ADVGER
+- course: GER 211
+  last: 1244
+- course: GER 306
+  last: 1244
+  reqs: ADVGER
+- course: GER 308
+  last: 1244
+- course: GER 316
+  last: 1244
+  notes: >-
+    Required: Proficiency in a second language (via instruction).
+  reqs: LANG***
+- course: GER 324
+  last: 1244
+  reqs: ADVGER
+- course: GER 516
+  last: 1244
+  reqs: ADVGER
+- course: GER 521
+  last: 1244
+- course: GER 523
+  last: 1244
+- course: GER 530
+  last: 1244
+- course: GER 105
+  last: 1244
+  equiv:
+    - GER 102
+    - GER 105
+    - GER 105G
+  reqs: GER101

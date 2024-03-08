@@ -2,4 +2,8 @@
 code: GEZ
 name: Ge'ez
 category: World Languages
+updated: 3/8/2024
 ---
+- course: GEZ 102
+  last: 1244
+  reqs: GEZ101
