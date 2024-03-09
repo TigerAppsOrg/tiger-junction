@@ -2,4 +2,39 @@
 code: SOC
 name: Sociology
 category: Social Sciences
+updated: 3/9/2024
 ---
+- course: SOC 222
+  last: 1244
+- course: SOC 228
+  last: 1244
+- course: SOC 302
+  last: 1244
+  reqs: WRI***
+- course: SOC 314
+  last: 1244
+- course: SOC 350
+  last: 1244
+- course: SOC 373
+  last: 1244
+- course: SOC 382 
+  last: 1244
+- course: SOC 383
+  last: 1244
+- course: SOC 384
+  last: 1244
+- course: SOC 503
+  last: 1244
+- course: SOC 504
+  last: 1244
+- course: SOC 505
+  last: 1244
+- course: SOC 509
+  last: 1244
+- course: SOC 555
+  last: 1244
+  reqs: STATS
+- course: SOC 560
+  last: 1244
+- course: SOC 599B
+  last: 1244
