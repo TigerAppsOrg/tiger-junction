@@ -4,15 +4,11 @@
 
 <script lang="ts">
 import { toastStore } from "$lib/stores/toast";
-    import { onMount } from "svelte";
+import { onMount } from "svelte";
 import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
 
-type RegCourse = {
-    listing_id: string,
-    code: string,
-}
 
 type Course = {
     title: string,
@@ -26,19 +22,17 @@ type Course = {
 let initialized = false;
 let loading = false;
 let locked = false;
-let courselist: RegCourse[] = [];
+let courselist: Course[] = [];
 let term = 1244;
 
-let previousCourse: Course;
-let currentCourse: Course;
-let nextCourse: Course;
 let currentCourseIndex = 0;
+$: currentCourse = courselist[currentCourseIndex];
 
 const handleInit = async () => {
     loading = true;
     console.log("Initializing prereq manager for term: ", term);
 
-    const ca = await fetch("/api/admin/awe");
+    const ca = await fetch("/api/admin/prereqs/cache?term=" + term);
     if (!ca.ok) {
         console.error("Failed to fetch courselist");
         loading = false;
@@ -47,40 +41,28 @@ const handleInit = async () => {
     }
 
     const jsonCourselist = await ca.json();
-    console.log(jsonCourselist);
+    courselist = jsonCourselist.map((details: any) => {
+        return {
+            title: details.crosslistings + ": " + details.long_title,
+            id: details.course_id,
+            prereqs: details.other_restrictions,
+            description: details.description,
+            other: details.other_information,
+            equiv: details.course_equivalents.hasOwnProperty("course_equivalent") ? 
+            details.course_equivalents.course_equivalent.map(
+                (x: { subject: string; catnum: string; }) => {
+                return x.subject + x.catnum
+            }).join(", ") : null,
+        }
+    })
 
-    // const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
-    // if (!rawCourselist.ok) {
-    //     console.error("Failed to fetch courselist");
-    //     loading = false;
-    //     toastStore.add("error", "Invalid term or failed to fetch courselist");
-    //     return;
-    // }
-
-    // const jsonCourselist = await rawCourselist.json();
-    // courselist = jsonCourselist.classes.class.map((x: any) => {
-    //     return {
-    //         listing_id: x.course_id,
-    //         code: x.crosslistings.replace(/\s/g, ""),
-    //     }
-    // });
-
-    // const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
-    // currentCourse = processRawCourse(await firstRaw.json());
-    // previousCourse = currentCourse;
-
-    // const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
-    // nextCourse = processRawCourse(await secondRaw.json());
-
-    // console.log("Initialized with courses: ", currentCourse, nextCourse)
-
-    // loading = false;
-    // initialized = true;
+    loading = false;
+    initialized = true;
 }
 
 const handleEnter = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
-        gotoIndex(parseInt((e.target as HTMLInputElement).value));
+        gotoIndex((e.target as HTMLInputElement).value);
         (e.target as HTMLInputElement).value = "";
     }
 }
@@ -96,112 +78,44 @@ const watchArrows = (e: KeyboardEvent) => {
 //----------------------------------------------------------------------
 
 // ! Warning - this is a very naive implementation 
-const handleNextCourse = async () => {
-    if (locked) return;
-    locked = true;
+const handleNextCourse = () => {
     if (currentCourseIndex === courselist.length - 1) {
         toastStore.add("error", "No next course");
-        locked = false;
         return;
     };
 
     currentCourseIndex++;
-    previousCourse = currentCourse;
-    currentCourse = nextCourse;
-
-    const rawNext = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
-    nextCourse = processRawCourse(await rawNext.json());
-    locked = false;
 }
 
 const handlePreviousCourse = async () => {
-    if (locked) return;
-    locked = true;
     if (currentCourseIndex === 0) {
         toastStore.add("error", "No previous course");
-        locked = false;
         return;
     };
 
     currentCourseIndex--;
+}
 
-    if (currentCourseIndex === 0) {
-        nextCourse = currentCourse;
-        currentCourse = previousCourse;
-        locked = false;
+const gotoIndex = async (index: number | string) => {
+    if (typeof(index) === "string") {
+        const searchIndex = courselist.findIndex((x) => 
+            x.title.split(" ")[0].toLowerCase() === index.toLowerCase()
+        );
+        if (searchIndex === -1) {
+            toastStore.add("error", "Invalid index");
+            return;
+        }
+        console.log("Found index: ", searchIndex);
+        currentCourseIndex = searchIndex;
         return;
     }
 
-    nextCourse = currentCourse;
-    currentCourse = previousCourse;
-
-    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[currentCourseIndex - 1].listing_id);
-    previousCourse = processRawCourse(await rawPrevious.json());
-
-    locked = false;
-}
-
-const gotoIndex = async (index: number) => {
-    if (locked) return;
     if (index < 1 || index > courselist.length) {
         toastStore.add("error", "Invalid index");
         return;
     };
-    locked = true;
-
-    const rawCurrent = await fetch("/api/admin/prereqs/course?term="
-        + term + "&id=" + courselist[index - 1].listing_id);
-
-    // Yes this is a bit ugly but it doesn't matter it works
-    switch (index) {
-        case 1:
-            const rawNext = await fetch("/api/admin/prereqs/course?term="
-                + term + "&id=" + courselist[index].listing_id);
-            nextCourse = processRawCourse(await rawNext.json());
-            currentCourse = processRawCourse(await rawCurrent.json());
-            previousCourse = currentCourse;
-            currentCourseIndex = 0;
-            locked = false;
-            return;
-        case courselist.length:
-            const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-                + term + "&id=" + courselist[index - 2].listing_id);
-            previousCourse = processRawCourse(await rawPrevious.json());
-            currentCourse = processRawCourse(await rawCurrent.json());
-            nextCourse = currentCourse;
-            currentCourseIndex = index - 1;
-            locked = false;
-            return;
-    }
-
-    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[index - 2].listing_id);
-    const rawNext = await fetch("/api/admin/prereqs/course?term="
-        + term + "&id=" + courselist[index].listing_id);
-    previousCourse = processRawCourse(await rawPrevious.json());
-    nextCourse = processRawCourse(await rawNext.json());
-    currentCourse = processRawCourse(await rawCurrent.json());
 
     currentCourseIndex = index - 1;
-    locked = false;
-}
-
-const processRawCourse = (rawCourse: any): Course => {
-    const details = rawCourse.course_details.course_detail[0];
-    return {
-        title: details.crosslistings + ": " + details.long_title,
-        id: details.course_id,
-        prereqs: details.other_restrictions,
-        description: details.description,
-        other: details.other_information,
-        equiv: details.course_equivalents.hasOwnProperty("course_equivalent") ? 
-        details.course_equivalents.course_equivalent.map(
-            (x: { subject: string; catnum: string; }) => {
-            return x.subject + x.catnum
-        }).join(", ") : null,
-    }
 }
 
 onMount(() => {
