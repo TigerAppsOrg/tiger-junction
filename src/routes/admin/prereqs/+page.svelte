@@ -189,7 +189,7 @@ onMount(() => {
                 </p> -->
                 <p>
                     <span class="underline">Prerequisites: </span>
-                    {currentCourse.prereqs || "None"}
+                    {currentCourse.prereqs || "None."}
                 </p>
                 {#if currentCourse.equiv}
                 <p>
