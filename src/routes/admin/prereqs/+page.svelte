@@ -38,33 +38,44 @@ const handleInit = async () => {
     loading = true;
     console.log("Initializing prereq manager for term: ", term);
 
-    const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
-    if (!rawCourselist.ok) {
+    const ca = await fetch("/api/admin/awe");
+    if (!ca.ok) {
         console.error("Failed to fetch courselist");
         loading = false;
         toastStore.add("error", "Invalid term or failed to fetch courselist");
         return;
     }
 
-    const jsonCourselist = await rawCourselist.json();
-    courselist = jsonCourselist.classes.class.map((x: any) => {
-        return {
-            listing_id: x.course_id,
-            code: x.crosslistings.replace(/\s/g, ""),
-        }
-    });
+    const jsonCourselist = await ca.json();
+    console.log(jsonCourselist);
 
-    const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
-    currentCourse = processRawCourse(await firstRaw.json());
-    previousCourse = currentCourse;
+    // const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
+    // if (!rawCourselist.ok) {
+    //     console.error("Failed to fetch courselist");
+    //     loading = false;
+    //     toastStore.add("error", "Invalid term or failed to fetch courselist");
+    //     return;
+    // }
 
-    const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
-    nextCourse = processRawCourse(await secondRaw.json());
+    // const jsonCourselist = await rawCourselist.json();
+    // courselist = jsonCourselist.classes.class.map((x: any) => {
+    //     return {
+    //         listing_id: x.course_id,
+    //         code: x.crosslistings.replace(/\s/g, ""),
+    //     }
+    // });
 
-    console.log("Initialized with courses: ", currentCourse, nextCourse)
+    // const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
+    // currentCourse = processRawCourse(await firstRaw.json());
+    // previousCourse = currentCourse;
 
-    loading = false;
-    initialized = true;
+    // const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
+    // nextCourse = processRawCourse(await secondRaw.json());
+
+    // console.log("Initialized with courses: ", currentCourse, nextCourse)
+
+    // loading = false;
+    // initialized = true;
 }
 
 const handleEnter = (e: KeyboardEvent) => {
