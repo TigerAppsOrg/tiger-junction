@@ -2,4 +2,61 @@
 code: PSY
 name: Psychology
 category: Social Sciences
+updated: 3/9/2024
 ---
+- course: PSY 210
+  last: 1244
+- course: PSY 231
+  last: 1244
+  reqs: PSY230
+- course: PSY 251
+  last: 1244
+- course: PSY 252
+  last: 1244
+- course: PSY 255
+  last: 1244
+- course: PSY 260
+  last: 1244
+  reqs: <PSY2** | <NEU2** | <MOL2** | <EEB2**
+- course: PSY 306
+  last: 1244
+  reqs: PSY255 | PSY259
+- course: PSY 307
+  last: 1244
+- course: PSY 317
+  last: 1244
+  reqs: PSY***
+- course: PSY 320
+  last: 1244
+- course: PSY 332
+  last: 1244
+- course: PSY 333
+  last: 1244
+  reqs: PSY101 | PSY252 | PSY254 | PSY255 | NEU200 | NEU201
+- course: PSY 337
+  last: 1244
+  reqs: PSY258
+- course: PSY 342
+  last: 1244
+- course: PSY 409
+  last: 1244
+  reqs: PSY101 | PSY255
+- course: PSY 420
+  last: 1244
+- course: PSY 465
+  last: 1244
+  reqs: HUM365
+- course: PSY 501
+  last: 1244
+- course: PSY 504
+  last: 1244
+- course: PSY 505
+  last: 1244
+- course: PSY 543
+  last: 1244
+- course: PSY 551
+  last: 1244
+- course: PSY 597
+  last: 1244
+- course: PSY 597
+  last: 1244
