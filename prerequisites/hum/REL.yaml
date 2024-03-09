@@ -2,4 +2,65 @@
 code: REL
 name: Religion
 category: Humanities
+updated: 3/9/2024
 ---
+- course: REL 226
+  last: 1244
+- course: REL 234
+  last: 1244
+- course: REL 236
+  last: 1244
+- course: REL 251
+  last: 1244
+- course: REL 255
+  last: 1244
+- course: REL 257
+  last: 1244
+- course: REL 303
+  last: 1244
+- course: REL 326
+  last: 1244
+- course: REL 332
+  last: 1244
+- course: REL 348
+  last: 1244
+- course: REL 364
+  last: 1244
+- course: REL 382
+  last: 1244
+  travel:
+- course: REL 383
+  last: 1244
+- course: REL 415
+  last: 1244
+- course: REL 504
+  last: 1244
+- course: REL 505
+  last: 1244
+- course: REL 507
+  last: 1244
+- course: REL 509
+  last: 1244
+- course: REL 511
+  last: 1244
+- course: REL 517
+  last: 1244
+- course: REL 519
+  last: 1244
+  reqs: REL518
+- course: REL 524
+  last: 1244
+  reqs: REL523
+- course: REL 526
+  last: 1244
+  reqs: REL525
+- course: REL 530
+  last: 1244
+- course: REL 532
+  last: 1244
+- course: REL 534
+  last: 1244
+- course: REL 536
+  last: 1244
+- course: REL 583
+  last: 1244
