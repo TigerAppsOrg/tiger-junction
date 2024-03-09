@@ -2,4 +2,42 @@
 code: MOL
 name: Molecular Biology
 category: STEM
+updated: 3/9/2024
 ---
+- course: MOL 101
+  last: 1244
+- course: MOL 214
+  last: 1244
+- course: MOL 281
+  last: 1244
+  reqs: MOL280
+- course: MOL 320
+  last: 1244
+  equiv:
+    - MOL 350
+  reqs: MOL214 | ISCA
+- course: MOL 340
+  last: 1244
+  reqs: MOL214
+- course: MOL 342
+  last: 1244
+  reqs: MOL214
+- course: MOL 345
+  last: 1244
+  reqs: MOL214 & (CHM302 | CHM304 | CHM337)
+- course: MOL 348
+  last: 1244
+- course: MOL 405
+  last: 1244
+  reqs: MOL348
+- course: MOL 445
+  last: 1244
+- course: MOL 506
+  last: 1244
+  reqs: MOL348
+- course: MOL 518
+  last: 1244
+- course: MOL 541
+  last: 1244
+- course: MOL 561
+  last: 1244
