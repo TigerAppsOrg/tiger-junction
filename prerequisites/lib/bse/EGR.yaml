@@ -4,6 +4,17 @@ name: Engineering
 category: Engineering
 updated: 3/5/2024
 ---
+- course: EGR 151
+  last: 1242
+  equiv:
+    - PHY 101
+    - PHY 103
+    - PHY 105
+- course: EGR 152
+  last: 1242
+  equiv:
+    - MAT 104
+    - MAT 210
 - course: EGR 153
   last: 1244
   equiv:
@@ -18,6 +29,14 @@ updated: 3/5/2024
     - MAT 202
     - MAT 204
   reqs: EGR152
+- course: EGR 156
+  last: 1242
+  equiv:
+    - MAT 175
+    - ECO 201
+    - MAT 201
+    - MAT 203
+  reqs: EGR153 | EGR154
 - course: EGR 200
   last: 1244
 - course: EGR 201

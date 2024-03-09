@@ -4,8 +4,26 @@ name: Ecology and Evolutionary Biology
 category: STEM
 updated: 3/5/2024
 ---
+- course: EEB 308
+  last: 1242
+  reqs: EEB211
+- course: EEB 309
+  last: 1242
+  reqs: EEB211 & (MOL214 | ISCA)
 - course: EEB 313
   last: 1244
+  reqs: EEB211
+- course: EEB 317
+  last: 1242
+  travel:
+- course: EEB 325
+  last: 1242
+  reqs: CALCULUS
+- course: EEB 327
+  last: 1242
+  reqs: EEB211 & (MOL214 | ISCA)
+- course: EEB 329
+  last: 1242
   reqs: EEB211
 - course: EEB 331
   last: 1244
