@@ -2,4 +2,116 @@
 code: MAT
 name: Mathematics
 category: STEM
+updated: 3/9/2024
 ---
+- course: MAT 100
+  last: 1244
+- course: MAT 103
+  last: 1244
+  reqs: MAT100
+- course: MAT 104
+  last: 1244
+  equiv:
+    - EGR 152
+    - MAT 210
+  reqs: MAT103
+- course: MAT 175
+  last: 1244
+  equiv:
+    - EGR 156
+    - ECO 201
+    - MAT 201
+    - MAT 203
+  reqs: MAT103
+- course: MAT 201
+  last: 1244
+  equiv:
+    - EGR 156
+    - MAT 175
+    - ECO 201
+    - MAT 203
+  reqs: MAT104
+- course: MAT 202
+  last: 1244
+  equiv:
+    - EGR 154
+    - MAT 204
+  reqs: MAT103
+- course: MAT 204
+  last: 1244
+  equiv: 
+    - EGR 154
+    - MAT 202
+  reqs: MAT103
+- course: MAT 215
+  last: 1244
+  equiv:
+    - MAT 216
+- course: MAT 217
+  last: 1244
+- course: MAT 218
+  last: 1244
+  reqs: MAT216
+- course: MAT 325
+  last: 1244
+  reqs: MAT215 | MAT218
+- course: MAT 330
+  last: 1244
+  reqs: BSEMATH
+- course: MAT 346
+  last: 1244
+  reqs: MAT345
+- course: MAT 355
+  last: 1244
+  reqs: MAT218 | MAT300
+- course: MAT 375
+  last: 1244
+  reqs: LINEAR
+- course: MAT 378
+  last: 1244
+  reqs: LINEAR
+- course: MAT 419
+  last: 1244
+  reqs: MAT345 & MAT346
+- course: MAT 425
+  last: 1244
+  reqs: MAT215 | MAT218
+- course: MAT 427
+  last: 1244
+  reqs: (MAT215 | MAT216) & (MAT217 | MAT218)
+- course: MAT 478
+  last: 1244
+  notes: >-
+    Permission of instructor; linear algebra, basic probability, 
+    combinatorial mathematics or graph theory
+- course: MAT 515
+  last: 1244
+- course: MAT 517
+  last: 1244
+- course: MAT 519
+  last: 1244
+- course: MAT 527
+  last: 1244
+- course: MAT 528
+  last: 1244
+- course: MAT 531
+  last: 1244
+- course: MAT 547
+  last: 1244
+- course: MAT 549
+  last: 1244
+- course: MAT 559
+  last: 1244
+- course: MAT 560
+  last: 1244
+  reqs: MAT365 & MAT345
+- course: MAT 569
+  last: 1244
+- course: MAT 577
+  last: 1244
+- course: MAT 586
+  last: 1244
+- course: MAT 589
+  last: 1244
+- course: MAT 595
+  last: 1244
