@@ -2,4 +2,14 @@
 code: PER
 name: Persian
 category: World Languages
+updated: 3/9/2024
 ---
+- course: PER 102
+  last: 1244
+  reqs: PER101
+- course: PER 107
+  last: 1244
+  reqs: PER105
+- course: PER 303
+  last: 1244
+  reqs: PER107
