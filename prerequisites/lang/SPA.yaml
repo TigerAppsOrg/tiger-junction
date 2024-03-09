@@ -2,4 +2,131 @@
 code: SPA
 name: Spanish
 category: World Languages
+updated: 3/9/2024
+vars:
+  - name: ADVSPA
+    equ: SPA107 | SPA107S | SPA108
 ---
+- course: SPA 102
+  last: 1244
+  reqs: SPA101
+- course: SPA 107
+  last: 1244
+  equiv:
+    - SPA 107S
+    - SPA 108
+  reqs: SPA102 | SPA103
+- course: SPA 108
+  last: 1244
+  equiv:
+    - SPA 107
+    - SPA 107S
+  reqs: SPA105
+- course: SPA 204
+  last: 1244
+  equiv:
+    - SPA 205
+    - SPA 206
+    - SPA 207
+    - SPA 207S
+    - SPA 207T
+    - SPA 209
+  reqs: ADVSPA
+- course: SPA 205
+  last: 1244
+  equiv:
+    - SPA 204
+    - SPA 206
+    - SPA 207
+    - SPA 207S
+    - SPA 207T
+    - SPA 209
+  reqs: ADVSPA
+- course: SPA 206
+  last: 1244
+  equiv:
+    - SPA 204
+    - SPA 205
+    - SPA 207
+    - SPA 207S
+    - SPA 207T
+    - SPA 209
+  reqs: ADVSPA
+- course: SPA 207
+  last: 1244
+  equiv:
+    - SPA 204
+    - SPA 205
+    - SPA 206
+    - SPA 207S
+    - SPA 207T
+    - SPA 209
+  reqs: ADVSPA
+- course: SPA 209
+  last: 1244
+  equiv:
+    - SPA 204
+    - SPA 205
+    - SPA 206
+    - SPA 207
+    - SPA 207S
+    - SPA 207T
+  reqs: ADVSPA
+- course: SPA 211
+  last: 1244
+  reqs: SPA2**
+- course: SPA 213
+  last: 1244
+  reqs: <SPA207
+- course: SPA 220
+  last: 1244
+  reqs: <SPA207
+- course: SPA 227
+  last: 1244
+  reqs: SPA207 | SPA207S | SPA207T | SPA209
+- course: SPA 232
+  last: 1244
+  reqs: SPA209
+- course: SPA234
+  last: 1244
+  reqs: ADVSPA
+- course: SPA 245
+  last: 1244
+  reqs: SPA207 | SPA209
+- course: SPA 304
+  last: 1244
+  reqs: SPA2**
+- course: SPA 307
+  last: 1244
+  reqs: SPA2**
+- course: SPA 318
+  last: 1244
+- course: SPA 322
+  last: 1244
+  reqs: SPA2**
+- course: SPA 324
+  last: 1244
+  reqs: SPA2**
+- course: SPA 359 
+  last: 1244
+  reqs: <SPA207
+- course: SPA 364
+  last: 1244
+  reqs: <SPA207
+- course: SPA 374
+  last: 1244
+  reqs: SPA2**
+- course: SPA 375
+  last: 1244
+- course: SPA 380
+  last: 1244
+  reqs: SPA2**
+- course: SPA 418
+  last: 1244
+  reqs: SPA3**
+- course: SPA 500
+  last: 1244
+- course: SPA 550
+  last: 1244
+- course: SPA 560
+  last: 1244

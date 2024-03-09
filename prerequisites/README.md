@@ -32,7 +32,7 @@ The rest of the file is a list of courses in that department with information ab
   reqs: (ECE202 | ECE205) & ECE100
 ```
 
-Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses. Placing a dollar sign before a course code means it can be taken as a corequisite. For example, `$MAT 202` means that MAT 202 can be taken as a corequisite.
+Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses. Placing a dollar sign before a course code means it can be taken as a corequisite. For example, `$MAT 202` means that MAT 202 can be taken as a corequisite. Placing a `<` before a coures code means that any course in the department with a course code greater than or equal to it satisfies the prerequisite.
 
 ### Special Fields
 The following prerequisite groupings are common and have been given special tags that can be used like courses in the `reqs` field:
