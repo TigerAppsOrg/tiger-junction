@@ -2,14 +2,63 @@
 code: PHY
 name: Physics
 category: STEM
+updated: 3/9/2024
 ---
-- course: PHY106
+- course: PHY 102
+  last: 1244
   equiv:
-    - PHY102
-    - PHY104
-    - PHY110
-    - EGR153
-  notes: >-
-    All students are required to take the PHY 105 Special Relativity 
-    Minicourse, whether or not they are enrolled in PHY 105.
-  reqs: PHY103 | PHY105
+    - PHY 104
+    - PHY 106
+    - PHY 110
+    - EGR 153
+  reqs: PHY101
+- course: PHY 104
+  last: 1244
+  equiv:
+    - PHY 102
+    - PHY 106
+    - PHY 110
+    - EGR 153
+  reqs: MECH
+- course: PHY 106
+  last: 1244
+  equiv:
+    - PHY 102
+    - PHY 104
+    - PHY 110
+    - EGR 153
+  reqs: MECH
+- course: PHY 108
+  last: 1244
+- course: PHY 109
+  last: 1244
+  reqs: MECH
+- course: PHY 110
+  last: SUMMER
+  reqs: PHY109
+- course: PHY 208
+  last: 1244
+  reqs: LINEAR & (PHY205 | PHY207) & $EAM
+- course: PHY 210
+  last: 1244
+- course: PHY 304
+  last: 1244
+  reqs: EAM
+- course: PHY 312
+  last: 1244
+  reqs: (PHYS | ISCA) & PHY208 
+- course: PHY 502
+  last: 1244
+- course: PHY 506
+  last: 1244
+  reqs: PHY305
+- course: PHY 510
+  last: 1244
+- course: PHY 529
+  last: 1244
+- course: PHY 536
+  last: 1244
+- course: PHY 540
+  last: 1244
+- course: PHY 562
+  last: 1244
