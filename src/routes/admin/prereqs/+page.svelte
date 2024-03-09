@@ -9,7 +9,6 @@ import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
 
-
 type Course = {
     title: string,
     id: string,
@@ -96,8 +95,10 @@ const handlePreviousCourse = async () => {
     currentCourseIndex--;
 }
 
-const gotoIndex = async (index: number | string) => {
-    if (typeof(index) === "string") {
+const gotoIndex = async (index: string) => {
+    const indexNum = parseInt(index);
+
+    if (isNaN(indexNum)) {
         const searchIndex = courselist.findIndex((x) => 
             x.title.split(" ")[0].toLowerCase() === index.toLowerCase()
         );
@@ -105,17 +106,16 @@ const gotoIndex = async (index: number | string) => {
             toastStore.add("error", "Invalid index");
             return;
         }
-        console.log("Found index: ", searchIndex);
         currentCourseIndex = searchIndex;
         return;
     }
 
-    if (index < 1 || index > courselist.length) {
+    if (indexNum < 1 || indexNum > courselist.length) {
         toastStore.add("error", "Invalid index");
         return;
     };
 
-    currentCourseIndex = index - 1;
+    currentCourseIndex = indexNum - 1;
 }
 
 onMount(() => {
