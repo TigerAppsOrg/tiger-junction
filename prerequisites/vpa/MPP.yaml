@@ -2,4 +2,18 @@
 code: MPP
 name: Music Performance
 category: Visual and Performing Arts
+updated: 3/9/2024
 ---
+- course: MPP 208
+  last: 1244
+- course: MPP 213
+  last: 1244
+- course: MPP 216
+  last: 1244
+- course: MPP 219
+  last: 1244
+- course: MPP 231
+  last: 1244
+- course: MPP 299
+  last: 1244
+  reqs: MPP298
