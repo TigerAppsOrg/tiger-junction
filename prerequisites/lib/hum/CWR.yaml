@@ -10,8 +10,14 @@ updated: 3/5/2024
   last: 1244
 - course: CWR 206
   last: 1244
+- course: CWR 301
+  last: 1242
+  reqs: CWR2** & CWR2**
 - course: CWR 302
   last: 1244
+  reqs: CWR2** & CW2**
+- course: CWR 303
+  last: 1242
   reqs: CWR2** & CW2**
 - course: CWR 304
   last: 1244

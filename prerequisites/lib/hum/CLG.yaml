@@ -9,11 +9,19 @@ updated: 3/52024
   reqs: CLG101
 - course: CLG 103
   last: 1244
+- course: CLG 105
+  last: 1242
+  reqs: CLG102 | CLG103
 - course: CLG 108
   last: 1244
   reqs: CLG105
+- course: CLG 213
+  last: 1242
 - course: CLG 214
   last: 1244
+  reqs: CLG108
+- course: CLG 301
+  last: 1242
   reqs: CLG108
 - course: CLG 310
   last: 1244

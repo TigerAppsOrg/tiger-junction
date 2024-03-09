@@ -28,5 +28,14 @@ updated: 3/5/2024
   last: 1244
 - course: DAN 408
   last: 1244
+- course: DAN 419B
+  last: 1242
+  reqs: DAN213 | DAN219 | DAN220
+- course: DAN 420A
+  last: 1242
+  reqs: DAN219A
+- course: DAN 420B
+  last: 1242
+  reqs: DAN213 | DAN219 | DAN220
 - course: DAN 431
   last: 1244

@@ -15,15 +15,33 @@ updated: 3/5/2024
 - course: COS 240
   last: 1244
   reqs: INTROCOS & (LINEAR | MAT175)
+- course: COS 302
+  last: 1242
+  reqs: INTROCOS & LINEAR
+- course: COS 316
+  last: 1242
+  reqs: BOTHCOS
 - course: COS 320
   last: 1244
   reqs: BOTHCOS & COS326
 - course: COS 324
   last: 1244
   reqs: LINEAR & COS226
+- course: COS 326
+  last: 1242
+  reqs: COS226
 - course: COS 333
   last: 1244
   reqs: BOTHCOS
+- course: COS 350
+  last: 1242
+  reqs: COS324 | COS343 | COS424 | ECE364 | ECE435 | MAT490 | ORF350
+- course: COS 375
+  last: 1242
+  reqs: COS217
+- course: COS 398
+  last: 1242
+  iw:
 - course: COS 398
   last: 1244
   iw:
@@ -33,26 +51,41 @@ updated: 3/5/2024
 - course: COS 423
   last: 1244
   reqs: COS226 & COS240
+- course: COS 426
+  last: 1242
+  reqs: BOTHCOS
 - course: COS 429
   last: 1244
   reqs: BOTHCOS & $COS324
 - course: COS 432
   last: 1244
   reqs: BOTHCOS
+- course: COS 436
+  last: 1242
+  reqs: COS217
 - course: COS 445
   last: 1244
   reqs: COS226 & COS240
+- course: COS 448
+  last: 1242
+  reqs: BOTHCOS
 - course: COS 471
   last: 1244
   reqs: BOTHCOS
 - course: COS 484
   last: 1244
   reqs: COS324
+- coures: COS 487
+  last: 1242
+  reqs: COS240
 - course: COS 485
   last: 1244
 - course: COS 495
   last: 1244
   reqs: COS240
+- course: COS 497
+  last: 1242
+  iw:
 - course: COS 498
   last: 1244
   iw:

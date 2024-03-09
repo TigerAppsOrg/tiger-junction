@@ -4,9 +4,20 @@ name: Chemistry
 category: STEM
 updated: 3/4/2024
 ---
+- course: CHM 201
+  last: 1242
+  equiv: 
+    - CHM 207
+    - CHM 215
 - course: CHM 202
   last: 1244
   reqs: CHM201 | CHM207
+- course: CHM 207
+  last: 1242
+  equiv:
+    - CHM 201
+    - CHM 215
+  reqs: $MAT103
 - course: CHM 215
   last: 1244
   equiv:
@@ -15,21 +26,46 @@ updated: 3/4/2024
   notes: >-
     Prerequisite consists of excellent high school preparation AND 
     placement into the course by the Chemistry Department.
+- course: CHM250
+  last: 1242
+  reqs: CHEM2 | (CHM301 & (CHM302 | CHM304))
 - course: CHM 251
   last: 1244
   reqs: CHM250
+- course: CHM 301
+  last: 1242
+  reqs: CHEM2
 - course: CHM 304
   last: 1244
   reqs: CHM301
+- course: CHM 305
+  last: 1242
+  reqs: CHEM2 & CALCULUS & PHYS
 - course: CHM 306
   last: 1244
   reqs: PHYS & CALCULUS & (CHM215 | ((CHM201 | CHM203 | CHM207) & (CHM202 | CHM204)))
+- course: CHM 337
+  last: 1242
+  equiv:
+    - CHM 301
+  reqs: (ISCA | CHEM2) & (MECH | MULTI | MOL215) 
+- course: CHM 371
+  last: 1242
+  reqs: CHEM2 & $CHM373
 - course: CHM 373
   last: 1244
   reqs: CHM202 | CHM215
+- course: CHM 403
+  last: 1242
+  reqs: (CHM301 | CHM303) & (CHM302 | CHM304)
 - course: CHM 406
   last: 1244
   reqs: MULTI
+- course: CHM 411
+  last: 1242
+  equiv:
+    - CHM 412
+  reqs: (CHM301 | CHM303) & (CHM302 | CHM304)
 - course: CHM 412
   last: 1244
   equiv:
