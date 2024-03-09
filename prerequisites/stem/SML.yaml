@@ -2,4 +2,33 @@
 code: SML
 name: Statistics and Machine Learning
 category: STEM
+updated: 3/9/2024
 ---
+- course: SML 201
+  last: 1244
+- course: SML 301
+  last: 1244
+  reqs: STATS
+- course: SML 310
+  last: 1244
+  equiv:
+    - SML 312
+  reqs: STATS & INTROCOS
+- course: SML 312
+  last: 1244
+  equiv:
+    - SML 310
+  reqs: STATS & INTROCOS
+- course: SML 320
+  last: 1244
+  reqs: STATS & CALCULUS
+- course: SML 354
+  last: 1244
+  equiv:
+    - COS 324
+  reqs: MAT100
+- course: SML 505
+  last: 1244
+  reqs: BSEMATH & STATS
+- course: SML 510
+  last: 1244
