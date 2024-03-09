@@ -2,4 +2,204 @@
 code: SPI
 name: Public and International Affairs
 category: Social Sciences
+absorbed: WWS
+updated: 3/9/2024
 ---
+- course: SPI 200
+  last: 1244
+- course: SPI 301
+  last: 1244
+  reqs: SPI300 | ECO300 | ECO310
+- course: SPI 304
+  last: 1244
+  equiv:
+    - ECO 300
+    - ECO 310
+  reqs: ECO100
+- course: SPI 305
+  last: 1244
+  reqs: STATS & (SPI300 | ECO300 | ECO310)
+- course: SPI 318
+  last: 1244
+- course: SPI 322
+  last: 1244
+- course: SPI 333
+  last: 1244
+- course: SPI 335
+  last: 1244
+- course: SPI 336
+  last: 1244
+- course: SPI 340
+  last: 1244
+  reqs: STATS
+- course: SPI 342
+  last: 1244
+- course: SPI 368
+  last: 1244
+- course: SPI 379
+  last: 1244
+- course: SPI 383
+  last: 1244
+- course: SPI 386
+  last: 1244
+- course: SPI 391
+  last: 1244
+- course: SPI 393
+  last: 1244
+- course: SPI 402
+  last: 1244
+  iw:
+- course: SPI 404
+  last: 1244
+  iw:
+- course: SPI 421
+  last: 1244
+- course: SPI 483
+  last: 1244
+- course: SPI 484
+  last: 1244
+- course: SPI 485
+  last: 1244
+- course: SPI 486
+  last: 1244
+- course: SPI 488
+  last: 1244
+- course: SPI 492
+  last: 1244
+- course: SPI 496
+  last: 1244
+- course: SPI 497
+  last: 1244
+- course: SPI 499
+  last: 1244
+- course: SPI 502
+  last: 1244
+- course: SPI 503
+  last: 1244
+- course: SPI 505
+  last: 1244
+- course: SPI 506
+  last: 1244
+- course: SPI 508A
+  last: 1244
+  ht:
+  reqs: SPI507B
+- course: SPI 508B
+  last: 1244
+  ht:
+  reqs: SPI507B | SPI507A
+- course: SPI 508C
+  last: 1244
+  reqs: SPI507C
+- course: SPI 521B
+  last: 1244
+  reqs: SPI511B
+- course: SPI 512C
+  last: 1244
+  reqs: SPI511C
+- course: SPI 515B
+  last: 1244
+  reqs: SPI507B | SPI507C
+- course: SPI 524
+  last: 1244
+  reqs: SPI512C
+- course: SPI 525
+  last: 1244
+  reqs: SPI511C
+- course: SPI 527A
+  last: 1244
+- course: SPI 528A
+  last: 1244
+- course: SPI 528G
+  last: 1244
+- course: SPI 530
+  last: 1244
+- course: SPI 531
+  last: 1244
+- course: SPI 539
+  last: 1244
+- course: SPI 540
+  last: 1244
+- course: SPI 548 
+  last: 1244
+- course: SPI 555B
+  last: 1244
+- course: SPI 555C
+  last: 1244
+- course: SPI 555E
+  last: 1244
+- course: SPI 556A
+  last: 1244
+- course: SPI 559
+  last: 1244
+- course: SPI 565
+  last: 1244
+- course: SPI 566A
+  last: 1244
+- course: SPI 572B
+  last: 1244
+- course: SPI 574
+  last: 1244
+- course: SPI 582A
+  last: 1244
+- course: SPI 582B
+  last: 1244
+- course: SPI 582C
+  last: 1244
+- course: SPI 582F
+  last: 1244
+- course: SPI 585A
+  last: 1244
+- course: SPI 586A
+  last: 1244
+- course: SPI 586D
+  last: 1244
+- course: SPI 586E
+  last: 1244
+- course: SPI 590C
+  last: 1244
+  ht:
+- course: SPI 590D
+  last: 1244
+  ht:
+- course: SPI 593B
+  last: 1244
+  ht:
+- course: SPI 593F
+  last: 1244
+  ht:
+- course: SPI 593H
+  last: 1244
+  ht:
+- course: SPI 593O
+  last: 1244
+  ht:
+- course: SPI 593Q
+  last: 1244
+  ht:
+- course: SPI 593S
+  last: 1244
+  ht:
+- course: SPI 593Z
+  last: 1244
+  ht:
+- course: SPI 594A
+  last: 1244
+  ht:
+  reqs: SPI511C
+- course: SPI 594B
+  last: 1244
+  ht:
+- course: SPI 594C
+  last: 1244
+  ht:
+- course: SPI 594D
+  last: 1244
+  ht:
+- course: SPI 594E
+  last: 1244
+- course: SPI 598
+  last: 1244
+  reqs: SPI507B | SPI507C
+- course: SPI 599
+  last: 1244
