@@ -2,4 +2,29 @@
 code: SLA
 name: Slavic Languages and Literatures
 category: Ethnic and Cultural Studies
+updated: 3/9/2024
 ---
+- course: SLA 214
+  last: 1244
+- course: SLA 220
+  last: 1244
+- course: SLA 221
+  last: 1244
+- course: SLA 300
+  last: 1244
+- course: SLA 332
+  last: 1244
+  reqs: RUS108 | RUS207
+- course: SLA 338
+  last: 1244
+- course: SLA 345
+  last: 1244
+- course: SLA 415
+  last: 1244
+- course: SLA 504
+  last: 1244
+  reqs: RUS107 | RUS107R | RUS108
+- course: SLA 508
+  last: 1244
+- course: SLA 516
+  last: 1244
