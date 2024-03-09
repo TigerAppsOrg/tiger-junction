@@ -2,4 +2,8 @@
 code: PLS
 name: Polish
 category: World Languages
+updated: 3/9/2024
 ---
+- course: PLS 102
+  last: 1244
+  reqs: PLS101
