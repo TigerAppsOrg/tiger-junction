@@ -82,11 +82,9 @@ updated: 3/9/2024
   last: 1244
 - course: SPI 508A
   last: 1244
-  ht:
   reqs: SPI507B
 - course: SPI 508B
   last: 1244
-  ht:
   reqs: SPI507B | SPI507A
 - course: SPI 508C
   last: 1244
@@ -158,44 +156,31 @@ updated: 3/9/2024
   last: 1244
 - course: SPI 590C
   last: 1244
-  ht:
 - course: SPI 590D
   last: 1244
-  ht:
 - course: SPI 593B
   last: 1244
-  ht:
 - course: SPI 593F
   last: 1244
-  ht:
 - course: SPI 593H
   last: 1244
-  ht:
 - course: SPI 593O
   last: 1244
-  ht:
 - course: SPI 593Q
   last: 1244
-  ht:
 - course: SPI 593S
   last: 1244
-  ht:
 - course: SPI 593Z
   last: 1244
-  ht:
 - course: SPI 594A
   last: 1244
-  ht:
   reqs: SPI511C
 - course: SPI 594B
   last: 1244
-  ht:
 - course: SPI 594C
   last: 1244
-  ht:
 - course: SPI 594D
   last: 1244
-  ht:
 - course: SPI 594E
   last: 1244
 - course: SPI 598

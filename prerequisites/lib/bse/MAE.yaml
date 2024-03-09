@@ -28,8 +28,10 @@ updated: 3/9/2024
   last: MAE223
 - course: MAE 340
   last: 1244
+  iw:
 - course: MAE 340D
   last: 1244
+  iw:
 - course: MAE 342
   last: 1244
   reqs: MAE206 & MAE305 & MAE341
@@ -47,10 +49,13 @@ updated: 3/9/2024
   reqs: MAE206 & MAE305 & MAE433
 - course: MAE 440
   last: 1244
+  iw:
 - course: MAE 442
   last: 1244
+  iw:
 - course: MAE 444
   last: 1244
+  iw:
 - course: MAE 503
   last: 1244
 - course: MAE 514

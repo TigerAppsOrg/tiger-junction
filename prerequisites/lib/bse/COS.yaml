@@ -26,8 +26,7 @@ updated: 3/5/2024
   reqs: BOTHCOS
 - course: COS 398
   last: 1244
-  notes: >-
-    Open to COS BSE juniors only.
+  iw:
 - course: COS 418
   last: 1244
   reqs: COS217
@@ -56,8 +55,7 @@ updated: 3/5/2024
   reqs: COS240
 - course: COS 498
   last: 1244
-  notes: >-
-    Open to COS BSE Seniors only.
+  iw:
 - course: COS 510
   last: 1244
   reqs: COS326

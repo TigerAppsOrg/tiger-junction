@@ -16,7 +16,6 @@ The rest of the file is a list of courses in that department with information ab
 - `last` is the code for the most recent term that the course was offered.
 - `travel` indicates that the course requires travel outside of the Princeton area.
 - `iw` indicates that the course is an independent work course only open to concentrators.
-- `ht` indicates that the course is a half-term course.
 - `equiv` is a list of equivalent courses.
 - `notes` is any additional information about the prerequisites.
 - `reqs` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.

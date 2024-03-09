@@ -12,6 +12,7 @@ updated: 3/5/2024
   last: 1244
 - course: ECE 298
   last: 1244
+  iw:
 - course: ECE 304
   last: 1244
   reqs: ECE201 & ECE203
@@ -25,6 +26,7 @@ updated: 3/5/2024
   last: 1244
 - course: ECE 398
   last: 1244
+  iw:
 - course: ECE 433
   last: 1244
   reqs: COS324 & ORF309 & ECE435 & LINEAR
@@ -51,6 +53,7 @@ updated: 3/5/2024
   reqs: ECE375
 - course: ECE 498
   last: 1244
+  iw:
 - course: ECE 514
   last: 1244
 - course: ECE 524
