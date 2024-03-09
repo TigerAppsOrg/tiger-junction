@@ -2,4 +2,14 @@
 code: SAN
 name: Sanskrit
 category: World Languages
+updated: 3/9/2024
 ---
+- course: SAN 102
+  last: 1244
+  reqs: SAN101
+- course: SAN 107
+  last: 1244
+  reqs: SAN105
+- course: SAN 305
+  last: 1244
+  reqs: SAN305
