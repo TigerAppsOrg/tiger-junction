@@ -2,4 +2,34 @@
 code: NEU
 name: Neuroscience
 category: STEM
+updated: 3/9/2024
 ---
+- course: NEU 202
+  last: 1244
+- course: NEU 250
+  last: 1244
+- course: NEU 331
+  last: 1244
+  reqs: NEU*** | PSY258 | PSY259
+- course: NEU 350
+  last: 1244
+- course: NEU 437
+  last: 1244
+- course: NEU 447
+  last: 1244
+  reqs: MOL214
+- course: NEU 460
+  last: 1244
+  reqs: NEU201 & NEU202
+- course: NEU 502A
+  last: 1244
+  reqs: NEU501A
+- course: NEU 502B
+  last: 1244
+  reqs: NEU501B
+- course: NEU 511
+  last: 1244
+- course: NEU 537
+  last: 1244
+- course: NEU 560
+  last: 1244
