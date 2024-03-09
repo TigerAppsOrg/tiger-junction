@@ -2,4 +2,32 @@
 code: VIS
 name: Visual Arts
 category: Visual and Performing Arts
+updated: 3/9/2024
 ---
+- course: VIS 309
+  last: 1244
+  reqs: VIS2**
+- course: VIS 313
+  last: 1244
+  reqs: VIS211 | VIS212
+- course: VIS 363
+  last: 1244
+  reqs: VIS263 | FRS138 | URB202
+- course: VIS 404
+  last: 1244
+  reqs: VIS201 | VIS202 | VIS203 | VIS204 | VIS309
+- course: VIS 407
+  last: 1244
+  reqs: VIS2**
+- course: VIS 411
+  last: 1244
+  reqs: VIS211 | VIS212 | VIS213 | VIS219 | VIS315 | VIS316
+- course: VIS 415
+  last: 1244
+  reqs: VIS214 | VIS215 | VIS216 | VIS217
+- course: VIS 419
+  last: 1244
+  iw:
+- course: VIS 421
+  last: 1244
+  reqs: VIS221 | VIS222

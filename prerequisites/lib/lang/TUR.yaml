@@ -2,4 +2,14 @@
 code: TUR
 name: Turkish
 category: World Languages
+updated: 3/9/2024
 ---
+- course: TUR 102 
+  last: 1244
+  reqs: TUR101
+- course: TUR 107
+  last: 1244
+  reqs: TUR105
+- course: TUR 306
+  last: 1244
+  reqs: TUR107

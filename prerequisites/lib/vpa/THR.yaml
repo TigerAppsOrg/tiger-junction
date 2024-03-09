@@ -2,4 +2,8 @@
 code: THR
 name: Theater
 category: Visual and Performing Arts
+updated: 3/9/2024
 ---
+- course: THR 305
+  last: 1244
+  reqs: THR205

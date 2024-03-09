@@ -2,4 +2,8 @@
 code: UKR
 name: Ukranian
 category: World Languages
+updated: 3/9/2024
 ---
+- course: UKR 102
+  last: 1244
+  reqs: UKR101
