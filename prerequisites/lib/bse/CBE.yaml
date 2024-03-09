@@ -6,20 +6,41 @@ updated: 3/4/2024
 ---
 - course: CBE 218
   last: 1244
+- course: CBE 245
+  last: 1242
+  reqs: CHEM1
 - course: CBE 246
   last: 1244
   reqs: CBE245 & MULTI
+- course: CBE 250
+  last: 1242
+  reqs: CBE245 & CBE246 & $CBE341
 - course: CBE 260
   last: 1244
+- course: CBE 341
+  last: 1242
+  reqs: CBE245 & CBE246 & $MAE305
 - course: CBE 346
   last: 1244
   reqs: CBE246 & CBE250 & CBE341
+- course: CBE 351
+  last: 1242
+  iw:
 - course: CBE 352
   last: 1244
   iw:
+- course: CBE 411
+  last: 1242
+  reqs: CALCULUS & (MOL214 | ISCA)
+- course: CBE 415
+  last: 1242
+  reqs: CALCULUS & ($CHM301 | $CHM337)
 - course: CBE 419
   last: 1244
   reqs: MOL214
+- course: CBE 422
+  last: 1242
+  reqs: INTROCOS & MAE305
 - course: CBE 426
   last: 1244
 - course: CBE 433
@@ -30,6 +51,9 @@ updated: 3/4/2024
 - course: CBE 441
   last: 1244
   reqs: CBE341
+- course: CBE 442
+  last: 1242
+  reqs: CBE341 & CBE441
 - course: CBE 449
   last: 1244
 - course: CBE 454

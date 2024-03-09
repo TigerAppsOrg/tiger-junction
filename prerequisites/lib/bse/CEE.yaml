@@ -4,6 +4,20 @@ name: Civil and Environmental Engineering
 category: Engineering
 updated: 3/4/2024
 ---
+- course: CEE 102A
+  last: 1242
+  equiv:
+    - CEE 102B
+- course: CEE 102B
+  last: 1242
+  equiv:
+    - CEE 102A
+- course: CEE 207
+  last: 1242
+  reqs: CALCULUS
+- course: CEE 305
+  last: 1242
+  reqs: MULTI
 - course: CEE 306
   last: 1244
   reqs: MULTI
@@ -21,12 +35,24 @@ updated: 3/4/2024
 - course: CEE 334
   last: 1244
   reqs: CHM201
+- course: CEE 345
+  last: 1242
+  reqs: BSEMATH
 - course: CEE 364
   last: 1244
   reqs: CEE205
 - course: CEE 365
   last: 1244
   reqs: CEE205
+- course: CEE 366
+  last: 1242
+  reqs: CEE205
+- course: CEE 374
+  last: 1242
+  reqs: BSEMATH & INTROCOS & CEE205
+- course: CEE 375
+  last: 1242
+  iw:
 - course: CEE 376
   last: 1244
   iw:
@@ -38,6 +64,9 @@ updated: 3/4/2024
   reqs: CEE312 & CEE366
 - course: CEE 464
   last: 1244
+- course: CEE 474
+  last: 1242
+  reqs: LINEAR
 - course: CEE 476
   last: 1244
   reqs: CEE207 & CEE471

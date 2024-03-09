@@ -8,11 +8,20 @@ updated: 3/4/2024
   last: 1244
 - course: ARC 206
   last: 1244
+- course: ARC 311
+  last: 1242
+  reqs: ARC203 & ARC204
 - course: ARC 314
   last: 1244
   travel:
 - course: ARC 322
   last: 1244
+- course: ARC 350
+  last: 1242
+  notes: >-
+    Open only to concentrators in ARC or CEE and students in the 
+    certificate program in Architecture and Engineering
+  reqs: ARC203 & ARC204
 - course: ARC 351
   last: 1244
   notes: >-
@@ -31,10 +40,23 @@ updated: 3/4/2024
 - course: ARC 504
   last: 1244
   travel:
+- course: ARC 505A
+  last: 1242
+  reqs: ARC501 | ARC502
+- course: ARC 505B
+  last: 1242
+  reqs: ARC501 | ARC502
+- course: ARC 505C
+  last: 1242
+  reqs: ARC501 | ARC502
 - course: ARC 506A
   last: 1244
 - course: ARC 506B
   last: 1244
+- course: ARC 507
+  last: 1242
+  notes: >-
+    Graduate standing and completion of studio sequence ARC 501-ARC 506.
 - course: ARC 508A
   last: 1244
 - course: ARC 508B
@@ -50,6 +72,9 @@ updated: 3/4/2024
 - course: ARC 515
   last: 1244
   reqs: ARC514
+- course: ARC 518
+  last: 1242
+  reqs: ARC510 | ARC514
 - course: ARC 525
   last: 1244
 - course: ARC 532

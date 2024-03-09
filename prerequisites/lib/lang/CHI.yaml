@@ -7,6 +7,11 @@ updated: 3/4/2024
 - course: CHI 102
   last: 1244
   reqs: CHI101
+- course: CHI 105
+  last: 1242
+    equiv:
+      - CHI 105C
+  reqs: CHI102
 - course: CHI 107
   last: 1244
   equiv:
@@ -19,34 +24,68 @@ updated: 3/4/2024
     - CHI 107
     - CHI 107C
   reqs: CHI103
+- course: CHI 301
+  last: 1242
+  reqs: CHI304 | CHI306
 - course: CHI 302
   last: 1244
   reqs: CHI 3**
+- course: CHI 303
+  last: 1242
+  equiv:
+    - CHI 303C
+  reqs: CHI107
 - course: CHI 304
   last: 1244
   equiv:
     - CHI 304C
   reqs: CHI303
+- course: CHI 305
+  last: 1242
+  equiv:
+    - CHI 305C
+  reqs: CHI108
 - course: CHI 306
   last: 1244
   equiv:
     - CHI 306C
   reqs: CHI305
+- course: CHI 403
+  last: 1242
+  equiv:
+    - CHI 403C
+  reqs: CHI304
 - course: CHI 404
   last: 1244
   equiv:
     - CHI 404C
   reqs: CHI403
+- course: CHI 405
+  last: 1242
+  equiv:
+    - CHI 405C
+  reqs: CHI306
 - course: CHI 406
   last: 1244
   equiv:
     - CHI 406C
   reqs: CHI405
+- course: CHI 411
+  last: 1242
+  reqs: CHI304 | CHI306
 - course: CHI 418
   last: 1244
   reqs: CHI 3**
+- course: CHI 451
+  last: 1242
+  equiv:
+    - CHI 451C
+  reqs: CHI 404 | CHI406 | CHI302
 - course: CHI 452
   last: 1244
   reqs: CHI 404 | CHI406 | CHI302
 - course: CHI 1001
   last: 1244
+- course: CHI 1002
+  last: 1242
+  reqs: CHI1001

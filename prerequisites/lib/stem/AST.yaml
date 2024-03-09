@@ -12,6 +12,12 @@ updated: 3/4/2024
 - course: AST 251
   last: 1244
   reqs: AST250
+- course: AST 255
+  last: 1242
+  reqs: AST*** | MOL*** | EEB*** | CHM*** | PHY*** | GEO***
+- course: AST 301
+  last: 1242
+  reqs: BSEMATH & (PHY205 | PHY207)
 - course: AST 309
   last: 1244
   reqs: PHYS & MULTI

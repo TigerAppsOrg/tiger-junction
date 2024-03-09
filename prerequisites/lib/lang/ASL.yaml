@@ -7,6 +7,12 @@ updated: 3/4/2024
 - course: ASL 102
   last: 1244
   reqs: ASL101
+- course: ASL 105
+  last: 1242
+  reqs: ASL102
 - course: ASL 107
   last: 1244
   reqs: ASL105
+- course: ASL 205
+  last: 1242
+  reqs: ASL107

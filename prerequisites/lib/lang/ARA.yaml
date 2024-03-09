@@ -7,9 +7,18 @@ updated: 3/4/2024
 - course: ARA 102
   last: 1244
   reqs: ARA101
+- course: ARA 105
+  last: 1242
+  reqs: ARA102
 - course: ARA 107
   last: 1244
   reqs: ARA105
+- course: ARA 301
+  last: 1242
+  reqs: ARA107
+- course: ARA 303
+  last: 1242
+  reqs: ARA107
 - course: ARA 305
   last: 1242
   reqs: ARA107
@@ -22,6 +31,9 @@ updated: 3/4/2024
 - course: ARA 313
   last: 1244
   reqs: ARA107
+- course: ARA 403
+  last: 1242
+  reqs: ARA301
 - course: ARA 404
   last: 1244
   reqs: ARA301

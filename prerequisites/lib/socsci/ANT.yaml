@@ -34,6 +34,10 @@ category: Social Sciences
   reqs:
     list:
       - ANT ***
+- course: ANT 321
+  last: 1242
+  equiv:
+    - ANT 305
 - course: ANT 325
   last: 1244
 - course: ANT 342
@@ -50,6 +54,9 @@ category: Social Sciences
   last: 1244
 - course: ANT 363
   last: 1244
+- course: ANT 390
+  last: 1242
+  reqs: ANT***
 - course: ANT 430
   last: 1244
 - course: ANT 446

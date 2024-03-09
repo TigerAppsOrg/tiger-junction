@@ -60,14 +60,16 @@ To update the data, please follow these guidelines:
 
 Even if a course has no prerequisites, it should still be listed with no fields. The `travel`, `special`, `equiv`, and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
-Run `node reformat.js` to reformat the data to the correct style.
+Run `node scripts/reformat.js` to reformat the data to the correct style.
 
-## Compiling the Data
-Running `node compile.js` in this directory will create 2 JSON files: `prereqs.json` which contains only the prerequisites of courses and `prereqs_comp.json` which contains both the prerequisites of and for courses. For example, for GER 102, `prereqs.json` will only contain the prerequisites of GER 102 (GER 101), while `prereqs_comp.json` will contain both the prerequisites of GER 102 (GER 101) and the courses that GER 102 is a prerequisite for (GER 105). 
+## Scripts
+Put info about each of the scripts here.
 
-Choosing which file to use depends on if you want more speed (`prereqs_comp.json`) or less space (`prereqs.json`). TigerJunction uses `prereqs_comp.json`.
+reformat -> add -> assemble -> link
 
-Before compilation, the data is validated to ensure that it is in the correct format. If there are any errors, the compiler will print them to the console and stop. The errors must be fixed before the data can be compiled.
+Usage `node scripts/compile.js <args>`
+
+Puts results in the `out` directory.
 
 ## Categories
 For readability, the departments are divided into the following categories. Please leave and issue if you feel that a department is in the wrong category.
