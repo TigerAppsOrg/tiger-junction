@@ -2,4 +2,21 @@
 code: RUS
 name: Russian
 category: World Languages
+updated: 3/9/2024
+vars:
+  - name: ADVRUS
+    equ: RUS107 | RUS107R | RUS108
 ---
+- course: RUS 102
+  last: 1244
+  reqs: RUS101
+- course: RUS 107
+  last: 1244
+  equiv:
+    - RUS 107R
+  reqs: RUS105
+- course: RUS 108
+  last: 1244
+  reqs: RUS103
+- course: RUS 550
+  last: 1244
