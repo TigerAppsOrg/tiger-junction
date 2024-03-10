@@ -9,7 +9,7 @@ category: Social Sciences
   last: 1244
 - course: ANT 228
   last: 1244
-  travel:
+  travel: null
 - course: ANT 233
   last: 1244
 - course: ANT 238
@@ -22,8 +22,7 @@ category: Social Sciences
   last: 1244
 - course: ANT 301
   last: 1244
-  notes: >-
-    ANT 300 is strongly recommended.
+  notes: ANT 300 is strongly recommended.
   reqs:
     list:
       - ANT ***
@@ -62,14 +61,4 @@ category: Social Sciences
 - course: ANT 446
   last: 1244
 - course: ANT 456
-  last: 1244
-- course: ANT 502
-  last: 1244
-- course: ANT 504A
-  last: 1244
-- course: ANT 504B
-  last: 1244
-- course: ANT 522A
-  last: 1244
-- course: ANT 522B
   last: 1244

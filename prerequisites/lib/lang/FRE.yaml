@@ -9,6 +9,12 @@ updated: 3/6/2024
 - course: FRE 102
   last: 1244
   reqs: FRE101
+- course: FRE 1027
+  last: 1244
+  equiv:
+    - FRE 107
+    - FRE 108
+  reqs: FRE101
 - course: FRE 103
   last: 1244
   equiv:
@@ -16,14 +22,14 @@ updated: 3/6/2024
 - course: FRE 107
   last: 1244
   equiv:
-    - FRE 108
     - FRE 1027
+    - FRE 108
   reqs: FRE102 | FRE103
 - course: FRE 108
   last: 1244
   equiv:
-    - FRE 107
     - FRE 1027
+    - FRE 107
   reqs: FRE105
 - course: FRE 207
   last: 1244
@@ -64,25 +70,8 @@ updated: 3/6/2024
   reqs: FRE2**
 - course: FRE 392
   last: 1244
-  travel:
+  travel: null
   reqs: FRE2**
 - course: FRE 401
   last: 1244
   reqs: FRE 2**
-- course: FRE 500
-  last: 1244
-- course: FRE 502
-  last: 1244
-  reqs: FRE307
-- course: FRE 505
-  last: 1244
-- course: FRE 513
-  last: 1244
-- course: FRE 560
-  last: 1244
-- course: FRE 1027
-  last: 1244
-  equiv:
-    - FRE 107
-    - FRE 108
-  reqs: FRE101

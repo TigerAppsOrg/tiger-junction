@@ -24,6 +24,3 @@ vars:
 - course: POR 426
   last: 1244
   reqs: SPA107
-- course: POR 560
-  last: 1244
-  reqs: ADVPOR

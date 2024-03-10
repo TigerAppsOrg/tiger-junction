@@ -107,7 +107,7 @@ vars:
 - course: SPA 324
   last: 1244
   reqs: SPA2**
-- course: SPA 359 
+- course: SPA 359
   last: 1244
   reqs: <SPA207
 - course: SPA 364
@@ -124,9 +124,3 @@ vars:
 - course: SPA 418
   last: 1244
   reqs: SPA3**
-- course: SPA 500
-  last: 1244
-- course: SPA 550
-  last: 1244
-- course: SPA 560
-  last: 1244

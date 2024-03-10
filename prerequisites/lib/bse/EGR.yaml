@@ -32,8 +32,8 @@ updated: 3/5/2024
 - course: EGR 156
   last: 1242
   equiv:
-    - MAT 175
     - ECO 201
+    - MAT 175
     - MAT 201
     - MAT 203
   reqs: EGR153 | EGR154
@@ -81,6 +81,4 @@ updated: 3/5/2024
 - course: EGR 495
   last: 1244
 - course: EGR 497
-  last: 1244
-- course: EGR 501
   last: 1244

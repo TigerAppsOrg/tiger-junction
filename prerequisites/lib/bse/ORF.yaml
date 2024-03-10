@@ -27,7 +27,7 @@ updated: 3/9/2024
   reqs: BSEMATH
 - course: ORF 376
   last: 1244
-  iw:
+  iw: null
 - course: ORF 387
   last: 1244
   reqs: ORF309
@@ -39,34 +39,11 @@ updated: 3/9/2024
   reqs: ORF309 & ORF405
 - course: ORF 478
   last: 1244
-  iw:
+  iw: null
 - course: ORF 497
   last: 1244
-  iw:
+  iw: null
 - course: ORF 499
   last: 1244
-  iw:
+  iw: null
   reqs: ORF498
-- course: ORF 504
-  last: 1244
-- course: ORF 509
-  last: 1244
-- course: ORF 510
-  last: 1244
-  reqs: ORF509
-- course: ORF 515
-  last: 1244
-- course: ORF 523
-  last: 1244
-- course: ORF 525
-  last: 1244
-  reqs: ORF524
-- course: ORF 527
-  last: 1244
-  reqs: ORF526
-- course: ORF 542
-  last: 1244
-- course: ORF 545
-  last: 1244
-- course: ORF 550
-  last: 1244

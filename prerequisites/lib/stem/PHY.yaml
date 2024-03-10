@@ -7,26 +7,26 @@ updated: 3/9/2024
 - course: PHY 102
   last: 1244
   equiv:
+    - EGR 153
     - PHY 104
     - PHY 106
     - PHY 110
-    - EGR 153
   reqs: PHY101
 - course: PHY 104
   last: 1244
   equiv:
+    - EGR 153
     - PHY 102
     - PHY 106
     - PHY 110
-    - EGR 153
   reqs: MECH
 - course: PHY 106
   last: 1244
   equiv:
+    - EGR 153
     - PHY 102
     - PHY 104
     - PHY 110
-    - EGR 153
   reqs: MECH
 - course: PHY 108
   last: 1244
@@ -46,19 +46,4 @@ updated: 3/9/2024
   reqs: EAM
 - course: PHY 312
   last: 1244
-  reqs: (PHYS | ISCA) & PHY208 
-- course: PHY 502
-  last: 1244
-- course: PHY 506
-  last: 1244
-  reqs: PHY305
-- course: PHY 510
-  last: 1244
-- course: PHY 529
-  last: 1244
-- course: PHY 536
-  last: 1244
-- course: PHY 540
-  last: 1244
-- course: PHY 562
-  last: 1244
+  reqs: (PHYS | ISCA) & PHY208

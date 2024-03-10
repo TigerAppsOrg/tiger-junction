@@ -52,10 +52,10 @@ updated: 3/4/2024
   reqs: BSEMATH & INTROCOS & CEE205
 - course: CEE 375
   last: 1242
-  iw:
+  iw: null
 - course: CEE 376
   last: 1244
-  iw:
+  iw: null
 - course: CEE 460
   last: 1244
   reqs: STATS
@@ -72,28 +72,4 @@ updated: 3/4/2024
   reqs: CEE207 & CEE471
 - course: CEE 478
   last: 1244
-  iw:
-- course: CEE 507
-  last: 1244
-- course: CEE 508
-  last: 1244
-- course: CEE 509
-  last: 1244
-- course: CEE 510
-  last: 1244
-- course: CEE 511
-  last: 1244
-  reqs: CEE312 & CEE366
-- course: CEE 520
-  last: 1244
-- course: CEE 529
-  last: 1244
-  reqs: PHYS & BSEMATH
-- course: CEE 531
-  last: 1244
-- course: CEE 575
-  last: 1244
-- course: CEE 596
-  last: 1244
-- course: CEE 599
-  last: 1244
+  iw: null

@@ -14,12 +14,11 @@ updated: 3/4/2024
   last: 1244
 - course: AAS 339
   last: 1242
-  notes: >-
-    Previous AAS or SOC course on race & racism required. 
+  notes: Previous AAS or SOC course on race & racism required.
   reqs: AAS*** | SOC***
 - course: AAS 341
   last: 1244
-  travel:
+  travel: null
 - course: AAS 354
   last: 1244
 - course: AAS 359
@@ -29,6 +28,4 @@ updated: 3/4/2024
 - course: AAS 406
   last: 1244
 - course: AAS 411
-  last: 1244
-- course: AAS 500
   last: 1244

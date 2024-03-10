@@ -15,7 +15,7 @@ updated: 3/5/2024
   reqs: EEB211
 - course: EEB 317
   last: 1242
-  travel:
+  travel: null
 - course: EEB 325
   last: 1242
   reqs: CALCULUS
@@ -40,10 +40,6 @@ updated: 3/5/2024
 - course: EEB 404
   last: 1244
   reqs: EEB 211
-- course: EEB428
+- course: EEB 428
   last: 1244
   reqs: EEB309
-- course: EEB 521
-  last: 1244
-- course: EEB 522
-  last: 1244

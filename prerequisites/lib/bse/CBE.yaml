@@ -9,9 +9,9 @@ updated: 3/4/2024
 - course: CBE 245
   last: 1242
   reqs: CHEM1
-- course: CBE246
-  reqs: CBE245 & MULTI
+- course: CBE 246
   last: 1244
+  reqs: CBE245 & MULTI
 - course: CBE 250
   last: 1242
   reqs: CBE245 & CBE246 & $CBE341
@@ -25,10 +25,10 @@ updated: 3/4/2024
   reqs: CBE246 & CBE250 & CBE341
 - course: CBE 351
   last: 1242
-  iw:
+  iw: null
 - course: CBE 352
   last: 1244
-  iw:
+  iw: null
 - course: CBE 411
   last: 1242
   reqs: CALCULUS & (MOL214 | ISCA)
@@ -58,14 +58,4 @@ updated: 3/4/2024
   last: 1244
 - course: CBE 454
   last: 1244
-  iw:
-- course: CBE 510
-  last: 1244
-  notes: >-
-    The students should have taken an undergraduate course on heat, 
-    mass and momentum transport and an advanced mathematics course 
-    dealing with vector calculus, ordinary and partial differential 
-    equations, eigenvalue problems, Fourier transform and perturbation methods.
-- course: CBE 516
-  last: 1244
-  reqs: AST551
+  iw: null

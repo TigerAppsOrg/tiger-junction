@@ -19,7 +19,7 @@ updated: 3/8/2024
   reqs: GEO202
 - course: GEO 369
   last: 1244
-  travel:
+  travel: null
   reqs: CHEM2
 - course: GEO 418
   last: 1244
@@ -30,8 +30,4 @@ updated: 3/8/2024
 - course: GEO 435
   last: 1244
 - course: GEO 464
-  last: 1244
-- course: GEO 503
-  last: 1244
-- course: GEO 505
   last: 1244

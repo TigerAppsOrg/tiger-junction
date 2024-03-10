@@ -27,7 +27,7 @@ updated: 3/9/2024
   reqs: VIS214 | VIS215 | VIS216 | VIS217
 - course: VIS 419
   last: 1244
-  iw:
+  iw: null
 - course: VIS 421
   last: 1244
   reqs: VIS221 | VIS222

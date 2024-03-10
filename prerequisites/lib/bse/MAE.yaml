@@ -15,7 +15,7 @@ updated: 3/9/2024
   reqs: CALCULUS & $LINEAR & $MAE222
 - course: MAE 228
   last: 1244
-  travel:
+  travel: null
 - course: MAE 305
   last: 1244
   reqs: BSEMATH
@@ -29,10 +29,10 @@ updated: 3/9/2024
   reqs: MAE223
 - course: MAE 340
   last: 1244
-  iw:
+  iw: null
 - course: MAE 340D
   last: 1244
-  iw:
+  iw: null
 - course: MAE 342
   last: 1244
   reqs: MAE206 & MAE305 & MAE341
@@ -50,24 +50,10 @@ updated: 3/9/2024
   reqs: MAE206 & MAE305 & MAE433
 - course: MAE 440
   last: 1244
-  iw:
+  iw: null
 - course: MAE 442
   last: 1244
-  iw:
+  iw: null
 - course: MAE 444
   last: 1244
-  iw:
-- course: MAE 503
-  last: 1244
-- course: MAE 514
-  last: 1244
-- course: MAE 527
-  last: 1244
-- course: MAE 532
-  last: 1244
-- course: MAE 541
-  last: 1244
-- course: MAE 553
-  last: 1244
-- course: MAE 598
-  last: 1244
+  iw: null

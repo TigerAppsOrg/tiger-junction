@@ -12,11 +12,18 @@ vars:
 - course: GER 102
   last: 1244
   reqs: GER101
+- course: GER 1025
+  last: 1244
+  equiv:
+    - GER 102
+    - GER 105
+    - GER 105G
+  reqs: GER101
 - course: GER 105
   last: 1244
   equiv:
-    - GER 105G
     - GER 1025
+    - GER 105G
   reqs: GER102
 - course: GER 107
   last: 1244
@@ -37,25 +44,8 @@ vars:
   last: 1244
 - course: GER 316
   last: 1244
-  notes: >-
-    Required: Proficiency in a second language (via instruction).
+  notes: 'Required: Proficiency in a second language (via instruction).'
   reqs: LANG***
 - course: GER 324
   last: 1244
   reqs: ADVGER
-- course: GER 516
-  last: 1244
-  reqs: ADVGER
-- course: GER 521
-  last: 1244
-- course: GER 523
-  last: 1244
-- course: GER 530
-  last: 1244
-- course: GER 1025
-  last: 1244
-  equiv:
-    - GER 102
-    - GER 105
-    - GER 105G
-  reqs: GER101

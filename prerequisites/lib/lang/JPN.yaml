@@ -4,6 +4,10 @@ name: Japanese
 category: World Languages
 updated: 3/8/2024
 ---
+- course: JPN 1001
+  last: 1244
+  equiv:
+    - JPN 101
 - course: JPN 102
   last: 1244
   reqs: JPN101
@@ -26,7 +30,3 @@ updated: 3/8/2024
 - course: JPN 404
   last: 1244
   reqs: JPN403
-- course: JPN 1001
-  last: 1244
-  equiv:
-    - JPN 101

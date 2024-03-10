@@ -14,9 +14,8 @@ updated: 3/4/2024
   last: 1244
 - course: ART 354
   last: 1244
-  travel:
-  notes: >-
-    No prerequisites, but ART 100 is strongly recommended as background.
+  travel: null
+  notes: No prerequisites, but ART 100 is strongly recommended as background.
 - course: ART 361
   last: 1244
 - course: ART 380
@@ -29,13 +28,14 @@ updated: 3/4/2024
   last: 1244
 - course: ART 419
   last: 1244
-  travel:
+  travel: null
 - course: ART 421
   last: 1244
 - course: ART 425
   last: 1244
   notes: >-
-    At least one lower level course in art history or Japanese studies, or permission of instructor.
+    At least one lower level course in art history or Japanese studies, or
+    permission of instructor.
   reqs: ART*** | JPN***
 - course: ART 465
   last: 1244
@@ -47,14 +47,4 @@ updated: 3/4/2024
   last: 1244
 - course: ART 491
   last: 1242
-  travel:
-- course: ART 502D
-  last: 1244
-- course: ART 565
-  last: 1244
-- course: ART 566
-  last: 1244
-- course: ART 573
-  last: 1244
-- course: ART 597
-  last: 1244
+  travel: null

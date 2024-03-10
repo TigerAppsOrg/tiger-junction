@@ -4,6 +4,11 @@ name: Chinese
 category: World Languages
 updated: 3/4/2024
 ---
+- course: CHI 1001
+  last: 1244
+- course: CHI 1002
+  last: 1242
+  reqs: CHI1001
 - course: CHI 102
   last: 1244
   reqs: CHI101
@@ -84,8 +89,3 @@ updated: 3/4/2024
 - course: CHI 452
   last: 1244
   reqs: CHI 404 | CHI406 | CHI302
-- course: CHI 1001
-  last: 1244
-- course: CHI 1002
-  last: 1242
-  reqs: CHI1001

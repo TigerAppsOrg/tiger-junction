@@ -6,13 +6,13 @@ updated: 3/6/2024
 ---
 - course: ENG 200
   last: 1244
-- course: ENG 203 
+- course: ENG 203
   last: 1244
 - course: ENG 298
   last: 1244
 - course: ENG 300
   last: 1242
-  iw:
+  iw: null
 - course: ENG 304
   last: 1244
 - course: ENG 317
@@ -31,6 +31,6 @@ updated: 3/6/2024
   last: 1244
 - course: ENG 409
   last: 1242
-  travel:
+  travel: null
 - course: ENG 444
   last: 1244

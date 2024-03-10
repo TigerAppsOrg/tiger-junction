@@ -24,9 +24,9 @@ updated: 3/5/2024
 - course: ECO 300
   last: 1244
   equiv:
+    - ECO 310
     - SPI 300
     - SPI 304
-    - ECO 310
   reqs: ECO100 & MULTI
 - course: ECO 301
   last: 1244

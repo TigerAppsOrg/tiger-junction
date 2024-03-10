@@ -6,7 +6,7 @@ updated: 3/4/2024
 ---
 - course: CHM 201
   last: 1242
-  equiv: 
+  equiv:
     - CHM 207
     - CHM 215
 - course: CHM 202
@@ -20,13 +20,13 @@ updated: 3/4/2024
   reqs: $MAT103
 - course: CHM 215
   last: 1244
+  notes: >-
+    Prerequisite consists of excellent high school preparation AND placement
+    into the course by the Chemistry Department.
   equiv:
     - CHM 201
     - CHM 207
-  notes: >-
-    Prerequisite consists of excellent high school preparation AND 
-    placement into the course by the Chemistry Department.
-- course: CHM250
+- course: CHM 250
   last: 1242
   reqs: CHEM2 | (CHM301 & (CHM302 | CHM304))
 - course: CHM 251
@@ -43,12 +43,14 @@ updated: 3/4/2024
   reqs: CHEM2 & CALCULUS & PHYS
 - course: CHM 306
   last: 1244
-  reqs: PHYS & CALCULUS & (CHM215 | ((CHM201 | CHM203 | CHM207) & (CHM202 | CHM204)))
+  reqs: >-
+    PHYS & CALCULUS & (CHM215 | ((CHM201 | CHM203 | CHM207) & (CHM202 |
+    CHM204)))
 - course: CHM 337
   last: 1242
   equiv:
     - CHM 301
-  reqs: (ISCA | CHEM2) & (MECH | MULTI | MOL215) 
+  reqs: (ISCA | CHEM2) & (MECH | MULTI | MOL215)
 - course: CHM 371
   last: 1242
   reqs: CHEM2 & $CHM373
@@ -71,27 +73,3 @@ updated: 3/4/2024
   equiv:
     - CHM 411
   reqs: CHM301 & (CHM302 | CHM304)
-- course: CHM 500A
-  last: 1244
-- course: CHM 500B
-  last: 1244
-- course: CHM 500C
-  last: 1244
-- course: CHM 502
-  last: 1244
-- course: CHM 504
-  last: 1244
-- course: CHM 536
-  last: 1244
-  reqs: CHM303 | CHM304
-- course: CHM 539
-  last: 1244
-- course: CHM 541
-  last: 1244
-  reqs: (CHM303 | CHM304) & MOL214
-- course: CHM 542
-  last: 1244
-  reqs: CHM301 & MOL214
-- course: CHM 544
-  last: 1244
-  reqs: CHM303 | CHM304 | CHM 408

@@ -4,7 +4,7 @@ name: Turkish
 category: World Languages
 updated: 3/9/2024
 ---
-- course: TUR 102 
+- course: TUR 102
   last: 1244
   reqs: TUR101
 - course: TUR 107
