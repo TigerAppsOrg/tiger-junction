@@ -9,6 +9,8 @@ import yaml from 'js-yaml';
 import { TERM_MAP } from './shared.js';
 
 export default function reformat() {
+    console.log("Reformatting...")
+
     // Read each prerequisite file, reformatting the data
     const prereqFiles = fs.readdirSync("lib");
     fs.writeFileSync("log.txt", "");
@@ -22,9 +24,7 @@ export default function reformat() {
         "equiv",
         "reqs",
     ];
-    
-    console.log("Reformatting prerequisite files...");
-    
+        
     for (let i = 0; i < prereqFiles.length; i++) {
         const dir = "lib/" + prereqFiles[i];
         const files = fs.readdirSync(dir);
