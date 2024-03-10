@@ -25,7 +25,8 @@ updated: 3/9/2024
 - course: MAE 321
   last: 1244
 - course: MAE 323
-  last: MAE223
+  last: 1244
+  reqs: MAE223
 - course: MAE 340
   last: 1244
   iw:

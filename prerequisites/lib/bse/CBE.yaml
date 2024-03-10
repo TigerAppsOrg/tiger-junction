@@ -9,9 +9,9 @@ updated: 3/4/2024
 - course: CBE 245
   last: 1242
   reqs: CHEM1
-- course: CBE 246
-  last: 1244
+- course: CBE246
   reqs: CBE245 & MULTI
+  last: 1244
 - course: CBE 250
   last: 1242
   reqs: CBE245 & CBE246 & $CBE341
