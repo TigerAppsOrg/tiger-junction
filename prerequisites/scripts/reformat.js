@@ -33,7 +33,12 @@ for (let i = 0; i < prereqFiles.length; i++) {
         // Handle front matter
         const frontMatter = data.split("---")[1];
         const frontMatterObj = yaml.load(frontMatter);
-        // frontMatterObj.updated = new Date().toLocaleDateString("en-US");
+
+        // Verify that the front matter has the code parameter
+        if (!frontMatterObj.hasOwnProperty("code")) {
+            console.error(`Front matter missing code parameter in ${file}`);
+            continue;
+        }
 
         // Handle courses
         const courses = yaml.load(data.split("---")[2]);
