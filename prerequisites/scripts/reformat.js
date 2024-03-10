@@ -33,7 +33,7 @@ for (let i = 0; i < prereqFiles.length; i++) {
         // Handle front matter
         const frontMatter = data.split("---")[1];
         const frontMatterObj = yaml.load(frontMatter);
-        frontMatterObj.updated = new Date().toLocaleDateString("en-US");
+        // frontMatterObj.updated = new Date().toLocaleDateString("en-US");
 
         // Handle courses
         const courses = yaml.load(data.split("---")[2]);
@@ -125,6 +125,6 @@ for (let i = 0; i < prereqFiles.length; i++) {
         // Write to file
         const newFrontMatter = yaml.dump(frontMatterObj).trim();
         const newCourses = yaml.dump(courses).trim();
-        fs.writeFileSync(file, "---\n" + newFrontMatter + "---\n" + newCourses);
+        fs.writeFileSync(file, "---\n" + newFrontMatter + "\n---\n" + newCourses);
     }
 }
