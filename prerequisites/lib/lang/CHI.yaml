@@ -9,8 +9,8 @@ updated: 3/4/2024
   reqs: CHI101
 - course: CHI 105
   last: 1242
-    equiv:
-      - CHI 105C
+  equiv:
+    - CHI 105C
   reqs: CHI102
 - course: CHI 107
   last: 1244

@@ -87,7 +87,7 @@ vars:
 - course: SPA 232
   last: 1244
   reqs: SPA209
-- course: SPA234
+- course: SPA 234
   last: 1244
   reqs: ADVSPA
 - course: SPA 245

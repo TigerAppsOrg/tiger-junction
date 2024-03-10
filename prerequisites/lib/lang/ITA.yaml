@@ -18,7 +18,7 @@ vars:
     - ITA 107
     - ITA 1027
   reqs: ITA103 | ITA105
-- course: ITA306
+- course: ITA 306
   last: 1244
   reqs: ITA2**
 - course: ITA 312
