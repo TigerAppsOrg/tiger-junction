@@ -65,7 +65,7 @@ for (let i = 0; i < prereqFiles.length; i++) {
         courses.push(...termCourselist.map(x => {
             return {
                 course: x,
-                last: term
+                last: parseInt(term)
             };
         }));
         courses = courses.sort((a, b) => a.course.localeCompare(b.course));
@@ -74,5 +74,6 @@ for (let i = 0; i < prereqFiles.length; i++) {
         const frontMatterStr = yaml.dump(frontMatterObj);
         const coursesStr = yaml.dump(courses);
         const newFile = "---\n" + frontMatterStr + "\n---\n" + coursesStr;
+        fs.writeFileSync(file, newFile);
     }
 }
