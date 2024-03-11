@@ -22,6 +22,8 @@ if (!TERM_MAP.hasOwnProperty(parseInt(term))) {
     process.exit(1);
 }
 
+fs.writeFileSync("log.txt", "");
+
 // Read courselist from cache
 const courselistCache = fs.readFileSync("../cache/" + term + "_sm.json");
 const courselist = [...new Set(JSON.parse(courselistCache)
@@ -50,13 +52,27 @@ for (let i = 0; i < prereqFiles.length; i++) {
         const frontMatterObj = yaml.load(frontMatter);
         frontMatterObj.updated = new Date().toLocaleDateString("en-US");
 
-        const courses = yaml.load(data.split("---")[2]);
+        let courses = yaml.load(data.split("---")[2]);
         const currentCourses = courses !== undefined ? 
             courses.map(x => x.course)
             : [];
         const termCourselist = courselist
             .filter(x => x.split(" ")[0] === frontMatterObj.code)
             .filter(x => !currentCourses.includes(x));
-        fs.appendFileSync("log.txt", JSON.stringify(termCourselist, null, 2));
+
+        // Add courses not already present to the file
+        if (courses === undefined) courses = [];
+        courses.push(...termCourselist.map(x => {
+            return {
+                course: x,
+                last: term
+            };
+        }));
+        courses = courses.sort((a, b) => a.course.localeCompare(b.course));
+
+        // Write the file
+        const frontMatterStr = yaml.dump(frontMatterObj);
+        const coursesStr = yaml.dump(courses);
+        const newFile = "---\n" + frontMatterStr + "\n---\n" + coursesStr;
     }
 }
