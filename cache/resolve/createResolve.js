@@ -1,8 +1,18 @@
+/**
+ * createResolve.js
+ * A dump of the listings table (listings_dump.json) must be present
+ * Generates 2 files:
+ * 1. full_cross.json: A sorted list of all course listings and their crosslistings
+ * 2. linking_map.json: A map of course codes to their respective listing IDs
+ * Usage: node createResolve.js
+ */
+
 import fs from "fs";
 
 const dir = "coursedata";
 const files = fs.readdirSync(dir).filter((file) => file.endsWith(".json"));
 fs.writeFileSync("resolve/full_cross.json", "");
+fs.writeFileSync("resolve/linking_map.json", "");
 
 //----------------------------------------------------------------------
 // Map
@@ -76,12 +86,22 @@ fs.writeFileSync("resolve/full_cross.json", JSON.stringify(crossReduced, null, 4
 const listingDump = JSON.parse(fs.readFileSync("resolve/listings_dump.json"));
 listingDump.sort((a, b) => a.code.localeCompare(b.code));
 const codes = listingDump.map(x => x.code);
+codes.sort((a, b) => a.localeCompare(b));
 
-const duplicates = [];
+const linkingMap = {};
 for (let i = 0; i < codes.length; i++) {
-    if (codes[i] === codes[i + 1]) {
-        duplicates.push(codes[i]);
+    let listingIndex = listingDump.findIndex(x => x.code === codes[i]);
+    if (listingIndex === -1) {
+        console.error("No listing found for", codes[i]);
     }
+
+    let listingIds = [];
+    while (listingDump[listingIndex] && listingDump[listingIndex].code === codes[i]) {
+        listingIds.push(listingDump[listingIndex].id);
+        listingIndex++;
+    }
+
+    linkingMap[codes[i]] = listingIds;
 }
 
-fs.writeFileSync("resolve/linking_table.json", JSON.stringify(duplicates, null, 4));
+fs.writeFileSync("resolve/linking_map.json", JSON.stringify(linkingMap, null, 4));
