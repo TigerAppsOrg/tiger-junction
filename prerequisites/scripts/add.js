@@ -73,7 +73,7 @@ for (let i = 0; i < prereqFiles.length; i++) {
         // Write the file
         const frontMatterStr = yaml.dump(frontMatterObj);
         const coursesStr = yaml.dump(courses);
-        const newFile = "---\n" + frontMatterStr + "\n---\n" + coursesStr;
+        const newFile = "---\n" + frontMatterStr + "---\n" + coursesStr;
         fs.writeFileSync(file, newFile);
     }
 }
