@@ -2,7 +2,7 @@
 code: ITA
 name: Italian
 category: World Languages
-updated: 3/8/2024
+updated: 3/10/2024
 vars:
   - name: ADVITA
     equ: ITA107 | ITA1027 | ITA108

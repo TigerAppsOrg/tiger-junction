@@ -2,8 +2,10 @@
 code: TPP
 name: Teacher Preparation
 category: Other
-updated: 3/9/2024
+updated: 3/10/2024
 ---
+- course: TPP 301
+  last: 1244
 - course: TPP 403
   last: 1244
   reqs: PSY307 & TPP301

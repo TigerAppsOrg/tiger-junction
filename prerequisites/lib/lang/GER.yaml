@@ -2,7 +2,7 @@
 code: GER
 name: German
 category: World Languages
-updated: 3/8/2024
+updated: 3/10/2024
 vars:
   - name: ADVGER
     equ: GER107 | GER107G

@@ -2,7 +2,7 @@
 code: POR
 name: Portuguese
 category: World Languages
-updated: 3/9/2024
+updated: 3/10/2024
 vars:
   - name: ADVPOR
     equ: POR107 | POR109 | POR1099

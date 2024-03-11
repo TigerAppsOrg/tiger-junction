@@ -2,7 +2,7 @@
 code: RUS
 name: Russian
 category: World Languages
-updated: 3/9/2024
+updated: 3/10/2024
 vars:
   - name: ADVRUS
     equ: RUS107 | RUS107R | RUS108
