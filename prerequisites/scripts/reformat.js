@@ -46,6 +46,7 @@ export default function reformat() {
             // Handle courses
             const courses = yaml.load(data.split("---")[2]);
             if (courses === undefined) continue;
+            let isCourseError = false;
     
             outer: for (let k = 0; k < courses.length; k++) {
                 const course = courses[k];
@@ -58,6 +59,7 @@ export default function reformat() {
                 // Verify that the course has the course and last parameters
                 if (!course.hasOwnProperty("course")) {
                     console.error(`Course missing course parameter in ${file}`);
+                    isCourseError = true;
                     isError = true;
                 }
                 if (!course.hasOwnProperty("last")) {
@@ -128,7 +130,8 @@ export default function reformat() {
             }
     
             // Sort courses by course
-            courses.sort((a, b) => a.course.localeCompare(b.course));
+            if (!isCourseError)
+                courses.sort((a, b) => a.course.localeCompare(b.course));
     
             // Write to file
             const newFrontMatter = yaml.dump(frontMatterObj).trim();
