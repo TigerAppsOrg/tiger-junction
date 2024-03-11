@@ -122,7 +122,7 @@ for (let i = 0; i < courselist.length; i++) {
     await new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const filename = term + ".json";
+const filename = "coursedata/" + term + ".json";
 fs.writeFileSync(filename, JSON.stringify(cacheData, null, 4));
 
 console.log(`Average response time: ${responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length}ms`);

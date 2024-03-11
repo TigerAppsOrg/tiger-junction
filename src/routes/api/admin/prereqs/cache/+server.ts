@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return new Response("Invalid term", { status: 400 });
     }
     
-    const filePath = path.resolve("cache/" + term + "_sm.json");
+    const filePath = path.resolve("cache/coursedata/sm/" + term + "_sm.json");
     const data = fs.readFileSync(filePath, "utf8");
     return new Response(data, { status: 200, headers: { "Content-Type": "application/json" } });
 };

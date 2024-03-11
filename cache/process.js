@@ -34,5 +34,5 @@ courselist = courselist.map(x => {
     return x;
 });
 
-fs.writeFileSync("./" + term + "_sm.json", JSON.stringify(courselist, null, 4));
+fs.writeFileSync("./coursedata/sm/" + term + "_sm.json", JSON.stringify(courselist, null, 4));
 
