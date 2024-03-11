@@ -61,4 +61,27 @@ for (let i = 0; i < crossDump.length; i++) {
     }
 }
 
+// Test for duplicates
+const crossSet = new Set(crossReduced);
+if (crossSet.size !== crossReduced.length) {
+    console.error("Duplicates found in full_cross.json");
+}
+
 fs.writeFileSync("resolve/full_cross.json", JSON.stringify(crossReduced, null, 4));
+
+//----------------------------------------------------------------------
+// Create Linking Table
+//----------------------------------------------------------------------
+
+const listingDump = JSON.parse(fs.readFileSync("resolve/listings_dump.json"));
+listingDump.sort((a, b) => a.code.localeCompare(b.code));
+const codes = listingDump.map(x => x.code);
+
+const duplicates = [];
+for (let i = 0; i < codes.length; i++) {
+    if (codes[i] === codes[i + 1]) {
+        duplicates.push(codes[i]);
+    }
+}
+
+fs.writeFileSync("resolve/linking_table.json", JSON.stringify(duplicates, null, 4));
