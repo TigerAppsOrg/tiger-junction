@@ -1,4 +1,5 @@
 /**
+ * reformat.js
  * Usage: node reformat.js
  */
 import fs from 'fs';
