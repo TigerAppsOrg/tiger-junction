@@ -1,20 +1,21 @@
 /**
- * Reformats the data in the prerequisite files according to the
- * style guidelines in the README. This script should be run FIRST
- * before any other steps in the compilation pipeline for safety.
  * Usage: node reformat.js
  */
 import fs from 'fs';
 import yaml from 'js-yaml';
 import { TERM_MAP } from './shared.js';
 
+/**
+ * Reformats the data in the prerequisite files according to the
+ * style guidelines in the README. This script should be run FIRST
+ * before any other steps in the compilation pipeline for safety.
+ * @returns {boolean} True if successful, false otherwise
+ */
 export default function reformat() {
     console.log("Reformatting...")
 
     // Read each prerequisite file, reformatting the data
     const prereqFiles = fs.readdirSync("lib");
-    fs.writeFileSync("log.txt", "");
-    
     const PARAM_ORDER = [
         "course",
         "last",
@@ -24,6 +25,8 @@ export default function reformat() {
         "equiv",
         "reqs",
     ];
+
+    let isReformatError = false;
         
     for (let i = 0; i < prereqFiles.length; i++) {
         const dir = "lib/" + prereqFiles[i];
@@ -91,7 +94,10 @@ export default function reformat() {
                     course.equiv.sort();
                 }
     
-                if (isError) continue outer;
+                if (isError) {
+                    reformatError = true;
+                    continue outer;
+                }
     
                 //----------------------------------------------------------
                 // Reformatting
@@ -125,8 +131,6 @@ export default function reformat() {
                     }
                 }
                 courses[k] = newCourse;
-    
-                fs.appendFileSync("log.txt", JSON.stringify(newCourse, null, 2));
             }
     
             // Sort courses by course
@@ -139,6 +143,13 @@ export default function reformat() {
             fs.writeFileSync(file, "---\n" + newFrontMatter + "\n---\n" + newCourses);
         }
     }
+
+    if (isReformatError) {
+        console.error("Error detected during reformatting");
+        return false;
+    }
+    console.log("Reformatting complete");
+    return true;
 }
 
 if (process.argv[1].includes("reformat.js")) {
