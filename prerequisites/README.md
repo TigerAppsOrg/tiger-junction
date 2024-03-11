@@ -66,8 +66,8 @@ Run `node scripts/reformat.js` to reformat the data to the correct style.
 There are 4 scripts in the `scripts` directory which make up the complete compilation process:
 - `reformat.js` -- Reformats the data to the correct style.
 - `add.js` -- Adds courses not manually added to the data.
-- `assemble.js` -- Assembles the data into a single JSON file according to options.
 - `link.js` -- Links the JSON output with the TigerJunction Supabase listing ids.
+- `assemble.js` -- Assembles the data into a single JSON file according to options.
 
 The default function can be exported from each of the files for use in a different script, or can be called directly from the command line (see individual files for usage). Running `compile.js` will run all of these scripts in order. All outputs are placed in the `out` directory.
 

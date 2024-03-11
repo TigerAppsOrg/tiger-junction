@@ -6,8 +6,8 @@
 
 import reformat from './reformat.js';
 import add from './add.js';
-import assemble from './assemble.js';
 import link from './link.js';
+import assemble from './assemble.js';
 import { TERM_MAP } from './shared.js';
 
 const args = process.argv.slice(2);
@@ -26,5 +26,5 @@ Object.keys(TERM_MAP)
         }
     });
 
-// assemble();
 // link();
+// assemble();
