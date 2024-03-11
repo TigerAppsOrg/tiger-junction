@@ -10,5 +10,3 @@ The files correspond to their term codes. For example, 1244 corresponds to the S
 - 1222: Fall 2021
 - 1214: Spring 2021
 - 1212: Fall 2020
-
-*Last Updated: 3/8/2024*
