@@ -101,65 +101,49 @@ for (let i = 0; i < crossReduced.length - 1; i++) {
                 code: crossReduced[i + 1].code,
                 term: crossReduced[i + 1].term,
             });
+            crossReduced[i].cross.push(...crossReduced[i + 1].cross);
             crossReduced.splice(i + 1, 1);
         } else if (crossReduced[i].term < crossReduced[i + 1].term) {
             crossReduced[i + 1].prev_code.push({
                 code: crossReduced[i].code,
                 term: crossReduced[i].term,
             });
+            crossReduced[i + 1].cross.push(...crossReduced[i].cross);
             crossReduced.splice(i, 1);
         } else {
             console.error("Duplicate id and term found");
         }
     }
+    crossReduced[i].cross = [...new Set(crossReduced[i].cross)].sort();
 }
 
-fs.writeFileSync("resolve/cross_reduced.json", JSON.stringify(crossReduced, null, 4));
-process.exit(0);
+crossReduced.sort((a, b) => a.code.localeCompare(b.code));
+fs.writeFileSync("resolve/cross_reduced.json", JSON.stringify(crossReduced, null, 2));
 
 //----------------------------------------------------------------------
-// Create Linking Table
+// Create Cross Table
 //----------------------------------------------------------------------
 
-// fs.writeFileSync("resolve/cross_table.json", JSON.stringify(crossMap, null, 4));
+const crossTable = {};
+for (let i = 0; i < crossReduced.length; i++) {
+    const answer = {
+        code: crossReduced[i].code,
+        id: crossReduced[i].id,
+    }
 
+    crossTable[crossReduced[i].code] = answer;
+    for (let j = 0; j < crossReduced[i].cross.length; j++) {
+        crossTable[crossReduced[i].cross[j]] = answer;
+    }
+    for (let j = 0; j < crossReduced[i].prev_code.length; j++) {
+        crossTable[crossReduced[i].prev_code[j].code] = answer;
+    }
+}
 
-// const crossMap = {};
-// for (let i = 0; i < crossReduced.length; i++) {
-//     const split = crossReduced[i].split(" / ");
-//     if (split.length > 1) {
-//         for (let cross of split.slice(1)) {
-//             crossMap[cross] = split[0];
-//         }
-//     }
-//     crossMap[split[0]] = split[0];
-// }
+// Test for duplicate keys
+const crosstableSet = new Set(Object.keys(crossTable));
+if (crosstableSet.size !== Object.keys(crossTable).length) {
+    console.error("Duplicates found in cross table");
+}
 
-// const listingDump = JSON.parse(fs.readFileSync("resolve/listings_dump.json"));
-// listingDump.sort((a, b) => a.code.localeCompare(b.code));
-
-// const linkingMap = {};
-// for (let i = 0; i < crossReduced.length; i++) {
-//     const codes = crossReduced[i].split(" / ");
-//     for (let j = 0; j < codes.length; j++) {
-//         const primary = crossMap[codes[j]];
-//         if (!primary) {
-//             console.error("No primary found for", codes[j]);
-//         }
-
-//         let listingIndex = listingDump.findIndex(x => x.code === primary);
-//         if (listingIndex === -1) {
-//             console.error("No listing found for", primary);
-//         }
-
-//         let listingIds = [];
-//         while (listingDump[listingIndex] && listingDump[listingIndex].code === primary) {
-//             listingIds.push(listingDump[listingIndex].id);
-//             listingIndex++;
-//         }
-
-//         linkingMap[codes[j]] = listingIds;
-//     }
-// }
-
-// fs.writeFileSync("resolve/linking_map.json", JSON.stringify(linkingMap, null, 4));
+fs.writeFileSync("resolve/cross_table.json", JSON.stringify(crossTable, null, 2));
