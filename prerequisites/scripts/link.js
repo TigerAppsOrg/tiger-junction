@@ -12,7 +12,7 @@ import yaml from 'js-yaml';
 export default function link() {
     console.log("Linking...");
 
-    const crossTable = fs.readFileSync("../cache/resolve/cross_table.json");
+    const crossTable = JSON.parse(fs.readFileSync("../cache/resolve/cross_table.json", "utf-8"));
 
     const prereqFiles = fs.readdirSync("lib");
     for (let i = 0; i < prereqFiles.length; i++) {
