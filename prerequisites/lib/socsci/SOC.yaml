@@ -30,6 +30,9 @@ updated: 3/11/2024
   last: 1244
   reqs: WRI***
   id: '006409'
+- course: SOC 306
+  last: 1234
+  reqs: STATS
 - course: SOC 314
   last: 1244
   id: '014526'

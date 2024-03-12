@@ -37,3 +37,6 @@ vars:
   last: 1242
   reqs: RUS107
   id: '006275'
+- course: RUS 208
+  last: 1234
+  reqs: RUS207

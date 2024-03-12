@@ -89,6 +89,9 @@ updated: 3/11/2024
 - course: VIS 331
   last: 1244
   id: '007224'
+- course: VIS 354
+  last: 1234
+  reqs: ART2** | CWR2** | DAN2** | MUS2** | THR2** | VIS2**
 - course: VIS 363
   last: 1244
   reqs: VIS263 | FRS138 | URB202
@@ -119,6 +122,9 @@ updated: 3/11/2024
 - course: VIS 416
   last: 1242
   id: '011446'
+- course: VIS 418
+  last: 1234
+  reqs: VIS2** | VIS3** | (CEE2** & (ARC2** | EGR2** | MAE2**))
 - course: VIS 419
   last: 1244
   iw: null

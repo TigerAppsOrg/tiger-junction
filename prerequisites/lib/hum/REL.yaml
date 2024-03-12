@@ -87,6 +87,9 @@ updated: 3/11/2024
 - course: REL 402
   last: 1242
   id: '014907'
+- course: REL 403
+  last: 1234
+  reqs: HEB107
 - course: REL 415
   last: 1244
   id: '016700'

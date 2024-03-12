@@ -89,6 +89,9 @@ updated: 3/11/2024
   last: 1244
   reqs: PSY101 | PSY255
   id: '015015'
+- course: PSY 414
+  last: 1234
+  reqs: PSY***
 - course: PSY 420
   last: 1244
   id: '014026'

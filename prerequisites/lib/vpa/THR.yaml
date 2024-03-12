@@ -63,6 +63,9 @@ updated: 3/11/2024
 - course: THR 402
   last: 1244
   id: '014046'
+- course: THR 418
+  last: 1234
+  reqs: THR201
 - course: THR 419
   last: 1242
   reqs: THR101 | THR201 | THR301 | THR401 | MTD341 | THR400 | THR402

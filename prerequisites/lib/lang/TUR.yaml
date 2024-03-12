@@ -19,6 +19,9 @@ updated: 3/11/2024
   last: 1244
   reqs: TUR105
   id: '007205'
+- course: TUR 305
+  last: 1234
+  reqs: TUR107
 - course: TUR 306
   last: 1244
   reqs: TUR107

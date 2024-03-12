@@ -53,7 +53,16 @@ updated: 3/11/2024
   last: 1244
   reqs: MOL214
   id: '011586'
+- course: NEU 457
+  last: 1234
+  reqs: LINEAR | NEU314
 - course: NEU 460
   last: 1244
   reqs: NEU201 & NEU202
   id: '016125'
+- course: NEU 475
+  last: 1234
+  reqs: NEU201
+- course: NEU 490
+  last: 1234
+  reqs: NEU201 & NEU202

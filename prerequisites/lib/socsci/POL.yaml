@@ -128,6 +128,9 @@ updated: 3/11/2024
 - course: POL 442
   last: 1244
   id: '008843'
+- course: POL 452
+  last: 1234
+  reqs: POL345 & POL346
 - course: POL 476
   last: 1244
   id: '016326'

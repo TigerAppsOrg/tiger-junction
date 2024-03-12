@@ -52,6 +52,9 @@ updated: 3/11/2024
   last: 1242
   reqs: ORF245 & ORF309
   id: '008005'
+- course: ORF 407
+  last: 1234
+  req: ORF309
 - course: ORF 409
   last: 1242
   reqs: ORF245 & ORF309
@@ -76,6 +79,9 @@ updated: 3/11/2024
   last: 1242
   reqs: ORF245
   id: '008008'
+- course: ORF 474
+  last: 1234
+  reqs: ORF309 & ORF405
 - course: ORF 478
   last: 1244
   iw: null

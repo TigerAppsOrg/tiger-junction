@@ -88,6 +88,9 @@ updated: 3/11/2024
   last: 1242
   reqs: PHYS & CALCULUS
   id: '016694'
+- course: PHY 235
+  last: 1234
+  reqs: $CALCULUS
 - course: PHY 301
   last: 1242
   reqs: EAM & PHY208
