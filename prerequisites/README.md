@@ -37,19 +37,20 @@ Wildcard courses are also supported. For example, `MAT 2**` would match all cour
 
 ### Special Fields
 The following prerequisite groupings are common and have been given special tags that can be used like courses in the `reqs` field:
-- `MECH` -- **PHY103 | PHY105 | ISC231 | EGR151** -- classical mechanics is a prerequiste.
-- `EAM` -- **PHY104 | PHY106 | ISC233 | EGR153** -- electricity and magnetism is a prerequisite.
-- `PHYS` -- **MECH & EAM** -- both classical mechanics and electricity and magnetism are prerequisites.
-- `CALCULUS` -- **MAT104 | MAT210 | MAT215 | EGR152** -- calculus II is a prerequisite.
-- `MULTI` -- **MAT175 | MAT201 | MAT203 | MAT216 | ECO201 | EGR156** -- multivariable calculus is a prerequisite.
-- `LINEAR` -- **MAT202 | MAT204 | MAT217 | MAT218 | EGR154** --linear algebra is a prerequisite.
-- `BSEMATH` -- **MULTI & LINEAR** -- both multivariable calculus and linear algebra are prerequisites.
-- `INTROCOS` -- **COS126 | ECE115 |s ISCA**
-- `BOTHCOS` -- **COS217 & COS226** -- both COS 217 and COS 226 are prerequisites.
-- `CHEM1` -- **CHM201 | CHM207 | CHM215** -- first semester general chemistry is a prerequisite.
-- `CHEM2` -- **CHM202 | CHM215** -- second semester general chemistry is a prerequisite.
-- `STATS` -- **ECO202 | EEB355 | ORF245 | POL345 | PSY251 | SOC301 | SML101 | SML 201** -- statistics is a prerequisite.
-- `ISCA` -- **ISC231 & ISC232 & ISC233 & ISC234** -- ISC sequence can be used.
+- `ISCA` -- **ISC231 & ISC232 & ISC233 & ISC234** -- complete integrated science sequence
+- `MECH` -- **PHY103 | PHY105 | ISC231 | EGR151** -- classical mechanics
+- `EAM` -- **PHY104 | PHY106 | ISC233 | EGR153** -- electricity and magnetism
+- `PHYS` -- **MECH & EAM** -- both classical mechanics and electricity and magnetism.
+- `CALCULUS` -- **MAT104 | MAT210 | MAT215 | EGR152** -- calculus II
+- `MULTI` -- **MAT175 | MAT201 | MAT203 | MAT216 | ECO201 | EGR156** -- multivariable calculus
+- `LINEAR` -- **MAT202 | MAT204 | MAT217 | MAT218 | EGR154** -- linear algebra
+- `BSEMATH` -- **MULTI & LINEAR** -- both multivariable calculus and linear algebra
+- `INTROCOS` -- **COS126 | ECE115 | ISCA** -- introductory computer science
+- `BOTHCOS` -- **COS217 & COS226** -- 2nd year computer science
+- `CHEM1` -- **CHM201 | CHM207 | CHM215** -- 1st semester general chemistry
+- `CHEM2` -- **CHM202 | CHM215** -- 2nd semester general chemistry 
+- `STATS` -- **ECO202 | EEB355 | ORF245 | POL345 | PSY251 | SOC301 | SML101 | SML 201** --introductory statistics 
+- `INTROMOL` -- **MOL214 | ISCA** -- introductory molecular biology 
 
 ## Guidelines
 To update the data, please follow these guidelines:
@@ -66,7 +67,7 @@ Run `node scripts/reformat.js` to reformat the data to the correct style.
 There are 4 scripts in the `scripts` directory which make up the complete compilation process:
 - `reformat.js` -- Reformats the data to the correct style.
 - `add.js` -- Adds courses not manually added to the data.
-- `link.js` -- Links the JSON output with the TigerJunction Supabase listing ids.
+- `link.js` -- Adds the ids of each course (ultimately an optional step meant for readability, the assembler supercedes this).
 - `assemble.js` -- Assembles the data into a single JSON file according to options.
 
 The default function can be exported from each of the files for use in a different script, or can be called directly from the command line (see individual files for usage). Running `compile.js` will run all of these scripts in order. All outputs are placed in the `out` directory.
