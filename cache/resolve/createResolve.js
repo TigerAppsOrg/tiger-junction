@@ -10,8 +10,6 @@ import fs from "fs";
 
 const dir = "coursedata";
 const files = fs.readdirSync(dir).filter((file) => file.endsWith(".json"));
-fs.writeFileSync("resolve/cross_reduced.json", "");
-fs.writeFileSync("resolve/linking_map.json", "");
 
 //----------------------------------------------------------------------
 // Map
@@ -123,7 +121,7 @@ process.exit(0);
 // Create Linking Table
 //----------------------------------------------------------------------
 
-// fs.writeFileSync("resolve/cross_map.json", JSON.stringify(crossMap, null, 4));
+// fs.writeFileSync("resolve/cross_table.json", JSON.stringify(crossMap, null, 4));
 
 
 // const crossMap = {};
