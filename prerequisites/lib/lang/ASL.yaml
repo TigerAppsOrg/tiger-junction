@@ -7,12 +7,16 @@ updated: 3/10/2024
 - course: ASL 102
   last: 1244
   reqs: ASL101
+  id: '016289'
 - course: ASL 105
   last: 1242
   reqs: ASL102
+  id: '016440'
 - course: ASL 107
   last: 1244
   reqs: ASL105
+  id: '016650'
 - course: ASL 205
   last: 1242
   reqs: ASL107
+  id: '016902'

@@ -6,86 +6,115 @@ updated: 3/10/2024
 ---
 - course: COS 126
   last: 1244
+  id: '002051'
 - course: COS 217
   last: 1244
   reqs: INTROCOS
+  id: '002053'
 - course: COS 226
   last: 1244
   reqs: INTROCOS
+  id: '002054'
 - course: COS 240
   last: 1244
   reqs: INTROCOS & (LINEAR | MAT175)
+  id: '016239'
 - course: COS 302
   last: 1242
   reqs: INTROCOS & LINEAR
+  id: '015411'
 - course: COS 316
   last: 1242
   reqs: BOTHCOS
+  id: '015166'
 - course: COS 320
   last: 1244
   reqs: BOTHCOS & COS326
+  id: '002061'
 - course: COS 324
   last: 1244
   reqs: LINEAR & COS226
+  id: '014294'
 - course: COS 326
   last: 1242
   reqs: COS226
+  id: '012069'
 - course: COS 333
   last: 1244
   reqs: BOTHCOS
+  id: '002065'
 - course: COS 350
   last: 1242
   reqs: COS324 | COS343 | COS424 | ECE364 | ECE435 | MAT490 | ORF350
+  id: '016869'
 - course: COS 375
   last: 1242
   reqs: COS217
+  id: '009084'
 - course: COS 398
   last: 1242
   iw: null
+  id: '002069'
 - course: COS 398
   last: 1244
   iw: null
+  id: '002069'
 - course: COS 418
   last: 1244
   reqs: COS217
+  id: '013749'
 - course: COS 423
   last: 1244
   reqs: COS226 & COS240
+  id: '002071'
 - course: COS 426
   last: 1242
   reqs: BOTHCOS
+  id: '002073'
 - course: COS 429
   last: 1244
   reqs: BOTHCOS & $COS324
+  id: '009123'
 - course: COS 432
   last: 1244
   reqs: BOTHCOS
+  id: '002074'
 - course: COS 436
   last: 1242
   reqs: COS217
+  id: '002075'
 - course: COS 445
   last: 1244
   reqs: COS226 & COS240
+  id: '012095'
 - course: COS 448
   last: 1242
   reqs: BOTHCOS
+  id: '011558'
 - course: COS 471
   last: 1244
   reqs: BOTHCOS
+  id: '016584'
 - course: COS 484
   last: 1244
   reqs: COS324
+  id: '015210'
 - course: COS 485
   last: 1244
+  id: '014447'
 - course: COS 487
   last: 1242
   reqs: COS240
+  id: '002081'
 - course: COS 495
   last: 1244
   reqs: COS240
+  id: '002084'
 - course: COS 497
   last: 1242
   iw: null
+  id: '002086'
 - course: COS 498
   last: 1244
   iw: null
+  id: '002087'

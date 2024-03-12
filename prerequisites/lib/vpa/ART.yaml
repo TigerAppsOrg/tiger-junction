@@ -6,45 +6,63 @@ updated: 3/10/2024
 ---
 - course: ART 102
   last: 1244
+  id: '000514'
 - course: ART 218
   last: 1244
+  id: '015159'
 - course: ART 228
   last: 1244
+  id: '013694'
 - course: ART 273
   last: 1244
+  id: '017096'
 - course: ART 354
   last: 1244
   travel: null
   notes: No prerequisites, but ART 100 is strongly recommended as background.
+  id: '000592'
 - course: ART 361
   last: 1244
+  id: '015895'
 - course: ART 380
   last: 1244
+  id: '017097'
 - course: ART 401
   last: 1244
+  id: '010090'
 - course: ART 402
   last: 1244
+  id: '015896'
 - course: ART 418
   last: 1244
+  id: '013156'
 - course: ART 419
   last: 1244
   travel: null
+  id: '015631'
 - course: ART 421
   last: 1244
+  id: '015162'
 - course: ART 425
   last: 1244
   notes: >-
     At least one lower level course in art history or Japanese studies, or
     permission of instructor.
   reqs: ART*** | JPN***
+  id: '010765'
 - course: ART 465
   last: 1244
+  id: '017099'
 - course: ART 466
   last: 1244
+  id: '017100'
 - course: ART 474
   last: 1244
+  id: '015163'
 - course: ART 484
   last: 1244
+  id: '017101'
 - course: ART 491
   last: 1242
   travel: null
+  id: '016841'

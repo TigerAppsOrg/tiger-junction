@@ -7,9 +7,12 @@ updated: 3/10/2024
 - course: TUR 102
   last: 1244
   reqs: TUR101
+  id: '007203'
 - course: TUR 107
   last: 1244
   reqs: TUR105
+  id: '007205'
 - course: TUR 306
   last: 1244
   reqs: TUR107
+  id: '015522'

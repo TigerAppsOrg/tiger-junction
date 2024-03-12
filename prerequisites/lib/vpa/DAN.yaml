@@ -6,36 +6,51 @@ updated: 3/10/2024
 ---
 - course: DAN 211
   last: 1244
+  id: '008485'
 - course: DAN 221
   last: 1244
+  id: '014894'
 - course: DAN 225
   last: 1244
+  id: '014896'
 - course: DAN 317
   last: 1244
+  id: '014004'
 - course: DAN 321
   last: 1244
+  id: '008029'
 - course: DAN 326
   last: 1244
+  id: '016865'
 - course: DAN 327
   last: 1244
   travel: null
+  id: '017112'
 - course: DAN 370
   last: 1244
+  id: '017113'
 - course: DAN 375
   last: 1244
   travel: null
+  id: '017179'
 - course: DAN 401
   last: 1244
+  id: '014454'
 - course: DAN 408
   last: 1244
+  id: '013493'
 - course: DAN 419B
   last: 1242
   reqs: DAN213 | DAN219 | DAN220
+  id: '013731'
 - course: DAN 420A
   last: 1242
   reqs: DAN219A
+  id: '010209'
 - course: DAN 420B
   last: 1242
   reqs: DAN213 | DAN219 | DAN220
+  id: '013732'
 - course: DAN 431
   last: 1244
+  id: '011329'

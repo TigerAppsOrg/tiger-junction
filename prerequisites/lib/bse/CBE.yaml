@@ -6,56 +6,76 @@ updated: 3/10/2024
 ---
 - course: CBE 218
   last: 1244
+  id: '017103'
 - course: CBE 245
   last: 1242
   reqs: CHEM1
+  id: '001759'
 - course: CBE 246
   last: 1244
   reqs: CBE245 & MULTI
+  id: '001760'
 - course: CBE 250
   last: 1242
   reqs: CBE245 & CBE246 & $CBE341
+  id: '008920'
 - course: CBE 260
   last: 1244
+  id: '008457'
 - course: CBE 341
   last: 1242
   reqs: CBE245 & CBE246 & $MAE305
+  id: '001764'
 - course: CBE 346
   last: 1244
   reqs: CBE246 & CBE250 & CBE341
+  id: '008939'
 - course: CBE 351
   last: 1242
   iw: null
+  id: '001771'
 - course: CBE 352
   last: 1244
   iw: null
+  id: '001772'
 - course: CBE 411
   last: 1242
   reqs: CALCULUS & (MOL214 | ISCA)
+  id: '015629'
 - course: CBE 415
   last: 1242
   reqs: CALCULUS & ($CHM301 | $CHM337)
+  id: '001775'
 - course: CBE 419
   last: 1244
   reqs: MOL214
+  id: '013487'
 - course: CBE 422
   last: 1242
   reqs: INTROCOS & MAE305
+  id: '012551'
 - course: CBE 426
   last: 1244
+  id: '017226'
 - course: CBE 433
   last: 1244
+  id: '011647'
 - course: CBE 438
   last: 1244
   reqs: $MOL214
+  id: '011126'
 - course: CBE 441
   last: 1244
   reqs: CBE341
+  id: '001783'
 - course: CBE 442
   last: 1242
   reqs: CBE341 & CBE441
+  id: '001784'
 - course: CBE 449
   last: 1244
+  id: '017076'
 - course: CBE 454
   last: 1244
   iw: null
+  id: '001796'

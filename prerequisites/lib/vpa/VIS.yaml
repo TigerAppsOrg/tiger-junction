@@ -6,56 +6,79 @@ updated: 3/10/2024
 ---
 - course: VIS 202
   last: 1244
+  id: '007217'
 - course: VIS 204
   last: 1244
+  id: '007219'
 - course: VIS 208
   last: 1244
+  id: '016307'
 - course: VIS 211
   last: 1244
+  id: '007220'
 - course: VIS 213
   last: 1244
+  id: '008907'
 - course: VIS 217
   last: 1244
+  id: '012667'
 - course: VIS 220
   last: 1244
+  id: '014277'
 - course: VIS 222
   last: 1244
+  id: '007223'
 - course: VIS 232
   last: 1244
+  id: '016116'
 - course: VIS 233
   last: 1244
+  id: '017176'
 - course: VIS 265
   last: 1244
+  id: '014913'
 - course: VIS 309
   last: 1244
   reqs: VIS2**
+  id: '007240'
 - course: VIS 313
   last: 1244
   reqs: VIS211 | VIS212
+  id: '007232'
 - course: VIS 324
   last: 1244
+  id: '016309'
 - course: VIS 331
   last: 1244
+  id: '007224'
 - course: VIS 363
   last: 1244
   reqs: VIS263 | FRS138 | URB202
+  id: '014980'
 - course: VIS 404
   last: 1244
   reqs: VIS201 | VIS202 | VIS203 | VIS204 | VIS309
+  id: '007258'
 - course: VIS 407
   last: 1244
   reqs: VIS2**
+  id: '014734'
 - course: VIS 411
   last: 1244
   reqs: VIS211 | VIS212 | VIS213 | VIS219 | VIS315 | VIS316
+  id: '007259'
 - course: VIS 415
   last: 1244
   reqs: VIS214 | VIS215 | VIS216 | VIS217
+  id: '012090'
 - course: VIS 419
   last: 1244
   iw: null
+  id: '014536'
 - course: VIS 421
   last: 1244
   reqs: VIS221 | VIS222
+  id: '007261'
 - course: VIS 423
   last: 1244
+  id: '017177'

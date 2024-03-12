@@ -7,22 +7,30 @@ updated: 3/10/2024
 - course: CLG 102
   last: 1244
   reqs: CLG101
+  id: '003244'
 - course: CLG 103
   last: 1244
+  id: '003245'
 - course: CLG 105
   last: 1242
   reqs: CLG102 | CLG103
+  id: '003247'
 - course: CLG 108
   last: 1244
   reqs: CLG105
+  id: '003248'
 - course: CLG 213
   last: 1242
+  id: '003252'
 - course: CLG 214
   last: 1244
   reqs: CLG108
+  id: '003253'
 - course: CLG 301
   last: 1242
   reqs: CLG108
+  id: '003256'
 - course: CLG 310
   last: 1244
   reqs: CLG108
+  id: '003264'

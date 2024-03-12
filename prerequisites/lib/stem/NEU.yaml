@@ -6,18 +6,25 @@ updated: 3/10/2024
 ---
 - course: NEU 202
   last: 1244
+  id: '008820'
 - course: NEU 250
   last: 1244
+  id: '016720'
 - course: NEU 331
   last: 1244
   reqs: NEU*** | PSY258 | PSY259
+  id: '011605'
 - course: NEU 350
   last: 1244
+  id: '013119'
 - course: NEU 437
   last: 1244
+  id: '000894'
 - course: NEU 447
   last: 1244
   reqs: MOL214
+  id: '011586'
 - course: NEU 460
   last: 1244
   reqs: NEU201 & NEU202
+  id: '016125'

@@ -9,9 +9,11 @@ vars:
 ---
 - course: GER 101
   last: 1244
+  id: '003137'
 - course: GER 102
   last: 1244
   reqs: GER101
+  id: '003138'
 - course: GER 1025
   last: 1244
   equiv:
@@ -19,33 +21,43 @@ vars:
     - GER 105
     - GER 105G
   reqs: GER101
+  id: '003139'
 - course: GER 105
   last: 1244
   equiv:
     - GER 1025
     - GER 105G
   reqs: GER102
+  id: '003142'
 - course: GER 107
   last: 1244
   equiv:
     - GER 107G
   reqs: GER105 | GER105G | GER1025
+  id: '003143'
 - course: GER 206
   last: 1244
+  id: '017079'
 - course: GER 208
   last: 1244
   reqs: ADVGER
+  id: '003151'
 - course: GER 211
   last: 1244
+  id: '010270'
 - course: GER 306
   last: 1244
   reqs: ADVGER
+  id: '003158'
 - course: GER 308
   last: 1244
+  id: '003160'
 - course: GER 316
   last: 1244
   notes: 'Required: Proficiency in a second language (via instruction).'
   reqs: LANG***
+  id: '011574'
 - course: GER 324
   last: 1244
   reqs: ADVGER
+  id: '003169'

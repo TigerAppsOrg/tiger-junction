@@ -6,20 +6,29 @@ updated: 3/10/2024
 ---
 - course: SOC 222
   last: 1244
+  id: '008187'
 - course: SOC 228
   last: 1244
+  id: '017153'
 - course: SOC 302
   last: 1244
   reqs: WRI***
+  id: '006409'
 - course: SOC 314
   last: 1244
+  id: '014526'
 - course: SOC 350
   last: 1244
+  id: '015627'
 - course: SOC 373
   last: 1244
+  id: '016287'
 - course: SOC 382
   last: 1244
+  id: '017155'
 - course: SOC 383
   last: 1244
+  id: '017223'
 - course: SOC 384
   last: 1244
+  id: '017154'

@@ -6,12 +6,17 @@ updated: 3/10/2024
 ---
 - course: ATL 494
   last: 1244
+  id: '010832'
 - course: ATL 495
   last: 1244
+  id: '010833'
 - course: ATL 496
   last: 1244
   notes: Some familiarity with writing and/or music composition/performance.
+  id: '003862'
 - course: ATL 497
   last: 1244
+  id: '003863'
 - course: ATL 498
   last: 1244
+  id: '003864'

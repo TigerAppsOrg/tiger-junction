@@ -6,13 +6,17 @@ updated: 3/10/2024
 ---
 - course: LAS 302
   last: 1244
+  id: '017086'
 - course: LAS 307
   last: 1244
+  id: '016722'
 - course: LAS 308
   last: 1244
+  id: '016599'
 - course: LAS 324
   last: 1244
   notes: >-
     Students must have taken at least one previous course related to either
     Latin America or illicit economies and at least two courses in politics,
     history, sociology, anthropology, or a closely related field.
+  id: '017195'

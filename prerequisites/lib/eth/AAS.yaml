@@ -6,26 +6,37 @@ updated: 3/10/2024
 ---
 - course: AAS 200
   last: 1244
+  id: '016609'
 - course: AAS 314
   last: 1244
+  id: '016617'
 - course: AAS 330
   last: 1244
+  id: '017057'
 - course: AAS 336
   last: 1244
+  id: '016596'
 - course: AAS 339
   last: 1242
   notes: Previous AAS or SOC course on race & racism required.
   reqs: AAS*** | SOC***
+  id: '015676'
 - course: AAS 341
   last: 1244
   travel: null
+  id: '013715'
 - course: AAS 354
   last: 1244
+  id: '015649'
 - course: AAS 359
   last: 1244
+  id: '009558'
 - course: AAS 366
   last: 1244
+  id: '003425'
 - course: AAS 406
   last: 1244
+  id: '017180'
 - course: AAS 411
   last: 1244
+  id: '010858'

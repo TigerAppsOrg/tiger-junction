@@ -6,12 +6,17 @@ updated: 3/10/2024
 ---
 - course: URB 201
   last: 1244
+  id: '010204'
 - course: URB 304
   last: 1244
+  id: '017173'
 - course: URB 305
   last: 1244
+  id: '017067'
 - course: URB 384
   last: 1244
+  id: '017175'
 - course: URB 392
   last: 1244
   travel: null
+  id: '017185'

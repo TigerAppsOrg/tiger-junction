@@ -6,15 +6,22 @@ updated: 3/10/2024
 ---
 - course: NES 317
   last: 1244
+  id: '017132'
 - course: NES 332
   last: 1244
+  id: '017133'
 - course: NES 342
   last: 1244
+  id: '017134'
 - course: NES 345
   last: 1244
+  id: '004622'
 - course: NES 391
   last: 1244
+  id: '014703'
 - course: NES 437
   last: 1244
+  id: '004651'
 - course: NES 465
   last: 1244
+  id: '009518'

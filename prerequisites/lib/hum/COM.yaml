@@ -6,15 +6,22 @@ updated: 3/10/2024
 ---
 - course: COM 235
   last: 1244
+  id: '010255'
 - course: COM 319
   last: 1244
+  id: '014702'
 - course: COM 329
   last: 1244
+  id: '015876'
 - course: COM 333
   last: 1244
+  id: '017111'
 - course: COM 336
   last: 1244
+  id: '017216'
 - course: COM 422
   last: 1244
+  id: '011897'
 - course: COM 437
   last: 1244k
+  id: '016655'

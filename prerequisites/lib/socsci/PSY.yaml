@@ -6,43 +6,60 @@ updated: 3/10/2024
 ---
 - course: PSY 210
   last: 1244
+  id: '014521'
 - course: PSY 231
   last: 1244
   reqs: PSY230
+  id: '017207'
 - course: PSY 251
   last: 1244
+  id: '005586'
 - course: PSY 252
   last: 1244
+  id: '005587'
 - course: PSY 255
   last: 1244
+  id: '005591'
 - course: PSY 260
   last: 1244
   reqs: <PSY2** | <NEU2** | <MOL2** | <EEB2**
+  id: '012314'
 - course: PSY 306
   last: 1244
   reqs: PSY255 | PSY259
+  id: '005601'
 - course: PSY 307
   last: 1244
+  id: '005602'
 - course: PSY 317
   last: 1244
   reqs: PSY***
+  id: '011604'
 - course: PSY 320
   last: 1244
+  id: '005618'
 - course: PSY 332
   last: 1244
+  id: '016298'
 - course: PSY 333
   last: 1244
   reqs: PSY101 | PSY252 | PSY254 | PSY255 | NEU200 | NEU201
+  id: '017136'
 - course: PSY 337
   last: 1244
   reqs: PSY258
+  id: '010140'
 - course: PSY 342
   last: 1244
+  id: '017137'
 - course: PSY 409
   last: 1244
   reqs: PSY101 | PSY255
+  id: '015015'
 - course: PSY 420
   last: 1244
+  id: '014026'
 - course: PSY 465
   last: 1244
   reqs: HUM365
+  id: '017224'

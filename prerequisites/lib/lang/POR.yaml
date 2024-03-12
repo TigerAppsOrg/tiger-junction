@@ -10,17 +10,22 @@ vars:
 - course: POR 102
   last: 1244
   reqs: POR101
+  id: '011601'
 - course: POR 106
   last: 1244
   reqs: SPA107 | SPA107S | SPA108
+  id: '005536'
 - course: POR 109
   last: 1244
   equiv:
     - POR 109S
   reqs: POR106
+  id: '009103'
 - course: POR 260
   last: 1244
   reqs: ADVPOR
+  id: '016097'
 - course: POR 426
   last: 1244
   reqs: SPA107
+  id: '017070'

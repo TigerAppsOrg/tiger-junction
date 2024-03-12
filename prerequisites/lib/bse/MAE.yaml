@@ -7,53 +7,71 @@ updated: 3/10/2024
 - course: MAE 206
   last: 1244
   reqs: MECH & MULTI
+  id: '002322'
 - course: MAE 222
   last: 1244
   reqs: CALCULUS & $LINEAR
+  id: '002325'
 - course: MAE 224
   last: 1244
   reqs: CALCULUS & $LINEAR & $MAE222
+  id: '008838'
 - course: MAE 228
   last: 1244
   travel: null
+  id: '010478'
 - course: MAE 305
   last: 1244
   reqs: BSEMATH
+  id: '002329'
 - course: MAE 306
   last: 1244
   reqs: MAE305 | MAT301
+  id: '002330'
 - course: MAE 321
   last: 1244
+  id: '002332'
 - course: MAE 323
   last: 1244
   reqs: MAE223
+  id: '014244'
 - course: MAE 340
   last: 1244
   iw: null
+  id: '002345'
 - course: MAE 340D
   last: 1244
   iw: null
+  id: '002347'
 - course: MAE 342
   last: 1244
   reqs: MAE206 & MAE305 & MAE341
+  id: '008045'
 - course: MAE 412
   last: 1244
   reqs: MAE221 & MAE224
+  id: '002351'
 - course: MAE 423
   last: 1244
   reqs: MAE221 & MAE222
+  id: '002354'
 - course: MAE 426
   last: 1244
   reqs: MAE221 & MAE222
+  id: '009491'
 - course: MAE 434
   last: 1244
   reqs: MAE206 & MAE305 & MAE433
+  id: '002376'
 - course: MAE 440
   last: 1244
   iw: null
+  id: '012855'
 - course: MAE 442
   last: 1244
   iw: null
+  id: '009387'
 - course: MAE 444
   last: 1244
   iw: null
+  id: '009385'

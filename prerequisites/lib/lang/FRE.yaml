@@ -6,72 +6,92 @@ updated: 3/10/2024
 ---
 - course: FRE 101
   last: 1244
+  id: '002845'
 - course: FRE 102
   last: 1244
   reqs: FRE101
+  id: '002846'
 - course: FRE 1027
   last: 1244
   equiv:
     - FRE 107
     - FRE 108
   reqs: FRE101
+  id: '002848'
 - course: FRE 103
   last: 1244
   equiv:
     - FRE 105
+  id: '002849'
 - course: FRE 107
   last: 1244
   equiv:
     - FRE 1027
     - FRE 108
   reqs: FRE102 | FRE103
+  id: '002853'
 - course: FRE 108
   last: 1244
   equiv:
     - FRE 1027
     - FRE 107
   reqs: FRE105
+  id: '002854'
 - course: FRE 207
   last: 1244
   equiv:
     - FRE 207F
   reqs: FRE1027 | FRE107 | FRE108
+  id: '002859'
 - course: FRE 208
   last: 1244
   reqs: FRE1027 | FRE107 | FRE108
+  id: '015412'
 - course: FRE 222
   last: 1244
   reqs: FRE207 | FRE208
+  id: '008596'
 - course: FRE 227
   last: 1244
   reqs: FRE207 | FRE208
+  id: '017191'
 - course: FRE 240
   last: 1244
   reqs: FRE1027 | FRE107 | FRE108
+  id: '017124'
 - course: FRE 260
   last: 1244
   reqs: FRE1027 | FRE107 | FRE108
+  id: '017125'
 - course: FRE 307
   last: 1244
   reqs: FRE2**
+  id: '002868'
 - course: FRE 319
   last: 1244
   reqs: FRE2**
+  id: '013544'
 - course: FRE 354
   last: 1244
   reqs: FRE2**
+  id: '016673'
 - course: FRE 358
   last: 1244
+  id: '013028'
 - course: FRE 376
   last: 1244
   reqs: FRE2**
+  id: '013704'
 - course: FRE 382
   last: 1244
   reqs: FRE2**
+  id: '017126'
 - course: FRE 392
   last: 1244
   travel: null
   reqs: FRE2**
+  id: '017129'
 - course: FRE 401
   last: 1244
   reqs: FRE 2**
+  id: '002906'

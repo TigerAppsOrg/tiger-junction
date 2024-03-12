@@ -6,47 +6,69 @@ updated: 3/10/2024
 ---
 - course: POL 240
   last: 1244
+  id: '005283'
 - course: POL 303
   last: 1244
+  id: '005287'
 - course: POL 305
   last: 1244
+  id: '011318'
 - course: POL 316
   last: 1244
+  id: '005300'
 - course: POL 320
   last: 1244
+  id: '009656'
 - course: POL 324
   last: 1244
+  id: '005308'
 - course: POL 327
   last: 1244
+  id: '010953'
 - course: POL 332
   last: 1244
+  id: '011770'
 - course: POL 335
   last: 1244
+  id: '015452'
 - course: POL 346
   last: 1244
   reqs: POL345
+  id: '005329'
 - course: POL 347
   last: 1244
   reqs: MAT103
+  id: '005330'
 - course: POL 351
   last: 1244
+  id: '008134'
 - course: POL 357
   last: 1244
+  id: '016779'
 - course: POL 376
   last: 1244
+  id: '016276'
 - course: POL 380
   last: 1244
+  id: '009971'
 - course: POL 396
   last: 1244
+  id: '015455'
 - course: POL 403
   last: 1244
+  id: '012485'
 - course: POL 431
   last: 1244
+  id: '009571'
 - course: POL 432
   last: 1244
+  id: '005373'
 - course: POL 442
   last: 1244
+  id: '008843'
 - course: POL 476
   last: 1244
+  id: '016326'
 - course: POL 496
   last: 1244
+  id: '017196'

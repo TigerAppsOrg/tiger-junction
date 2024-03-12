@@ -6,85 +6,126 @@ updated: 3/10/2024
 ---
 - course: FRS 102
   last: 1244
+  id: '015830'
 - course: FRS 103
   last: 1244
+  id: '016414'
 - course: FRS 104
   last: 1244
+  id: '017028'
 - course: FRS 106
   last: 1244
+  id: '013054'
 - course: FRS 108
   last: 1244
+  id: '017029'
 - course: FRS 110
   last: 1244
+  id: '017030'
 - course: FRS 112
   last: 1244
+  id: '016207'
 - course: FRS 114
   last: 1244
   travel: null
+  id: '017031'
 - course: FRS 116
   last: 1244
+  id: '015342'
 - course: FRS 118
   last: 1244
+  id: '017032'
 - course: FRS 120
   last: 1244
+  id: '016622'
 - course: FRS 122
   last: 1244
+  id: '017033'
 - course: FRS 126
   last: 1244
+  id: '017034'
 - course: FRS 128
   last: 1244
+  id: '017035'
 - course: FRS 130
   last: 1244
+  id: '016625'
 - course: FRS 132
   last: 1244
+  id: '017036'
 - course: FRS 136
   last: 1244
+  id: '017037'
 - course: FRS 137
   last: 1244
+  id: '014313'
 - course: FRS 140
   last: 1244
+  id: '016627'
 - course: FRS 141
   last: 1244
+  id: '016423'
 - course: FRS 142
   last: 1244
+  id: '017038'
 - course: FRS 144
   last: 1244
   travel: null
+  id: '017039'
 - course: FRS 148
   last: 1244
+  id: '016630'
 - course: FRS 150
   last: 1244
+  id: '016216'
 - course: FRS 152
   last: 1244
+  id: '017040'
 - course: FRS 158
   last: 1244
+  id: '017041'
 - course: FRS 160
   last: 1244
+  id: '017042'
 - course: FRS 162
   last: 1244
+  id: '017043'
 - course: FRS 166
   last: 1244
+  id: '017044'
 - course: FRS 172
   last: 1244
+  id: '016640'
 - course: FRS 173
   last: 1244
+  id: '016987'
 - course: FRS 174
   last: 1244
+  id: '015842'
 - course: FRS 178
   last: 1244
+  id: '015845'
 - course: FRS 180
   last: 1244
+  id: '017045'
 - course: FRS 182
   last: 1244
+  id: '016631'
 - course: FRS 184
   last: 1244
+  id: '017046'
 - course: FRS 186
   last: 1244
+  id: '017047'
 - course: FRS 188
   last: 1244
+  id: '017048'
 - course: FRS 190
   last: 1244
+  id: '017049'
 - course: FRS 193
   last: 1244
+  id: '016434'
 - course: FRS 195
   last: 1244
+  id: '016155'

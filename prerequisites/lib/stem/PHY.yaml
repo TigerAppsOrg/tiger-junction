@@ -12,6 +12,7 @@ updated: 3/10/2024
     - PHY 106
     - PHY 110
   reqs: PHY101
+  id: '005125'
 - course: PHY 104
   last: 1244
   equiv:
@@ -20,6 +21,7 @@ updated: 3/10/2024
     - PHY 106
     - PHY 110
   reqs: MECH
+  id: '005129'
 - course: PHY 106
   last: 1244
   equiv:
@@ -28,19 +30,26 @@ updated: 3/10/2024
     - PHY 104
     - PHY 110
   reqs: MECH
+  id: '005131'
 - course: PHY 108
   last: 1244
+  id: '013121'
 - course: PHY 109
   last: 1244
   reqs: MECH
+  id: '015523'
 - course: PHY 208
   last: 1244
   reqs: LINEAR & (PHY205 | PHY207) & $EAM
+  id: '005148'
 - course: PHY 210
   last: 1244
+  id: '005150'
 - course: PHY 304
   last: 1244
   reqs: EAM
+  id: '005157'
 - course: PHY 312
   last: 1244
   reqs: (PHYS | ISCA) & PHY208
+  id: '005163'

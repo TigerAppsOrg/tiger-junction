@@ -7,20 +7,27 @@ updated: 3/10/2024
 - course: LAT 102
   last: 1244
   reqs: LAT101
+  id: '003945'
 - course: LAT 103
   last: 1244
+  id: '009974'
 - course: LAT 108
   last: 1244
   reqs: LAT105
+  id: '003952'
 - course: LAT 205
   last: 1244
   reqs: LAT108
+  id: '008337'
 - course: LAT 232
   last: 1244
   reqs: LAT108
+  id: '003956'
 - course: LAT 336
   last: 1244
   reqs: LAT108
+  id: '003974'
 - course: LAT 403
   last: 1244
   reqs: LAT2** | LAT3**
+  id: '017131'

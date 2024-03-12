@@ -6,15 +6,18 @@ updated: 3/10/2024
 ---
 - course: MAT 100
   last: 1244
+  id: '012071'
 - course: MAT 103
   last: 1244
   reqs: MAT100
+  id: '004139'
 - course: MAT 104
   last: 1244
   equiv:
     - EGR 152
     - MAT 210
   reqs: MAT103
+  id: '004140'
 - course: MAT 175
   last: 1244
   equiv:
@@ -23,6 +26,7 @@ updated: 3/10/2024
     - MAT 201
     - MAT 203
   reqs: MAT103
+  id: '012060'
 - course: MAT 201
   last: 1244
   equiv:
@@ -31,56 +35,72 @@ updated: 3/10/2024
     - MAT 175
     - MAT 203
   reqs: MAT104
+  id: '004149'
 - course: MAT 202
   last: 1244
   equiv:
     - EGR 154
     - MAT 204
   reqs: MAT103
+  id: '004150'
 - course: MAT 204
   last: 1244
   equiv:
     - EGR 154
     - MAT 202
   reqs: MAT103
+  id: '004153'
 - course: MAT 215
   last: 1244
   equiv:
     - MAT 216
+  id: '004158'
 - course: MAT 217
   last: 1244
+  id: '004159'
 - course: MAT 218
   last: 1244
   reqs: MAT216
+  id: '004160'
 - course: MAT 325
   last: 1244
   reqs: MAT215 | MAT218
+  id: '004193'
 - course: MAT 330
   last: 1244
   reqs: BSEMATH
+  id: '004180'
 - course: MAT 346
   last: 1244
   reqs: MAT345
+  id: '004186'
 - course: MAT 355
   last: 1244
   reqs: MAT218 | MAT300
+  id: '004190'
 - course: MAT 375
   last: 1244
   reqs: LINEAR
+  id: '004171'
 - course: MAT 378
   last: 1244
   reqs: LINEAR
+  id: '004173'
 - course: MAT 419
   last: 1244
   reqs: MAT345 & MAT346
+  id: '004204'
 - course: MAT 425
   last: 1244
   reqs: MAT215 | MAT218
+  id: '008172'
 - course: MAT 427
   last: 1244
   reqs: (MAT215 | MAT216) & (MAT217 | MAT218)
+  id: '004168'
 - course: MAT 478
   last: 1244
   notes: >-
     Permission of instructor; linear algebra, basic probability, combinatorial
     mathematics or graph theory
+  id: '014963'

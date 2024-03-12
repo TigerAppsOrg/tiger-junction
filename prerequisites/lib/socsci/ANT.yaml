@@ -6,60 +6,84 @@ updated: 3/10/2024
 ---
 - course: ANT 206
   last: 1244
+  id: '012600'
 - course: ANT 217
   last: 1244
+  id: '015874'
 - course: ANT 228
   last: 1244
   travel: null
+  id: '017238'
 - course: ANT 233
   last: 1244
+  id: '017095'
 - course: ANT 238
   last: 1244
+  id: '016736'
 - course: ANT 240
   last: 1244
+  id: '000180'
 - course: ANT 246
   last: 1244
+  id: '015157'
 - course: ANT 256
   last: 1244
+  id: '017061'
 - course: ANT 301
   last: 1244
   notes: ANT 300 is strongly recommended.
   reqs:
     list:
       - ANT ***
+  id: '000157'
 - course: ANT 318
   last: 1244
+  id: '017071'
 - course: ANT 320
   last: 1244
   reqs:
     list:
       - ANT ***
+  id: '017060'
 - course: ANT 321
   last: 1242
   equiv:
     - ANT 305
+  id: '016854'
 - course: ANT 325
   last: 1244
+  id: '017062'
 - course: ANT 342
   last: 1244
+  id: '000185'
 - course: ANT 344
   last: 1244
+  id: '016750'
 - course: ANT 352
   last: 1244
+  id: '016737'
 - course: ANT 354
   last: 1244
+  id: '017074'
 - course: ANT 357
   last: 1244
+  id: '016593'
 - course: ANT 360
   last: 1244
+  id: '010234'
 - course: ANT 363
   last: 1244
+  id: '014819'
 - course: ANT 390
   last: 1242
   reqs: ANT***
+  id: '000199'
 - course: ANT 430
   last: 1244
+  id: '017187'
 - course: ANT 446
   last: 1244
+  id: '014917'
 - course: ANT 456
   last: 1244
+  id: '016438'

@@ -6,65 +6,97 @@ updated: 3/10/2024
 ---
 - course: HIS 202
   last: 1244
+  id: '016319'
 - course: HIS 205
   last: 1244
+  id: '016511'
 - course: HIS 208
   last: 1244
+  id: '003334'
 - course: HIS 210
   last: 1244
+  id: '012271'
 - course: HIS 212
   last: 1244
+  id: '003337'
 - course: HIS 241
   last: 1244
+  id: '012482'
 - course: HIS 267
   last: 1244
+  id: '012451'
 - course: HIS 278
   last: 1244
+  id: '013110'
 - course: HIS 280
   last: 1244
+  id: '003346'
 - course: HIS 294
   last: 1244
+  id: '016258'
 - course: HIS 295
   last: 1244
+  id: '013758'
 - course: HIS 307
   last: 1244
+  id: '017066'
 - course: HIS 344
   last: 1244
+  id: '003386'
 - course: HIS 359
   last: 1244
+  id: '003400'
 - course: HIS 361
   last: 1244
+  id: '012037'
 - course: HIS 362
   last: 1244
+  id: '003403'
 - course: HIS 372
   last: 1244
+  id: '003413'
 - course: HIS 384
   last: 1244
+  id: '003423'
 - course: HIS 393
   last: 1244
+  id: '011579'
 - course: HIS 396
   last: 1244
+  id: '003434'
 - course: HIS 407
   last: 1244
+  id: '017069'
 - course: HIS 411
   last: 1244
+  id: '015912'
 - course: HIS 413
   last: 1244
+  id: '017082'
 - course: HIS 425
   last: 1244
+  id: '014240'
 - course: HIS 427
   last: 1244
+  id: '016088'
 - course: HIS 434
   last: 1244
+  id: '015915'
 - course: HIS 437
   last: 1244
+  id: '015188'
 - course: HIS 445
   last: 1244
+  id: '016680'
 - course: HIS 450
   last: 1244
+  id: '017083'
 - course: HIS 468
   last: 1244
+  id: '017208'
 - course: HIS 474
   last: 1244
+  id: '017192'
 - course: HIS 494
   last: 1244
+  id: '011424'

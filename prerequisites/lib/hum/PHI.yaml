@@ -6,27 +6,39 @@ updated: 3/10/2024
 ---
 - course: PHI 200
   last: 1244
+  id: '004890'
 - course: PHI 201
   last: 1244
+  id: '004891'
 - course: PHI 202
   last: 1244
+  id: '004892'
 - course: PHI 211
   last: 1244
+  id: '017135'
 - course: PHI 301
   last: 1244
+  id: '004902'
 - course: PHI 307
   last: 1244
   reqs: PHI***
+  id: '004908'
 - course: PHI 312
   last: 1244
   reqs: PHI201
+  id: '004913'
 - course: PHI 315
   last: 1244
+  id: '004916'
 - course: PHI 318
   last: 1244
+  id: '004919'
 - course: PHI 325
   last: 1244
+  id: '004926'
 - course: PHI 357
   last: 1244
+  id: '017139'
 - course: PHI 383
   last: 1244
+  id: '013778'

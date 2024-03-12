@@ -6,26 +6,36 @@ updated: 3/10/2024
 ---
 - course: LIN 201
   last: 1244
+  id: '004322'
 - course: LIN 205
   last: 1244
+  id: '014553'
 - course: LIN 210
   last: 1244
+  id: '008460'
 - course: LIN 250
   last: 1244
+  id: '013797'
 - course: LIN 301
   last: 1244
   reqs: LIN201
+  id: '004328'
 - course: LIN 303
   last: 1244
   reqs: LIN201
+  id: '004330'
 - course: LIN 308
   last: 1244
+  id: '011114'
 - course: LIN 355
   last: 1244
   reqs: LIN201
+  id: '013561'
 - course: LIN 406
   last: 1244
   reqs: LIN306
+  id: '016689'
 - course: LIN 412
   last: 1244
   reqs: LIN302
+  id: '004339'

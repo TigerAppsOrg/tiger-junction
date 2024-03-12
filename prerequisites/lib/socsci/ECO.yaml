@@ -7,9 +7,11 @@ updated: 3/10/2024
 - course: ECO 100
   last: 1244
   reqs: MAT100
+  id: '001381'
 - course: ECO 101
   last: 1244
   reqs: MAT100
+  id: '001380'
 - course: ECO 201
   last: 1244
   equiv:
@@ -18,9 +20,11 @@ updated: 3/10/2024
     - MAT 201
     - MAT 203
   reqs: MAT103
+  id: '016222'
 - course: ECO 202
   last: 1244
   reqs: MAT103
+  id: '001386'
 - course: ECO 300
   last: 1244
   equiv:
@@ -28,16 +32,19 @@ updated: 3/10/2024
     - SPI 300
     - SPI 304
   reqs: ECO100 & MULTI
+  id: '001388'
 - course: ECO 301
   last: 1244
   equiv:
     - ECO 311
   reqs: ECO100 & ECO101 & MULTI
+  id: '001387'
 - course: ECO 302
   last: 1244
   equiv:
     - ECO 312
   reqs: (ECO202 | ORF245 | (POL345 & POL346)) & MULTI
+  id: '001389'
 - course: ECO 310
   last: 1244
   equiv:
@@ -45,92 +52,122 @@ updated: 3/10/2024
     - SPI 300
     - SPI 304
   reqs: MULTI
+  id: '001391'
 - course: ECO 311
   last: 1244
   equiv:
     - ECO 301
   reqs: MULTI
+  id: '001390'
 - course: ECO 312
   last: 1244
   equiv:
     - ECO 302
   reqs: MULTI & (ECO202 | ORF245)
+  id: '001392'
 - course: ECO 313
   last: 1244
   reqs: ECO302 | ECO312
+  id: '001395'
 - course: ECO 317
   last: 1242
   reqs: ECO310 & MULTI & STATS
+  id: '001413'
 - course: ECO 322
   last: 1242
   reqs: ECO302 | ECO312
+  id: '015405'
 - course: ECO 323
   last: 1244
   reqs: ECO300 | ECO310
+  id: '015878'
 - course: ECO 324
   last: 1242
   reqs: ECO100
+  id: '001410'
 - course: ECO 325
   last: 1242
   reqs: ECO300 | ECO310 | SPI300
+  id: '013264'
 - course: ECO 326
   last: 1242
   reqs: ECO300 | ECO310
+  id: '012512'
 - course: ECO 327
   last: 1244
   reqs: (ECO300 | ECO 310) & MAT103
+  id: '014993'
 - course: ECO 331
   last: 1242
   reqs: ECO100 & (ECO302 | ECO312) & CALCULUS
+  id: '001400'
 - course: ECO 332
   last: 1244
   reqs: ECO100 & (ECO202 | ORF245 | (POL345 & POL346))
+  id: '010527'
 - course: ECO 342
   last: 1242
   reqs: (ECO300 | ECO310) & (ECO301 | ECO311) & STATS
+  id: '001415'
 - course: ECO 355
   last: 1244
   reqs: ECO100
+  id: '013071'
 - course: ECO 361
   last: 1244
+  id: '013072'
 - course: ECO 362
   last: 1242
   reqs: MULTI & STATS
+  id: '001403'
 - course: ECO 363
   last: 1244
   reqs: (ECO300 | ECO310) & ECO362
+  id: '001404'
 - course: ECO 372
   last: 1242
   reqs: ECO100 & ECO101
+  id: '009251'
 - course: ECO 385
   last: 1244
   reqs: ECO100
+  id: '008518'
 - course: ECO 418
   last: 1242
   reqs: MULTI
+  id: '008613'
 - course: ECO 461
   last: 1244
   reqs: ECO361 & ECO363
+  id: '014051'
 - course: ECO 462
   last: 1242
   reqs: STATS & ECO310 & ECO362
+  id: '001428'
 - course: ECO 464
   last: 1244
   reqs: ECO300 | ECO310
+  id: '001431'
 - course: ECO 466
   last: 1244
   reqs: ECO362
+  id: '008752'
 - course: ECO 467
   last: 1244
   reqs: ECO363 | ECO465 | FIN501 | FIN522
+  id: '009999'
 - course: ECO 491
   last: 1242
   reqs: STATS & ECO362
+  id: '010942'
 - course: ECO 492
   last: 1244
+  id: '011049'
 - course: ECO 493
   last: 1244
   reqs: ECO342
+  id: '011277'
 - course: ECO 494
   last: 1242
   reqs: ECO100 & ECO101
+  id: '013334'

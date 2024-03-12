@@ -7,43 +7,57 @@ updated: 3/10/2024
 - course: ORF 245
   last: 1244
   reqs: $MULTI
+  id: '007996'
 - course: ORF 307
   last: 1244
   reqs: LINEAR
+  id: '007998'
 - course: ORF 309
   last: 1244
   reqs: MULTI
+  id: '007999'
 - course: ORF 311
   last: 1244
   reqs: ORF245 & ORF307
+  id: '008000'
 - course: ORF 335
   last: 1244
   reqs: ORF309
+  id: '008001'
 - course: ORF 350
   last: 1244
   reqs: ORF309 & ORF245 & LINEAR
+  id: '012309'
 - course: ORF 363
   last: 1244
   reqs: BSEMATH
+  id: '012833'
 - course: ORF 376
   last: 1244
   iw: null
+  id: '008003'
 - course: ORF 387
   last: 1244
   reqs: ORF309
+  id: '015450'
 - course: ORF 401
   last: 1244
   reqs: INTROCOS
+  id: '008004'
 - course: ORF 445
   last: 1244
   reqs: ORF309 & ORF405
+  id: '015797'
 - course: ORF 478
   last: 1244
   iw: null
+  id: '008009'
 - course: ORF 497
   last: 1244
   iw: null
+  id: '010065'
 - course: ORF 499
   last: 1244
   iw: null
   reqs: ORF498
+  id: '017186'

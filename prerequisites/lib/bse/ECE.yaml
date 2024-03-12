@@ -8,91 +8,123 @@ updated: 3/10/2024
 - course: ECE 201
   last: 1244
   reqs: CALCULUS
+  id: '002461'
 - course: ECE 203
   last: 1244
+  id: '002462'
 - course: ECE 297
   last: 1242
   iw: null
+  id: '012494'
 - course: ECE 298
   last: 1244
   iw: null
+  id: '012647'
 - course: ECE 302
   last: 1242
   iw: null
+  id: '002472'
 - course: ECE 304
   last: 1244
   reqs: ECE201 & ECE203
+  id: '013092'
 - course: ECE 308
   last: 1242
   reqs: CALCULUS & PHYS
+  id: '002464'
 - course: ECE 342
   last: 1244
   reqs: PHYS & BSEMATH
+  id: '002477'
 - course: ECE 346
   last: 1244
   reqs: MAE346
+  id: '016252'
 - course: ECE 351
   last: 1242
   reqs: PHYS
+  id: '002478'
 - course: ECE 364
   last: 1242
   reqs: CALCULUS & LINEAR
+  id: '014220'
 - course: ECE 368
   last: 1244
+  id: '015903'
 - course: ECE 396
   last: 1242
   reqs: LINEAR
+  id: '010006'
 - course: ECE 397
   last: 1242
   iw: null
+  id: '002489'
 - course: ECE 398
   last: 1244
   iw: null
+  id: '002490'
 - course: ECE 433
   last: 1244
   reqs: COS324 & ORF309 & ECE435 & LINEAR
+  id: '016868'
 - course: ECE 434
   last: 1242
   reqs: BSEMATH & ORF309
+  id: '016075'
 - course: ECE 435
   last: 1242
   reqs: BSEMATH & ORF309 & INTROCOS
+  id: '014725'
 - course: ECE 441
   last: 1242
   reqs: ECE342 | (PHY208 & PHY305)
+  id: '002497'
 - course: ECE 445
   last: 1242
   reqs: EAM & MULTI
+  id: '016445'
 - course: ECE 451
   last: 1244
+  id: '016661'
 - course: ECE 452
   last: 1244
   reqs: PHYS
+  id: '013751'
 - course: ECE 455
   last: 1244
+  id: '010467'
 - course: ECE 456
   last: 1244
   reqs: ECE453 & ECE342
+  id: '011903'
 - course: ECE 457
   last: 1244
   reqs: PHY305 | ECE342
+  id: '016253'
 - course: ECE 462
   last: 1244
+  id: '002501'
 - course: ECE 470
   last: 1242
   reqs: COS226
+  id: '016495'
 - course: ECE 473
   last: 1244
   reqs: BOTHCOS & ORF245
+  id: '016662'
 - course: ECE 475
   last: 1244
   reqs: ECE375
+  id: '002509'
 - course: ECE 497
   last: 1242
   iw: null
+  id: '002521'
 - course: ECE 497R
   last: 1242
   iw: null
+  id: '016194'
 - course: ECE 498
   last: 1244
   iw: null
+  id: '002522'

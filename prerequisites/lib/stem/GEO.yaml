@@ -6,28 +6,38 @@ updated: 3/10/2024
 ---
 - course: GEO 103
   last: 1244
+  id: '002975'
 - course: GEO 202
   last: 1244
+  id: '002963'
 - course: GEO 320
   last: 1244
   reqs: MECH
+  id: '016675'
 - course: GEO 360
   last: 1244
   reqs: CHEM1
+  id: '014062'
 - course: GEO 366
   last: 1244
   reqs: GEO202
+  id: '008591'
 - course: GEO 369
   last: 1244
   travel: null
   reqs: CHEM2
+  id: '016264'
 - course: GEO 418
   last: 1244
   reqs: CHEM2
+  id: '003038'
 - course: GEO 424
   last: 1244
   reqs: $EAM & $MAE305
+  id: '003013'
 - course: GEO 435
   last: 1244
+  id: '017127'
 - course: GEO 464
   last: 1244
+  id: '011181'

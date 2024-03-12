@@ -6,30 +6,44 @@ updated: 3/10/2024
 ---
 - course: REL 226
   last: 1244
+  id: '005956'
 - course: REL 234
   last: 1244
+  id: '017142'
 - course: REL 236
   last: 1244
+  id: '005963'
 - course: REL 251
   last: 1244
+  id: '005971'
 - course: REL 255
   last: 1244
+  id: '017143'
 - course: REL 257
   last: 1244
+  id: '011106'
 - course: REL 303
   last: 1244
+  id: '016280'
 - course: REL 326
   last: 1244
+  id: '006010'
 - course: REL 332
   last: 1244
+  id: '017145'
 - course: REL 348
   last: 1244
+  id: '017146'
 - course: REL 364
   last: 1244
+  id: '008519'
 - course: REL 382
   last: 1244
   travel: null
+  id: '017147'
 - course: REL 383
   last: 1244
+  id: '013098'
 - course: REL 415
   last: 1244
+  id: '016700'

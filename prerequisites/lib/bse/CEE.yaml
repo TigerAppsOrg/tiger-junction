@@ -8,68 +8,91 @@ updated: 3/10/2024
   last: 1242
   equiv:
     - CEE 102B
+  id: '008721'
 - course: CEE 102B
   last: 1242
   equiv:
     - CEE 102A
+  id: '008724'
 - course: CEE 207
   last: 1242
   reqs: CALCULUS
+  id: '007948'
 - course: CEE 305
   last: 1242
   reqs: MULTI
+  id: '008035'
 - course: CEE 306
   last: 1244
   reqs: MULTI
+  id: '007949'
 - course: CEE 308
   last: 1244
   reqs: CEE207 & $CEE306
+  id: '007950'
 - course: CEE 311
   last: 1244
   reqs: CEE207 | CHM303 | CHM304
+  id: '011097'
 - course: CEE 312
   last: 1244
   reqs: CEE205 | MAE223
+  id: '011271'
 - course: CEE 325
   last: 1244
+  id: '017104'
 - course: CEE 334
   last: 1244
   reqs: CHM201
+  id: '010733'
 - course: CEE 345
   last: 1242
   reqs: BSEMATH
+  id: '016441'
 - course: CEE 364
   last: 1244
   reqs: CEE205
+  id: '007955'
 - course: CEE 365
   last: 1244
   reqs: CEE205
+  id: '007956'
 - course: CEE 366
   last: 1242
   reqs: CEE205
+  id: '007957'
 - course: CEE 374
   last: 1242
   reqs: BSEMATH & INTROCOS & CEE205
+  id: '016071'
 - course: CEE 375
   last: 1242
   iw: null
+  id: '007960'
 - course: CEE 376
   last: 1244
   iw: null
+  id: '007961'
 - course: CEE 460
   last: 1244
   reqs: STATS
+  id: '007952'
 - course: CEE 461
   last: 1244
   reqs: CEE312 & CEE366
+  id: '007962'
 - course: CEE 464
   last: 1244
+  id: '017105'
 - course: CEE 474
   last: 1242
   reqs: LINEAR
+  id: '007966'
 - course: CEE 476
   last: 1244
   reqs: CEE207 & CEE471
+  id: '017106'
 - course: CEE 478
   last: 1244
   iw: null
+  id: '007968'

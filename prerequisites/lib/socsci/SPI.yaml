@@ -7,68 +7,97 @@ updated: 3/10/2024
 ---
 - course: SPI 200
   last: 1244
+  id: '012118'
 - course: SPI 301
   last: 1244
   reqs: SPI300 | ECO300 | ECO310
+  id: '001408'
 - course: SPI 304
   last: 1244
   equiv:
     - ECO 300
     - ECO 310
   reqs: ECO100
+  id: '012094'
 - course: SPI 305
   last: 1244
   reqs: STATS & (SPI300 | ECO300 | ECO310)
+  id: '014999'
 - course: SPI 318
   last: 1244
+  id: '012190'
 - course: SPI 322
   last: 1244
+  id: '014537'
 - course: SPI 333
   last: 1244
+  id: '012629'
 - course: SPI 335
   last: 1244
+  id: '016303'
 - course: SPI 336
   last: 1244
+  id: '015944'
 - course: SPI 340
   last: 1244
   reqs: STATS
+  id: '006765'
 - course: SPI 342
   last: 1244
+  id: '017157'
 - course: SPI 368
   last: 1244
+  id: '016713'
 - course: SPI 379
   last: 1244
+  id: '017158'
 - course: SPI 383
   last: 1244
+  id: '017159'
 - course: SPI 386
   last: 1244
+  id: '017160'
 - course: SPI 391
   last: 1244
+  id: '017161'
 - course: SPI 393
   last: 1244
+  id: '013032'
 - course: SPI 402
   last: 1244
   iw: null
+  id: '006772'
 - course: SPI 404
   last: 1244
   iw: null
+  id: '012122'
 - course: SPI 421
   last: 1244
+  id: '011873'
 - course: SPI 483
   last: 1244
+  id: '017162'
 - course: SPI 484
   last: 1244
+  id: '017232'
 - course: SPI 485
   last: 1244
+  id: '016714'
 - course: SPI 486
   last: 1244
+  id: '017163'
 - course: SPI 488
   last: 1244
+  id: '017164'
 - course: SPI 492
   last: 1244
+  id: '017165'
 - course: SPI 496
   last: 1244
+  id: '017166'
 - course: SPI 497
   last: 1244
+  id: '017167'
 - course: SPI 499
   last: 1244
+  id: '016793'

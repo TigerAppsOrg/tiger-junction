@@ -6,15 +6,20 @@ updated: 3/10/2024
 ---
 - course: TPP 301
   last: 1244
+  id: '007931'
 - course: TPP 403
   last: 1244
   reqs: PSY307 & TPP301
+  id: '015485'
 - course: TPP 404
   last: 1244
   reqs: PSY307 & TPP301
+  id: '015486'
 - course: TPP 405
   last: 1244
   iw: null
+  id: '007932'
 - course: TPP 406
   last: 1244
   iw: null
+  id: '007933'
