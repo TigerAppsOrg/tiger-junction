@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: GSS 201
   last: 1242
+  id: '007285'
 - course: GSS 218
   last: 1244
   id: '015674'
@@ -20,13 +21,16 @@ updated: 3/11/2024
   id: '014971'
 - course: GSS 322
   last: 1242
+  id: '015010'
 - course: GSS 336
   last: 1242
+  id: '013321'
 - course: GSS 345
   last: 1244
   id: '013756'
 - course: GSS 373
   last: 1242
+  id: '014008'
 - course: GSS 398
   last: 1244
   id: '017080'

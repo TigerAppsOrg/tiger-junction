@@ -9,17 +9,20 @@ vars:
 ---
 - course: RUS 101
   last: 1242
+  id: '006268'
 - course: RUS 102
   last: 1244
   reqs: RUS101
   id: '006269'
 - course: RUS 103
   last: 1242
+  id: '010422'
 - course: RUS 105
   last: 1242
   equiv:
     - RUS 105R
   reqs: RUS102
+  id: '006272'
 - course: RUS 107
   last: 1244
   equiv:
@@ -33,3 +36,4 @@ vars:
 - course: RUS 207
   last: 1242
   reqs: RUS107
+  id: '006275'

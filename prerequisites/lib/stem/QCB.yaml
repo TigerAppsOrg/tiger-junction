@@ -7,6 +7,7 @@ updated: 3/11/2024
 - course: QCB 302
   last: 1242
   reqs: INTROMOL
+  id: '012834'
 - course: QCB 311
   last: 1244
   reqs: (MOL214 & INTROCOS) | ISCA
@@ -20,6 +21,7 @@ updated: 3/11/2024
 - course: QCB 455
   last: 1242
   reqs: INTROCOS
+  id: '010185'
 - course: QCB 470
   last: 1244
   reqs: (MOL214 | ISCA) & MOL345

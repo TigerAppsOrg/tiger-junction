@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: SWA 101
   last: 1242
+  id: '008705'
 - course: SWA 102
   last: 1244
   reqs: SWA101
@@ -15,6 +16,7 @@ updated: 3/11/2024
   equiv:
     - SWA 105K
   reqs: SWA102
+  id: '008947'
 - course: SWA 107
   last: 1244
   reqs: SWA105

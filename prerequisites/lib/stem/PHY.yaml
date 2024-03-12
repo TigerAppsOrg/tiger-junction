@@ -10,6 +10,7 @@ updated: 3/11/2024
     - EGR 151
     - PHY 103
     - PHY 105
+  id: '005122'
 - course: PHY 102
   last: 1244
   equiv:
@@ -25,6 +26,7 @@ updated: 3/11/2024
     - EGR 151
     - PHY 101
     - PHY 105
+  id: '005128'
 - course: PHY 104
   last: 1244
   equiv:
@@ -41,6 +43,7 @@ updated: 3/11/2024
     - PHY 101
     - PHY 103
   reqs: $MULTI
+  id: '005130'
 - course: PHY 106
   last: 1244
   equiv:
@@ -61,31 +64,38 @@ updated: 3/11/2024
   last: 1242
   equiv:
     - PHY 115B
+  id: '009699'
 - course: PHY 115B
   last: 1242
   equiv:
     - PHY 115A
+  id: '009698'
 - course: PHY 207
   last: 1242
   reqs: (PHYS | ISCA) & MAT2**
+  id: '010420'
 - course: PHY 208
   last: 1244
   reqs: LINEAR & (PHY205 | PHY207) & $EAM
   id: '005148'
 - course: PHY 209
   last: 1242
+  id: '005149'
 - course: PHY 210
   last: 1244
   id: '005150'
 - course: PHY 220
   last: 1242
   reqs: PHYS & CALCULUS
+  id: '016694'
 - course: PHY 301
   last: 1242
   reqs: EAM & PHY208
+  id: '005154'
 - course: PHY 303
   last: 1242
   reqs: (PHYS | ISCA) & PHY207
+  id: '016463'
 - course: PHY 304
   last: 1244
   reqs: EAM
@@ -93,6 +103,7 @@ updated: 3/11/2024
 - course: PHY 305
   last: 1242
   reqs: PHY208
+  id: '005158'
 - course: PHY 312
   last: 1244
   reqs: (PHYS | ISCA) & PHY208
@@ -100,3 +111,4 @@ updated: 3/11/2024
 - course: PHY 412
   last: 1242
   reqs: PHY301 & PHY304
+  id: '010845'

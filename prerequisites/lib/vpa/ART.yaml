@@ -6,15 +6,19 @@ updated: 3/11/2024
 ---
 - course: ART 100
   last: 1242
+  id: '010069'
 - course: ART 102
   last: 1244
   id: '000514'
 - course: ART 106
   last: 1242
+  id: '016241'
 - course: ART 203
   last: 1242
+  id: '000520'
 - course: ART 213
   last: 1242
+  id: '000529'
 - course: ART 218
   last: 1244
   id: '015159'
@@ -23,19 +27,25 @@ updated: 3/11/2024
   id: '013694'
 - course: ART 233
   last: 1242
+  id: '013245'
 - course: ART 248
   last: 1242
+  id: '000546'
 - course: ART 273
   last: 1244
   id: '017096'
 - course: ART 313
   last: 1242
+  id: '016905'
 - course: ART 316
   last: 1242
+  id: '012590'
 - course: ART 323
   last: 1242
+  id: '014892'
 - course: ART 341
   last: 1242
+  id: '015161'
 - course: ART 354
   last: 1244
   travel: null
@@ -49,8 +59,10 @@ updated: 3/11/2024
   id: '017097'
 - course: ART 389
   last: 1242
+  id: '016926'
 - course: ART 400
   last: 1242
+  id: '010107'
 - course: ART 401
   last: 1244
   id: '010090'
@@ -59,10 +71,13 @@ updated: 3/11/2024
   id: '015896'
 - course: ART 403
   last: 1242
+  id: '016342'
 - course: ART 411
   last: 1242
+  id: '012641'
 - course: ART 412
   last: 1242
+  id: '016929'
 - course: ART 418
   last: 1244
   id: '013156'
@@ -82,8 +97,10 @@ updated: 3/11/2024
   id: '010765'
 - course: ART 444
   last: 1242
+  id: '016862'
 - course: ART 455
   last: 1242
+  id: '016069'
 - course: ART 465
   last: 1244
   id: '017099'
@@ -95,11 +112,13 @@ updated: 3/11/2024
   id: '015163'
 - course: ART 478
   last: 1242
+  id: '014496'
 - course: ART 484
   last: 1244
   id: '017101'
 - course: ART 490
   last: 1242
+  id: '016848'
 - course: ART 491
   last: 1242
   travel: null

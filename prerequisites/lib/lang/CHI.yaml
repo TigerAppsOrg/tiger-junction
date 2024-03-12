@@ -13,12 +13,14 @@ updated: 3/11/2024
   id: '015634'
 - course: CHI 101
   last: 1242
+  id: '001064'
 - course: CHI 102
   last: 1244
   reqs: CHI101
   id: '001065'
 - course: CHI 103
   last: 1242
+  id: '001066'
 - course: CHI 105
   last: 1242
   equiv:

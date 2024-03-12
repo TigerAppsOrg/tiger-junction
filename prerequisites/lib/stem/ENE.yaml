@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: ENE 202
   last: 1242
+  id: '012686'
 - course: ENE 273
   last: 1244
   id: '014275'
@@ -23,8 +24,10 @@ updated: 3/11/2024
   id: '015001'
 - course: ENE 419
   last: 1242
+  id: '016448'
 - course: ENE 422
   last: 1244
   id: '015499'
 - course: ENE 475
   last: 1242
+  id: '014228'

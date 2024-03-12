@@ -9,12 +9,16 @@ updated: 3/11/2024
   id: '010255'
 - course: COM 256
   last: 1242
+  id: '017005'
 - course: COM 300
   last: 1242
+  id: '004031'
 - course: COM 302
   last: 1242
+  id: '014469'
 - course: COM 310
   last: 1242
+  id: '004039'
 - course: COM 319
   last: 1244
   id: '014702'
@@ -29,12 +33,16 @@ updated: 3/11/2024
   id: '017216'
 - course: COM 351
   last: 1242
+  id: '013747'
 - course: COM 370
   last: 1242
+  id: '004057'
 - course: COM 372
   last: 1242
+  id: '004058'
 - course: COM 421
   last: 1242
+  id: '011720'
 - course: COM 422
   last: 1244
   id: '011897'
@@ -43,3 +51,4 @@ updated: 3/11/2024
   id: '016655'
 - course: COM 456
   last: 1242
+  id: '006301'

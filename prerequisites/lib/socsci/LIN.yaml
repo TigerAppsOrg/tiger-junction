@@ -15,11 +15,13 @@ updated: 3/11/2024
   id: '008460'
 - course: LIN 235
   last: 1242
+  id: '013911'
 - course: LIN 250
   last: 1244
   id: '013797'
 - course: LIN 260
   last: 1242
+  id: '014267'
 - course: LIN 301
   last: 1244
   reqs: LIN201
@@ -27,6 +29,7 @@ updated: 3/11/2024
 - course: LIN 302
   last: 1242
   reqs: LIN201 | LIN212
+  id: '004329'
 - course: LIN 303
   last: 1244
   reqs: LIN201
@@ -34,12 +37,14 @@ updated: 3/11/2024
 - course: LIN 306
   last: 1242
   reqs: LIN201
+  id: '004333'
 - course: LIN 308
   last: 1244
   id: '011114'
 - course: LIN 310
   last: 1242
   reqs: LIN201
+  id: '013798'
 - course: LIN 355
   last: 1244
   reqs: LIN201
@@ -47,11 +52,14 @@ updated: 3/11/2024
 - course: LIN 356
   last: 1242
   reqs: LIN201
+  id: '010338'
 - course: LIN 360
   last: 1242
+  id: '004336'
 - course: LIN 400
   last: 1242
   iw: null
+  id: '015658'
 - course: LIN 406
   last: 1244
   reqs: LIN306

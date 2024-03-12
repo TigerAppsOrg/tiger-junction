@@ -7,6 +7,7 @@ updated: 3/11/2024
 ---
 - course: ECE 115
   last: 1242
+  id: '015431'
 - course: ECE 201
   last: 1244
   reqs: CALCULUS
@@ -16,6 +17,7 @@ updated: 3/11/2024
   id: '002462'
 - course: ECE 206
   last: 1242
+  id: '002463'
 - course: ECE 297
   last: 1242
   iw: null
@@ -96,6 +98,7 @@ updated: 3/11/2024
   id: '013751'
 - course: ECE 453
   last: 1242
+  id: '002499'
 - course: ECE 455
   last: 1244
   id: '010467'
@@ -109,6 +112,7 @@ updated: 3/11/2024
   id: '016253'
 - course: ECE 458
   last: 1242
+  id: '002500'
 - course: ECE 462
   last: 1244
   id: '002501'
@@ -126,6 +130,7 @@ updated: 3/11/2024
   id: '002509'
 - course: ECE 482
   last: 1242
+  id: '002510'
 - course: ECE 497
   last: 1242
   iw: null

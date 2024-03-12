@@ -32,6 +32,7 @@ export default function link() {
             for (let k = 0; k < courses.length; k++) {
                 if (!crossTable.hasOwnProperty(courses[k].course)) {
                     console.error(`Course ${courses[k].course} not found in cross table`);
+                    console.error(`File ${file}`)
                     console.error("Exiting link process");
                     return false;
                 }

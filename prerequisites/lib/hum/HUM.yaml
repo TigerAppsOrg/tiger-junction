@@ -6,8 +6,10 @@ updated: 3/11/2024
 ---
 - course: HUM 216
   last: 1242
+  id: '003777'
 - course: HUM 217
   last: 1242
+  id: '003779'
 - course: HUM 218
   last: 1244
   id: '003780'
@@ -16,6 +18,7 @@ updated: 3/11/2024
   id: '003781'
 - course: HUM 233
   last: 1242
+  id: '010507'
 - course: HUM 234
   last: 1244
   id: '010036'
@@ -24,16 +27,19 @@ updated: 3/11/2024
   id: '015003'
 - course: HUM 247
   last: 1242
+  id: '015189'
 - course: HUM 290
   last: 1244
   id: '014698'
 - course: HUM 315
   last: 1242
+  id: '016879'
 - course: HUM 328
   last: 1244
   id: '015660'
 - course: HUM 335
   last: 1242
+  id: '015686'
 - course: HUM 346
   last: 1244
   id: '013536'
@@ -45,11 +51,13 @@ updated: 3/11/2024
   id: '015916'
 - course: HUM 353
   last: 1242
+  id: '016923'
 - course: HUM 360
   last: 1244
   id: '017130'
 - course: HUM 365
   last: 1242
+  id: '003821'
 - course: HUM 372
   last: 1244
   id: '017193'

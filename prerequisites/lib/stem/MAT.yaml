@@ -51,6 +51,7 @@ updated: 3/11/2024
     - MAT 175
     - MAT 201
   reqs: CALCULUS
+  id: '004151'
 - course: MAT 204
   last: 1244
   equiv:
@@ -64,8 +65,10 @@ updated: 3/11/2024
     - EGR 152
     - MAT 104
   reqs: CALCULUS
+  id: '016955'
 - course: MAT 214
   last: 1242
+  id: '008464'
 - course: MAT 215
   last: 1244
   equiv:
@@ -75,6 +78,7 @@ updated: 3/11/2024
   last: 1242
   equiv:
     - MAT 215
+  id: '012831'
 - course: MAT 217
   last: 1244
   id: '004159'
@@ -85,12 +89,15 @@ updated: 3/11/2024
 - course: MAT 300
   last: 1242
   reqs: LINEAR
+  id: '012832'
 - course: MAT 320
   last: 1242
   reqs: BSEMATh
+  id: '004177'
 - course: MAT 321
   last: 1242
   reqs: BSEMATH
+  id: '009029'
 - course: MAT 325
   last: 1244
   reqs: MAT215 | MAT218
@@ -102,16 +109,19 @@ updated: 3/11/2024
 - course: MAT 335
   last: 1242
   reqs: MAT215 | MAT218
+  id: '004194'
 - course: MAT 340
   last: 1242
   equiv:
     - MAT 345
   reqs: LINEAR
+  id: '012830'
 - course: MAT 345
   last: 1242
   equiv:
     - MAT 340
   reqs: LINEAR
+  id: '009959'
 - course: MAT 346
   last: 1244
   reqs: MAT345
@@ -123,6 +133,7 @@ updated: 3/11/2024
 - course: MAT 365
   last: 1242
   reqs: LINEAR
+  id: '004188'
 - course: MAT 375
   last: 1244
   reqs: LINEAR
@@ -130,6 +141,7 @@ updated: 3/11/2024
 - course: MAT 377
   last: 1242
   reqs: LINEAR
+  id: '004172'
 - course: MAT 378
   last: 1244
   reqs: LINEAR
@@ -137,6 +149,7 @@ updated: 3/11/2024
 - course: MAT 385
   last: 1242
   reqs: MULTI
+  id: '004199'
 - course: MAT 419
   last: 1244
   reqs: MAT345 & MAT346
@@ -152,8 +165,10 @@ updated: 3/11/2024
 - course: MAT 449
   last: 1242
   reqs: MAT345
+  id: '004205'
 - course: MAT 457
   last: 1242
+  id: '011454'
 - course: MAT 478
   last: 1244
   notes: >-

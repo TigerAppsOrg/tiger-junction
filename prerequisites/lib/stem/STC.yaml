@@ -7,6 +7,7 @@ updated: 3/11/2024
 - course: STC 204
   last: 1242
   reqs: MUS104 | MUS105
+  id: '014716'
 - course: STC 209A
   last: 1244
   id: '014048'
@@ -19,3 +20,4 @@ updated: 3/11/2024
 - course: STC 349
   last: 1242
   reqs: WRI***
+  id: '007848'

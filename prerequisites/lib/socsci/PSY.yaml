@@ -4,19 +4,19 @@ name: Psychology
 category: Social Sciences
 updated: 3/11/2024
 ---
-- course: PHY 300
-  last: 1242
-  iw: null
 - course: PSY 101
   last: 1242
+  id: '005558'
 - course: PSY 207
   last: 1242
+  id: '005578'
 - course: PSY 210
   last: 1244
   id: '014521'
 - course: PSY 230
   last: 1242
   iw: null
+  id: '016901'
 - course: PSY 231
   last: 1244
   reqs: PSY230
@@ -29,6 +29,7 @@ updated: 3/11/2024
   id: '005587'
 - course: PSY 254
   last: 1242
+  id: '005590'
 - course: PSY 255
   last: 1244
   id: '005591'
@@ -38,6 +39,8 @@ updated: 3/11/2024
   id: '012314'
 - course: PSY 300
   last: 1242
+  iw: null
+  id: '012437'
 - course: PSY 306
   last: 1244
   reqs: PSY255 | PSY259
@@ -47,6 +50,7 @@ updated: 3/11/2024
   id: '005602'
 - course: PSY 309
   last: 1242
+  id: '005604'
 - course: PSY 317
   last: 1244
   reqs: PSY***
@@ -67,16 +71,20 @@ updated: 3/11/2024
   id: '010140'
 - course: PSY 338
   last: 1242
+  id: '010982'
 - course: PSY 340
   last: 1242
   reqs: (PSY251 | NEU314 | ECO202) & NEU202
+  id: '014251'
 - course: PSY 341
   last: 1242
+  id: '016346'
 - course: PSY 342
   last: 1244
   id: '017137'
 - course: PSY 360
   last: 1242
+  id: '015203'
 - course: PSY 409
   last: 1244
   reqs: PSY101 | PSY255

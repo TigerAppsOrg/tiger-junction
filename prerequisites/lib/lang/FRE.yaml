@@ -27,6 +27,7 @@ vars:
   last: 1242
   equiv:
     - FRE 105
+  id: '002849'
 - course: FRE 103
   last: 1244
   equiv:
@@ -36,6 +37,7 @@ vars:
   last: 1242
   equiv:
     - FRE 103
+  id: '002851'
 - course: FRE 107
   last: 1244
   equiv:
@@ -63,16 +65,20 @@ vars:
 - course: FRE 211
   last: 1242
   reqs: ADVFRE
+  id: '010093'
 - course: FRE 215
   last: 1242
   reqs: TWOFRE
+  id: '002861'
 - course: FRE 217
   last: 1242
   travel: null
   reqs: TWOFRE
+  id: '010824'
 - course: FRE 221
   last: 1242
   reqs: ADVFRE
+  id: '008595'
 - course: FRE 222
   last: 1244
   reqs: TWOFRE
@@ -80,6 +86,7 @@ vars:
 - course: FRE 224
   last: 1242
   reqs: ADVFRE
+  id: '002864'
 - course: FRE 227
   last: 1244
   reqs: TWOFRE
@@ -110,6 +117,7 @@ vars:
 - course: FRE 372
   last: 1242
   reqs: TWOFRE
+  id: '015868'
 - course: FRE 376
   last: 1244
   reqs: FRE2**
@@ -121,9 +129,11 @@ vars:
 - course: FRE 385
   last: 1242
   reqs: FRE2**
+  id: '014475'
 - course: FRE 390
   last: 1242
   reqs: FRE2**
+  id: '016080'
 - course: FRE 392
   last: 1244
   travel: null
@@ -131,6 +141,7 @@ vars:
   id: '017129'
 - course: FRE 398
   last: 1242
+  id: '012819'
 - course: FRE 401
   last: 1244
   reqs: FRE 2**
@@ -138,6 +149,8 @@ vars:
 - course: FRE 407
   last: 1242
   reqs: FRE3**
+  id: '002908'
 - course: FRE 420
   last: 1242
   reqs: FRE2** | FRE3**
+  id: '016875'

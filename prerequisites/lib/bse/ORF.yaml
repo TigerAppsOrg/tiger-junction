@@ -35,6 +35,7 @@ updated: 3/11/2024
 - course: ORF 375
   last: 1242
   iw: null
+  id: '008002'
 - course: ORF 376
   last: 1244
   iw: null
@@ -50,15 +51,19 @@ updated: 3/11/2024
 - course: ORF 405
   last: 1242
   reqs: ORF245 & ORF309
+  id: '008005'
 - course: ORF 409
   last: 1242
   reqs: ORF245 & ORF309
+  id: '010402'
 - course: ORF 418
   last: 1242
   reqs: ORF309
+  id: '010655'
 - course: ORF 435
   last: 1242
   reqs: ORF245 | ORF309 | ORF335 | $ECO465
+  id: '008007'
 - course: ORF 445
   last: 1244
   reqs: ORF309 & ORF405
@@ -66,9 +71,11 @@ updated: 3/11/2024
 - course: ORF 455
   last: 1242
   reqs: ORF309
+  id: '012553'
 - course: ORF 467
   last: 1242
   reqs: ORF245
+  id: '008008'
 - course: ORF 478
   last: 1244
   iw: null
@@ -80,6 +87,7 @@ updated: 3/11/2024
 - course: ORF 498
   last: 1242
   iw: null
+  id: '017004'
 - course: ORF 499
   last: 1244
   iw: null

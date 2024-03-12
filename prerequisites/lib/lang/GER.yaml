@@ -41,34 +41,41 @@ vars:
 - course: GER 207
   last: 1242
   reqs: ADVGER
+  id: '003150'
 - course: GER 208
   last: 1244
   reqs: ADVGER
+  id: '003151'
 - course: GER 209
   last: 1242
   reqs: ADVGER
-  id: '003151'
+  id: '003152'
 - course: GER 211
   last: 1244
   id: '010270'
 - course: GER 218
   last: 1242
+  id: '017001'
 - course: GER 300
   last: 1242
   reqs: ADVGER
+  id: '015240'
 - course: GER 303
   last: 1242
+  id: '003155'
 - course: GER 306
   last: 1244
   reqs: ADVGER
   id: '003158'
 - course: GER 307
   last: 1242
+  id: '003159'
 - course: GER 308
   last: 1244
   id: '003160'
 - course: GER 314
   last: 1242
+  id: '012280'
 - course: GER 316
   last: 1244
   notes: 'Required: Proficiency in a second language (via instruction).'

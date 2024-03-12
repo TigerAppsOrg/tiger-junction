@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: HEB 101
   last: 1242
+  id: '003301'
 - course: HEB 102
   last: 1244
   reqs: HEB101
@@ -13,13 +14,15 @@ updated: 3/11/2024
 - course: HEB 105
   last: 1242
   reqs: HEB102
+  id: '003303'
 - course: HEB 107
   last: 1244
   reqs: HEB105
+  id: '003304'
 - course: HEB 300
   last: 1242
   reqs: HEB107
-  id: '003304'
+  id: '015002'
 - course: HEB 312
   last: 1244
   reqs: HEB107

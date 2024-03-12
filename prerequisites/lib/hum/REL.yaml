@@ -6,11 +6,13 @@ updated: 3/11/2024
 ---
 - course: REL 100
   last: 1242
+  id: '016113'
 - course: REL 226
   last: 1244
   id: '005956'
 - course: REL 230
   last: 1242
+  id: '005959'
 - course: REL 234
   last: 1244
   id: '017142'
@@ -19,6 +21,7 @@ updated: 3/11/2024
   id: '005963'
 - course: REL 246
   last: 1242
+  id: '011608'
 - course: REL 251
   last: 1244
   id: '005971'
@@ -27,20 +30,25 @@ updated: 3/11/2024
   id: '017143'
 - course: REL 256
   last: 1242
+  id: '012487'
 - course: REL 257
   last: 1244
   id: '011106'
 - course: REL 261
   last: 1242
+  id: '005979'
 - course: REL 263
   last: 1242
+  id: '015463'
 - course: REL 303
   last: 1244
   id: '016280'
 - course: REL 308
   last: 1242
+  id: '015701'
 - course: REL 313
   last: 1242
+  id: '016465'
 - course: REL 326
   last: 1244
   id: '006010'
@@ -49,18 +57,22 @@ updated: 3/11/2024
   id: '017145'
 - course: REL 337
   last: 1242
+  id: '013577'
 - course: REL 348
   last: 1244
   id: '017146'
 - course: REL 359
   last: 1242
+  id: '014715'
 - course: REL 361
   last: 1242
+  id: '014959'
 - course: REL 364
   last: 1244
   id: '008519'
 - course: REL 377
   last: 1242
+  id: '010652'
 - course: REL 382
   last: 1244
   travel: null
@@ -71,8 +83,10 @@ updated: 3/11/2024
 - course: REL 399
   last: 1242
   iw: null
+  id: '013336'
 - course: REL 402
   last: 1242
+  id: '014907'
 - course: REL 415
   last: 1244
   id: '016700'

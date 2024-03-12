@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: ASL 101
   last: 1242
+  id: '016163'
 - course: ASL 102
   last: 1244
   reqs: ASL101

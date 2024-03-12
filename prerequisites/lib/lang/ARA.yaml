@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: ARA 101
   last: 1242
+  id: '000488'
 - course: ARA 102
   last: 1244
   reqs: ARA101

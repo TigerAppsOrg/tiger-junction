@@ -13,8 +13,10 @@ updated: 3/11/2024
   id: '000722'
 - course: AST 205
   last: 1242
+  id: '012050'
 - course: AST 250
   last: 1242
+  id: '016131'
 - course: AST 251
   last: 1244
   reqs: AST250

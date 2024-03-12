@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: LAS 229
   last: 1242
+  id: '016881'
 - course: LAS 302
   last: 1244
   id: '017086'
@@ -24,9 +25,13 @@ updated: 3/11/2024
   id: '017195'
 - course: LAS 363
   last: 1242
+  id: '016852'
 - course: LAS 369
   last: 1242
+  id: '016930'
 - course: LAS 382
   last: 1242
+  id: '016932'
 - course: LAS 394
   last: 1242
+  id: '016933'

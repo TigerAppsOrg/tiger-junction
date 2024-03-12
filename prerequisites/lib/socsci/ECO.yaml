@@ -158,6 +158,7 @@ updated: 3/11/2024
   id: '009999'
 - course: ECO 468
   last: 1242
+  id: '010311'
 - course: ECO 491
   last: 1242
   reqs: STATS & ECO362

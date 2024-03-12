@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: EAS 216
   last: 1242
+  id: '013697'
 - course: EAS 219
   last: 1244
   id: '012643'
@@ -14,8 +15,10 @@ updated: 3/11/2024
   id: '017114'
 - course: EAS 225
   last: 1242
+  id: '001258'
 - course: EAS 239
   last: 1242
+  id: '016867'
 - course: EAS 242
   last: 1244
   id: '016614'
@@ -27,8 +30,10 @@ updated: 3/11/2024
   id: '016718'
 - course: EAS 300
   last: 1242
+  id: '001262'
 - course: EAS 310
   last: 1242
+  id: '012799'
 - course: EAS 311
   last: 1244
   id: '017190'
@@ -40,3 +45,4 @@ updated: 3/11/2024
   id: '017116'
 - course: EAS 418
   last: 1242
+  id: '014992'

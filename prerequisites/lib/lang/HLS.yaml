@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: HLS 101
   last: 1242
+  id: '005099'
 - course: HLS 102
   last: 1244
   reqs: HLS101
@@ -13,9 +14,11 @@ updated: 3/11/2024
 - course: HLS 105
   last: 1242
   reqs: HLS102
+  id: '005101'
 - course: HLS 107
   last: 1244
   reqs: HLS105
   id: '005102'
 - course: HLS 222
   last: 1242
+  id: '016851'

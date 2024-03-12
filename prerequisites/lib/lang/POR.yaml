@@ -9,6 +9,7 @@ vars:
 ---
 - course: POR 101
   last: 1242
+  id: '011445'
 - course: POR 102
   last: 1244
   reqs: POR101
@@ -20,6 +21,7 @@ vars:
 - course: POR 107
   last: 1242
   reqs: POR102
+  id: '015202'
 - course: POR 109
   last: 1244
   equiv:
@@ -29,6 +31,7 @@ vars:
 - course: POR 199
   last: 1242
   reqs: SPA107 | SPA107S | SPA108
+  id: '010597'
 - course: POR 260
   last: 1244
   reqs: ADVPOR
@@ -36,6 +39,7 @@ vars:
 - course: POR 310
   last: 1242
   reqs: POR107 | POR109 | POR199
+  id: '016098'
 - course: POR 426
   last: 1244
   reqs: SPA107

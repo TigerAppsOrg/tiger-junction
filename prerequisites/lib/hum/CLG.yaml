@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: CLG 101
   last: 1242
+  id: '003243'
 - course: CLG 102
   last: 1244
   reqs: CLG101

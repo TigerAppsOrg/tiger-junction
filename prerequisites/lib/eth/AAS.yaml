@@ -9,26 +9,34 @@ updated: 3/11/2024
   id: '016609'
 - course: AAS 230
   last: 1242
+  id: '013693'
 - course: AAS 244
   last: 1242
+  id: '016058'
 - course: AAS 245
   last: 1242
+  id: '011885'
 - course: AAS 300
   last: 1242
+  id: '014652'
 - course: AAS 303
   last: 1242
+  id: '014930'
 - course: AAS 306
   last: 1242
+  id: '014970'
 - course: AAS 314
   last: 1244
   id: '016617'
 - course: AAS 322
   last: 1242
+  id: '014660'
 - course: AAS 330
   last: 1244
   id: '017057'
 - course: AAS 332
   last: 1242
+  id: '016642'
 - course: AAS 336
   last: 1244
   id: '016596'
@@ -43,10 +51,13 @@ updated: 3/11/2024
   id: '013715'
 - course: AAS 350
   last: 1242
+  id: '013022'
 - course: AAS 352
   last: 1242
+  id: '016229'
 - course: AAS 353
   last: 1242
+  id: '000008'
 - course: AAS 354
   last: 1244
   id: '015649'
@@ -58,6 +69,7 @@ updated: 3/11/2024
   id: '003425'
 - course: AAS 367
   last: 1242
+  id: '003426'
 - course: AAS 406
   last: 1244
   id: '017180'

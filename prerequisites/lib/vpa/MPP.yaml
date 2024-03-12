@@ -12,6 +12,7 @@ updated: 3/11/2024
   id: '004416'
 - course: MPP 214
   last: 1242
+  id: '004417'
 - course: MPP 216
   last: 1244
   id: '004419'
@@ -23,8 +24,10 @@ updated: 3/11/2024
   id: '014290'
 - course: MPP 251
   last: 1242
+  id: '016271'
 - course: MPP 298
   last: 1242
+  id: '013347'
 - course: MPP 299
   last: 1244
   reqs: MPP298

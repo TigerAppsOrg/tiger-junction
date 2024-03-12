@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: UKR 101
   last: 1242
+  id: '016931'
 - course: UKR 102
   last: 1244
   reqs: UKR101

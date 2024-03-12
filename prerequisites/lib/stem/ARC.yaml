@@ -6,16 +6,19 @@ updated: 3/11/2024
 ---
 - course: ARC 203
   last: 1242
+  id: '000283'
 - course: ARC 204
   last: 1244
   id: '000284'
 - course: ARC 205
   last: 1242
+  id: '014225'
 - course: ARC 206
   last: 1244
   id: '011650'
 - course: ARC 308
   last: 1242
+  id: '000293'
 - course: ARC 311
   last: 1242
   reqs: ARC203 & ARC204
@@ -50,8 +53,10 @@ updated: 3/11/2024
   id: '015521'
 - course: ARC 403
   last: 1242
+  id: '000303'
 - course: ARC 404
   last: 1242
+  id: '009672'
 - course: ARC 492
   last: 1244
   id: '000317'

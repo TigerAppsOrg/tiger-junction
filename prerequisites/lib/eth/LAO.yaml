@@ -6,13 +6,16 @@ updated: 3/11/2024
 ---
 - course: LAO 201
   last: 1242
+  id: '015428'
 - course: LAO 340
   last: 1242
+  id: '016996'
 - course: LAO 347
   last: 1244
   id: '016686'
 - course: LAO 356
   last: 1242
+  id: '016962'
 - course: LAO 359
   last: 1244
   id: '017064'

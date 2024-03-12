@@ -6,8 +6,10 @@ updated: 3/11/2024
 ---
 - course: NEU 200
   last: 1242
+  id: '014508'
 - course: NEU 201
   last: 1242
+  id: '005588'
 - course: NEU 202
   last: 1244
   id: '008820'
@@ -17,9 +19,11 @@ updated: 3/11/2024
 - course: NEU 301
   last: 1242
   reqs: NEU2** | INTROMOL | EEB***
+  id: '013288'
 - course: NEU 314
   last: 1242
   reqs: CALCULUS
+  id: '013553'
 - course: NEU 331
   last: 1244
   reqs: NEU*** | PSY258 | PSY259
@@ -30,14 +34,18 @@ updated: 3/11/2024
 - course: NEU 385
   last: 1242
   reqs: NEU201
+  id: '015232'
 - course: NEU 400
   last: 1242
   reqs: NEU301 | NEU437 | MOL459
+  id: '016884'
 - course: NEU 420
   last: 1242
+  id: '016886'
 - course: NEU 430
   last: 1242
   reqs: NEU201 & INTROMOL
+  id: '015666'
 - course: NEU 437
   last: 1244
   id: '000894'

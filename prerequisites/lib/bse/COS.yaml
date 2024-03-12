@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: COS 109
   last: 1242
+  id: '002046'
 - course: COS 126
   last: 1244
   id: '002051'
@@ -55,6 +56,7 @@ updated: 3/11/2024
   id: '009084'
 - course: COS 397
   last: 1242
+  id: '002068'
 - course: COS 398
   last: 1242
   iw: null

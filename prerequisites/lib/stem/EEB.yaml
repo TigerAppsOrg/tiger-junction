@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: EEB 211
   last: 1242
+  id: '001521'
 - course: EEB 308
   last: 1242
   reqs: EEB211
@@ -24,6 +25,7 @@ updated: 3/11/2024
   id: '016948'
 - course: EEB 321
   last: 1242
+  id: '001538'
 - course: EEB 325
   last: 1242
   reqs: CALCULUS
@@ -38,6 +40,7 @@ updated: 3/11/2024
   id: '013699'
 - course: EEB 330
   last: 1242
+  id: '016904'
 - course: EEB 331
   last: 1244
   reqs: EEB309
@@ -61,6 +64,7 @@ updated: 3/11/2024
   id: '008506'
 - course: EEB 417A
   last: 1242
+  id: '008594'
 - course: EEB 428
   last: 1244
   reqs: EEB309

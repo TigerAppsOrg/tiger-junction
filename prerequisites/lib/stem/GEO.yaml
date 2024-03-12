@@ -14,6 +14,7 @@ updated: 3/11/2024
   last: 1242
   travel: null
   reqs: CALCULUS
+  id: '009622'
 - course: GEO 320
   last: 1244
   reqs: MECH
@@ -25,9 +26,11 @@ updated: 3/11/2024
 - course: GEO 361
   last: 1242
   reqs: MULTI & EAM
+  id: '011155'
 - course: GEO 363
   last: 1242
   reqs: CHEM2
+  id: '003015'
 - course: GEO 366
   last: 1244
   reqs: GEO202
@@ -41,9 +44,11 @@ updated: 3/11/2024
   last: 1242
   travel: null
   reqs: CALCULUS & (EAM | MECH) & GEO***
+  id: '003007'
 - course: GEO 417
   last: 1242
   reqs: CHM3** | MOL3** | EEB3**
+  id: '003037'
 - course: GEO 418
   last: 1244
   reqs: CHEM2
@@ -51,9 +56,11 @@ updated: 3/11/2024
 - course: GEO 419
   last: 1242
   reqs: CALCULUS & (PHYS | CHEM2)
+  id: '003039'
 - course: GEO 421
   last: 1242
   reqs: CALCULUS & MECH
+  id: '016876'
 - course: GEO 424
   last: 1244
   reqs: $EAM & $MAE305
@@ -61,6 +68,7 @@ updated: 3/11/2024
 - course: GEO 425
   last: 1242
   reqs: MULTI | MAE305
+  id: '003043'
 - course: GEO 435
   last: 1244
   id: '017127'

@@ -7,12 +7,16 @@ updated: 3/11/2024
 - course: ISC 231
   last: 1242
   reqs: CALCULUS
+  id: '009345'
 - course: ISC 232
   last: 1242
   reqs: CALCULUS
+  id: '009347'
 - course: ISC 233
   last: 1234
   reqs: ISC231 & ISC232
+  id: '009380'
 - course: ISC 234
   last: 1234
   reqs: ISC231 & ISC232
+  id: '009381'

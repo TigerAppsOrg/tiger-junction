@@ -6,6 +6,7 @@ updated: 3/11/2024
 ---
 - course: AMS 101
   last: 1242
+  id: '012189'
 - course: AMS 305
   last: 1244
   id: '015700'
@@ -33,6 +34,7 @@ updated: 3/11/2024
   id: '014665'
 - course: AMS 406
   last: 1242
+  id: '015156'
 - course: AMS 425
   last: 1244
   id: '017094'
