@@ -2,7 +2,7 @@
 code: PHY
 name: Physics
 category: STEM
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: PHY 101
   last: 1242
@@ -72,6 +72,8 @@ updated: 3/10/2024
   last: 1244
   reqs: LINEAR & (PHY205 | PHY207) & $EAM
   id: '005148'
+- course: PHY 209
+  last: 1242
 - course: PHY 210
   last: 1244
   id: '005150'

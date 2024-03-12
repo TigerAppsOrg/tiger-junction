@@ -2,7 +2,7 @@
 code: EGR
 name: Engineering
 category: Engineering
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: EGR 151
   last: 1242
@@ -75,12 +75,16 @@ updated: 3/10/2024
   last: 1244
   reqs: EGR350
   id: '010535'
+- course: EGR 360
+  last: 1242
 - course: EGR 361
   last: 1244
   id: '016870'
 - course: EGR 371
   last: 1244
   id: '016254'
+- course: EGR 383
+  last: 1242
 - course: EGR 395
   last: 1244
   id: '013922'
@@ -98,6 +102,8 @@ updated: 3/10/2024
 - course: EGR 473
   last: 1244
   id: '017121'
+- course: EGR 491
+  last: 1242
 - course: EGR 494
   last: 1244
   id: '012448'

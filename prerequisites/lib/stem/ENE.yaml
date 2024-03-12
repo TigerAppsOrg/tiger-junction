@@ -2,8 +2,10 @@
 code: ENE
 name: Energy Studies
 category: STEM
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: ENE 202
+  last: 1242
 - course: ENE 273
   last: 1244
   id: '014275'
@@ -19,6 +21,10 @@ updated: 3/10/2024
 - course: ENE 372
   last: 1244
   id: '015001'
+- course: ENE 419
+  last: 1242
 - course: ENE 422
   last: 1244
   id: '015499'
+- course: ENE 475
+  last: 1242

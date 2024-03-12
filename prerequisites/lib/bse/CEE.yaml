@@ -2,7 +2,7 @@
 code: CEE
 name: Civil and Environmental Engineering
 category: Engineering
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: CEE 102A
   last: 1242
@@ -84,6 +84,8 @@ updated: 3/10/2024
 - course: CEE 464
   last: 1244
   id: '017105'
+- course: CEE 471
+  last: 1242
 - course: CEE 474
   last: 1242
   reqs: LINEAR

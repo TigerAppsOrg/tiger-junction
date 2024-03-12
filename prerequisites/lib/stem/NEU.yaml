@@ -2,8 +2,12 @@
 code: NEU
 name: Neuroscience
 category: STEM
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: NEU 200
+  last: 1242
+- course: NEU 201
+  last: 1242
 - course: NEU 202
   last: 1244
   id: '008820'
@@ -29,6 +33,8 @@ updated: 3/10/2024
 - course: NEU 400
   last: 1242
   reqs: NEU301 | NEU437 | MOL459
+- course: NEU 420
+  last: 1242
 - course: NEU 430
   last: 1242
   reqs: NEU201 & INTROMOL

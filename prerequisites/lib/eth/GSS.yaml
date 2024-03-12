@@ -2,8 +2,10 @@
 code: GSS
 name: Gender and Sexuality Studies
 category: Ethnic and Cultural Studies
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: GSS 201
+  last: 1242
 - course: GSS 218
   last: 1244
   id: '015674'
@@ -16,9 +18,15 @@ updated: 3/10/2024
 - course: GSS 303
   last: 1244
   id: '014971'
+- course: GSS 322
+  last: 1242
+- course: GSS 336
+  last: 1242
 - course: GSS 345
   last: 1244
   id: '013756'
+- course: GSS 373
+  last: 1242
 - course: GSS 398
   last: 1244
   id: '017080'

@@ -2,8 +2,10 @@
 code: FRS
 name: Freshman Seminars
 category: Other
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: FRS 101
+  last: 1242
 - course: FRS 102
   last: 1244
   id: '015830'
@@ -13,52 +15,90 @@ updated: 3/10/2024
 - course: FRS 104
   last: 1244
   id: '017028'
+- course: FRS 105
+  last: 1242
 - course: FRS 106
   last: 1244
   id: '013054'
+- course: FRS 107
+  last: 1242
 - course: FRS 108
   last: 1244
   id: '017029'
+- course: FRS 109
+  last: 1242
 - course: FRS 110
   last: 1244
   id: '017030'
+- course: FRS 111
+  last: 1242
 - course: FRS 112
   last: 1244
   id: '016207'
+- course: FRS 113
+  last: 1242
 - course: FRS 114
   last: 1244
   travel: null
   id: '017031'
+- course: FRS 115
+  last: 1242
 - course: FRS 116
   last: 1244
   id: '015342'
+- course: FRS 117
+  last: 1242
 - course: FRS 118
   last: 1244
   id: '017032'
+- course: FRS 119
+  last: 1242
 - course: FRS 120
   last: 1244
   id: '016622'
+- course: FRS 121
+  last: 1242
 - course: FRS 122
   last: 1244
   id: '017033'
+- course: FRS 123
+  last: 1242
+- course: FRS 124
+  last: 1242
+- course: FRS 125
+  last: 1242
 - course: FRS 126
   last: 1244
   id: '017034'
+- course: FRS 127
+  last: 1242
 - course: FRS 128
   last: 1244
   id: '017035'
+- course: FRS 129
+  last: 1242
 - course: FRS 130
   last: 1244
   id: '016625'
+- course: FRS 131
+  last: 1242
 - course: FRS 132
   last: 1244
   id: '017036'
+- course: FRS 133
+  last: 1242
+- course: FRS 135
+  last: 1242
 - course: FRS 136
   last: 1244
   id: '017037'
 - course: FRS 137
   last: 1244
   id: '014313'
+- course: FRS 138
+  last: 1242
+- course: FRS 139
+  last: 1242
 - course: FRS 140
   last: 1244
   id: '016627'
@@ -68,34 +108,64 @@ updated: 3/10/2024
 - course: FRS 142
   last: 1244
   id: '017038'
+- course: FRS 143
+  last: 1242
 - course: FRS 144
   last: 1244
   travel: null
   id: '017039'
+- course: FRS 145
+  last: 1242
+- course: FRS 146
+  last: 1242
+- course: FRS 147
+  last: 1242
 - course: FRS 148
   last: 1244
   id: '016630'
+- course: FRS 149
+  last: 1242
 - course: FRS 150
   last: 1244
   id: '016216'
+- course: FRS 151
+  last: 1242
 - course: FRS 152
   last: 1244
   id: '017040'
+- course: FRS 153
+  last: 1242
+- course: FRS 155
+  last: 1242
+- course: FRS 157
+  last: 1242
 - course: FRS 158
   last: 1244
   id: '017041'
+- course: FRS 159
+  last: 1242
 - course: FRS 160
   last: 1244
   id: '017042'
+- course: FRS 161
+  last: 1242
 - course: FRS 162
   last: 1244
   id: '017043'
+- course: FRS 163
+  last: 1242
+- course: FRS 164
+  last: 1242
 - course: FRS 165
   last: 1242
   travel: null
 - course: FRS 166
   last: 1244
   id: '017044'
+- course: FRS 167
+  last: 1242
+- course: FRS 169
+  last: 1242
 - course: FRS 172
   last: 1244
   id: '016640'
@@ -105,30 +175,52 @@ updated: 3/10/2024
 - course: FRS 174
   last: 1244
   id: '015842'
+- course: FRS 175
+  last: 1242
+- course: FRS 177
+  last: 1242
 - course: FRS 178
   last: 1244
   id: '015845'
+- course: FRS 179
+  last: 1242
 - course: FRS 180
   last: 1244
   id: '017045'
+- course: FRS 181
+  last: 1242
 - course: FRS 182
   last: 1244
   id: '016631'
+- course: FRS 183
+  last: 1242
 - course: FRS 184
   last: 1244
   id: '017046'
+- course: FRS 185
+  last: 1242
 - course: FRS 186
   last: 1244
   id: '017047'
+- course: FRS 187
+  last: 1242
 - course: FRS 188
   last: 1244
   id: '017048'
+- course: FRS 189
+  last: 1242
 - course: FRS 190
   last: 1244
   id: '017049'
+- course: FRS 191
+  last: 1242
 - course: FRS 193
   last: 1244
   id: '016434'
 - course: FRS 195
   last: 1244
   id: '016155'
+- course: FRS 197
+  last: 1242
+- course: FRS 199
+  last: 1242

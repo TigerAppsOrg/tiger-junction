@@ -2,8 +2,10 @@
 code: COS
 name: Computer Science
 category: Engineering
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: COS 109
+  last: 1242
 - course: COS 126
   last: 1244
   id: '002051'
@@ -51,6 +53,8 @@ updated: 3/10/2024
   last: 1242
   reqs: COS217
   id: '009084'
+- course: COS 397
+  last: 1242
 - course: COS 398
   last: 1242
   iw: null

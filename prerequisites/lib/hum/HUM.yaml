@@ -2,26 +2,38 @@
 code: HUM
 name: Humanistic Studies
 category: Humanities
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: HUM 216
+  last: 1242
+- course: HUM 217
+  last: 1242
 - course: HUM 218
   last: 1244
   id: '003780'
 - course: HUM 219
   last: 1244
   id: '003781'
+- course: HUM 233
+  last: 1242
 - course: HUM 234
   last: 1244
   id: '010036'
 - course: HUM 245
   last: 1244
   id: '015003'
+- course: HUM 247
+  last: 1242
 - course: HUM 290
   last: 1244
   id: '014698'
+- course: HUM 315
+  last: 1242
 - course: HUM 328
   last: 1244
   id: '015660'
+- course: HUM 335
+  last: 1242
 - course: HUM 346
   last: 1244
   id: '013536'
@@ -31,9 +43,13 @@ updated: 3/10/2024
 - course: HUM 352
   last: 1244
   id: '015916'
+- course: HUM 353
+  last: 1242
 - course: HUM 360
   last: 1244
   id: '017130'
+- course: HUM 365
+  last: 1242
 - course: HUM 372
   last: 1244
   id: '017193'

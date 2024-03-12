@@ -2,26 +2,46 @@
 code: NES
 name: Near Eastern Studies
 category: Ethnic and Cultural Studies
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: NES 240
+  last: 1242
+- course: NES 265
+  last: 1242
 - course: NES 300
   last: 1242
   iw: null
+- course: NES 301
+  last: 1242
 - course: NES 317
   last: 1244
   id: '017132'
+- course: NES 326
+  last: 1242
 - course: NES 332
   last: 1244
   id: '017133'
+- course: NES 338
+  last: 1242
+- course: NES 339
+  last: 1242
 - course: NES 342
   last: 1244
   id: '017134'
 - course: NES 345
   last: 1244
   id: '004622'
+- course: NES 369
+  last: 1242
+- course: NES 373
+  last: 1242
+- course: NES 374
+  last: 1242
 - course: NES 391
   last: 1244
   id: '014703'
+- course: NES 433
+  last: 1242
 - course: NES 437
   last: 1244
   id: '004651'

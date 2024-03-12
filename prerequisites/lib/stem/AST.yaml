@@ -2,7 +2,7 @@
 code: AST
 name: Astrophysical Sciences
 category: STEM
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: AST 203
   last: 1244
@@ -11,6 +11,10 @@ updated: 3/10/2024
   last: 1244
   reqs: CALCULUS & MECH
   id: '000722'
+- course: AST 205
+  last: 1242
+- course: AST 250
+  last: 1242
 - course: AST 251
   last: 1244
   reqs: AST250

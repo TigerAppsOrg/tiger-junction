@@ -2,20 +2,40 @@
 code: ART
 name: Art and Archaeology
 category: Visual and Performing Arts
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: ART 100
+  last: 1242
 - course: ART 102
   last: 1244
   id: '000514'
+- course: ART 106
+  last: 1242
+- course: ART 203
+  last: 1242
+- course: ART 213
+  last: 1242
 - course: ART 218
   last: 1244
   id: '015159'
 - course: ART 228
   last: 1244
   id: '013694'
+- course: ART 233
+  last: 1242
+- course: ART 248
+  last: 1242
 - course: ART 273
   last: 1244
   id: '017096'
+- course: ART 313
+  last: 1242
+- course: ART 316
+  last: 1242
+- course: ART 323
+  last: 1242
+- course: ART 341
+  last: 1242
 - course: ART 354
   last: 1244
   travel: null
@@ -27,12 +47,22 @@ updated: 3/10/2024
 - course: ART 380
   last: 1244
   id: '017097'
+- course: ART 389
+  last: 1242
+- course: ART 400
+  last: 1242
 - course: ART 401
   last: 1244
   id: '010090'
 - course: ART 402
   last: 1244
   id: '015896'
+- course: ART 403
+  last: 1242
+- course: ART 411
+  last: 1242
+- course: ART 412
+  last: 1242
 - course: ART 418
   last: 1244
   id: '013156'
@@ -50,6 +80,10 @@ updated: 3/10/2024
     permission of instructor.
   reqs: ART*** | JPN***
   id: '010765'
+- course: ART 444
+  last: 1242
+- course: ART 455
+  last: 1242
 - course: ART 465
   last: 1244
   id: '017099'
@@ -59,9 +93,13 @@ updated: 3/10/2024
 - course: ART 474
   last: 1244
   id: '015163'
+- course: ART 478
+  last: 1242
 - course: ART 484
   last: 1244
   id: '017101'
+- course: ART 490
+  last: 1242
 - course: ART 491
   last: 1242
   travel: null

@@ -2,12 +2,16 @@
 code: KOR
 name: Korean
 category: World Languages
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: KOR 101
+  last: 1242
 - course: KOR 102
   last: 1244
   reqs: KOR101
   id: '004879'
+- course: KOR 103
+  last: 1242
 - course: KOR 105
   last: 1242
   equiv:

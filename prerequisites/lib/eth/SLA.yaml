@@ -2,11 +2,15 @@
 code: SLA
 name: Slavic Languages and Literatures
 category: Ethnic and Cultural Studies
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: SLA 213
+  last: 1242
 - course: SLA 214
   last: 1244
   id: '017149'
+- course: SLA 219
+  last: 1242
 - course: SLA 220
   last: 1244
   id: '006291'

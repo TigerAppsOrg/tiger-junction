@@ -2,7 +2,7 @@
 code: MAT
 name: Mathematics
 category: STEM
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: MAT 100
   last: 1244
@@ -152,6 +152,8 @@ updated: 3/10/2024
 - course: MAT 449
   last: 1242
   reqs: MAT345
+- course: MAT 457
+  last: 1242
 - course: MAT 478
   last: 1244
   notes: >-

@@ -2,7 +2,7 @@
 code: CBE
 name: Chemicial and Biological Engineering
 category: Engineering
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: CBE 218
   last: 1244
@@ -57,6 +57,8 @@ updated: 3/10/2024
 - course: CBE 426
   last: 1244
   id: '017226'
+- course: CBE 430
+  last: 1242
 - course: CBE 433
   last: 1244
   id: '011647'

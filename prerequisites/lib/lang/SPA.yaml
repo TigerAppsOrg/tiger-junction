@@ -2,11 +2,13 @@
 code: SPA
 name: Spanish
 category: World Languages
-updated: 3/10/2024
+updated: 3/11/2024
 vars:
   - name: ADVSPA
     equ: SPA107 | SPA107S | SPA108
 ---
+- course: SPA 101
+  last: 1242
 - course: SPA 102
   last: 1244
   reqs: SPA101
@@ -111,6 +113,8 @@ vars:
   last: 1244
   reqs: SPA209
   id: '013740'
+- course: SPA 233
+  last: 1242
 - course: SPA 234
   last: 1244
   reqs: ADVSPA
@@ -133,6 +137,8 @@ vars:
   last: 1244
   reqs: SPA2**
   id: '006681'
+- course: SPA 316
+  last: 1242
 - course: SPA 318
   last: 1244
   id: '017218'
@@ -144,6 +150,8 @@ vars:
   last: 1244
   reqs: SPA2**
   id: '016481'
+- course: SPA 330
+  last: 1242
 - course: SPA 350
   last: 1242
   reqs: <SPA209

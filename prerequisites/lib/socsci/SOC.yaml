@@ -2,17 +2,25 @@
 code: SOC
 name: Sociology
 category: Social Sciences
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: SOC 101
+  last: 1242
+- course: SOC 201
+  last: 1242
 - course: SOC 222
   last: 1244
   id: '008187'
 - course: SOC 228
   last: 1244
   id: '017153'
+- course: SOC 249
+  last: 1242
 - course: SOC 300
   last: 1242
   reqs: SOC101 | SOC2**
+- course: SOC 301
+  last: 1242
 - course: SOC 302
   last: 1244
   reqs: WRI***
@@ -26,6 +34,10 @@ updated: 3/10/2024
 - course: SOC 373
   last: 1244
   id: '016287'
+- course: SOC 377
+  last: 1242
+- course: SOC 380
+  last: 1242
 - course: SOC 382
   last: 1244
   id: '017155'
@@ -35,3 +47,5 @@ updated: 3/10/2024
 - course: SOC 384
   last: 1244
   id: '017154'
+- course: SOC 410
+  last: 1242

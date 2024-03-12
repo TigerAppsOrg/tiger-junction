@@ -25,7 +25,7 @@ export default function add(term) {
     }
 
     // Read courselist from cache
-    const courselistCache = fs.readFileSync("../cache/" + term + "_sm.json");
+    const courselistCache = fs.readFileSync("../cache/coursedata/sm/" + term + "_sm.json");
     const courselist = [...new Set(JSON.parse(courselistCache)
         .map(x => {
             const title = x.subject + x.catnum;

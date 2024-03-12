@@ -2,7 +2,7 @@
 code: CHI
 name: Chinese
 category: World Languages
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: CHI 1001
   last: 1244
@@ -11,10 +11,14 @@ updated: 3/10/2024
   last: 1242
   reqs: CHI1001
   id: '015634'
+- course: CHI 101
+  last: 1242
 - course: CHI 102
   last: 1244
   reqs: CHI101
   id: '001065'
+- course: CHI 103
+  last: 1242
 - course: CHI 105
   last: 1242
   equiv:

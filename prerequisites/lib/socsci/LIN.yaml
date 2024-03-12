@@ -2,7 +2,7 @@
 code: LIN
 name: Linguistics
 category: Social Sciences
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: LIN 201
   last: 1244
@@ -13,9 +13,13 @@ updated: 3/10/2024
 - course: LIN 210
   last: 1244
   id: '008460'
+- course: LIN 235
+  last: 1242
 - course: LIN 250
   last: 1244
   id: '013797'
+- course: LIN 260
+  last: 1242
 - course: LIN 301
   last: 1244
   reqs: LIN201
@@ -43,6 +47,8 @@ updated: 3/10/2024
 - course: LIN 356
   last: 1242
   reqs: LIN201
+- course: LIN 360
+  last: 1242
 - course: LIN 400
   last: 1242
   iw: null

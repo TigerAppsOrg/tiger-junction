@@ -2,11 +2,17 @@
 code: CHV
 name: Center for Human Values
 category: Humanities
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: CHV 310
+  last: 1242
 - course: CHV 323
   last: 1244
   id: '017140'
+- course: CHV 385
+  last: 1242
+- course: CHV 390
+  last: 1242
 - course: CHV 479
   last: 1244
   id: '017107'

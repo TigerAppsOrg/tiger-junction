@@ -2,7 +2,7 @@
 code: PHI
 name: Philosophy
 category: Humanities
-updated: 3/10/2024
+updated: 3/11/2024
 ---
 - course: PHI 200
   last: 1244
@@ -13,6 +13,10 @@ updated: 3/10/2024
 - course: PHI 202
   last: 1244
   id: '004892'
+- course: PHI 203
+  last: 1242
+- course: PHI 205
+  last: 1242
 - course: PHI 211
   last: 1244
   id: '017135'
@@ -36,9 +40,13 @@ updated: 3/10/2024
 - course: PHI 318
   last: 1244
   id: '004919'
+- course: PHI 321
+  last: 1242
 - course: PHI 322
   last: 1242
   reqs: PHI***
+- course: PHI 323
+  last: 1242
 - course: PHI 325
   last: 1244
   reqs: PHI***

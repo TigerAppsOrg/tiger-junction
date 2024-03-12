@@ -3,8 +3,10 @@ code: ECE
 name: Electrical and Computer Engineering
 category: Engineering
 absorbed: ELE
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: ECE 115
+  last: 1242
 - course: ECE 201
   last: 1244
   reqs: CALCULUS
@@ -12,6 +14,8 @@ updated: 3/10/2024
 - course: ECE 203
   last: 1244
   id: '002462'
+- course: ECE 206
+  last: 1242
 - course: ECE 297
   last: 1242
   iw: null
@@ -90,6 +94,8 @@ updated: 3/10/2024
   last: 1244
   reqs: PHYS
   id: '013751'
+- course: ECE 453
+  last: 1242
 - course: ECE 455
   last: 1244
   id: '010467'
@@ -101,6 +107,8 @@ updated: 3/10/2024
   last: 1244
   reqs: PHY305 | ECE342
   id: '016253'
+- course: ECE 458
+  last: 1242
 - course: ECE 462
   last: 1244
   id: '002501'
@@ -116,6 +124,8 @@ updated: 3/10/2024
   last: 1244
   reqs: ECE375
   id: '002509'
+- course: ECE 482
+  last: 1242
 - course: ECE 497
   last: 1242
   iw: null

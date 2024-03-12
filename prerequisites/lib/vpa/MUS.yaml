@@ -2,8 +2,10 @@
 code: MUS
 name: Music
 category: Visual and Performing Arts
-updated: 3/10/2024
+updated: 3/11/2024
 ---
+- course: MUS 105
+  last: 1242
 - course: MUS 106
   last: 1244
   id: '004401'
@@ -25,6 +27,8 @@ updated: 3/10/2024
 - course: MUS 242
   last: 1244
   id: '004420'
+- course: MUS 249
+  last: 1242
 - course: MUS 259
   last: 1244
   id: '015017'
@@ -49,6 +53,8 @@ updated: 3/10/2024
   last: 1244
   reqs: MUS210 | MUS310 | MUS329
   id: '004437'
+- course: MUS 314
+  last: 1242
 - course: MUS 316
   last: 1244
   id: '004455'
@@ -63,15 +69,25 @@ updated: 3/10/2024
 - course: MUS 338
   last: 1244
   id: '016883'
+- course: MUS 340
+  last: 1242
 - course: MUS 341
   last: 1242
   reqs: MUS106
+- course: MUS 343
+  last: 1242
 - course: MUS 344
   last: 1244
   id: '016900'
+- course: MUS 347
+  last: 1242
 - course: MUS 348
   last: 1244
   id: '017141'
+- course: MUS 350
+  last: 1242
+- course: MUS 357
+  last: 1242
 - course: MUS 365
   last: 1244
   id: '016349'
