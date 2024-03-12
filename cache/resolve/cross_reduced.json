@@ -713,12 +713,16 @@
   },
   {
     "code": "ANT 206",
-    "prev_code": [],
+    "prev_code": [
+      {
+        "code": "ANT 206A",
+        "term": 1214
+      }
+    ],
     "id": "012600",
-    "term": 1214,
+    "term": 1244,
     "cross": [
-      "AFS 206",
-      "AFS 206A"
+      "AFS 206"
     ]
   },
   {
@@ -2084,6 +2088,27 @@
   },
   {
     "code": "ARC 560",
+    "prev_code": [],
+    "id": "010580",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "ARC 560A",
+    "prev_code": [],
+    "id": "015542",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "ARC 560B",
+    "prev_code": [],
+    "id": "016368",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "ARC 560C",
     "prev_code": [],
     "id": "016370",
     "term": 1242,
@@ -4508,12 +4533,25 @@
   {
     "code": "CEE 599",
     "prev_code": [],
+    "id": "007992",
+    "term": 1244,
+    "cross": [
+      "ENE 599"
+    ]
+  },
+  {
+    "code": "CEE 599A",
+    "prev_code": [],
+    "id": "013233",
+    "term": 1214,
+    "cross": []
+  },
+  {
+    "code": "CEE 599B",
+    "prev_code": [],
     "id": "010752",
     "term": 1242,
-    "cross": [
-      "ENE 599",
-      "ENV 599"
-    ]
+    "cross": []
   },
   {
     "code": "CHI 1001",
@@ -6328,6 +6366,13 @@
   },
   {
     "code": "COS 333",
+    "prev_code": [],
+    "id": "002065",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "COS 333I",
     "prev_code": [],
     "id": "015699",
     "term": 1214,
@@ -8573,6 +8618,18 @@
   },
   {
     "code": "ECE 497",
+    "prev_code": [
+      {
+        "code": "ELE 497",
+        "term": 1214
+      }
+    ],
+    "id": "002521",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "ECE 497R",
     "prev_code": [],
     "id": "016194",
     "term": 1242,
@@ -8674,6 +8731,25 @@
     "prev_code": [
       {
         "code": "ELE 538",
+        "term": 1214
+      }
+    ],
+    "id": "002541",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "ECE 538A",
+    "prev_code": [],
+    "id": "016553",
+    "term": 1232,
+    "cross": []
+  },
+  {
+    "code": "ECE 538B",
+    "prev_code": [
+      {
+        "code": "ELE 538B",
         "term": 1212
       }
     ],
@@ -8683,13 +8759,27 @@
   },
   {
     "code": "ECE 539",
+    "prev_code": [
+      {
+        "code": "ELE 539",
+        "term": 1212
+      }
+    ],
+    "id": "002543",
+    "term": 1232,
+    "cross": [
+      "COS 512",
+      "COS 597L",
+      "MAE 572"
+    ]
+  },
+  {
+    "code": "ECE 539B",
     "prev_code": [],
     "id": "009560",
     "term": 1242,
     "cross": [
-      "COS 512",
-      "COS 597P",
-      "MAE 572"
+      "COS 597P"
     ]
   },
   {
@@ -8735,6 +8825,18 @@
     "prev_code": [
       {
         "code": "ELE 547",
+        "term": 1214
+      }
+    ],
+    "id": "002550",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "ECE 547B",
+    "prev_code": [
+      {
+        "code": "ELE 547B",
         "term": 1214
       }
     ],
@@ -10326,6 +10428,27 @@
   {
     "code": "EGR 501",
     "prev_code": [],
+    "id": "011458",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "EGR 501A",
+    "prev_code": [],
+    "id": "011776",
+    "term": 1234,
+    "cross": []
+  },
+  {
+    "code": "EGR 501B",
+    "prev_code": [],
+    "id": "011777",
+    "term": 1214,
+    "cross": []
+  },
+  {
+    "code": "EGR 501C",
+    "prev_code": [],
     "id": "011778",
     "term": 1214,
     "cross": []
@@ -10345,28 +10468,11 @@
     "cross": []
   },
   {
-    "code": "ELE 497",
-    "prev_code": [],
-    "id": "002521",
-    "term": 1214,
-    "cross": []
-  },
-  {
     "code": "ELE 520",
     "prev_code": [],
     "id": "015717",
     "term": 1212,
     "cross": []
-  },
-  {
-    "code": "ELE 539",
-    "prev_code": [],
-    "id": "002543",
-    "term": 1212,
-    "cross": [
-      "COS 512",
-      "COS 597L"
-    ]
   },
   {
     "code": "ELE 557",
@@ -15859,10 +15965,18 @@
   {
     "code": "HOS 599",
     "prev_code": [],
+    "id": "004537",
+    "term": 1244,
+    "cross": [
+      "HIS 599"
+    ]
+  },
+  {
+    "code": "HOS 599A",
+    "prev_code": [],
     "id": "015997",
     "term": 1232,
     "cross": [
-      "HIS 599",
       "HIS 599A"
     ]
   },
@@ -17601,12 +17715,26 @@
   {
     "code": "MAE 339",
     "prev_code": [],
+    "id": "002344",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "MAE 339D",
+    "prev_code": [],
     "id": "002346",
     "term": 1242,
     "cross": []
   },
   {
     "code": "MAE 340",
+    "prev_code": [],
+    "id": "002345",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "MAE 340D",
     "prev_code": [],
     "id": "002347",
     "term": 1244,
@@ -17749,6 +17877,13 @@
   },
   {
     "code": "MAE 440",
+    "prev_code": [],
+    "id": "012855",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "MAE 440R",
     "prev_code": [],
     "id": "016951",
     "term": 1214,
@@ -18794,6 +18929,20 @@
   },
   {
     "code": "MOL 504",
+    "prev_code": [],
+    "id": "000898",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "MOL 504A",
+    "prev_code": [],
+    "id": "017012",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "MOL 504B",
     "prev_code": [],
     "id": "017013",
     "term": 1242,
@@ -22852,6 +23001,20 @@
   },
   {
     "code": "POL 533",
+    "prev_code": [],
+    "id": "016943",
+    "term": 1242,
+    "cross": []
+  },
+  {
+    "code": "POL 533A",
+    "prev_code": [],
+    "id": "016571",
+    "term": 1232,
+    "cross": []
+  },
+  {
+    "code": "POL 533B",
     "prev_code": [],
     "id": "016572",
     "term": 1232,
@@ -28286,14 +28449,24 @@
   },
   {
     "code": "THR 210",
+    "prev_code": [
+      {
+        "code": "THR 210A",
+        "term": 1212
+      }
+    ],
+    "id": "014271",
+    "term": 1242,
+    "cross": [
+      "STC 210"
+    ]
+  },
+  {
+    "code": "THR 210B",
     "prev_code": [],
     "id": "014270",
     "term": 1212,
-    "cross": [
-      "STC 210",
-      "STC 210A",
-      "STC 210B"
-    ]
+    "cross": []
   },
   {
     "code": "THR 213",
@@ -30064,6 +30237,13 @@
   {
     "code": "WRI 501",
     "prev_code": [],
+    "id": "011050",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "WRI 501A",
+    "prev_code": [],
     "id": "013880",
     "term": 1214,
     "cross": []
@@ -30071,12 +30251,26 @@
   {
     "code": "WRI 502",
     "prev_code": [],
+    "id": "013813",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "WRI 502A",
+    "prev_code": [],
     "id": "017197",
     "term": 1244,
     "cross": []
   },
   {
     "code": "WRI 503",
+    "prev_code": [],
+    "id": "010878",
+    "term": 1244,
+    "cross": []
+  },
+  {
+    "code": "WRI 503A",
     "prev_code": [],
     "id": "013881",
     "term": 1244,

@@ -35,7 +35,7 @@ export default function link() {
                 courses[k].id = crossTable[courses[k].course].id;
             }
 
-            fs.writeFileSync(file, "---\n" + yaml.dump(frontMatter) + "\n---\n" + yaml.dump(courses));
+            fs.writeFileSync(file, "---\n" + yaml.dump(frontMatter) + "---\n" + yaml.dump(courses).trim());
         }
     }
 }

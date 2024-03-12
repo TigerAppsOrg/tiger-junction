@@ -55,7 +55,7 @@ for (let i = 0; i < crossDump.length; i++) {
     let crosslistings = [];
     crosslistings.push(crossDump[i].code.split(" / ").slice(1));
 
-    while (crossDump[i + 1] && crossDump[i + 1].code.startsWith(primary)) {
+    while (crossDump[i + 1] && crossDump[i + 1].code.split(" / ")[0] === primary) {
         const next = crossDump[i + 1].code;
         if (next.includes("/")) {
             crosslistings.push(next.split(" / ").slice(1));
