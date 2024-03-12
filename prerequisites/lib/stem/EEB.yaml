@@ -2,7 +2,7 @@
 code: EEB
 name: Ecology and Evolutionary Biology
 category: STEM
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: EEB 211
   last: 1242
@@ -22,6 +22,7 @@ updated: 3/11/2024
 - course: EEB 314
   last: 1234
   reqs: EEB211
+  id: '001534'
 - course: EEB 317
   last: 1242
   travel: null
@@ -32,6 +33,7 @@ updated: 3/11/2024
 - course: EEB 324
   last: 1234
   reqs: CALCULUS
+  id: '001540'
 - course: EEB 325
   last: 1242
   reqs: CALCULUS
@@ -40,10 +42,11 @@ updated: 3/11/2024
   last: 1242
   reqs: EEB211 & (MOL214 | ISCA)
   id: '011183'
-- course: EEB 328 
+- course: EEB 328
   last: 1234
-  travel:
+  travel: null
   reqs: EEB321
+  id: '001542'
 - course: EEB 329
   last: 1242
   reqs: EEB211
@@ -57,8 +60,9 @@ updated: 3/11/2024
   id: '015883'
 - course: EEB 332
   last: 1234
-  travel:
+  travel: null
   reqs: EEB321
+  id: '001543'
 - course: EEB 338
   last: 1244
   id: '001546'
@@ -71,22 +75,25 @@ updated: 3/11/2024
   id: '017118'
 - course: EEB 384
   last: 1234
-  travel:
+  travel: null
   reqs: EEB321
+  id: '014455'
 - course: EEB 388
   last: 1244
   id: '015406'
 - course: EEB 403
   last: 1234
   reqs: INTROMOL & (EEB211 | NEU201 | MOL342)
+  id: '013527'
 - course: EEB 404
   last: 1244
   reqs: EEB 211
   id: '008506'
 - course: EEB 406
   last: 1234
-  travel:
+  travel: null
   reqs: EEB211 & EEB321
+  id: '012181'
 - course: EEB 417A
   last: 1242
   id: '008594'

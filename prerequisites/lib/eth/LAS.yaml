@@ -2,7 +2,7 @@
 code: LAS
 name: Latin American Studies
 category: Ethnic and Cultural Studies
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: LAS 229
   last: 1242
@@ -16,6 +16,9 @@ updated: 3/11/2024
 - course: LAS 308
   last: 1244
   id: '016599'
+- course: LAS 313
+  last: 1234
+  id: '015700'
 - course: LAS 324
   last: 1244
   notes: >-
@@ -35,3 +38,6 @@ updated: 3/11/2024
 - course: LAS 394
   last: 1242
   id: '016933'
+- course: LAS 422
+  last: 1234
+  id: '016687'

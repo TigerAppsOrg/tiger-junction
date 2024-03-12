@@ -2,7 +2,7 @@
 code: CLA
 name: Classics
 category: Humanities
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: CLA 203
   last: 1242
@@ -16,6 +16,9 @@ updated: 3/11/2024
 - course: CLA 216
   last: 1244
   id: '001093'
+- course: CLA 217
+  last: 1234
+  id: '001094'
 - course: CLA 219
   last: 1242
   id: '001096'
@@ -25,9 +28,15 @@ updated: 3/11/2024
 - course: CLA 227
   last: 1242
   id: '016906'
+- course: CLA 228
+  last: 1234
+  id: '016612'
 - course: CLA 229
   last: 1244
   id: '017108'
+- course: CLA 232
+  last: 1234
+  id: '015633'
 - course: CLA 235
   last: 1244
   id: '017109'
@@ -55,9 +64,21 @@ updated: 3/11/2024
 - course: CLA 330
   last: 1242
   id: '008508'
+- course: CLA 334
+  last: 1234
+  id: '001108'
 - course: CLA 338
   last: 1242
   id: '015863'
 - course: CLA 340
   last: 1242
   id: '012057'
+- course: CLA 355
+  last: 1234
+  id: '015211'
+- course: CLA 357
+  last: 1234
+  id: '015503'
+- course: CLA 405
+  last: 1234
+  id: '015164'

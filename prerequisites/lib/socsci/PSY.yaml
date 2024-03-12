@@ -2,7 +2,7 @@
 code: PSY
 name: Psychology
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: PSY 101
   last: 1242
@@ -51,6 +51,9 @@ updated: 3/11/2024
 - course: PSY 309
   last: 1242
   id: '005604'
+- course: PSY 315
+  last: 1234
+  id: '016725'
 - course: PSY 317
   last: 1244
   reqs: PSY***
@@ -92,6 +95,7 @@ updated: 3/11/2024
 - course: PSY 414
   last: 1234
   reqs: PSY***
+  id: '015237'
 - course: PSY 420
   last: 1244
   id: '014026'

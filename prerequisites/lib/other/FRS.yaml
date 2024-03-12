@@ -2,7 +2,7 @@
 code: FRS
 name: Freshman Seminars
 category: Other
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: FRS 101
   last: 1242
@@ -104,6 +104,9 @@ updated: 3/11/2024
 - course: FRS 133
   last: 1242
   id: '016976'
+- course: FRS 134
+  last: 1234
+  id: '014546'
 - course: FRS 135
   last: 1242
   id: '016977'
@@ -162,6 +165,9 @@ updated: 3/11/2024
 - course: FRS 153
   last: 1242
   id: '016980'
+- course: FRS 154
+  last: 1234
+  id: '015836'
 - course: FRS 155
   last: 1242
   id: '016981'
@@ -199,9 +205,15 @@ updated: 3/11/2024
 - course: FRS 167
   last: 1242
   id: '016986'
+- course: FRS 168
+  last: 1234
+  id: '016634'
 - course: FRS 169
   last: 1242
   id: '014797'
+- course: FRS 170
+  last: 1234
+  id: '016639'
 - course: FRS 172
   last: 1244
   id: '016640'

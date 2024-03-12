@@ -2,7 +2,7 @@
 code: ARC
 name: Architecture
 category: STEM
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ARC 203
   last: 1242
@@ -45,9 +45,15 @@ updated: 3/11/2024
 - course: ARC 374
   last: 1244
   id: '000308'
+- course: ARC 378
+  last: 1234
+  id: '015530'
 - course: ARC 380
   last: 1244
   id: '017075'
+- course: ARC 382
+  last: 1234
+  id: '016647'
 - course: ARC 386
   last: 1244
   id: '015521'
@@ -57,6 +63,9 @@ updated: 3/11/2024
 - course: ARC 404
   last: 1242
   id: '009672'
+- course: ARC 412
+  last: 1234
+  id: '016792'
 - course: ARC 492
   last: 1244
   id: '000317'

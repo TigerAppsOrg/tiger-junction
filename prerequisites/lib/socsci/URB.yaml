@@ -2,11 +2,14 @@
 code: URB
 name: Urban Studies
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: URB 201
   last: 1244
   id: '010204'
+- course: URB 202
+  last: 1234
+  id: '012325'
 - course: URB 300
   last: 1242
   id: '013330'
@@ -16,12 +19,21 @@ updated: 3/11/2024
 - course: URB 305
   last: 1244
   id: '017067'
+- course: URB 356
+  last: 1234
+  id: '016744'
+- course: URB 360
+  last: 1234
+  id: '016717'
 - course: URB 384
   last: 1244
   id: '017175'
 - course: URB 385
   last: 1242
   id: '013591'
+- course: URB 390
+  last: 1234
+  id: '016745'
 - course: URB 392
   last: 1244
   travel: null

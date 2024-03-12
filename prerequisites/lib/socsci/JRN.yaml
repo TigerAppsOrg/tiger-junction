@@ -2,7 +2,7 @@
 code: JRN
 name: Journalism
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: JRN 240
   last: 1244
@@ -13,6 +13,9 @@ updated: 3/11/2024
 - course: JRN 280
   last: 1242
   id: '003851'
+- course: JRN 441
+  last: 1234
+  id: '003852'
 - course: JRN 445
   last: 1244
   id: '003856'

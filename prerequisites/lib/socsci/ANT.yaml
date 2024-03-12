@@ -2,23 +2,32 @@
 code: ANT
 name: Anthropology
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ANT 201
   last: 1242
   id: '000146'
+- course: ANT 203
+  last: 1234
+  id: '013239'
 - course: ANT 206
   last: 1244
   id: '012600'
 - course: ANT 211
   last: 1242
   id: '016525'
+- course: ANT 214
+  last: 1234
+  id: '016749'
 - course: ANT 217
   last: 1244
   id: '015874'
 - course: ANT 219
   last: 1242
   id: '014666'
+- course: ANT 223
+  last: 1234
+  id: '014873'
 - course: ANT 228
   last: 1244
   travel: null
@@ -35,6 +44,9 @@ updated: 3/11/2024
 - course: ANT 240
   last: 1244
   id: '000180'
+- course: ANT 245
+  last: 1234
+  id: '016591'
 - course: ANT 246
   last: 1244
   id: '015157'
@@ -60,9 +72,18 @@ updated: 3/11/2024
 - course: ANT 302
   last: 1242
   id: '016477'
+- course: ANT 308
+  last: 1234
+  id: '016644'
+- course: ANT 311
+  last: 1234
+  id: '016312'
 - course: ANT 314
   last: 1242
   id: '010770'
+- course: ANT 316
+  last: 1234
+  id: '016598'
 - course: ANT 318
   last: 1244
   id: '017071'
@@ -114,9 +135,18 @@ updated: 3/11/2024
   last: 1242
   reqs: ANT***
   id: '000199'
+- course: ANT 403
+  last: 1234
+  id: '009139'
+- course: ANT 417
+  last: 1234
+  id: '013733'
 - course: ANT 430
   last: 1244
   id: '017187'
+- course: ANT 436
+  last: 1234
+  id: '016645'
 - course: ANT 437
   last: 1242
   id: '016840'

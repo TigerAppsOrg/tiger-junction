@@ -2,7 +2,7 @@
 code: HEB
 name: Hebrew
 category: World Languages
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: HEB 101
   last: 1242
@@ -30,3 +30,4 @@ updated: 3/11/2024
 - course: HEB 330
   last: 1234
   reqs: HEB107
+  id: '016082'

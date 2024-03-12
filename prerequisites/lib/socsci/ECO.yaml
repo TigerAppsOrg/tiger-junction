@@ -2,7 +2,7 @@
 code: ECO
 name: Economics
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ECO 100
   last: 1244
@@ -72,6 +72,7 @@ updated: 3/11/2024
 - course: ECO 315
   last: 1234
   reqs: (ECO300 | ECO310) & (ECO301 | ECO311)
+  id: '009352'
 - course: ECO 317
   last: 1242
   reqs: ECO310 & MULTI & STATS
@@ -79,6 +80,7 @@ updated: 3/11/2024
 - course: ECO 320
   last: 1234
   reqs: (ECO302 | ECO312) & (ECO300 | ECO310) & STATS
+  id: '016741'
 - course: ECO 322
   last: 1242
   reqs: ECO302 | ECO312
@@ -118,6 +120,7 @@ updated: 3/11/2024
 - course: ECO 353
   last: 1234
   reqs: ECO100 & ECO101
+  id: '001409'
 - course: ECO 355
   last: 1244
   reqs: ECO100

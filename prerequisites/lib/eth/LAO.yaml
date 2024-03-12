@@ -2,11 +2,14 @@
 code: LAO
 name: Latino Studies
 category: Ethnic and Cultural Studies
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: LAO 201
   last: 1242
   id: '015428'
+- course: LAO 265
+  last: 1234
+  id: '016685'
 - course: LAO 340
   last: 1242
   id: '016996'

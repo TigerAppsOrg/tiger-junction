@@ -2,7 +2,7 @@
 code: MUS
 name: Music
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: MUS 105
   last: 1242
@@ -23,12 +23,27 @@ updated: 3/11/2024
 - course: MUS 221
   last: 1244
   id: '004405'
+- course: MUS 232
+  last: 1234
+  id: '004444'
 - course: MUS 235
   last: 1244
   id: '017090'
+- course: MUS 236
+  last: 1234
+  id: '008181'
 - course: MUS 242
   last: 1244
   id: '004420'
+- course: MUS 246
+  last: 1234
+  id: '014021'
+- course: MUS 247
+  last: 1234
+  id: '014996'
+- course: MUS 248
+  last: 1234
+  id: '015500'
 - course: MUS 249
   last: 1242
   id: '016882'
@@ -63,6 +78,9 @@ updated: 3/11/2024
 - course: MUS 316
   last: 1244
   id: '004455'
+- course: MUS 319
+  last: 1234
+  id: '014899'
 - course: MUS 329
   last: 1244
   reqs: MUS105 | MUS205 | MUS214 | MUS210 | MUS310
@@ -71,6 +89,9 @@ updated: 3/11/2024
   last: 1244
   reqs: MUS106
   id: '017091'
+- course: MUS 334
+  last: 1234
+  id: '014504'
 - course: MUS 338
   last: 1244
   id: '016883'
@@ -87,6 +108,9 @@ updated: 3/11/2024
 - course: MUS 344
   last: 1244
   id: '016900'
+- course: MUS 346
+  last: 1234
+  id: '016783'
 - course: MUS 347
   last: 1242
   id: '016898'
@@ -99,6 +123,12 @@ updated: 3/11/2024
 - course: MUS 357
   last: 1242
   id: '016557'
+- course: MUS 359
+  last: 1234
+  id: '014516'
 - course: MUS 365
   last: 1244
   id: '016349'
+- course: MUS 436
+  last: 1234
+  id: '016692'

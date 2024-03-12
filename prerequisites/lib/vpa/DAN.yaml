@@ -2,11 +2,14 @@
 code: DAN
 name: Dance
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: DAN 207
   last: 1242
   id: '012084'
+- course: DAN 208
+  last: 1234
+  id: '015169'
 - course: DAN 211
   last: 1244
   id: '008485'
@@ -19,12 +22,24 @@ updated: 3/11/2024
 - course: DAN 221
   last: 1244
   id: '014894'
+- course: DAN 222
+  last: 1234
+  id: '013492'
 - course: DAN 224
   last: 1242
   id: '014895'
 - course: DAN 225
   last: 1244
   id: '014896'
+- course: DAN 306
+  last: 1234
+  id: '016452'
+- course: DAN 310
+  last: 1234
+  id: '013260'
+- course: DAN 316
+  last: 1234
+  id: '013990'
 - course: DAN 317
   last: 1244
   id: '014004'
@@ -60,12 +75,18 @@ updated: 3/11/2024
   last: 1244
   travel: null
   id: '017179'
+- course: DAN 393
+  last: 1234
+  id: '016657'
 - course: DAN 394
   last: 1242
   id: '016866'
 - course: DAN 401
   last: 1244
   id: '014454'
+- course: DAN 402
+  last: 1234
+  id: '015403'
 - course: DAN 408
   last: 1244
   id: '013493'
@@ -87,3 +108,6 @@ updated: 3/11/2024
 - course: DAN 431
   last: 1244
   id: '011329'
+- course: DAN 432
+  last: 1234
+  id: '012269'

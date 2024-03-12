@@ -2,7 +2,7 @@
 code: WRI
 name: Princeton Writing Program
 category: Other
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: WRI 102
   last: 1244
@@ -22,6 +22,9 @@ updated: 3/11/2024
 - course: WRI 107
   last: 1242
   id: '008365'
+- course: WRI 108
+  last: 1234
+  id: '008318'
 - course: WRI 109
   last: 1244
   id: '008319'
@@ -46,12 +49,18 @@ updated: 3/11/2024
 - course: WRI 116
   last: 1244
   id: '008326'
+- course: WRI 117
+  last: 1234
+  id: '008327'
 - course: WRI 118
   last: 1244
   id: '008328'
 - course: WRI 119
   last: 1242
   id: '008372'
+- course: WRI 120
+  last: 1234
+  id: '008329'
 - course: WRI 121
   last: 1244
   id: '008330'
@@ -97,6 +106,9 @@ updated: 3/11/2024
 - course: WRI 135
   last: 1244
   id: '008345'
+- course: WRI 136
+  last: 1234
+  id: '008346'
 - course: WRI 137
   last: 1244
   id: '008347'
@@ -160,6 +172,9 @@ updated: 3/11/2024
 - course: WRI 165
   last: 1244
   id: '008760'
+- course: WRI 166
+  last: 1234
+  id: '008761'
 - course: WRI 167
   last: 1244
   id: '008762'
@@ -175,12 +190,21 @@ updated: 3/11/2024
 - course: WRI 179
   last: 1244
   id: '009074'
+- course: WRI 180
+  last: 1234
+  id: '009075'
 - course: WRI 183
   last: 1244
   id: '009204'
 - course: WRI 184
   last: 1244
   id: '009205'
+- course: WRI 185
+  last: 1234
+  id: '009206'
+- course: WRI 186
+  last: 1234
+  id: '009207'
 - course: WRI 187
   last: 1244
   id: '009746'

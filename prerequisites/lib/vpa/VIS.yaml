@@ -2,7 +2,7 @@
 code: VIS
 name: Visual Arts
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: VIS 201
   last: 1242
@@ -16,6 +16,9 @@ updated: 3/11/2024
 - course: VIS 204
   last: 1244
   id: '007219'
+- course: VIS 207
+  last: 1234
+  id: '016732'
 - course: VIS 208
   last: 1244
   id: '016307'
@@ -52,6 +55,12 @@ updated: 3/11/2024
 - course: VIS 229
   last: 1242
   id: '015624'
+- course: VIS 230
+  last: 1234
+  id: '015501'
+- course: VIS 231
+  last: 1234
+  id: '015472'
 - course: VIS 232
   last: 1244
   id: '016116'
@@ -92,6 +101,7 @@ updated: 3/11/2024
 - course: VIS 354
   last: 1234
   reqs: ART2** | CWR2** | DAN2** | MUS2** | THR2** | VIS2**
+  id: '014979'
 - course: VIS 363
   last: 1244
   reqs: VIS263 | FRS138 | URB202
@@ -125,6 +135,7 @@ updated: 3/11/2024
 - course: VIS 418
   last: 1234
   reqs: VIS2** | VIS3** | (CEE2** & (ARC2** | EGR2** | MAE2**))
+  id: '013304'
 - course: VIS 419
   last: 1244
   iw: null
@@ -136,6 +147,9 @@ updated: 3/11/2024
 - course: VIS 423
   last: 1244
   id: '017177'
+- course: VIS 424
+  last: 1234
+  id: '016341'
 - course: VIS 425
   last: 1242
   id: '016897'

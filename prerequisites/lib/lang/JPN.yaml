@@ -2,7 +2,7 @@
 code: JPN
 name: Japanese
 category: World Languages
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: JPN 1001
   last: 1244
@@ -71,3 +71,4 @@ updated: 3/11/2024
 - course: JPN 408
   last: 1234
   reqs: JPN407
+  id: '013909'

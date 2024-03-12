@@ -2,7 +2,7 @@
 code: MOL
 name: Molecular Biology
 category: STEM
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: MOL 101
   last: 1244
@@ -10,6 +10,9 @@ updated: 3/11/2024
 - course: MOL 214
   last: 1244
   id: '000876'
+- course: MOL 250
+  last: 1234
+  id: '015013'
 - course: MOL 280
   last: 1242
   reqs: MOL214
@@ -57,6 +60,9 @@ updated: 3/11/2024
   last: 1242
   reqs: INTROMOL
   id: '015196'
+- course: MOL 423
+  last: 1234
+  id: '013151'
 - course: MOL 431
   last: 1242
   reqs: MOL342 | MOL345 | MOL348

@@ -2,7 +2,7 @@
 code: GER
 name: German
 category: World Languages
-updated: 3/11/2024
+updated: 3/12/2024
 vars:
   - name: ADVGER
     equ: GER107 | GER107G
@@ -50,6 +50,9 @@ vars:
   last: 1242
   reqs: ADVGER
   id: '003152'
+- course: GER 210
+  last: 1234
+  id: '009522'
 - course: GER 211
   last: 1244
   id: '010270'
@@ -81,7 +84,13 @@ vars:
   notes: 'Required: Proficiency in a second language (via instruction).'
   reqs: LANG***
   id: '011574'
+- course: GER 323
+  last: 1234
+  id: '008948'
 - course: GER 324
   last: 1244
   reqs: ADVGER
   id: '003169'
+- course: GER 408
+  last: 1234
+  id: '016676'

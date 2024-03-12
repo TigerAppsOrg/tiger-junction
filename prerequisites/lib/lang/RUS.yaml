@@ -2,7 +2,7 @@
 code: RUS
 name: Russian
 category: World Languages
-updated: 3/11/2024
+updated: 3/12/2024
 vars:
   - name: ADVRUS
     equ: RUS107 | RUS107R | RUS108
@@ -40,3 +40,4 @@ vars:
 - course: RUS 208
   last: 1234
   reqs: RUS207
+  id: '006276'

@@ -3,7 +3,7 @@ code: ECE
 name: Electrical and Computer Engineering
 category: Engineering
 absorbed: ELE
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ECE 115
   last: 1242
@@ -60,6 +60,7 @@ updated: 3/11/2024
 - course: ECE 382
   last: 1234
   reqs: ECE201 & ORF309 & LINEAR
+  id: '014216'
 - course: ECE 396
   last: 1242
   reqs: LINEAR
@@ -94,6 +95,7 @@ updated: 3/11/2024
   id: '016445'
 - course: ECE 449
   last: 1234
+  id: '014684'
 - course: ECE 451
   last: 1244
   id: '016661'
@@ -124,6 +126,7 @@ updated: 3/11/2024
 - course: ECE 464
   last: 1234
   reqs: ECE206
+  id: '002503'
 - course: ECE 470
   last: 1242
   reqs: COS226
@@ -142,6 +145,7 @@ updated: 3/11/2024
 - course: ECE 483
   last: 1234
   reqs: ORF309 & LINEAR & ECE201
+  id: '016663'
 - course: ECE 497
   last: 1242
   iw: null

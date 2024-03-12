@@ -2,7 +2,7 @@
 code: THR
 name: Theater
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: THR 101
   last: 1244
@@ -19,6 +19,15 @@ updated: 3/11/2024
 - course: THR 210
   last: 1242
   id: '014271'
+- course: THR 213
+  last: 1234
+  id: '014531'
+- course: THR 218
+  last: 1234
+  id: '014737'
+- course: THR 226
+  last: 1234
+  id: '016774'
 - course: THR 233
   last: 1244
   id: '017170'
@@ -32,9 +41,15 @@ updated: 3/11/2024
   last: 1244
   reqs: THR205
   id: '007907'
+- course: THR 316
+  last: 1234
+  id: '012323'
 - course: THR 318
   last: 1244
   id: '011750'
+- course: THR 329
+  last: 1234
+  id: '016108'
 - course: THR 347
   last: 1242
   id: '016895'
@@ -63,9 +78,13 @@ updated: 3/11/2024
 - course: THR 402
   last: 1244
   id: '014046'
+- course: THR 405
+  last: 1234
+  id: '015029'
 - course: THR 418
   last: 1234
   reqs: THR201
+  id: '014736'
 - course: THR 419
   last: 1242
   reqs: THR101 | THR201 | THR301 | THR401 | MTD341 | THR400 | THR402

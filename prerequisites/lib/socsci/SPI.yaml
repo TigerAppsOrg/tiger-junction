@@ -3,7 +3,7 @@ code: SPI
 name: Public and International Affairs
 category: Social Sciences
 absorbed: WWS
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: SPI 200
   last: 1244
@@ -33,6 +33,9 @@ updated: 3/11/2024
   last: 1242
   reqs: MAT103 & (SPI300 | ECO300 | ECO310)
   id: '001405'
+- course: SPI 315
+  last: 1234
+  id: '012111'
 - course: SPI 316
   last: 1242
   id: '011860'
@@ -45,6 +48,12 @@ updated: 3/11/2024
 - course: SPI 322
   last: 1244
   id: '014537'
+- course: SPI 327
+  last: 1234
+  id: '015375'
+- course: SPI 331
+  last: 1234
+  id: '010405'
 - course: SPI 332
   last: 1242
   id: '016892'
@@ -64,9 +73,21 @@ updated: 3/11/2024
 - course: SPI 342
   last: 1244
   id: '017157'
+- course: SPI 345
+  last: 1234
+  id: '011395'
+- course: SPI 350
+  last: 1234
+  id: '012119'
+- course: SPI 353
+  last: 1234
+  id: '012120'
 - course: SPI 364
   last: 1242
   id: '016501'
+- course: SPI 365
+  last: 1234
+  id: '016712'
 - course: SPI 368
   last: 1244
   id: '016713'
@@ -131,6 +152,9 @@ updated: 3/11/2024
 - course: SPI 421
   last: 1244
   id: '011873'
+- course: SPI 481
+  last: 1234
+  id: '016504'
 - course: SPI 483
   last: 1244
   id: '017162'
@@ -149,9 +173,15 @@ updated: 3/11/2024
 - course: SPI 490
   last: 1242
   id: '016506'
+- course: SPI 491
+  last: 1234
+  id: '016731'
 - course: SPI 492
   last: 1244
   id: '017165'
+- course: SPI 495
+  last: 1234
+  id: '016715'
 - course: SPI 496
   last: 1244
   id: '017166'

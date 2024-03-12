@@ -2,7 +2,7 @@
 code: REL
 name: Religion
 category: Humanities
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: REL 100
   last: 1242
@@ -10,6 +10,9 @@ updated: 3/11/2024
 - course: REL 226
   last: 1244
   id: '005956'
+- course: REL 227
+  last: 1234
+  id: '011322'
 - course: REL 230
   last: 1242
   id: '005959'
@@ -19,12 +22,18 @@ updated: 3/11/2024
 - course: REL 236
   last: 1244
   id: '005963'
+- course: REL 239
+  last: 1234
+  id: '014711'
 - course: REL 246
   last: 1242
   id: '011608'
 - course: REL 251
   last: 1244
   id: '005971'
+- course: REL 252
+  last: 1234
+  id: '005972'
 - course: REL 255
   last: 1244
   id: '017143'
@@ -34,21 +43,36 @@ updated: 3/11/2024
 - course: REL 257
   last: 1244
   id: '011106'
+- course: REL 260
+  last: 1234
+  id: '014959'
 - course: REL 261
   last: 1242
   id: '005979'
 - course: REL 263
   last: 1242
   id: '015463'
+- course: REL 264
+  last: 1234
+  id: '015215'
 - course: REL 303
   last: 1244
   id: '016280'
 - course: REL 308
   last: 1242
   id: '015701'
+- course: REL 311
+  last: 1234
+  id: '009668'
 - course: REL 313
   last: 1242
   id: '016465'
+- course: REL 320
+  last: 1234
+  id: '016698'
+- course: REL 323
+  last: 1234
+  id: '015933'
 - course: REL 326
   last: 1244
   id: '006010'
@@ -61,6 +85,9 @@ updated: 3/11/2024
 - course: REL 348
   last: 1244
   id: '017146'
+- course: REL 356
+  last: 1234
+  id: '016727'
 - course: REL 359
   last: 1242
   id: '014715'
@@ -80,6 +107,12 @@ updated: 3/11/2024
 - course: REL 383
   last: 1244
   id: '013098'
+- course: REL 395
+  last: 1234
+  id: '016699'
+- course: REL 397
+  last: 1234
+  id: '016726'
 - course: REL 399
   last: 1242
   iw: null
@@ -90,6 +123,7 @@ updated: 3/11/2024
 - course: REL 403
   last: 1234
   reqs: HEB107
+  id: '016777'
 - course: REL 415
   last: 1244
   id: '016700'

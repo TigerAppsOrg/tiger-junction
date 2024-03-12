@@ -2,7 +2,7 @@
 code: GEO
 name: Geosciences
 category: STEM
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: GEO 103
   last: 1244
@@ -42,8 +42,9 @@ updated: 3/11/2024
   id: '016264'
 - course: GEO 370
   last: 1234
-  travel:
+  travel: null
   reqs: CALCULUS & CHEM1 & MECH
+  id: '011178'
 - course: GEO 373
   last: 1242
   travel: null
@@ -52,6 +53,7 @@ updated: 3/11/2024
 - course: GEO 378
   last: 1234
   reqs: CHEM1 & (GEO202 | GEO203)
+  id: '012239'
 - course: GEO 417
   last: 1242
   reqs: CHM3** | MOL3** | EEB3**

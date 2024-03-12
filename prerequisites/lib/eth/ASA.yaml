@@ -2,7 +2,7 @@
 code: ASA
 name: Asian American Studies
 category: Ethnic and Cultural Studies
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ASA 201
   last: 1242
@@ -16,6 +16,15 @@ updated: 3/11/2024
 - course: ASA 318
   last: 1244
   id: '017181'
+- course: ASA 320
+  last: 1234
+  id: '016649'
 - course: ASA 330
   last: 1244
   id: '017102'
+- course: ASA 332
+  last: 1234
+  id: '016592'
+- course: ASA 389
+  last: 1234
+  id: '016608'

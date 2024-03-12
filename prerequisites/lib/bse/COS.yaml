@@ -2,7 +2,7 @@
 code: COS
 name: Computer Science
 category: Engineering
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: COS 109
   last: 1242
@@ -10,6 +10,9 @@ updated: 3/11/2024
 - course: COS 126
   last: 1244
   id: '002051'
+- course: COS 205
+  last: 1234
+  id: '016613'
 - course: COS 217
   last: 1244
   reqs: INTROCOS
@@ -49,10 +52,14 @@ updated: 3/11/2024
 - course: COS 343
   last: 1234
   reqs: INTROCOS & COS226 & COS240
+  id: '014445'
 - course: COS 350
   last: 1242
   reqs: COS324 | COS343 | COS424 | ECE364 | ECE435 | MAT490 | ORF350
   id: '016869'
+- course: COS 351
+  last: 1234
+  id: '012068'
 - course: COS 375
   last: 1242
   reqs: COS217
@@ -91,6 +98,7 @@ updated: 3/11/2024
 - course: COS 433
   last: 1234
   reqs: COS240
+  id: '009125'
 - course: COS 436
   last: 1242
   reqs: COS217
@@ -106,6 +114,7 @@ updated: 3/11/2024
 - course: COS 461
   last: 1234
   reqs: COS217 & (COS316 | COS333 | COS318 | COS418 | COS432)
+  id: '002078'
 - course: COS 471
   last: 1244
   reqs: BOTHCOS

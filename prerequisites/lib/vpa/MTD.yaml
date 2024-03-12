@@ -2,9 +2,18 @@
 code: MTD
 name: Music Theater
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
+- course: MTD 202
+  last: 1234
+  id: '016590'
 - course: MTD 217
   last: 1244
   travel: null
   id: '017088'
+- course: MTD 322
+  last: 1234
+  id: '015027'
+- course: MTD 404
+  last: 1234
+  id: '016691'

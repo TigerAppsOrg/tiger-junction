@@ -2,7 +2,7 @@
 code: ORF
 name: Operations Research and Financial Engineering
 category: Engineering
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ORF 245
   last: 1244
@@ -54,7 +54,8 @@ updated: 3/11/2024
   id: '008005'
 - course: ORF 407
   last: 1234
-  req: ORF309
+  reqs: ORF309
+  id: '010721'
 - course: ORF 409
   last: 1242
   reqs: ORF245 & ORF309
@@ -82,10 +83,14 @@ updated: 3/11/2024
 - course: ORF 474
   last: 1234
   reqs: ORF309 & ORF405
+  id: '008050'
 - course: ORF 478
   last: 1244
   iw: null
   id: '008009'
+- course: ORF 479
+  last: 1234
+  id: '010065'
 - course: ORF 497
   last: 1244
   iw: null

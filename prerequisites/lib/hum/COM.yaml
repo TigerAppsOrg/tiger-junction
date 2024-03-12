@@ -2,11 +2,20 @@
 code: COM
 name: Comparative Literature
 category: Humanities
-updated: 3/11/2024
+updated: 3/12/2024
 ---
+- course: COM 203
+  last: 1234
+  id: '009935'
+- course: COM 207
+  last: 1234
+  id: '015858'
 - course: COM 235
   last: 1244
   id: '010255'
+- course: COM 236
+  last: 1234
+  id: '010602'
 - course: COM 256
   last: 1242
   id: '017005'
@@ -22,9 +31,18 @@ updated: 3/11/2024
 - course: COM 319
   last: 1244
   id: '014702'
+- course: COM 322
+  last: 1234
+  id: '016317'
+- course: COM 325
+  last: 1234
+  id: '016600'
 - course: COM 329
   last: 1244
   id: '015876'
+- course: COM 332
+  last: 1234
+  id: '014443'
 - course: COM 333
   last: 1244
   id: '017111'
@@ -34,12 +52,21 @@ updated: 3/11/2024
 - course: COM 351
   last: 1242
   id: '013747'
+- course: COM 362
+  last: 1234
+  id: '016738'
 - course: COM 370
   last: 1242
   id: '004057'
 - course: COM 372
   last: 1242
   id: '004058'
+- course: COM 385
+  last: 1234
+  id: '016652'
+- course: COM 401
+  last: 1234
+  id: '004061'
 - course: COM 421
   last: 1242
   id: '011720'
@@ -49,6 +76,15 @@ updated: 3/11/2024
 - course: COM 437
   last: 1244k
   id: '016655'
+- course: COM 451
+  last: 1234
+  id: '012282'
 - course: COM 456
   last: 1242
   id: '006301'
+- course: COM 460
+  last: 1234
+  id: '016740'
+- course: COM 464
+  last: 1234
+  id: '016654'

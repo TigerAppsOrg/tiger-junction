@@ -2,7 +2,7 @@
 code: CLG
 name: Classical Greek
 category: Humanities
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: CLG 101
   last: 1242
@@ -32,6 +32,7 @@ updated: 3/11/2024
 - course: CLG 240
   last: 1234
   reqs: CLG108
+  id: '003255'
 - course: CLG 301
   last: 1242
   reqs: CLG108

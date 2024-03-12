@@ -2,8 +2,11 @@
 code: AFS
 name: African Studies
 category: Ethnic and Cultural Studies
-updated: 3/11/2024
+updated: 3/12/2024
 ---
+- course: AFS 201
+  last: 1234
+  id: '016563'
 - course: AFS 356
   last: 1244
   id: '017058'

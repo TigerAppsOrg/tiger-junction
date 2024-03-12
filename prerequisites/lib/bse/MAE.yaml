@@ -2,7 +2,7 @@
 code: MAE
 name: Mechanical and Aerospace Engineering
 category: Engineering
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: MAE 206
   last: 1244
@@ -53,9 +53,13 @@ updated: 3/11/2024
   last: 1242
   reqs: $MAE221
   id: '002335'
+- course: MAE 328
+  last: 1234
+  id: '002358'
 - course: MAE 332
   last: 1234
   reqs: MAE321 & MAE331 & MAE335
+  id: '002340'
 - course: MAE 335
   last: 1242
   reqs: MAE221 & MAE222
@@ -87,6 +91,7 @@ updated: 3/11/2024
 - course: MAE 344
   last: 1234
   reqs: PHYS & BSEMATH
+  id: '008599'
 - course: MAE 345
   last: 1242
   reqs: BSEMATH & INTROCOS
@@ -110,9 +115,11 @@ updated: 3/11/2024
 - course: MAE 427
   last: 1234
   reqs: MAE221 & MAE222
+  id: '002357'
 - course: MAE 432
   last: 1234
   reqs: COS302
+  id: '016690'
 - course: MAE 433
   last: 1242
   reqs: MAE305
@@ -124,10 +131,11 @@ updated: 3/11/2024
 - course: MAE 436
   last: 1234
   reqs: MAE305
+  id: '008600'
 - course: MAE 438
   last: 1234
-  notes: >-
-    Thermodynamics
+  notes: Thermodynamics
+  id: '016090'
 - course: MAE 439
   last: 1242
   iw: null

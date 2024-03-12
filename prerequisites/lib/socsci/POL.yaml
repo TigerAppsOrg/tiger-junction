@@ -2,7 +2,7 @@
 code: POL
 name: Politics
 category: Social Sciences
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: POL 210
   last: 1242
@@ -29,12 +29,18 @@ updated: 3/11/2024
 - course: POL 305
   last: 1244
   id: '011318'
+- course: POL 309
+  last: 1234
+  id: '005293'
 - course: POL 315
   last: 1242
   id: '005299'
 - course: POL 316
   last: 1244
   id: '005300'
+- course: POL 319
+  last: 1234
+  id: '016742'
 - course: POL 320
   last: 1244
   id: '009656'
@@ -110,6 +116,12 @@ updated: 3/11/2024
 - course: POL 403
   last: 1244
   id: '012485'
+- course: POL 420
+  last: 1234
+  id: '008841'
+- course: POL 422
+  last: 1234
+  id: '016515'
 - course: POL 423
   last: 1242
   id: '009187'
@@ -125,12 +137,28 @@ updated: 3/11/2024
 - course: POL 434
   last: 1242
   id: '009973'
+- course: POL 440
+  last: 1234
+  id: '005376'
+- course: POL 441
+  last: 1234
+  id: '005377'
 - course: POL 442
   last: 1244
   id: '008843'
+- course: POL 443
+  last: 1234
+  id: '009188'
 - course: POL 452
   last: 1234
   reqs: POL345 & POL346
+  id: '016743'
+- course: POL 471
+  last: 1234
+  id: '016695'
+- course: POL 474
+  last: 1234
+  id: '015457'
 - course: POL 476
   last: 1244
   id: '016326'
@@ -140,6 +168,12 @@ updated: 3/11/2024
 - course: POL 492
   last: 1242
   id: '016556'
+- course: POL 493
+  last: 1234
+  id: '016696'
+- course: POL 494
+  last: 1234
+  id: '016724'
 - course: POL 496
   last: 1244
   id: '017196'

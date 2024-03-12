@@ -2,7 +2,7 @@
 code: ATL
 name: Atelier
 category: Visual and Performing Arts
-updated: 3/11/2024
+updated: 3/12/2024
 ---
 - course: ATL 494
   last: 1244
@@ -20,3 +20,6 @@ updated: 3/11/2024
 - course: ATL 498
   last: 1244
   id: '003864'
+- course: ATL 499
+  last: 1234
+  id: '003865'
