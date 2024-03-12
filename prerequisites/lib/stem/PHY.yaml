@@ -33,9 +33,6 @@ updated: 3/10/2024
 - course: PHY 109
   last: 1244
   reqs: MECH
-- course: PHY 110
-  last: SUMMER
-  reqs: PHY109
 - course: PHY 208
   last: 1244
   reqs: LINEAR & (PHY205 | PHY207) & $EAM
