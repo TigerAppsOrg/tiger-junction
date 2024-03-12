@@ -22,6 +22,9 @@ updated: 3/11/2024
   last: 1244
   reqs: LAT105
   id: '003952'
+- course: LAT 203
+  last: 1234
+  reqs: LAT108
 - course: LAT 205
   last: 1244
   reqs: LAT108

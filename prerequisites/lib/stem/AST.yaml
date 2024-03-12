@@ -37,3 +37,6 @@ updated: 3/11/2024
   last: 1244
   reqs: PHY207 & BSEMATH
   id: '000726'
+- course: AST 403
+  last: 1234
+  reqs: BSEMATH & PHY208 & PHY301

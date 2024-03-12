@@ -29,6 +29,9 @@ updated: 3/11/2024
   last: 1244
   reqs: CLG108
   id: '003253'
+- course: CLG 240
+  last: 1234
+  reqs: CLG108
 - course: CLG 301
   last: 1242
   reqs: CLG108

@@ -73,6 +73,9 @@ updated: 3/11/2024
   last: 1244
   iw: null
   id: '007961'
+- course: CEE 401
+  last: 1234
+  reqs: BSEMATH & PHYS
 - course: CEE 460
   last: 1244
   reqs: STATS
@@ -95,6 +98,9 @@ updated: 3/11/2024
   last: 1244
   reqs: CEE207 & CEE471
   id: '017106'
+- course: CEE 477
+  last: 1234
+  reqs: CEE207 & CEE471
 - course: CEE 478
   last: 1244
   iw: null

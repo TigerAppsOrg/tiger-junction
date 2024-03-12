@@ -35,6 +35,9 @@ updated: 3/11/2024
   last: 1244
   reqs: ARA305
   id: '010940'
+- course: ARA 308
+  last: 1234
+  reqs: ARA107
 - course: ARA 309
   last: 1244
   reqs: ARA107
@@ -43,6 +46,9 @@ updated: 3/11/2024
   last: 1244
   reqs: ARA107
   id: '013912'
+- course: ARA 315
+  last: 1234
+  reqs: ARA107
 - course: ARA 403
   last: 1242
   reqs: ARA301

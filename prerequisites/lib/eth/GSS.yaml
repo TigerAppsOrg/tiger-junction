@@ -34,6 +34,9 @@ updated: 3/11/2024
 - course: GSS 398
   last: 1244
   id: '017080'
+- course: GSS 400
+  last: 1234
+  reqs: GSS201
 - course: GSS 465
   last: 1244
   id: '017081'

@@ -17,6 +17,9 @@ updated: 3/11/2024
 - course: AMS 316
   last: 1244
   id: '017073'
+- course: AMS 317
+  last: 1234
+  travel:
 - course: AMS 334
   last: 1244
   id: '015908'
@@ -38,3 +41,6 @@ updated: 3/11/2024
 - course: AMS 425
   last: 1244
   id: '017094'
+- course: AMS 442
+  last: 1234
+  travel:

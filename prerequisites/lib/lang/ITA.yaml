@@ -41,10 +41,16 @@ vars:
     - ITA 107
   reqs: ITA103 | ITA105
   id: '014255'
+- course: ITA 208
+  last: 1234
+  reqs: ADVITA
 - course: ITA 224
   last: 1242
   reqs: ADVITA
   id: '016908'
+- course: ITA 302
+  last: 1234
+  reqs: ITA2**
 - course: ITA 303
   last: 1242
   id: '006204'

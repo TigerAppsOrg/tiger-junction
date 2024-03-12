@@ -45,6 +45,9 @@ updated: 3/11/2024
   last: 1242
   reqs: LIN201
   id: '013798'
+- course: LIN 318
+  last: 1234
+  reqs: LIN201 & (LIN306 | LIN302)
 - course: LIN 355
   last: 1244
   reqs: LIN201

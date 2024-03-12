@@ -37,6 +37,9 @@ updated: 3/11/2024
 - course: EAS 311
   last: 1244
   id: '017190'
+- course: EAS 312
+  last: 1234
+  reqs: EAS*** | ANT***
 - course: EAS 326
   last: 1244
   id: '017115'

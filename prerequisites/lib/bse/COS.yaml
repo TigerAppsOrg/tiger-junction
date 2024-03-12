@@ -46,6 +46,9 @@ updated: 3/11/2024
   last: 1244
   reqs: BOTHCOS
   id: '002065'
+- course: COS 343
+  last: 1234
+  reqs: INTROCOS & COS226 & COS240
 - course: COS 350
   last: 1242
   reqs: COS324 | COS343 | COS424 | ECE364 | ECE435 | MAT490 | ORF350
@@ -85,6 +88,9 @@ updated: 3/11/2024
   last: 1244
   reqs: BOTHCOS
   id: '002074'
+- course: COS 433
+  last: 1234
+  reqs: COS240
 - course: COS 436
   last: 1242
   reqs: COS217
@@ -97,6 +103,9 @@ updated: 3/11/2024
   last: 1242
   reqs: BOTHCOS
   id: '011558'
+- course: COS 461
+  last: 1234
+  reqs: COS217 & (COS316 | COS333 | COS318 | COS418 | COS432)
 - course: COS 471
   last: 1244
   reqs: BOTHCOS
