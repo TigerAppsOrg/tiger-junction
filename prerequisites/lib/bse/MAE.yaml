@@ -54,10 +54,10 @@ updated: 3/10/2024
   reqs: MAE221 & MAE222
 - course: MAE 339
   last: 1242
-  iw:
+  iw: null
 - course: MAE 339D
   last: 1242
-  iw:
+  iw: null
 - course: MAE 340
   last: 1244
   iw: null
@@ -100,7 +100,7 @@ updated: 3/10/2024
   id: '002376'
 - course: MAE 439
   last: 1242
-  iw:
+  iw: null
 - course: MAE 440
   last: 1244
   iw: null

@@ -12,7 +12,7 @@ updated: 3/10/2024
   id: '002963'
 - course: GEO 203
   last: 1242
-  travel:
+  travel: null
   reqs: CALCULUS
 - course: GEO 320
   last: 1244
@@ -39,7 +39,7 @@ updated: 3/10/2024
   id: '016264'
 - course: GEO 373
   last: 1242
-  travel:
+  travel: null
   reqs: CALCULUS & (EAM | MECH) & GEO***
 - course: GEO 417
   last: 1242

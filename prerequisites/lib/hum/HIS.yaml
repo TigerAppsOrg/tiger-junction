@@ -60,7 +60,7 @@ updated: 3/10/2024
   id: '003423'
 - course: HIS 388
   last: 1242
-  travel:
+  travel: null
 - course: HIS 393
   last: 1244
   id: '011579'
@@ -69,7 +69,7 @@ updated: 3/10/2024
   id: '003434'
 - course: HIS 400
   last: 1242
-  iw:
+  iw: null
 - course: HIS 407
   last: 1244
   id: '017069'

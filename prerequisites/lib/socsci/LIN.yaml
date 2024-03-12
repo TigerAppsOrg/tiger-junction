@@ -45,7 +45,7 @@ updated: 3/10/2024
   reqs: LIN201
 - course: LIN 400
   last: 1242
-  iw:
+  iw: null
 - course: LIN 406
   last: 1244
   reqs: LIN306

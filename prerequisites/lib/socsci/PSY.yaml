@@ -4,12 +4,15 @@ name: Psychology
 category: Social Sciences
 updated: 3/10/2024
 ---
+- course: PHY 300
+  last: 1242
+  iw: null
 - course: PSY 210
   last: 1244
   id: '014521'
 - course: PSY 230
   last: 1242
-  iw:
+  iw: null
 - course: PSY 231
   last: 1244
   reqs: PSY230
@@ -27,9 +30,6 @@ updated: 3/10/2024
   last: 1244
   reqs: <PSY2** | <NEU2** | <MOL2** | <EEB2**
   id: '012314'
-- course: PHY 300
-  last: 1242
-  iw:
 - course: PSY 306
   last: 1244
   reqs: PSY255 | PSY259

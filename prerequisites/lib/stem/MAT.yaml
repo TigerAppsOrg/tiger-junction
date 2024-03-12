@@ -46,9 +46,9 @@ updated: 3/10/2024
 - course: MAT 203
   last: 1242
   equiv:
+    - ECO 201
     - EGR 156
     - MAT 175
-    - ECO 201
     - MAT 201
   reqs: CALCULUS
 - course: MAT 204
@@ -61,8 +61,8 @@ updated: 3/10/2024
 - course: MAT 210
   last: 1242
   equiv:
-    - MAT 104
     - EGR 152
+    - MAT 104
   reqs: CALCULUS
 - course: MAT 214
   last: 1242
@@ -88,13 +88,13 @@ updated: 3/10/2024
 - course: MAT 320
   last: 1242
   reqs: BSEMATh
+- course: MAT 321
+  last: 1242
+  reqs: BSEMATH
 - course: MAT 325
   last: 1244
   reqs: MAT215 | MAT218
   id: '004193'
-- course: MAT 321
-  last: 1242
-  reqs: BSEMATH
 - course: MAT 330
   last: 1244
   reqs: BSEMATH

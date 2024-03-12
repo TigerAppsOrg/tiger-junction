@@ -40,7 +40,7 @@ updated: 3/10/2024
   id: '004413'
 - course: MUS 300
   last: 1242
-  iw:
+  iw: null
 - course: MUS 306
   last: 1244
   reqs: MUS106

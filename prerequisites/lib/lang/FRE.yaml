@@ -16,14 +16,6 @@ vars:
   last: 1244
   reqs: FRE101
   id: '002846'
-- course: FRE 103
-  last: 1242
-  equiv:
-    - FRE 105
-- course: FRE 105
-  last: 1242
-  equiv:
-    - FRE 103
 - course: FRE 1027
   last: 1244
   equiv:
@@ -32,10 +24,18 @@ vars:
   reqs: FRE101
   id: '002848'
 - course: FRE 103
+  last: 1242
+  equiv:
+    - FRE 105
+- course: FRE 103
   last: 1244
   equiv:
     - FRE 105
   id: '002849'
+- course: FRE 105
+  last: 1242
+  equiv:
+    - FRE 103
 - course: FRE 107
   last: 1244
   equiv:
@@ -68,7 +68,7 @@ vars:
   reqs: TWOFRE
 - course: FRE 217
   last: 1242
-  travel:
+  travel: null
   reqs: TWOFRE
 - course: FRE 221
   last: 1242

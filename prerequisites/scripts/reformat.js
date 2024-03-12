@@ -25,6 +25,7 @@ export default function reformat() {
         "notes",
         "equiv",
         "reqs",
+        "id"
     ];
 
     let isReformatError = false;
@@ -96,7 +97,7 @@ export default function reformat() {
                 }
     
                 if (isError) {
-                    reformatError = true;
+                    isReformatError = true;
                     continue outer;
                 }
     

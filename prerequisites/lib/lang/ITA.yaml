@@ -18,16 +18,16 @@ vars:
     - ITA 108
   reqs: ITA101
   id: '003899'
-- course: ITA 105
-  last: 1242
 - course: ITA 103
   last: 1244
   id: '015427'
+- course: ITA 105
+  last: 1242
 - course: ITA 107
   last: 1242
   equiv:
-    - ITA 108
     - ITA 1027
+    - ITA 108
   reqs: ITA102
 - course: ITA 108
   last: 1244

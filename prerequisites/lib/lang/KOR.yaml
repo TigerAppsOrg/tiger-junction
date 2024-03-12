@@ -27,7 +27,7 @@ updated: 3/10/2024
     - KOR 107K
   reqs: KOR103
   id: '012303'
-- coruse: KOR 301
+- course: KOR 301
   last: 1242
   reqs: KOR107 | KOR108
 - course: KOR 302

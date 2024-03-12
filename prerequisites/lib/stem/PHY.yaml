@@ -7,9 +7,9 @@ updated: 3/10/2024
 - course: PHY 101
   last: 1242
   equiv:
+    - EGR 151
     - PHY 103
     - PHY 105
-    - EGR 151
 - course: PHY 102
   last: 1244
   equiv:
@@ -22,9 +22,9 @@ updated: 3/10/2024
 - course: PHY 103
   last: 1242
   equiv:
+    - EGR 151
     - PHY 101
     - PHY 105
-    - EGR 151
 - course: PHY 104
   last: 1244
   equiv:
@@ -37,9 +37,9 @@ updated: 3/10/2024
 - course: PHY 105
   last: 1242
   equiv:
+    - EGR 151
     - PHY 101
     - PHY 103
-    - EGR 151
   reqs: $MULTI
 - course: PHY 106
   last: 1244
