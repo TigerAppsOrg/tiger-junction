@@ -23,6 +23,9 @@ updated: 3/10/2024
   last: 1244
   reqs: STATS & (SPI300 | ECO300 | ECO310)
   id: '014999'
+- course: SPI 306
+  last: 1242
+  reqs: MAT103 & (SPI300 | ECO300 | ECO310)
 - course: SPI 318
   last: 1244
   id: '012190'
@@ -63,10 +66,16 @@ updated: 3/10/2024
 - course: SPI 393
   last: 1244
   id: '013032'
+- course: SPI 401
+  last: 1242
+  iw:
 - course: SPI 402
   last: 1244
   iw: null
   id: '006772'
+- course: SPI 403
+  last: 1242
+  iw:
 - course: SPI 404
   last: 1244
   iw: null

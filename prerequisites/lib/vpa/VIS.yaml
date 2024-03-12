@@ -37,6 +37,9 @@ updated: 3/10/2024
 - course: VIS 265
   last: 1244
   id: '014913'
+- course: VIS 301
+  last: 1242
+  reqs: VIS2**
 - course: VIS 309
   last: 1244
   reqs: VIS2**
@@ -48,6 +51,9 @@ updated: 3/10/2024
 - course: VIS 324
   last: 1244
   id: '016309'
+- course: VIS 326
+  last: 1242
+  reqs: VIS211 | VIS212 | VIS213
 - course: VIS 331
   last: 1244
   id: '007224'
@@ -55,6 +61,9 @@ updated: 3/10/2024
   last: 1244
   reqs: VIS263 | FRS138 | URB202
   id: '014980'
+- course: VIS 365
+  last: 1242
+  reqs: VIS265
 - course: VIS 404
   last: 1244
   reqs: VIS201 | VIS202 | VIS203 | VIS204 | VIS309

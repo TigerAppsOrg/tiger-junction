@@ -8,6 +8,9 @@ updated: 3/10/2024
   last: 1244
   reqs: TWI101
   id: '012670'
+- course: TWI 105
+  last: 1242
+  reqs: TWI102
 - course: TWI 107
   last: 1244
   reqs: TWI105

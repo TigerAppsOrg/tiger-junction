@@ -4,6 +4,9 @@ name: Science and Technology Council
 category: STEM
 updated: 3/10/2024
 ---
+- course: STC 204
+  last: 1242
+  reqs: MUS104 | MUS105
 - course: STC 209A
   last: 1244
   id: '014048'
@@ -13,3 +16,6 @@ updated: 3/10/2024
 - course: STC 299
   last: 1244
   id: '017168'
+- course: STC 349
+  last: 1242
+  reqs: WRI***

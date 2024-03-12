@@ -11,6 +11,14 @@ vars:
   last: 1244
   reqs: SPA101
   id: '006657'
+- course: SPA 103
+  last: 1242
+  equiv:
+    - SPA 105
+- course: SPA 105
+  last: 1242
+  equiv:
+    - SPA 103
 - course: SPA 107
   last: 1244
   equiv:
@@ -92,6 +100,9 @@ vars:
   last: 1244
   reqs: <SPA207
   id: '012463'
+- course: SPA 222
+  last: 1242
+  reqs: <SPA207
 - course: SPA 227
   last: 1244
   reqs: SPA207 | SPA207S | SPA207T | SPA209
@@ -104,10 +115,16 @@ vars:
   last: 1244
   reqs: ADVSPA
   id: '015000'
+- course: SPA 235
+  last: 1242
+  reqs: <SPA207
 - course: SPA 245
   last: 1244
   reqs: SPA207 | SPA209
   id: '017156'
+- course: SPA 250
+  last: 1242
+  reqs: <SPA207
 - course: SPA 304
   last: 1244
   reqs: SPA2**
@@ -127,6 +144,9 @@ vars:
   last: 1244
   reqs: SPA2**
   id: '016481'
+- course: SPA 350
+  last: 1242
+  reqs: <SPA209
 - course: SPA 359
   last: 1244
   reqs: <SPA207
@@ -135,6 +155,9 @@ vars:
   last: 1244
   reqs: <SPA207
   id: '017065'
+- course: SPA 368
+  last: 1242
+  reqs: SPA2**
 - course: SPA 374
   last: 1244
   reqs: SPA2**
@@ -146,6 +169,9 @@ vars:
   last: 1244
   reqs: SPA2**
   id: '010741'
+- course: SPA 388
+  last: 1242
+  reqs: <SPA207
 - course: SPA 418
   last: 1244
   reqs: SPA3**

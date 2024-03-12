@@ -8,10 +8,16 @@ updated: 3/10/2024
   last: 1244
   reqs: HIN101
   id: '009513'
+- course: HIN 105
+  last: 1242
+  reqs: HIN102
 - course: HIN 107
   last: 1244
   reqs: HIN105
   id: '009983'
+- course: HIN 303
+  last: 1242
+  reqs: HIN107
 - course: HIN 305
   last: 1244
   reqs: HIN107

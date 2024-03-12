@@ -18,9 +18,17 @@ vars:
     - ITA 108
   reqs: ITA101
   id: '003899'
+- course: ITA 105
+  last: 1242
 - course: ITA 103
   last: 1244
   id: '015427'
+- course: ITA 107
+  last: 1242
+  equiv:
+    - ITA 108
+    - ITA 1027
+  reqs: ITA102
 - course: ITA 108
   last: 1244
   equiv:
@@ -28,6 +36,9 @@ vars:
     - ITA 107
   reqs: ITA103 | ITA105
   id: '014255'
+- course: ITA 224
+  last: 1242
+  reqs: ADVITA
 - course: ITA 306
   last: 1244
   reqs: ITA2**
@@ -35,6 +46,9 @@ vars:
 - course: ITA 312
   last: 1244
   id: '010828'
+- course: ITA 314
+  last: 1242
+  reqs: ITA2**
 - course: ITA 319
   last: 1244
   id: '009280'

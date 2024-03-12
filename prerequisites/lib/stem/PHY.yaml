@@ -4,6 +4,12 @@ name: Physics
 category: STEM
 updated: 3/10/2024
 ---
+- course: PHY 101
+  last: 1242
+  equiv:
+    - PHY 103
+    - PHY 105
+    - EGR 151
 - course: PHY 102
   last: 1244
   equiv:
@@ -13,6 +19,12 @@ updated: 3/10/2024
     - PHY 110
   reqs: PHY101
   id: '005125'
+- course: PHY 103
+  last: 1242
+  equiv:
+    - PHY 101
+    - PHY 105
+    - EGR 151
 - course: PHY 104
   last: 1244
   equiv:
@@ -22,6 +34,13 @@ updated: 3/10/2024
     - PHY 110
   reqs: MECH
   id: '005129'
+- course: PHY 105
+  last: 1242
+  equiv:
+    - PHY 101
+    - PHY 103
+    - EGR 151
+  reqs: $MULTI
 - course: PHY 106
   last: 1244
   equiv:
@@ -38,6 +57,17 @@ updated: 3/10/2024
   last: 1244
   reqs: MECH
   id: '015523'
+- course: PHY 115A
+  last: 1242
+  equiv:
+    - PHY 115B
+- course: PHY 115B
+  last: 1242
+  equiv:
+    - PHY 115A
+- course: PHY 207
+  last: 1242
+  reqs: (PHYS | ISCA) & MAT2**
 - course: PHY 208
   last: 1244
   reqs: LINEAR & (PHY205 | PHY207) & $EAM
@@ -45,11 +75,26 @@ updated: 3/10/2024
 - course: PHY 210
   last: 1244
   id: '005150'
+- course: PHY 220
+  last: 1242
+  reqs: PHYS & CALCULUS
+- course: PHY 301
+  last: 1242
+  reqs: EAM & PHY208
+- course: PHY 303
+  last: 1242
+  reqs: (PHYS | ISCA) & PHY207
 - course: PHY 304
   last: 1244
   reqs: EAM
   id: '005157'
+- course: PHY 305
+  last: 1242
+  reqs: PHY208
 - course: PHY 312
   last: 1244
   reqs: (PHYS | ISCA) & PHY208
   id: '005163'
+- course: PHY 412
+  last: 1242
+  reqs: PHY301 & PHY304

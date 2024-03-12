@@ -38,9 +38,15 @@ updated: 3/10/2024
 - course: THR 386
   last: 1244
   id: '017172'
+- course: THR 401
+  last: 1242
+  reqs: THR201 | THR301 | MTD341
 - course: THR 402
   last: 1244
   id: '014046'
+- course: THR 419
+  last: 1242
+  reqs: THR101 | THR201 | THR301 | THR401 | MTD341 | THR400 | THR402
 - course: THR 451
   last: 1244
   id: '011759'

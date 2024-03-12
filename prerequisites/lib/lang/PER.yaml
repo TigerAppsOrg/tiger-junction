@@ -8,10 +8,16 @@ updated: 3/10/2024
   last: 1244
   reqs: PER101
   id: '004868'
+- course: PER 105
+  last: 1242
+  reqs: PER102
 - course: PER 107
   last: 1244
   reqs: PER105
   id: '004870'
+- course: PER 302 
+  last: 1242
+  reqs: PER107
 - course: PER 303
   last: 1244
   reqs: PER107

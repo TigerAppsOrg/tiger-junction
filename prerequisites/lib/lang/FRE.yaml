@@ -3,6 +3,11 @@ code: FRE
 name: French
 category: World Languages
 updated: 3/10/2024
+vars:
+  - name: ADVFRE
+    equ: FRE1027 | FRE107 | FRE108
+  - name: TWOFRE
+    equ: FRE207 | FRE208
 ---
 - course: FRE 101
   last: 1244
@@ -11,6 +16,14 @@ updated: 3/10/2024
   last: 1244
   reqs: FRE101
   id: '002846'
+- course: FRE 103
+  last: 1242
+  equiv:
+    - FRE 105
+- course: FRE 105
+  last: 1242
+  equiv:
+    - FRE 103
 - course: FRE 1027
   last: 1244
   equiv:
@@ -41,27 +54,43 @@ updated: 3/10/2024
   last: 1244
   equiv:
     - FRE 207F
-  reqs: FRE1027 | FRE107 | FRE108
+  reqs: ADVFRE
   id: '002859'
 - course: FRE 208
   last: 1244
-  reqs: FRE1027 | FRE107 | FRE108
+  reqs: ADVFRE
   id: '015412'
+- course: FRE 211
+  last: 1242
+  reqs: ADVFRE
+- course: FRE 215
+  last: 1242
+  reqs: TWOFRE
+- course: FRE 217
+  last: 1242
+  travel:
+  reqs: TWOFRE
+- course: FRE 221
+  last: 1242
+  reqs: ADVFRE
 - course: FRE 222
   last: 1244
-  reqs: FRE207 | FRE208
+  reqs: TWOFRE
   id: '008596'
+- course: FRE 224
+  last: 1242
+  reqs: ADVFRE
 - course: FRE 227
   last: 1244
-  reqs: FRE207 | FRE208
+  reqs: TWOFRE
   id: '017191'
 - course: FRE 240
   last: 1244
-  reqs: FRE1027 | FRE107 | FRE108
+  reqs: ADVFRE
   id: '017124'
 - course: FRE 260
   last: 1244
-  reqs: FRE1027 | FRE107 | FRE108
+  reqs: ADVFRE
   id: '017125'
 - course: FRE 307
   last: 1244
@@ -78,6 +107,9 @@ updated: 3/10/2024
 - course: FRE 358
   last: 1244
   id: '013028'
+- course: FRE 372
+  last: 1242
+  reqs: TWOFRE
 - course: FRE 376
   last: 1244
   reqs: FRE2**
@@ -86,6 +118,12 @@ updated: 3/10/2024
   last: 1244
   reqs: FRE2**
   id: '017126'
+- course: FRE 385
+  last: 1242
+  reqs: FRE2**
+- course: FRE 390
+  last: 1242
+  reqs: FRE2**
 - course: FRE 392
   last: 1244
   travel: null
@@ -95,3 +133,9 @@ updated: 3/10/2024
   last: 1244
   reqs: FRE 2**
   id: '002906'
+- course: FRE 407
+  last: 1242
+  reqs: FRE3**
+- course: FRE 420
+  last: 1242
+  reqs: FRE2** | FRE3**

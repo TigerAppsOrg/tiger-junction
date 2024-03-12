@@ -4,6 +4,9 @@ name: Urdu
 category: World Languages
 updated: 3/10/2024
 ---
+- course: URD 105
+  last: 1242
+  reqs: HIN102
 - course: URD 107
   last: 1244
   reqs: URD105

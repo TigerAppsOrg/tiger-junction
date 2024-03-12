@@ -23,6 +23,9 @@ updated: 3/10/2024
   last: 1244
   reqs: PHI***
   id: '004908'
+- course: PHI 311
+  last: 1242
+  reqs: PHI*** & PHI*** & PHI***
 - course: PHI 312
   last: 1244
   reqs: PHI201
@@ -33,9 +36,16 @@ updated: 3/10/2024
 - course: PHI 318
   last: 1244
   id: '004919'
+- course: PHI 322
+  last: 1242
+  reqs: PHI***
 - course: PHI 325
   last: 1244
   id: '004926'
+  reqs: PHI***
+- course: PHI 356
+  last: 1242
+  reqs: PHI***
 - course: PHI 357
   last: 1244
   id: '017139'

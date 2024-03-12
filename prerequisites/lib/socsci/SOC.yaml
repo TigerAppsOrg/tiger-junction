@@ -10,6 +10,9 @@ updated: 3/10/2024
 - course: SOC 228
   last: 1244
   id: '017153'
+- course: SOC 300
+  last: 1242
+  reqs: SOC101 | SOC2**
 - course: SOC 302
   last: 1244
   reqs: WRI***

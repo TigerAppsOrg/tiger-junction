@@ -38,13 +38,22 @@ vars:
 - course: GER 206
   last: 1244
   id: '017079'
+- course: GER 207
+  last: 1242
+  reqs: ADVGER
 - course: GER 208
   last: 1244
+  reqs: ADVGER
+- course: GER 209
+  last: 1242
   reqs: ADVGER
   id: '003151'
 - course: GER 211
   last: 1244
   id: '010270'
+- course: GER 300
+  last: 1242
+  reqs: ADVGER
 - course: GER 306
   last: 1244
   reqs: ADVGER

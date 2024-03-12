@@ -10,6 +10,9 @@ updated: 3/10/2024
 - course: MOL 214
   last: 1244
   id: '000876'
+- course: MOL 280
+  last: 1242
+  reqs: MOL214
 - course: MOL 281
   last: 1244
   reqs: MOL280
@@ -18,7 +21,7 @@ updated: 3/10/2024
   last: 1244
   equiv:
     - MOL 350
-  reqs: MOL214 | ISCA
+  reqs: INTROMOL
   id: '014497'
 - course: MOL 340
   last: 1244
@@ -35,10 +38,33 @@ updated: 3/10/2024
 - course: MOL 348
   last: 1244
   id: '000881'
+- course: MOL 350
+  last: 1242
+  equiv:
+    - MOL 320
+  reqs: INTROMOL
+- course: MOL 380
+  last: 1242
+  reqs: INTROMOL
 - course: MOL 405
   last: 1244
   reqs: MOL348
   id: '016269'
+- course: MOL 415
+  last: 1242
+  reqs: INTROMOL
+- course: MOL 431
+  last: 1242
+  reqs: MOL342 | MOL345 | MOL348
+- course: MOL 433
+  last: 1242
+  reqs: MOL342 | MOL345
 - course: MOL 445
   last: 1244
   id: '016270'
+- course: MOL 459
+  last: 1242
+  reqs: INTROMOL
+- course: MOL 460
+  last: 1242
+  reqs: INTROMOL

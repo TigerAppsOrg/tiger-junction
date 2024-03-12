@@ -4,4 +4,15 @@ name: Integrated Science Curriculum
 category: STEM
 updated: 3/10/2024
 ---
-[]
+- course: ISC 231
+  last: 1242
+  reqs: CALCULUS
+- course: ISC 232
+  last: 1242
+  reqs: CALCULUS
+- course: ISC 233
+  last: 1234
+  reqs: ISC231 & ISC232
+- course: ISC 234
+  last: 1234
+  reqs: ISC231 & ISC232

@@ -32,6 +32,9 @@ updated: 3/10/2024
   last: 1244
   reqs: BSEMATH
   id: '012833'
+- course: ORF 375
+  last: 1242
+  iw:
 - course: ORF 376
   last: 1244
   iw: null
@@ -44,10 +47,28 @@ updated: 3/10/2024
   last: 1244
   reqs: INTROCOS
   id: '008004'
+- course: ORF 405
+  last: 1242
+  reqs: ORF245 & ORF309
+- course: ORF 409
+  last: 1242
+  reqs: ORF245 & ORF309
+- course: ORF 418
+  last: 1242
+  reqs: ORF309
+- course: ORF 435
+  last: 1242
+  reqs: ORF245 | ORF309 | ORF335 | $ECO465
 - course: ORF 445
   last: 1244
   reqs: ORF309 & ORF405
   id: '015797'
+- course: ORF 455
+  last: 1242
+  reqs: ORF309
+- course: ORF 467
+  last: 1242
+  reqs: ORF245
 - course: ORF 478
   last: 1244
   iw: null
@@ -56,6 +77,9 @@ updated: 3/10/2024
   last: 1244
   iw: null
   id: '010065'
+- course: ORF 498
+  last: 1242
+  iw:
 - course: ORF 499
   last: 1244
   iw: null

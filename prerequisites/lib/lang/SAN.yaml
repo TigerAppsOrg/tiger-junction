@@ -8,6 +8,9 @@ updated: 3/10/2024
   last: 1244
   reqs: SAN101
   id: '013518'
+- course: SAN 105
+  last: 1242
+  reqs: SAN102
 - course: SAN 107
   last: 1244
   reqs: SAN105
