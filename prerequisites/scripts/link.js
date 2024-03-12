@@ -12,7 +12,7 @@ import yaml from 'js-yaml';
 export default function link() {
     console.log("Linking...");
 
-    const crossTable = fs.readFileSync("../cache/resolve/cross_table.json", "utf-8");
+    const crossTable = fs.readFileSync("../cache/resolve/cross_table.json");
 
     const prereqFiles = fs.readdirSync("lib");
     for (let i = 0; i < prereqFiles.length; i++) {
@@ -27,6 +27,11 @@ export default function link() {
             const courses = yaml.load(data.split("---")[2]);
 
             for (let k = 0; k < courses.length; k++) {
+                if (!crossTable.hasOwnProperty(courses[k].course)) {
+                    console.error(`Course ${courses[k].course} not found in cross table`);
+                    process.exit(1);
+                }
+
                 courses[k].id = crossTable[courses[k].course].id;
             }
 
