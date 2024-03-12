@@ -1,9 +1,8 @@
 /**
  * createResolve.js
  * A dump of the listings table (listings_dump.json) must be present
- * Generates 2 files:
- * 1. full_cross.json: A sorted list of all course listings and their crosslistings
- * 2. linking_map.json: A map of course codes to their respective listing IDs
+ * Generates linking_map.json, which maps crosslistings to their primary 
+ * listing ids
  * Usage: node createResolve.js
  */
 
@@ -33,6 +32,7 @@ for (let i = 0; i < files.length; i++) {
     }
 }
 crossDump.sort((a, b) => a.localeCompare(b));
+fs.writeFileSync("resolve/cross_dump.json", JSON.stringify(crossDump, null, 4));
 
 //----------------------------------------------------------------------
 // Reduce
@@ -77,6 +77,18 @@ if (crossSet.size !== crossReduced.length) {
     console.error("Duplicates found in full_cross.json");
 }
 
+const crossMap = {};
+for (let i = 0; i < crossReduced.length; i++) {
+    const split = crossReduced[i].split(" / ");
+    if (split.length > 1) {
+        for (let cross of split.slice(1)) {
+            crossMap[cross] = split[0];
+        }
+    }
+    crossMap[split[0]] = split[0];
+}
+
+fs.writeFileSync("resolve/cross_map.json", JSON.stringify(crossMap, null, 4));
 fs.writeFileSync("resolve/full_cross.json", JSON.stringify(crossReduced, null, 4));
 
 //----------------------------------------------------------------------
@@ -85,23 +97,29 @@ fs.writeFileSync("resolve/full_cross.json", JSON.stringify(crossReduced, null, 4
 
 const listingDump = JSON.parse(fs.readFileSync("resolve/listings_dump.json"));
 listingDump.sort((a, b) => a.code.localeCompare(b.code));
-const codes = listingDump.map(x => x.code);
-codes.sort((a, b) => a.localeCompare(b));
 
 const linkingMap = {};
-for (let i = 0; i < codes.length; i++) {
-    let listingIndex = listingDump.findIndex(x => x.code === codes[i]);
-    if (listingIndex === -1) {
-        console.error("No listing found for", codes[i]);
-    }
+for (let i = 0; i < crossReduced.length; i++) {
+    const codes = crossReduced[i].split(" / ");
+    for (let j = 0; j < codes.length; j++) {
+        const primary = crossMap[codes[j]];
+        if (!primary) {
+            console.error("No primary found for", codes[j]);
+        }
 
-    let listingIds = [];
-    while (listingDump[listingIndex] && listingDump[listingIndex].code === codes[i]) {
-        listingIds.push(listingDump[listingIndex].id);
-        listingIndex++;
-    }
+        let listingIndex = listingDump.findIndex(x => x.code === primary);
+        if (listingIndex === -1) {
+            console.error("No listing found for", primary);
+        }
 
-    linkingMap[codes[i]] = listingIds;
+        let listingIds = [];
+        while (listingDump[listingIndex] && listingDump[listingIndex].code === primary) {
+            listingIds.push(listingDump[listingIndex].id);
+            listingIndex++;
+        }
+
+        linkingMap[codes[j]] = listingIds;
+    }
 }
 
 fs.writeFileSync("resolve/linking_map.json", JSON.stringify(linkingMap, null, 4));
