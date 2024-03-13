@@ -16,6 +16,9 @@ updated: 3/12/2024
 - course: ART 201
   last: 1232
   id: '011267'
+- course: ART 202
+  last: 1224
+  id: '015380'
 - course: ART 203
   last: 1242
   id: '000520'
@@ -49,12 +52,24 @@ updated: 3/12/2024
 - course: ART 248
   last: 1242
   id: '000546'
+- course: ART 260
+  last: 1224
+  id: '011713'
+- course: ART 267
+  last: 1224
+  id: '010634'
 - course: ART 273
   last: 1244
   id: '017096'
 - course: ART 290
   last: 1232
   id: '011101'
+- course: ART 296
+  last: 1224
+  id: '014670'
+- course: ART 307
+  last: 1224
+  id: '011182'
 - course: ART 309
   last: 1234
   id: '012433'
@@ -70,12 +85,18 @@ updated: 3/12/2024
 - course: ART 323
   last: 1242
   id: '014892'
+- course: ART 329
+  last: 1224
+  id: '016234'
 - course: ART 335
   last: 1232
   id: '016408'
 - course: ART 338
   last: 1232
   id: '016409'
+- course: ART 340
+  last: 1224
+  id: '016230'
 - course: ART 341
   last: 1242
   id: '015161'
@@ -87,6 +108,9 @@ updated: 3/12/2024
   travel: null
   notes: No prerequisites, but ART 100 is strongly recommended as background.
   id: '000592'
+- course: ART 357
+  last: 1224
+  id: '013249'
 - course: ART 361
   last: 1244
   id: '015895'
@@ -156,6 +180,10 @@ updated: 3/12/2024
 - course: ART 435
   last: 1234
   id: '016067'
+- course: ART 442
+  last: 1224
+  travel: null
+  id: '000626'
 - course: ART 444
   last: 1242
   id: '016862'
@@ -165,6 +193,9 @@ updated: 3/12/2024
 - course: ART 450
   last: 1232
   id: '008436'
+- course: ART 451
+  last: 1224
+  id: '012220'
 - course: ART 455
   last: 1242
   id: '016069'
@@ -183,6 +214,9 @@ updated: 3/12/2024
 - course: ART 481
   last: 1232
   id: '010877'
+- course: ART 483
+  last: 1224
+  id: '016316'
 - course: ART 484
   last: 1244
   id: '017101'
@@ -192,6 +226,9 @@ updated: 3/12/2024
 - course: ART 488
   last: 1234
   id: '014675'
+- course: ART 489
+  last: 1224
+  id: '016242'
 - course: ART 490
   last: 1242
   id: '016848'

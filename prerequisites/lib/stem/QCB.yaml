@@ -26,3 +26,7 @@ updated: 3/12/2024
   last: 1244
   reqs: (MOL214 | ISCA) & MOL345
   id: '017182'
+- course: QCB 490
+  last: 1224
+  reqs: INTROMOL & MOL342
+  id: '013917'

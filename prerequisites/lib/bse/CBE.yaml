@@ -50,6 +50,10 @@ updated: 3/12/2024
   last: 1244
   reqs: MOL214
   id: '013487'
+- course: CBE 421
+  last: 1224
+  reqs: CHM301
+  id: '001780'
 - course: CBE 422
   last: 1242
   reqs: INTROCOS & MAE305

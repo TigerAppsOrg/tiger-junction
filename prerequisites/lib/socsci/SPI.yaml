@@ -11,6 +11,16 @@ updated: 3/12/2024
 - course: SPI 298
   last: 1242
   id: '016301'
+- course: SPI 299
+  last: 1224
+  id: '016301'
+- course: SPI 300
+  last: 1224
+  equiv:
+    - ECO 300
+    - ECO 310
+  reqs: ECO100
+  id: '012094'
 - course: SPI 301
   last: 1244
   reqs: SPI300 | ECO300 | ECO310
@@ -33,6 +43,9 @@ updated: 3/12/2024
   last: 1242
   reqs: MAT103 & (SPI300 | ECO300 | ECO310)
   id: '001405'
+- course: SPI 313
+  last: 1224
+  id: '016302'
 - course: SPI 315
   last: 1234
   id: '012111'
@@ -57,6 +70,9 @@ updated: 3/12/2024
 - course: SPI 328
   last: 1232
   id: '015697'
+- course: SPI 330
+  last: 1224
+  id: '012091'
 - course: SPI 331
   last: 1234
   id: '010405'
@@ -66,12 +82,18 @@ updated: 3/12/2024
 - course: SPI 333
   last: 1244
   id: '012629'
+- course: SPI 334
+  last: 1224
+  id: '006762'
 - course: SPI 335
   last: 1244
   id: '016303'
 - course: SPI 336
   last: 1244
   id: '015944'
+- course: SPI 338
+  last: 1224
+  id: '016360'
 - course: SPI 340
   last: 1244
   reqs: STATS
@@ -88,6 +110,9 @@ updated: 3/12/2024
 - course: SPI 353
   last: 1234
   id: '012120'
+- course: SPI 354
+  last: 1224
+  id: '012113'
 - course: SPI 364
   last: 1242
   id: '016501'

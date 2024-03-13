@@ -131,6 +131,10 @@ updated: 3/12/2024
   last: 1242
   reqs: COS226
   id: '016495'
+- course: ECE 472
+  last: 1224
+  reqs: COS375
+  id: '013309'
 - course: ECE 473
   last: 1244
   reqs: BOTHCOS & ORF245

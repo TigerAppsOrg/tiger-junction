@@ -101,6 +101,10 @@ updated: 3/12/2024
   last: 1242
   reqs: CHI304 | CHI306
   id: '001082'
+- course: CHI 412
+  last: 1224
+  reqs: CHI304 | CHI306
+  id: '010112'
 - course: CHI 418
   last: 1244
   reqs: CHI 3**

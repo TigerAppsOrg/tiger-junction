@@ -51,6 +51,10 @@ vars:
 - course: POR 328
   last: 1234
   id: '016597'
+- course: POR 407
+  last: 1224
+  reqs: POR2** | POR199
+  id: '016348'
 - course: POR 408
   last: 1232
   reqs: ADVPOR

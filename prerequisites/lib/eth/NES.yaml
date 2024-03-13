@@ -7,6 +7,12 @@ updated: 3/12/2024
 - course: NES 201
   last: 1232
   id: '004583'
+- course: NES 208
+  last: 1224
+  id: '015019'
+- course: NES 212
+  last: 1224
+  id: '014517'
 - course: NES 221
   last: 1234
   id: '012911'
@@ -32,12 +38,18 @@ updated: 3/12/2024
 - course: NES 312
   last: 1234
   id: '015449'
+- course: NES 316
+  last: 1224
+  id: '016272'
 - course: NES 317
   last: 1244
   id: '017132'
 - course: NES 326
   last: 1242
   id: '014507'
+- course: NES 330
+  last: 1224
+  id: '016273'
 - course: NES 332
   last: 1244
   id: '017133'
@@ -68,6 +80,9 @@ updated: 3/12/2024
 - course: NES 369
   last: 1242
   id: '014247'
+- course: NES 370
+  last: 1224
+  id: '013564'
 - course: NES 373
   last: 1242
   id: '012912'
@@ -77,6 +92,9 @@ updated: 3/12/2024
 - course: NES 387
   last: 1232
   id: '014702'
+- course: NES 389
+  last: 1224
+  id: '013327'
 - course: NES 391
   last: 1244
   id: '014703'

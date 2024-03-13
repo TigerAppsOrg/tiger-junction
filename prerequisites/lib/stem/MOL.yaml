@@ -21,6 +21,10 @@ updated: 3/12/2024
   last: 1244
   reqs: MOL280
   id: '016998'
+- course: MOL 290
+  last: 1224
+  reqs: INTROMOL
+  id: '015438'
 - course: MOL 320
   last: 1244
   equiv:
@@ -85,3 +89,6 @@ updated: 3/12/2024
 - course: MOL 475
   last: 1232
   id: '014700'
+- course: MOL 485
+  last: 1224
+  id: '015439'

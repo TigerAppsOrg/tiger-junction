@@ -16,6 +16,9 @@ updated: 3/12/2024
 - course: HUM 219
   last: 1244
   id: '003781'
+- course: HUM 230
+  last: 1224
+  id: '016262'
 - course: HUM 233
   last: 1242
   id: '010507'
@@ -40,6 +43,9 @@ updated: 3/12/2024
 - course: HUM 315
   last: 1242
   id: '016879'
+- course: HUM 321
+  last: 1224
+  id: '016263'
 - course: HUM 328
   last: 1244
   id: '015660'
@@ -94,3 +100,6 @@ updated: 3/12/2024
 - course: HUM 470
   last: 1234
   id: '012282'
+- course: HUM 475
+  last: 1224
+  id: '016336'

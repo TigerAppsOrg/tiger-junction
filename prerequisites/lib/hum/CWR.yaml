@@ -22,6 +22,15 @@ updated: 3/12/2024
 - course: CWR 206
   last: 1244
   id: '001209'
+- course: CWR 221
+  last: 1224
+  id: '016233'
+- course: CWR 222
+  last: 1224
+  id: '016244'
+- course: CWR 224
+  last: 1224
+  id: '016245'
 - course: CWR 301
   last: 1242
   reqs: CWR2** & CWR2**
@@ -44,10 +53,20 @@ updated: 3/12/2024
 - course: CWR 306
   last: 1244
   id: '001227'
+- course: CWR 307
+  last: 1224
+  reqs: ITA107 | ITA1027 | ITA108
+  id: '014227'
 - course: CWR 310
   last: 1244
   reqs: CWR2** & CWR2**
   id: '014989'
+- course: CWR 312
+  last: 1224
+  id: '016236'
+- course: CWR 319
+  last: 1224
+  id: '016235'
 - course: CWR 345
   last: 1232
   reqs: CWR2**

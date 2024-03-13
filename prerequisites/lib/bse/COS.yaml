@@ -134,6 +134,10 @@ updated: 3/12/2024
   last: 1242
   reqs: COS240
   id: '002081'
+- course: COS 488
+  last: 1224
+  reqs: COS226 & COS240
+  id: '011849'
 - course: COS 495
   last: 1244
   reqs: COS240

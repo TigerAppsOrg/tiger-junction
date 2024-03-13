@@ -26,15 +26,24 @@ updated: 3/12/2024
   last: 1242
   iw: null
   id: '014652'
+- course: AAS 302
+  last: 1224
+  id: '013482'
 - course: AAS 303
   last: 1242
   id: '014930'
 - course: AAS 306
   last: 1242
   id: '014970'
+- course: AAS 313
+  last: 1224
+  id: '014422'
 - course: AAS 314
   last: 1244
   id: '016617'
+- course: AAS 318
+  last: 1224
+  id: '010979'
 - course: AAS 319
   last: 1234
   id: '014423'

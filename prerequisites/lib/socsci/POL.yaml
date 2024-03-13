@@ -38,6 +38,9 @@ updated: 3/12/2024
 - course: POL 309
   last: 1234
   id: '005293'
+- course: POL 314
+  last: 1224
+  id: '009364'
 - course: POL 315
   last: 1242
   id: '005299'
@@ -83,6 +86,9 @@ updated: 3/12/2024
 - course: POL 339
   last: 1232
   id: '015453'
+- course: POL 341
+  last: 1224
+  id: '013292'
 - course: POL 344
   last: 1242
   id: '013122'
@@ -122,6 +128,9 @@ updated: 3/12/2024
 - course: POL 376
   last: 1244
   id: '016276'
+- course: POL 378
+  last: 1224
+  id: '009583'
 - course: POL 380
   last: 1244
   id: '009971'
@@ -143,6 +152,9 @@ updated: 3/12/2024
 - course: POL 403
   last: 1244
   id: '012485'
+- course: POL 418
+  last: 1224
+  id: '015201'
 - course: POL 420
   last: 1234
   id: '008841'
@@ -183,6 +195,12 @@ updated: 3/12/2024
   last: 1234
   reqs: POL345 & POL346
   id: '016743'
+- course: POL 455
+  last: 1224
+  id: '015929'
+- course: POL 456
+  last: 1224
+  id: '016277'
 - course: POL 471
   last: 1234
   id: '016695'
@@ -201,6 +219,9 @@ updated: 3/12/2024
 - course: POL 490
   last: 1232
   id: '016278'
+- course: POL 491
+  last: 1224
+  id: '016338'
 - course: POL 492
   last: 1242
   id: '016556'

@@ -73,6 +73,10 @@ updated: 3/12/2024
 - course: EEB 355
   last: 1244
   id: '017118'
+- course: EEB 380
+  last: 1224
+  travel: null
+  id: '009990'
 - course: EEB 384
   last: 1234
   travel: null

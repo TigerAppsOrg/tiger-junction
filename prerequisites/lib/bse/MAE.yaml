@@ -26,6 +26,9 @@ updated: 3/12/2024
   last: 1244
   reqs: CALCULUS & $LINEAR & $MAE222
   id: '008838'
+- course: MAE 226
+  last: 1224
+  id: '014066'
 - course: MAE 228
   last: 1244
   travel: null
@@ -164,3 +167,7 @@ updated: 3/12/2024
   last: 1244
   iw: null
   id: '009385'
+- course: MAE 463
+  last: 1224
+  reqs: PHYS & BSEMATH & $MAE305
+  id: '014186'

@@ -105,6 +105,10 @@ vars:
   last: 1234
   reqs: <SPA207
   id: '016299'
+- course: SPA 218
+  last: 1224
+  reqs: <SPA207
+  id: '016340'
 - course: SPA 219
   last: 1232
   reqs: <SPA207
@@ -195,6 +199,10 @@ vars:
   last: 1232
   reqs: <SPA209
   id: '014528'
+- course: SPA 341
+  last: 1224
+  reqs: <SPA207
+  id: '016339'
 - course: SPA 342
   last: 1232
   reqs: ADVSPA
@@ -238,6 +246,9 @@ vars:
   last: 1242
   reqs: <SPA207
   id: '015696'
+- course: SPA 408
+  last: 1224
+  id: '016324'
 - course: SPA 418
   last: 1244
   reqs: SPA3**

@@ -70,6 +70,9 @@ vars:
   last: 1232
   reqs: ADVGER
   id: '003153'
+- course: GER 302
+  last: 1224
+  id: '015884'
 - course: GER 303
   last: 1242
   id: '003155'
@@ -95,6 +98,10 @@ vars:
   notes: 'Required: Proficiency in a second language (via instruction).'
   reqs: LANG***
   id: '011574'
+- course: GER 321
+  last: 1224
+  reqs: ADVGER
+  id: '003168'
 - course: GER 323
   last: 1234
   id: '008948'
@@ -102,6 +109,9 @@ vars:
   last: 1244
   reqs: ADVGER
   id: '003169'
+- course: GER 372
+  last: 1224
+  id: '016240'
 - course: GER 408
   last: 1234
   id: '016676'

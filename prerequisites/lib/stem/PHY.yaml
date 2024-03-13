@@ -115,6 +115,9 @@ updated: 3/12/2024
   last: 1244
   reqs: (PHYS | ISCA) & PHY208
   id: '005163'
+- course: PHY 403
+  last: 1224
+  id: '005170'
 - course: PHY 408
   last: 1232
   id: '005174'

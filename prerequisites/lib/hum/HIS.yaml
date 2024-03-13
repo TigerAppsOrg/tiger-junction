@@ -112,6 +112,9 @@ updated: 3/12/2024
 - course: HIS 333
   last: 1242
   id: '015415'
+- course: HIS 341
+  last: 1224
+  id: '016320'
 - course: HIS 342
   last: 1234
   id: '009705'
@@ -188,9 +191,15 @@ updated: 3/12/2024
 - course: HIS 393
   last: 1244
   id: '011579'
+- course: HIS 394
+  last: 1224
+  id: '012483'
 - course: HIS 396
   last: 1244
   id: '003434'
+- course: HIS 398
+  last: 1224
+  id: '016260'
 - course: HIS 400
   last: 1242
   iw: null
@@ -204,6 +213,9 @@ updated: 3/12/2024
 - course: HIS 407
   last: 1244
   id: '017069'
+- course: HIS 409
+  last: 1224
+  id: '016259'
 - course: HIS 411
   last: 1244
   id: '015912'
@@ -255,6 +267,9 @@ updated: 3/12/2024
 - course: HIS 437
   last: 1244
   id: '015188'
+- course: HIS 440
+  last: 1224
+  id: '015640'
 - course: HIS 443
   last: 1242
   id: '015684'
@@ -264,15 +279,33 @@ updated: 3/12/2024
 - course: HIS 448
   last: 1242
   id: '003472'
+- course: HIS 449
+  last: 1224
+  id: '011420'
 - course: HIS 450
   last: 1244
   id: '017083'
+- course: HIS 459
+  last: 1224
+  id: '013008'
+- course: HIS 462
+  last: 1224
+  id: '016321'
+- course: HIS 465
+  last: 1224
+  id: '013765'
 - course: HIS 466
   last: 1234
   id: '016679'
 - course: HIS 468
   last: 1244
   id: '017208'
+- course: HIS 470
+  last: 1224
+  id: '012827'
+- course: HIS 471
+  last: 1224
+  id: '014955'
 - course: HIS 472
   last: 1242
   id: '013980'
@@ -288,6 +321,12 @@ updated: 3/12/2024
 - course: HIS 488
   last: 1232
   id: '016455'
+- course: HIS 491
+  last: 1224
+  id: '015420'
+- course: HIS 492
+  last: 1224
+  id: '016261'
 - course: HIS 494
   last: 1244
   id: '011424'
