@@ -81,6 +81,10 @@ updated: 3/12/2024
   last: 1234
   reqs: (ECO302 | ECO312) & (ECO300 | ECO310) & STATS
   id: '016741'
+- course: ECO 321
+  last: 1232
+  reqs: (ECO300 | ECO310) & CALCULUS
+  id: '001397'
 - course: ECO 322
   last: 1242
   reqs: ECO302 | ECO312
@@ -144,6 +148,10 @@ updated: 3/12/2024
   last: 1244
   reqs: ECO100
   id: '008518'
+- course: ECO 416
+  last: 1232
+  reqs: ECO300 | ECO310
+  id: '015644'
 - course: ECO 418
   last: 1242
   reqs: MULTI

@@ -95,10 +95,18 @@ vars:
   last: 1234
   reqs: TWOFRE | FRE108 | FRE211
   id: '015880'
+- course: FRE 230
+  last: 1232
+  reqs: ADVFRE
+  id: '015654'
 - course: FRE 240
   last: 1244
   reqs: ADVFRE
   id: '017124'
+- course: FRE 250
+  last: 1232
+  reqs: ADVFRE
+  id: '015961'
 - course: FRE 260
   last: 1244
   reqs: ADVFRE
@@ -115,6 +123,9 @@ vars:
   last: 1244
   reqs: FRE2**
   id: '013544'
+- course: FRE 328
+  last: 1232
+  id: '016520'
 - course: FRE 338
   last: 1234
   id: '012817'
@@ -122,10 +133,17 @@ vars:
   last: 1234
   reqs: TWOFRE
   id: '012293'
+- course: FRE 348
+  last: 1232
+  id: '015881'
 - course: FRE 354
   last: 1244
   reqs: FRE2**
   id: '016673'
+- course: FRE 355
+  last: 1232
+  reqs: FRE2**
+  id: '016453'
 - course: FRE 358
   last: 1244
   id: '013028'

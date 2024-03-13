@@ -19,6 +19,9 @@ updated: 3/12/2024
 - course: CLA 217
   last: 1234
   id: '001094'
+- course: CLA 218
+  last: 1232
+  id: '001095'
 - course: CLA 219
   last: 1242
   id: '001096'
@@ -43,6 +46,9 @@ updated: 3/12/2024
 - course: CLA 247
   last: 1244
   id: '015395'
+- course: CLA 250
+  last: 1232
+  id: '016087'
 - course: CLA 310
   last: 1244
   id: '013991'
@@ -82,3 +88,6 @@ updated: 3/12/2024
 - course: CLA 405
   last: 1234
   id: '015164'
+- course: CLA 422
+  last: 1232
+  id: '016507'

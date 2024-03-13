@@ -4,6 +4,9 @@ name: East Asian Studies
 category: Ethnic and Cultural Studies
 updated: 3/12/2024
 ---
+- course: EAS 105
+  last: 1232
+  id: '016180'
 - course: EAS 211
   last: 1234
   id: '014451'
@@ -31,15 +34,28 @@ updated: 3/12/2024
 - course: EAS 242
   last: 1244
   id: '016614'
+- course: EAS 260
+  last: 1232
+  id: '014681'
 - course: EAS 262
   last: 1244
   id: '017189'
 - course: EAS 279
   last: 1244
   id: '016718'
+- course: EAS 280
+  last: 1232
+  id: '014465'
 - course: EAS 300
   last: 1242
+  iw: null
   id: '001262'
+- course: EAS 301
+  last: 1232
+  id: '013013'
+- course: EAS 303
+  last: 1232
+  id: '013261'
 - course: EAS 310
   last: 1242
   id: '012799'
@@ -56,6 +72,9 @@ updated: 3/12/2024
 - course: EAS 326
   last: 1244
   id: '017115'
+- course: EAS 332
+  last: 1232
+  id: '015876'
 - course: EAS 344
   last: 1234
   id: '001278'
@@ -74,6 +93,9 @@ updated: 3/12/2024
 - course: EAS 410
   last: 1234
   id: '015958'
+- course: EAS 415
+  last: 1232
+  id: '001286'
 - course: EAS 416
   last: 1234
   id: '001287'

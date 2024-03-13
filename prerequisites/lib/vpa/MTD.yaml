@@ -11,9 +11,18 @@ updated: 3/12/2024
   last: 1244
   travel: null
   id: '017088'
+- course: MTD 232
+  last: 1232
+  id: '016523'
 - course: MTD 322
   last: 1234
   id: '015027'
+- course: MTD 335
+  last: 1232
+  id: '012461'
+- course: MTD 348
+  last: 1232
+  id: '015441'
 - course: MTD 404
   last: 1234
   id: '016691'

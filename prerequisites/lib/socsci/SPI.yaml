@@ -48,9 +48,15 @@ updated: 3/12/2024
 - course: SPI 322
   last: 1244
   id: '014537'
+- course: SPI 324
+  last: 1232
+  id: '015723'
 - course: SPI 327
   last: 1234
   id: '015375'
+- course: SPI 328
+  last: 1232
+  id: '015697'
 - course: SPI 331
   last: 1234
   id: '010405'
@@ -127,6 +133,10 @@ updated: 3/12/2024
 - course: SPI 394
   last: 1242
   id: '016103'
+- course: SPI 396
+  last: 1232
+  reqs: ECO100 & STATS
+  id: '016104'
 - course: SPI 401
   last: 1242
   iw: null
@@ -152,9 +162,18 @@ updated: 3/12/2024
 - course: SPI 421
   last: 1244
   id: '011873'
+- course: SPI 466
+  last: 1232
+  id: '012093'
+- course: SPI 480
+  last: 1232
+  id: '016503'
 - course: SPI 481
   last: 1234
   id: '016504'
+- course: SPI 482
+  last: 1232
+  id: '016505'
 - course: SPI 483
   last: 1244
   id: '017162'

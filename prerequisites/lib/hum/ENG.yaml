@@ -10,18 +10,33 @@ updated: 3/12/2024
 - course: ENG 203
   last: 1244
   id: '009379'
+- course: ENG 206
+  last: 1232
+  id: '015645'
+- course: ENG 216
+  last: 1232
+  id: '015959'
+- course: ENG 228
+  last: 1232
+  id: '013973'
 - course: ENG 246
   last: 1234
   id: '016667'
 - course: ENG 259
   last: 1234
   id: '016668'
+- course: ENG 261
+  last: 1232
+  id: '015866'
 - course: ENG 269
   last: 1234
   id: '016255'
 - course: ENG 275
   last: 1234
   id: '016672'
+- course: ENG 294
+  last: 1232
+  id: '016508'
 - course: ENG 298
   last: 1244
   id: '016449'
@@ -32,9 +47,15 @@ updated: 3/12/2024
 - course: ENG 304
   last: 1244
   id: '002635'
+- course: ENG 305
+  last: 1232
+  id: '002660'
 - course: ENG 306
   last: 1242
   id: '002659'
+- course: ENG 311
+  last: 1232
+  id: '002603'
 - course: ENG 313
   last: 1242
   id: '014995'
@@ -47,9 +68,15 @@ updated: 3/12/2024
 - course: ENG 319
   last: 1244
   id: '016078'
+- course: ENG 320
+  last: 1232
+  id: '002608'
 - course: ENG 325
   last: 1234
   id: '002613'
+- course: ENG 328
+  last: 1232
+  id: '002615'
 - course: ENG 331
   last: 1244
   id: '002627'
@@ -61,15 +88,27 @@ updated: 3/12/2024
 - course: ENG 339
   last: 1242
   id: '002625'
+- course: ENG 340
+  last: 1232
+  id: '002626'
 - course: ENG 341
   last: 1234
   id: '002627'
+- course: ENG 342
+  last: 1232
+  id: '016509'
 - course: ENG 345
   last: 1242
   id: '002629'
+- course: ENG 350
+  last: 1232
+  id: '002652'
 - course: ENG 351
   last: 1244
   id: '002653'
+- course: ENG 354
+  last: 1232
+  id: '015649'
 - course: ENG 355
   last: 1234
   id: '013274'
@@ -91,6 +130,9 @@ updated: 3/12/2024
 - course: ENG 368
   last: 1242
   id: '002654'
+- course: ENG 375
+  last: 1232
+  id: '014745'
 - course: ENG 379
   last: 1244
   id: '017092'
@@ -118,12 +160,18 @@ updated: 3/12/2024
 - course: ENG 402
   last: 1234
   id: '002682'
+- course: ENG 403
+  last: 1232
+  id: '002683'
 - course: ENG 404
   last: 1234
   id: '002684'
 - course: ENG 405
   last: 1242
   id: '002663'
+- course: ENG 407
+  last: 1232
+  id: '016510'
 - course: ENG 409
   last: 1242
   travel: null
@@ -134,6 +182,13 @@ updated: 3/12/2024
 - course: ENG 415
   last: 1242
   id: '002665'
+- course: ENG 422
+  last: 1232
+  id: '011843'
+- course: ENG 425
+  last: 1232
+  travel: null
+  id: '016367'
 - course: ENG 444
   last: 1244
   id: '015175'

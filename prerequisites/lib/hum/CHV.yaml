@@ -16,6 +16,9 @@ updated: 3/12/2024
 - course: CHV 357
   last: 1234
   id: '016659'
+- course: CHV 367
+  last: 1232
+  id: '015630'
 - course: CHV 385
   last: 1242
   id: '015897'
@@ -25,6 +28,9 @@ updated: 3/12/2024
 - course: CHV 395
   last: 1234
   id: '016624'
+- course: CHV 478
+  last: 1232
+  id: '016442'
 - course: CHV 479
   last: 1244
   id: '017107'

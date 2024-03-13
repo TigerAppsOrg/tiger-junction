@@ -80,6 +80,10 @@ updated: 3/12/2024
   last: 1242
   reqs: ORF245
   id: '008008'
+- course: ORF 473
+  last: 1232
+  reqs: ORF245 & ORF309 & ORF335
+  id: '012024'
 - course: ORF 474
   last: 1234
   reqs: ORF309 & ORF405

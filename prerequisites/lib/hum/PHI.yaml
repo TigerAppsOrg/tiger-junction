@@ -19,6 +19,9 @@ updated: 3/12/2024
 - course: PHI 205
   last: 1242
   id: '004896'
+- course: PHI 208
+  last: 1232
+  id: '016462'
 - course: PHI 209
   last: 1234
   id: '016693'
@@ -28,6 +31,9 @@ updated: 3/12/2024
 - course: PHI 301
   last: 1244
   id: '004902'
+- course: PHI 306
+  last: 1232
+  id: '004907'
 - course: PHI 307
   last: 1244
   reqs: PHI***
@@ -64,13 +70,31 @@ updated: 3/12/2024
   last: 1244
   reqs: PHI***
   id: '004926'
+- course: PHI 326
+  last: 1232
+  id: '004927'
+- course: PHI 327
+  last: 1232
+  reqs: PHI***
+  id: '004928'
 - course: PHI 332
   last: 1234
   id: '004931'
+- course: PHI 335
+  last: 1232
+  reqs: PHI***
+  id: '004934'
 - course: PHI 339
   last: 1234
   reqs: PHI***
   id: '013095'
+- course: PHI 340
+  last: 1232
+  reqs: PHI201
+  id: '009262'
+- course: PHI 352
+  last: 1232
+  id: '014025'
 - course: PHI 356
   last: 1242
   reqs: PHI***
@@ -81,6 +105,10 @@ updated: 3/12/2024
 - course: PHI 371
   last: 1234
   id: '015020'
+- course: PHI 380
+  last: 1232
+  reqs: PHI***
+  id: '004947'
 - course: PHI 383
   last: 1244
   id: '013778'

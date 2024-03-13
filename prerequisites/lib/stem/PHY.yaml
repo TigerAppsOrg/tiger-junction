@@ -60,6 +60,9 @@ updated: 3/12/2024
   last: 1244
   reqs: MECH
   id: '015523'
+- course: PHY 112
+  last: 1232
+  id: '015668'
 - course: PHY 115A
   last: 1242
   equiv:
@@ -112,6 +115,9 @@ updated: 3/12/2024
   last: 1244
   reqs: (PHYS | ISCA) & PHY208
   id: '005163'
+- course: PHY 408
+  last: 1232
+  id: '005174'
 - course: PHY 412
   last: 1242
   reqs: PHY301 & PHY304

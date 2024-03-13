@@ -4,6 +4,10 @@ name: Latin American Studies
 category: Ethnic and Cultural Studies
 updated: 3/12/2024
 ---
+- course: LAS 228
+  last: 1232
+  reqs: <SPA207
+  id: '016554'
 - course: LAS 229
   last: 1242
   id: '016881'
@@ -26,6 +30,12 @@ updated: 3/12/2024
     Latin America or illicit economies and at least two courses in politics,
     history, sociology, anthropology, or a closely related field.
   id: '017195'
+- course: LAS 339
+  last: 1232
+  id: '016512'
+- course: LAS 362
+  last: 1232
+  id: '016519'
 - course: LAS 363
   last: 1242
   id: '016852'
@@ -35,9 +45,16 @@ updated: 3/12/2024
 - course: LAS 382
   last: 1242
   id: '016932'
+- course: LAS 390
+  last: 1232
+  travel: null
+  id: '016130'
 - course: LAS 394
   last: 1242
   id: '016933'
+- course: LAS 402
+  last: 1232
+  id: '004383'
 - course: LAS 422
   last: 1234
   id: '016687'

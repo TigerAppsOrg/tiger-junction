@@ -32,6 +32,10 @@ updated: 3/12/2024
   last: 1242
   reqs: BSEMATH & (PHY205 | PHY207)
   id: '000724'
+- course: AST 303
+  last: 1232
+  reqs: PHYS & CALCULUS
+  id: '010163'
 - course: AST 309
   last: 1244
   reqs: PHYS & MULTI

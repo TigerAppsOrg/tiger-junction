@@ -56,6 +56,9 @@ vars:
 - course: GER 211
   last: 1244
   id: '010270'
+- course: GER 212
+  last: 1232
+  id: '016454'
 - course: GER 218
   last: 1242
   id: '017001'
@@ -63,9 +66,17 @@ vars:
   last: 1242
   reqs: ADVGER
   id: '015240'
+- course: GER 301
+  last: 1232
+  reqs: ADVGER
+  id: '003153'
 - course: GER 303
   last: 1242
   id: '003155'
+- course: GER 305
+  last: 1232
+  reqs: GER101
+  id: '003157'
 - course: GER 306
   last: 1244
   reqs: ADVGER

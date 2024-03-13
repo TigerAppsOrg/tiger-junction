@@ -163,6 +163,9 @@ updated: 3/12/2024
 - course: WRI 161
   last: 1244
   id: '008756'
+- course: WRI 162
+  last: 1232
+  id: '008757'
 - course: WRI 163
   last: 1244
   id: '008758'
@@ -181,6 +184,9 @@ updated: 3/12/2024
 - course: WRI 168
   last: 1244
   id: '008866'
+- course: WRI 175
+  last: 1232
+  id: '009045'
 - course: WRI 177
   last: 1244
   id: '009048'
@@ -232,6 +238,12 @@ updated: 3/12/2024
 - course: WRI 196
   last: 1244
   id: '011210'
+- course: WRI 198
+  last: 1232
+  id: '011506'
+- course: WRI 199
+  last: 1232
+  id: '011507'
 - course: WRI 207
   last: 1242
   id: '014847'

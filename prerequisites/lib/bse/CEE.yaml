@@ -14,6 +14,12 @@ updated: 3/12/2024
   equiv:
     - CEE 102A
   id: '008724'
+- course: CEE 205
+  last: 1232
+  equiv:
+    - MAE 223
+  reqs: MECH & CALCULUS
+  id: '007944'
 - course: CEE 207
   last: 1242
   reqs: CALCULUS
@@ -48,10 +54,18 @@ updated: 3/12/2024
   last: 1244
   reqs: CHM201
   id: '010733'
+- course: CEE 344
+  last: 1232
+  reqs: CALCULUS
+  id: '015964'
 - course: CEE 345
   last: 1242
   reqs: BSEMATH
   id: '016441'
+- course: CEE 361
+  last: 1232
+  reqs: CEE205 | MAE223
+  id: '007953'
 - course: CEE 364
   last: 1244
   reqs: CEE205
@@ -91,6 +105,10 @@ updated: 3/12/2024
 - course: CEE 464
   last: 1244
   id: '017105'
+- course: CEE 467
+  last: 1232
+  reqs: CEE205 & CEE312
+  id: '012793'
 - course: CEE 471
   last: 1242
   id: '007964'

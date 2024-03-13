@@ -45,6 +45,10 @@ vars:
   last: 1234
   reqs: ADVITA
   id: '003904'
+- course: ITA 220
+  last: 1232
+  reqs: ADVITA
+  id: '010775'
 - course: ITA 224
   last: 1242
   reqs: ADVITA
@@ -60,6 +64,10 @@ vars:
   last: 1244
   reqs: ITA2**
   id: '003909'
+- course: ITA 308
+  last: 1232
+  reqs: ADVITA | ITA2**
+  id: '003911'
 - course: ITA 309
   last: 1234
   id: '003912'

@@ -29,6 +29,10 @@ updated: 3/12/2024
   last: 1244
   reqs: CLG108
   id: '003253'
+- course: CLG 215
+  last: 1232
+  travel: null
+  id: '016443'
 - course: CLG 240
   last: 1234
   reqs: CLG108
@@ -37,6 +41,10 @@ updated: 3/12/2024
   last: 1242
   reqs: CLG108
   id: '003256'
+- course: CLG 304
+  last: 1232
+  reqs: CLG2**
+  id: '003259'
 - course: CLG 310
   last: 1244
   reqs: CLG108

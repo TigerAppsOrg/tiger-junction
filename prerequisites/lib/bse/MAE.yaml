@@ -56,6 +56,10 @@ updated: 3/12/2024
 - course: MAE 328
   last: 1234
   id: '002358'
+- course: MAE 331
+  last: 1232
+  reqs: MAE206 & (MAE222 | MAE224)
+  id: '002339'
 - course: MAE 332
   last: 1234
   reqs: MAE321 & MAE331 & MAE335
@@ -104,6 +108,14 @@ updated: 3/12/2024
   last: 1244
   reqs: MAE221 & MAE224
   id: '002351'
+- course: MAE 416
+  last: 1232
+  reqs: MAE321
+  id: '016337'
+- course: MAE 418
+  last: 1232
+  reqs: INTROCOS
+  id: '016268'
 - course: MAE 423
   last: 1244
   reqs: MAE221 & MAE222

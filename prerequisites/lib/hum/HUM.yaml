@@ -49,6 +49,10 @@ updated: 3/12/2024
 - course: HUM 339
   last: 1234
   id: '011770'
+- course: HUM 340
+  last: 1232
+  travel: null
+  id: '016456'
 - course: HUM 346
   last: 1244
   id: '013536'
@@ -76,10 +80,17 @@ updated: 3/12/2024
 - course: HUM 412
   last: 1234
   id: '016683'
+- course: HUM 417
+  last: 1232
+  travel: null
+  id: '016497'
 - course: HUM 423
   last: 1234
   travel: null
   id: '016684'
+- course: HUM 434
+  last: 1232
+  id: '016457'
 - course: HUM 470
   last: 1234
   id: '012282'

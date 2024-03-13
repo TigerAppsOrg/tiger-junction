@@ -111,6 +111,10 @@ updated: 3/12/2024
   last: 1242
   reqs: BOTHCOS
   id: '011558'
+- course: COS 451
+  last: 1232
+  reqs: COS226 & COS240
+  id: '002077'
 - course: COS 461
   last: 1234
   reqs: COS217 & (COS316 | COS333 | COS318 | COS418 | COS432)

@@ -88,6 +88,12 @@ updated: 3/12/2024
   last: 1244
   reqs: VIS211 | VIS212
   id: '007232'
+- course: VIS 314
+  last: 1232
+  id: '016476'
+- course: VIS 321
+  last: 1232
+  id: '013075'
 - course: VIS 324
   last: 1244
   id: '016309'

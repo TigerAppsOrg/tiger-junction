@@ -92,7 +92,7 @@ updated: 3/12/2024
   id: '012832'
 - course: MAT 320
   last: 1242
-  reqs: BSEMATh
+  reqs: BSEMATH
   id: '004177'
 - course: MAT 321
   last: 1242
@@ -162,6 +162,9 @@ updated: 3/12/2024
   last: 1244
   reqs: (MAT215 | MAT216) & (MAT217 | MAT218)
   id: '004168'
+- course: MAT 447
+  last: 1232
+  id: '012062'
 - course: MAT 449
   last: 1242
   reqs: MAT345
@@ -169,6 +172,10 @@ updated: 3/12/2024
 - course: MAT 457
   last: 1242
   id: '011454'
+- course: MAT 477
+  last: 1232
+  reqs: MAT375
+  id: '013287'
 - course: MAT 478
   last: 1244
   notes: >-

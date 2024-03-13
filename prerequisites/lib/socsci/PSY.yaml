@@ -88,6 +88,10 @@ updated: 3/12/2024
 - course: PSY 360
   last: 1242
   id: '015203'
+- course: PSY 385
+  last: 1232
+  reqs: PSY101
+  id: '016099'
 - course: PSY 409
   last: 1244
   reqs: PSY101 | PSY255
@@ -99,6 +103,10 @@ updated: 3/12/2024
 - course: PSY 420
   last: 1244
   id: '014026'
+- course: PSY 454
+  last: 1232
+  reqs: PSY360 | SML3**
+  id: '015709'
 - course: PSY 465
   last: 1244
   reqs: HUM365

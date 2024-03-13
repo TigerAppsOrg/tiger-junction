@@ -45,6 +45,10 @@ updated: 3/12/2024
 - course: NEU 420
   last: 1242
   id: '016886'
+- course: NEU 427
+  last: 1232
+  reqs: NEU201
+  id: '013120'
 - course: NEU 430
   last: 1242
   reqs: NEU201 & INTROMOL

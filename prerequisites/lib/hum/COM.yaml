@@ -10,6 +10,9 @@ updated: 3/12/2024
 - course: COM 207
   last: 1234
   id: '015858'
+- course: COM 222
+  last: 1232
+  id: '009509'
 - course: COM 235
   last: 1244
   id: '010255'
@@ -22,6 +25,9 @@ updated: 3/12/2024
 - course: COM 300
   last: 1242
   id: '004031'
+- course: COM 301
+  last: 1232
+  id: '004032'
 - course: COM 302
   last: 1242
   id: '014469'
@@ -52,6 +58,9 @@ updated: 3/12/2024
 - course: COM 351
   last: 1242
   id: '013747'
+- course: COM 353
+  last: 1232
+  id: '015032'
 - course: COM 362
   last: 1234
   id: '016738'
@@ -61,6 +70,9 @@ updated: 3/12/2024
 - course: COM 372
   last: 1242
   id: '004058'
+- course: COM 376
+  last: 1232
+  id: '016444'
 - course: COM 385
   last: 1234
   id: '016652'
@@ -73,6 +85,10 @@ updated: 3/12/2024
 - course: COM 422
   last: 1244
   id: '011897'
+- course: COM 427
+  last: 1232
+  reqs: HEB107
+  id: '012478'
 - course: COM 437
   last: 1244k
   id: '016655'

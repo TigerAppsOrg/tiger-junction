@@ -40,6 +40,10 @@ vars:
   last: 1234
   reqs: ADVPOR
   id: '016279'
+- course: POR 262
+  last: 1232
+  reqs: ADVPOR
+  id: '016513'
 - course: POR 310
   last: 1242
   reqs: POR107 | POR109 | POR199
@@ -47,6 +51,10 @@ vars:
 - course: POR 328
   last: 1234
   id: '016597'
+- course: POR 408
+  last: 1232
+  reqs: ADVPOR
+  id: '016538'
 - course: POR 426
   last: 1244
   reqs: SPA107

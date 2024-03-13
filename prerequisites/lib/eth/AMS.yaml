@@ -24,6 +24,9 @@ updated: 3/12/2024
   last: 1234
   travel: null
   id: '015617'
+- course: AMS 322
+  last: 1232
+  id: '016060'
 - course: AMS 334
   last: 1244
   id: '015908'
@@ -31,6 +34,9 @@ updated: 3/12/2024
   last: 1242
   travel: null
   id: '016229'
+- course: AMS 354
+  last: 1232
+  id: '015233'
 - course: AMS 398
   last: 1234
   id: '015155'

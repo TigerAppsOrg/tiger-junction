@@ -26,6 +26,10 @@ updated: 3/12/2024
   last: 1234
   reqs: LAT108
   id: '003953'
+- course: LAT 204
+  last: 1232
+  reqs: LAT108
+  id: '003954'
 - course: LAT 205
   last: 1244
   reqs: LAT108
@@ -38,6 +42,10 @@ updated: 3/12/2024
   last: 1244
   reqs: LAT108
   id: '003956'
+- course: LAT 330
+  last: 1232
+  reqs: LAT108
+  id: '003968'
 - course: LAT 336
   last: 1244
   reqs: LAT108
@@ -49,6 +57,10 @@ updated: 3/12/2024
 - course: LAT 342
   last: 1234
   id: '010138'
+- course: LAT 401
+  last: 1232
+  reqs: LAT3**
+  id: '016458'
 - course: LAT 402
   last: 1242
   reqs: LAT3**

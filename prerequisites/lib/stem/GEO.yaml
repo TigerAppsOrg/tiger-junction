@@ -4,6 +4,16 @@ name: Geosciences
 category: STEM
 updated: 3/12/2024
 ---
+- course: GEO 102A
+  last: 1232
+  equiv:
+    - GEO 102B
+  id: '011152'
+- course: GEO 102B
+  last: 1232
+  equiv:
+    - GEO 102A
+  id: '011153'
 - course: GEO 103
   last: 1244
   id: '002975'
@@ -27,6 +37,10 @@ updated: 3/12/2024
   last: 1242
   reqs: MULTI & EAM
   id: '011155'
+- course: GEO 362
+  last: 1232
+  reqs: GEO202 | GEO203
+  id: '011156'
 - course: GEO 363
   last: 1242
   reqs: CHEM2
@@ -54,6 +68,10 @@ updated: 3/12/2024
   last: 1234
   reqs: CHEM1 & (GEO202 | GEO203)
   id: '012239'
+- course: GEO 416
+  last: 1232
+  reqs: INTROMOL | CHEM1
+  id: '014687'
 - course: GEO 417
   last: 1242
   reqs: CHM3** | MOL3** | EEB3**
@@ -70,6 +88,10 @@ updated: 3/12/2024
   last: 1242
   reqs: CALCULUS & MECH
   id: '016876'
+- course: GEO 422
+  last: 1232
+  reqs: MULTI & $LINEAR
+  id: '010251'
 - course: GEO 424
   last: 1244
   reqs: $EAM & $MAE305
@@ -81,6 +103,10 @@ updated: 3/12/2024
 - course: GEO 435
   last: 1244
   id: '017127'
+- course: GEO 442
+  last: 1232
+  reqs: LINEAR | MULTI
+  id: '011159'
 - course: GEO 464
   last: 1244
   id: '011181'

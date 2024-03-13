@@ -48,6 +48,10 @@ updated: 3/12/2024
   last: 1244
   reqs: CWR2** & CWR2**
   id: '014989'
+- course: CWR 345
+  last: 1232
+  reqs: CWR2**
+  id: '010493'
 - course: CWR 347
   last: 1244
   id: '015498'
