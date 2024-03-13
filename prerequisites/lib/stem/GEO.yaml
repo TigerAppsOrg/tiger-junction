@@ -59,6 +59,10 @@ updated: 3/12/2024
   travel: null
   reqs: CALCULUS & CHEM1 & MECH
   id: '011178'
+- course: GEO 371
+  last: 1222
+  reqs: MULTI & PHYS
+  id: '003010'
 - course: GEO 373
   last: 1242
   travel: null
@@ -105,6 +109,10 @@ updated: 3/12/2024
   last: 1242
   reqs: MULTI | MAE305
   id: '003043'
+- course: GEO 427
+  last: 1222
+  reqs: MULTI
+  id: '013755'
 - course: GEO 428
   last: 1224
   reqs: CHEM1 & INTROMOL & PHYS

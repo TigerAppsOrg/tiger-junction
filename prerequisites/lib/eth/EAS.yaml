@@ -11,6 +11,9 @@ updated: 3/12/2024
   last: 1224
   reqs: EAS105
   id: '016329'
+- course: EAS 206
+  last: 1222
+  id: '016074'
 - course: EAS 211
   last: 1234
   id: '014451'
@@ -112,6 +115,9 @@ updated: 3/12/2024
 - course: EAS 375
   last: 1224
   id: '015404'
+- course: EAS 409
+  last: 1222
+  id: '016124'
 - course: EAS 410
   last: 1234
   id: '015958'

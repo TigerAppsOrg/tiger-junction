@@ -73,6 +73,10 @@ updated: 3/12/2024
   equiv:
     - PHY 115A
   id: '009698'
+- course: PHY 205
+  last: 1222
+  reqs: PHYS & MAT2**
+  id: '005146'
 - course: PHY 207
   last: 1242
   reqs: (PHYS | ISCA) & MAT2**

@@ -13,12 +13,21 @@ updated: 3/12/2024
 - course: SOC 201
   last: 1242
   id: '006395'
+- course: SOC 204
+  last: 1222
+  id: '010457'
 - course: SOC 210
   last: 1232
   id: '006397'
 - course: SOC 211
   last: 1224
   id: '006458'
+- course: SOC 215
+  last: 1222
+  id: '015467'
+- course: SOC 221
+  last: 1222
+  id: '006400'
 - course: SOC 222
   last: 1244
   id: '008187'

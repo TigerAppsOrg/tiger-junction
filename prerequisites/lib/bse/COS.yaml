@@ -33,6 +33,10 @@ updated: 3/12/2024
   last: 1242
   reqs: BOTHCOS
   id: '015166'
+- course: COS 318
+  last: 1222
+  reqs: BOTHCOS
+  id: '002060'
 - course: COS 320
   last: 1244
   reqs: BOTHCOS & COS326
@@ -49,6 +53,10 @@ updated: 3/12/2024
   last: 1244
   reqs: BOTHCOS
   id: '002065'
+- course: COS 340
+  last: 1222
+  reqs: BSEMATH & INTROCOS & $COS226
+  id: '010455'
 - course: COS 343
   last: 1234
   reqs: INTROCOS & COS226 & COS240

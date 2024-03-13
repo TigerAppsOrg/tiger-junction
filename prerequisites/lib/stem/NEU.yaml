@@ -42,6 +42,10 @@ updated: 3/12/2024
   last: 1242
   reqs: NEU301 | NEU437 | MOL459
   id: '016884'
+- course: NEU 402
+  last: 1222
+  reqs: NEU201 | NEU202
+  id: '011605'
 - course: NEU 413
   last: 1224
   reqs: NEU200 | NEU201 | NEU202
@@ -64,6 +68,10 @@ updated: 3/12/2024
 - course: NEU 437
   last: 1244
   id: '000894'
+- course: NEU 443
+  last: 1222
+  reqs: NEU202 & (LINEAR | ORF309 | NEU314 | PSY330 | PSY338)
+  id: '016096'
 - course: NEU 447
   last: 1244
   reqs: MOL214

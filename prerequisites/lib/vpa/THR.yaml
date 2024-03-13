@@ -46,6 +46,9 @@ updated: 3/12/2024
 - course: THR 233
   last: 1244
   id: '017170'
+- course: THR 238
+  last: 1222
+  id: '016106'
 - course: THR 300
   last: 1244
   id: '007905'
@@ -56,6 +59,9 @@ updated: 3/12/2024
   last: 1244
   reqs: THR205
   id: '007907'
+- course: THR 308
+  last: 1222
+  id: '016107'
 - course: THR 313
   last: 1224
   travel: null
@@ -72,6 +78,9 @@ updated: 3/12/2024
 - course: THR 329
   last: 1234
   id: '016108'
+- course: THR 332
+  last: 1222
+  id: '013621'
 - course: THR 339
   last: 1232
   id: '012676'
@@ -88,6 +97,9 @@ updated: 3/12/2024
 - course: THR 351
   last: 1244
   id: '017174'
+- course: THR 355
+  last: 1222
+  id: '016109'
 - course: THR 359
   last: 1232
   id: '014977'

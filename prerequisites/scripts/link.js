@@ -29,8 +29,11 @@ export default function link() {
             const frontMatter = yaml.load(data.split("---")[1]);
             const courses = yaml.load(data.split("---")[2]);
 
-            for (let k = 0; k < courses.length; k++) {
+            cl: for (let k = 0; k < courses.length; k++) {
                 if (!crossTable.hasOwnProperty(courses[k].course)) {
+                    if (courses[k].course === "MAT    NFO2" || courses[k].course === "MAT    NFO1") {
+                        continue cl;
+                    }
                     console.error(`Course ${courses[k].course} not found in cross table`);
                     console.error(`File ${file}`)
                     console.error("Exiting link process");

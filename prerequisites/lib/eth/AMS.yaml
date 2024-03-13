@@ -46,6 +46,9 @@ updated: 3/12/2024
 - course: AMS 398
   last: 1234
   id: '015155'
+- course: AMS 399
+  last: 1222
+  id: '012497'
 - course: AMS 403
   last: 1244
   equiv:

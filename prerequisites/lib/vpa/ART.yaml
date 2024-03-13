@@ -22,6 +22,9 @@ updated: 3/12/2024
 - course: ART 203
   last: 1242
   id: '000520'
+- course: ART 207
+  last: 1222
+  id: '016065'
 - course: ART 209
   last: 1234
   id: '013930'
@@ -58,6 +61,9 @@ updated: 3/12/2024
 - course: ART 267
   last: 1224
   id: '010634'
+- course: ART 268
+  last: 1222
+  id: '016114'
 - course: ART 273
   last: 1244
   id: '017096'
@@ -73,6 +79,9 @@ updated: 3/12/2024
 - course: ART 309
   last: 1234
   id: '012433'
+- course: ART 311
+  last: 1222
+  id: '014671'
 - course: ART 313
   last: 1242
   id: '016905'
@@ -103,6 +112,9 @@ updated: 3/12/2024
 - course: ART 343
   last: 1234
   id: '000589'
+- course: ART 346
+  last: 1222
+  id: '016119'
 - course: ART 354
   last: 1244
   travel: null
@@ -120,9 +132,15 @@ updated: 3/12/2024
 - course: ART 369
   last: 1232
   id: '016480'
+- course: ART 378
+  last: 1222
+  id: '012637'
 - course: ART 380
   last: 1244
   id: '017097'
+- course: ART 384
+  last: 1222
+  id: '014414'
 - course: ART 387
   last: 1232
   id: '016411'
@@ -132,6 +150,9 @@ updated: 3/12/2024
 - course: ART 389
   last: 1242
   id: '016926'
+- course: ART 398
+  last: 1222
+  id: '016066'
 - course: ART 400
   last: 1242
   iw: null
@@ -169,7 +190,7 @@ updated: 3/12/2024
   notes: >-
     At least one lower level course in art history or Japanese studies, or
     permission of instructor.
-  reqs: ART*** | JPN***
+  reqs: ART*** | JPN*** | EAS***
   id: '010765'
 - course: ART 430
   last: 1232
@@ -180,6 +201,9 @@ updated: 3/12/2024
 - course: ART 435
   last: 1234
   id: '016067'
+- course: ART 439
+  last: 1222
+  id: '016068'
 - course: ART 442
   last: 1224
   travel: null
@@ -223,6 +247,9 @@ updated: 3/12/2024
 - course: ART 485
   last: 1232
   id: '016410'
+- course: ART 487
+  last: 1222
+  id: '016070'
 - course: ART 488
   last: 1234
   id: '014675'

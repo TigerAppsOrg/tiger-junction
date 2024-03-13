@@ -81,6 +81,9 @@ updated: 3/12/2024
 - course: ANT 302
   last: 1242
   id: '016477'
+- course: ANT 304
+  last: 1222
+  id: '000160'
 - course: ANT 305
   last: 1232
   id: '011188'
@@ -119,6 +122,13 @@ updated: 3/12/2024
 - course: ANT 325
   last: 1244
   id: '017062'
+- course: ANT 326
+  last: 1222
+  id: '014200'
+- course: ANT 328
+  last: 1222
+  travel: null
+  id: '016083'
 - course: ANT 331
   last: 1224
   reqs: ANT***
@@ -162,6 +172,9 @@ updated: 3/12/2024
 - course: ANT 368
   last: 1232
   id: '012258'
+- course: ANT 387
+  last: 1222
+  id: '016063'
 - course: ANT 390
   last: 1242
   reqs: ANT***
@@ -175,6 +188,9 @@ updated: 3/12/2024
 - course: ANT 417
   last: 1234
   id: '013733'
+- course: ANT 426
+  last: 1222
+  id: '016064'
 - course: ANT 428
   last: 1232
   id: '015875'
@@ -199,6 +215,13 @@ updated: 3/12/2024
 - course: ANT 446
   last: 1244
   id: '014917'
+- course: ANT 453
+  last: 1222
+  id: '013469'
+- course: ANT 455
+  last: 1222
+  reqs: ANT***
+  id: '014667'
 - course: ANT 456
   last: 1244
   id: '016438'

@@ -28,6 +28,9 @@ updated: 3/12/2024
 - course: SLA 300
   last: 1244
   id: '013330'
+- course: SLA 303
+  last: 1222
+  id: '015671'
 - course: SLA 304
   last: 1234
   reqs: RUS108
@@ -80,6 +83,9 @@ updated: 3/12/2024
 - course: SLA 350
   last: 1224
   id: '015022'
+- course: SLA 368
+  last: 1222
+  id: '013977'
 - course: SLA 401
   last: 1242
   iw: null

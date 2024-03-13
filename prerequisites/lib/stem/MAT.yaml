@@ -4,6 +4,10 @@ name: Mathematics
 category: STEM
 updated: 3/12/2024
 ---
+- course: MAT    NFO1
+  last: 1222
+- course: MAT    NFO2
+  last: 1222
 - course: MAT 100
   last: 1244
   id: '012071'

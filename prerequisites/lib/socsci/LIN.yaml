@@ -10,6 +10,10 @@ updated: 3/12/2024
 - course: LIN 205
   last: 1244
   id: '014553'
+- course: LIN 207
+  last: 1222
+  reqs: ASL102
+  id: '015220'
 - course: LIN 210
   last: 1244
   id: '008460'

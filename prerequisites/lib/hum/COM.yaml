@@ -76,6 +76,12 @@ updated: 3/12/2024
 - course: COM 372
   last: 1242
   id: '004058'
+- course: COM 373
+  last: 1222
+  id: '011306'
+- course: COM 375
+  last: 1222
+  id: '015860'
 - course: COM 376
   last: 1232
   id: '016444'
@@ -107,6 +113,9 @@ updated: 3/12/2024
 - course: COM 456
   last: 1242
   id: '006301'
+- course: COM 457
+  last: 1222
+  id: '016122'
 - course: COM 460
   last: 1234
   id: '016740'

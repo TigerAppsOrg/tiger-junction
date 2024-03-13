@@ -148,6 +148,10 @@ vars:
   last: 1234
   reqs: <SPA207
   id: '015691'
+- course: SPA 241
+  last: 1222
+  reqs: <SPA207
+  id: '015516'
 - course: SPA 245
   last: 1244
   reqs: SPA207 | SPA209
@@ -160,6 +164,10 @@ vars:
   last: 1234
   reqs: <SPA207
   id: '006675'
+- course: SPA 303
+  last: 1222
+  reqs: <SPA209
+  id: '006677'
 - course: SPA 304
   last: 1244
   reqs: SPA2**
@@ -207,6 +215,10 @@ vars:
   last: 1232
   reqs: ADVSPA
   id: '006699'
+- course: SPA 345
+  last: 1222
+  reqs: <SPA207
+  id: '006702'
 - course: SPA 350
   last: 1242
   reqs: <SPA209
@@ -215,6 +227,9 @@ vars:
   last: 1244
   reqs: <SPA207
   id: '016709'
+- course: SPA 363
+  last: 1222
+  id: '014580'
 - course: SPA 364
   last: 1244
   reqs: <SPA207
@@ -238,6 +253,10 @@ vars:
 - course: SPA 375
   last: 1244
   id: '016891'
+- course: SPA 376
+  last: 1222
+  reqs: <SPA207
+  id: '015475'
 - course: SPA 380
   last: 1244
   reqs: SPA2**
@@ -246,6 +265,10 @@ vars:
   last: 1242
   reqs: <SPA207
   id: '015696'
+- course: SPA 406
+  last: 1222
+  reqs: <SPA207
+  id: '014911'
 - course: SPA 408
   last: 1224
   id: '016324'

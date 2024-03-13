@@ -40,6 +40,9 @@ updated: 3/12/2024
 - course: REL 252
   last: 1234
   id: '005972'
+- course: REL 254
+  last: 1222
+  id: '016100'
 - course: REL 255
   last: 1244
   id: '017143'
@@ -109,9 +112,15 @@ updated: 3/12/2024
 - course: REL 348
   last: 1244
   id: '017146'
+- course: REL 352
+  last: 1222
+  id: '009117'
 - course: REL 356
   last: 1234
   id: '016727'
+- course: REL 357
+  last: 1222
+  id: '006038'
 - course: REL 359
   last: 1242
   id: '014715'
@@ -124,6 +133,9 @@ updated: 3/12/2024
 - course: REL 365
   last: 1232
   id: '012469'
+- course: REL 373
+  last: 1222
+  id: '006053'
 - course: REL 377
   last: 1242
   id: '010652'
@@ -137,6 +149,9 @@ updated: 3/12/2024
 - course: REL 393
   last: 1224
   id: '016282'
+- course: REL 394
+  last: 1222
+  id: '016101'
 - course: REL 395
   last: 1234
   id: '016699'

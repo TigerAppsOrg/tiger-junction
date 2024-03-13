@@ -24,6 +24,7 @@ updated: 3/12/2024
   id: '003248'
 - course: CLG 213
   last: 1242
+  reqs: CLG108
   id: '003252'
 - course: CLG 214
   last: 1244

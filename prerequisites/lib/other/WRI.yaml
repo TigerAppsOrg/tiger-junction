@@ -4,6 +4,9 @@ name: Princeton Writing Program
 category: Other
 updated: 3/12/2024
 ---
+- course: WRI 101
+  last: 1222
+  id: '008310'
 - course: WRI 102
   last: 1244
   id: '008313'
@@ -121,6 +124,9 @@ updated: 3/12/2024
 - course: WRI 142
   last: 1244
   id: '008352'
+- course: WRI 143
+  last: 1222
+  id: '008353'
 - course: WRI 144
   last: 1244
   id: '008373'
@@ -154,6 +160,12 @@ updated: 3/12/2024
 - course: WRI 156
   last: 1244
   id: '008588'
+- course: WRI 157
+  last: 1222
+  id: '008589'
+- course: WRI 158
+  last: 1222
+  id: '008868'
 - course: WRI 159
   last: 1244
   id: '008867'
@@ -232,6 +244,9 @@ updated: 3/12/2024
 - course: WRI 193
   last: 1242
   id: '010057'
+- course: WRI 194
+  last: 1222
+  id: '010205'
 - course: WRI 195
   last: 1244
   id: '010206'

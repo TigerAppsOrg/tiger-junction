@@ -95,6 +95,12 @@ updated: 3/12/2024
   last: 1232
   reqs: PSY101
   id: '016099'
+- course: PSY 400
+  last: 1222
+  id: '005629'
+- course: PSY 402
+  last: 1222
+  id: '014735'
 - course: PSY 409
   last: 1244
   reqs: PSY101 | PSY255

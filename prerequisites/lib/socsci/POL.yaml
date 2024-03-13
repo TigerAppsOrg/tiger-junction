@@ -16,6 +16,9 @@ updated: 3/12/2024
 - course: POL 240
   last: 1244
   id: '005283'
+- course: POL 250
+  last: 1222
+  id: '010443'
 - course: POL 300
   last: 1242
   iw: null
@@ -38,6 +41,9 @@ updated: 3/12/2024
 - course: POL 309
   last: 1234
   id: '005293'
+- course: POL 313
+  last: 1222
+  id: '009357'
 - course: POL 314
   last: 1224
   id: '009364'
@@ -50,6 +56,9 @@ updated: 3/12/2024
 - course: POL 317
   last: 1232
   id: '014968'
+- course: POL 318
+  last: 1222
+  id: '005302'
 - course: POL 319
   last: 1234
   id: '016742'

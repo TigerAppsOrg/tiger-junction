@@ -37,12 +37,18 @@ updated: 3/12/2024
 - course: DAN 225
   last: 1244
   id: '014896'
+- course: DAN 229
+  last: 1222
+  id: '016092'
 - course: DAN 302
   last: 1224
   id: '016318'
 - course: DAN 303
   last: 1224
   id: '016246'
+- course: DAN 305
+  last: 1222
+  id: '016169'
 - course: DAN 306
   last: 1234
   id: '016452'
@@ -73,6 +79,9 @@ updated: 3/12/2024
 - course: DAN 321
   last: 1244
   id: '008029'
+- course: DAN 324
+  last: 1222
+  id: '015768'
 - course: DAN 326
   last: 1244
   id: '016865'

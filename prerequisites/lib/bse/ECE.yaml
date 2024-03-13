@@ -38,6 +38,10 @@ updated: 3/12/2024
   last: 1242
   reqs: CALCULUS & PHYS
   id: '002464'
+- course: ECE 341
+  last: 1222
+  reqs: PHYS
+  id: '002476'
 - course: ECE 342
   last: 1244
   reqs: PHYS & BSEMATH
@@ -143,6 +147,10 @@ updated: 3/12/2024
   last: 1244
   reqs: ECE375
   id: '002509'
+- course: ECE 481
+  last: 1222
+  reqs: ECE203
+  id: '014456'
 - course: ECE 482
   last: 1242
   id: '002510'
