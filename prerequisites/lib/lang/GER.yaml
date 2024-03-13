@@ -2,7 +2,7 @@
 code: GER
 name: German
 category: World Languages
-updated: 3/12/2024
+updated: 3/13/2024
 vars:
   - name: ADVGER
     equ: GER107 | GER107G
@@ -76,6 +76,11 @@ vars:
 - course: GER 303
   last: 1242
   id: '003155'
+- course: GER 304
+  last: 1212
+  equiv:
+    - GER 212
+  id: '015623'
 - course: GER 305
   last: 1232
   reqs: GER101

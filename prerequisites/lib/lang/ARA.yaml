@@ -2,7 +2,7 @@
 code: ARA
 name: Arabic
 category: World Languages
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: ARA 101
   last: 1242
@@ -35,6 +35,10 @@ updated: 3/12/2024
   last: 1244
   reqs: ARA305
   id: '010940'
+- course: ARA 307
+  last: 1212
+  reqs: ARA107
+  id: '011263'
 - course: ARA 308
   last: 1234
   reqs: ARA107

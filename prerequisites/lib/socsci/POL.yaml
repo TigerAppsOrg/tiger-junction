@@ -2,7 +2,7 @@
 code: POL
 name: Politics
 category: Social Sciences
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: POL 210
   last: 1242
@@ -41,6 +41,9 @@ updated: 3/12/2024
 - course: POL 309
   last: 1234
   id: '005293'
+- course: POL 311
+  last: 1212
+  id: '015690'
 - course: POL 313
   last: 1222
   id: '009357'
@@ -125,6 +128,9 @@ updated: 3/12/2024
 - course: POL 351
   last: 1244
   id: '008134'
+- course: POL 355
+  last: 1212
+  id: '008996'
 - course: POL 357
   last: 1244
   id: '016779'
@@ -140,6 +146,9 @@ updated: 3/12/2024
 - course: POL 366
   last: 1232
   id: '005343'
+- course: POL 367
+  last: 1212
+  id: '005344'
 - course: POL 376
   last: 1244
   id: '016276'
@@ -185,6 +194,9 @@ updated: 3/12/2024
 - course: POL 423
   last: 1242
   id: '009187'
+- course: POL 426
+  last: 1212
+  id: '015757'
 - course: POL 430
   last: 1242
   id: '005371'

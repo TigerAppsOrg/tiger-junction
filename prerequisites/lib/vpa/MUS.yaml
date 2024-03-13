@@ -2,7 +2,7 @@
 code: MUS
 name: Music
 category: Visual and Performing Arts
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: MUS 103
   last: 1224
@@ -47,6 +47,9 @@ updated: 3/12/2024
 - course: MUS 232
   last: 1234
   id: '004444'
+- course: MUS 234
+  last: 1212
+  id: '004406'
 - course: MUS 235
   last: 1244
   id: '017090'

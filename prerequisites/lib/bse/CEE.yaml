@@ -2,7 +2,7 @@
 code: CEE
 name: Civil and Environmental Engineering
 category: Engineering
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: CEE 102A
   last: 1242
@@ -104,6 +104,10 @@ updated: 3/12/2024
   last: 1234
   reqs: BSEMATH & PHYS
   id: '016775'
+- course: CEE 440
+  last: 1212
+  reqs: CEE312
+  id: '015712'
 - course: CEE 460
   last: 1244
   reqs: STATS

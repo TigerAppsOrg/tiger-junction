@@ -2,7 +2,7 @@
 code: HIS
 name: History
 category: Humanities
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: HIS 201
   last: 1242
@@ -200,6 +200,9 @@ updated: 3/12/2024
 - course: HIS 396
   last: 1244
   id: '003434'
+- course: HIS 397
+  last: 1212
+  id: '015675'
 - course: HIS 398
   last: 1224
   id: '016260'
@@ -207,6 +210,9 @@ updated: 3/12/2024
   last: 1242
   iw: null
   id: '003436'
+- course: HIS 401
+  last: 1212
+  id: '014486'
 - course: HIS 402
   last: 1234
   id: '016616'
@@ -243,6 +249,9 @@ updated: 3/12/2024
 - course: HIS 418
   last: 1234
   id: '010346'
+- course: HIS 419
+  last: 1212
+  id: '013764'
 - course: HIS 420
   last: 1242
   id: '015914'
@@ -276,6 +285,9 @@ updated: 3/12/2024
 - course: HIS 434
   last: 1244
   id: '015915'
+- course: HIS 436
+  last: 1212
+  id: '015683'
 - course: HIS 437
   last: 1244
   id: '015188'
@@ -366,6 +378,9 @@ updated: 3/12/2024
 - course: HIS 494
   last: 1244
   id: '011424'
+- course: HIS 495
+  last: 1212
+  id: '015628'
 - course: HIS 499
   last: 1232
   id: '013078'

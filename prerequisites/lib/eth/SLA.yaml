@@ -2,7 +2,7 @@
 code: SLA
 name: Slavic Languages and Literatures
 category: Ethnic and Cultural Studies
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: SLA 203
   last: 1224
@@ -42,6 +42,12 @@ updated: 3/12/2024
 - course: SLA 306
   last: 1224
   id: '016294'
+- course: SLA 307
+  last: 1212
+  id: '015651'
+- course: SLA 309
+  last: 1212
+  id: '015646'
 - course: SLA 313
   last: 1232
   id: '016467'
@@ -93,6 +99,10 @@ updated: 3/12/2024
   last: 1242
   iw: null
   id: '015672'
+- course: SLA 409
+  last: 1212
+  reqs: RUS105
+  id: '012317'
 - course: SLA 411
   last: 1234
   reqs: RUS107 | RUS107R | RUS108

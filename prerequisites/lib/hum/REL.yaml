@@ -2,7 +2,7 @@
 code: REL
 name: Religion
 category: Humanities
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: REL 100
   last: 1242
@@ -19,6 +19,9 @@ updated: 3/12/2024
 - course: REL 227
   last: 1234
   id: '011322'
+- course: REL 228
+  last: 1212
+  id: '005958'
 - course: REL 230
   last: 1242
   id: '005959'
@@ -82,6 +85,9 @@ updated: 3/12/2024
 - course: REL 303
   last: 1244
   id: '016280'
+- course: REL 304
+  last: 1212
+  id: '015669'
 - course: REL 307
   last: 1224
   id: '016281'
@@ -130,6 +136,12 @@ updated: 3/12/2024
 - course: REL 352
   last: 1222
   id: '009117'
+- course: REL 354
+  last: 1212
+  id: '015753'
+- course: REL 355
+  last: 1212
+  id: '011323'
 - course: REL 356
   last: 1234
   id: '016727'

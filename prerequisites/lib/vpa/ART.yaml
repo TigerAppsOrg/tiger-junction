@@ -2,7 +2,7 @@
 code: ART
 name: Art and Archaeology
 category: Visual and Performing Arts
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: ART 100
   last: 1242
@@ -40,6 +40,9 @@ updated: 3/12/2024
 - course: ART 216
   last: 1234
   id: '000532'
+- course: ART 217
+  last: 1212
+  id: '000533'
 - course: ART 218
   last: 1244
   id: '015159'
@@ -64,6 +67,9 @@ updated: 3/12/2024
 - course: ART 268
   last: 1222
   id: '016114'
+- course: ART 272
+  last: 1212
+  id: '014179'
 - course: ART 273
   last: 1244
   id: '017096'
@@ -121,6 +127,9 @@ updated: 3/12/2024
 - course: ART 346
   last: 1222
   id: '016119'
+- course: ART 348
+  last: 1212
+  id: '000591'
 - course: ART 354
   last: 1244
   travel: null
@@ -138,6 +147,9 @@ updated: 3/12/2024
 - course: ART 365
   last: 1234
   id: '011553'
+- course: ART 368
+  last: 1212
+  id: '009324'
 - course: ART 369
   last: 1232
   id: '016480'
@@ -150,6 +162,9 @@ updated: 3/12/2024
 - course: ART 384
   last: 1222
   id: '014414'
+- course: ART 385
+  last: 1212
+  id: '015621'
 - course: ART 387
   last: 1232
   id: '016411'
@@ -159,6 +174,9 @@ updated: 3/12/2024
 - course: ART 389
   last: 1242
   id: '016926'
+- course: ART 394
+  last: 1212
+  id: '015679'
 - course: ART 397
   last: 1214
   id: '015856'
@@ -223,6 +241,9 @@ updated: 3/12/2024
   last: 1224
   travel: null
   id: '000626'
+- course: ART 443
+  last: 1212
+  id: '009945'
 - course: ART 444
   last: 1242
   id: '016862'
@@ -235,6 +256,9 @@ updated: 3/12/2024
 - course: ART 451
   last: 1224
   id: '012220'
+- course: ART 454
+  last: 1212
+  id: '008128'
 - course: ART 455
   last: 1242
   id: '016069'

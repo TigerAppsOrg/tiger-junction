@@ -2,7 +2,7 @@
 code: LAT
 name: Latin
 category: World Languages
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: LAT 101
   last: 1242
@@ -50,6 +50,10 @@ updated: 3/12/2024
   last: 1214
   reqs: LAT108
   id: '003970'
+- course: LAT 333
+  last: 1212
+  reqs: LAT203
+  id: '003971'
 - course: LAT 335
   last: 1224
   reqs: LAT108
@@ -62,6 +66,9 @@ updated: 3/12/2024
   last: 1222
   reqs: <LAT203
   id: '003975'
+- course: LAT 338
+  last: 1212
+  id: '003976'
 - course: LAT 340
   last: 1242
   reqs: LAT2**

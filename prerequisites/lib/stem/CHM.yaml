@@ -2,7 +2,7 @@
 code: CHM
 name: Chemistry
 category: STEM
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: CHM 201
   last: 1242
@@ -90,3 +90,7 @@ updated: 3/12/2024
     - CHM 411
   reqs: CHM301 & (CHM302 | CHM304)
   id: '000995'
+- course: CHM 440
+  last: 1212
+  reqs: CHM301 | CHM337
+  id: '011131'

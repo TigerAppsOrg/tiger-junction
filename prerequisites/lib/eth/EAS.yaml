@@ -2,7 +2,7 @@
 code: EAS
 name: East Asian Studies
 category: Ethnic and Cultural Studies
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: EAS 105
   last: 1232
@@ -78,6 +78,9 @@ updated: 3/12/2024
 - course: EAS 303
   last: 1232
   id: '013261'
+- course: EAS 307
+  last: 1212
+  id: '015681'
 - course: EAS 310
   last: 1242
   id: '012799'

@@ -2,7 +2,7 @@
 code: EGR
 name: Engineering
 category: Engineering
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: EGR 151
   last: 1242
@@ -42,6 +42,25 @@ updated: 3/12/2024
     - MAT 203
   reqs: EGR153 | EGR154
   id: '014731'
+- course: EGR 191
+  last: 1212
+  equiv:
+    - EGR 151
+    - PHY 101
+    - PHY 103
+    - PHY 105
+  reqs: $EGR192
+  id: '009759'
+- course: EGR 192
+  last: 1212
+  equiv:
+    - ECO 201
+    - EGR 156
+    - MAT 175
+    - MAT 201
+    - MAT 203
+  reqs: $EGR191
+  id: '009760'
 - course: EGR 200
   last: 1244
   id: '012646'

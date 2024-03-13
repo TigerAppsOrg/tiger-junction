@@ -2,7 +2,7 @@
 code: FRE
 name: French
 category: World Languages
-updated: 3/12/2024
+updated: 3/13/2024
 vars:
   - name: ADVFRE
     equ: FRE1027 | FRE107 | FRE108
@@ -132,6 +132,13 @@ vars:
 - course: FRE 328
   last: 1232
   id: '016520'
+- course: FRE 334
+  last: 1212
+  id: '015682'
+- course: FRE 335
+  last: 1212
+  reqs: FRE2**
+  id: '015652'
 - course: FRE 337
   last: 1214
   id: '015905'
@@ -197,6 +204,10 @@ vars:
   last: 1242
   reqs: FRE2**
   id: '014475'
+- course: FRE 389
+  last: 1212
+  reqs: FRE2**
+  id: '014212'
 - course: FRE 390
   last: 1242
   reqs: FRE2**

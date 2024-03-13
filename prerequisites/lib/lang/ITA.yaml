@@ -2,7 +2,7 @@
 code: ITA
 name: Italian
 category: World Languages
-updated: 3/12/2024
+updated: 3/13/2024
 vars:
   - name: ADVITA
     equ: ITA107 | ITA1027 | ITA108
@@ -41,6 +41,9 @@ vars:
     - ITA 107
   reqs: ITA103 | ITA105
   id: '014255'
+- course: ITA 207
+  last: 1212
+  id: '003903'
 - course: ITA 208
   last: 1234
   reqs: ADVITA
@@ -95,3 +98,7 @@ vars:
 - course: ITA 320
   last: 1242
   id: '013782'
+- course: ITA 401
+  last: 1212
+  reqs: ITA2**
+  id: '003916'

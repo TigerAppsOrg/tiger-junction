@@ -2,11 +2,14 @@
 code: LAS
 name: Latin American Studies
 category: Ethnic and Cultural Studies
-updated: 3/12/2024
+updated: 3/13/2024
 ---
 - course: LAS 202
   last: 1222
   id: '016094'
+- course: LAS 212
+  last: 1212
+  id: '015687'
 - course: LAS 217
   last: 1224
   id: '015920'

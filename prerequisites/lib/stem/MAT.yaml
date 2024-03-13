@@ -2,8 +2,12 @@
 code: MAT
 name: Mathematics
 category: STEM
-updated: 3/12/2024
+updated: 3/13/2024
 ---
+- course: MAT    NFO1
+  last: 1212
+- course: MAT    NFO2
+  last: 1212
 - course: MAT 100
   last: 1244
   id: '012071'
@@ -180,6 +184,9 @@ updated: 3/12/2024
 - course: MAT 457
   last: 1242
   id: '011454'
+- course: MAT 469
+  last: 1212
+  id: '012657'
 - course: MAT 477
   last: 1232
   reqs: MAT375
