@@ -50,3 +50,7 @@ updated: 3/12/2024
   last: 1244
   reqs: CLG108
   id: '003264'
+- course: CLG 410
+  last: 1214
+  reqs: CLG108 | HLS107
+  id: '015900'

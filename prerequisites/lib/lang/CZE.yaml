@@ -7,3 +7,7 @@ updated: 3/12/2024
 - course: CZE 101
   last: 1242
   id: '008623'
+- course: CZE 102
+  last: 1214
+  reqs: CZE101
+  id: '008790'

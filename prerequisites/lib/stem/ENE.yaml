@@ -28,6 +28,10 @@ updated: 3/12/2024
 - course: ENE 373
   last: 1234
   id: '016666'
+- course: ENE 410
+  last: 1214
+  reqs: CALCULUS & LINEAR & INTROCOS
+  id: '015904'
 - course: ENE 419
   last: 1242
   id: '016448'

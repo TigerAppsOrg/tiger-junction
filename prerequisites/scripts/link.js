@@ -31,7 +31,10 @@ export default function link() {
 
             cl: for (let k = 0; k < courses.length; k++) {
                 if (!crossTable.hasOwnProperty(courses[k].course)) {
-                    if (courses[k].course === "MAT    NFO2" || courses[k].course === "MAT    NFO1") {
+                    if (courses[k].course === "MAT    NFO2" 
+                    || courses[k].course === "MAT    NFO1"
+                    || courses[k].course === "MAT NFO1"
+                    || courses[k].course === "MAT NFO2") {
                         continue cl;
                     }
                     console.error(`Course ${courses[k].course} not found in cross table`);

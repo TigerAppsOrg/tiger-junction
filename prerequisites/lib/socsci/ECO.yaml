@@ -77,6 +77,10 @@ updated: 3/12/2024
   last: 1242
   reqs: ECO310 & MULTI & STATS
   id: '001413'
+- course: ECO 318
+  last: 1214
+  reqs: ECO100 & ECO101 & ECO202
+  id: '015882'
 - course: ECO 320
   last: 1234
   reqs: (ECO302 | ECO312) & (ECO300 | ECO310) & STATS

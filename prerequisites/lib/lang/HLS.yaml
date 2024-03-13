@@ -25,3 +25,7 @@ updated: 3/12/2024
 - course: HLS 222
   last: 1242
   id: '016851'
+- course: HLS 400
+  last: 1214
+  reqs: HLS103 | HLS107
+  id: '014115'

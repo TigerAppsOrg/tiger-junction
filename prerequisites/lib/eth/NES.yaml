@@ -104,12 +104,21 @@ updated: 3/12/2024
 - course: NES 391
   last: 1244
   id: '014703'
+- course: NES 392
+  last: 1214
+  id: '015927'
+- course: NES 396
+  last: 1214
+  id: '015963'
 - course: NES 433
   last: 1242
   id: '004647'
 - course: NES 437
   last: 1244
   id: '004651'
+- course: NES 438
+  last: 1214
+  id: '004652'
 - course: NES 465
   last: 1244
   id: '009518'

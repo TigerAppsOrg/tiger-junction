@@ -26,6 +26,9 @@ updated: 3/12/2024
   last: 1242
   iw: null
   id: '014652'
+- course: AAS 301
+  last: 1214
+  id: '013009'
 - course: AAS 302
   last: 1224
   id: '013482'
@@ -77,12 +80,18 @@ updated: 3/12/2024
   last: 1244
   travel: null
   id: '013715'
+- course: AAS 342
+  last: 1214
+  id: '013010'
 - course: AAS 345
   last: 1232
   id: '016229'
 - course: AAS 350
   last: 1242
   id: '013022'
+- course: AAS 351
+  last: 1214
+  id: '010574'
 - course: AAS 352
   last: 1242
   id: '016229'
@@ -125,3 +134,6 @@ updated: 3/12/2024
 - course: AAS 426
   last: 1222
   id: '012054'
+- course: AAS 477
+  last: 1214
+  id: '008483'

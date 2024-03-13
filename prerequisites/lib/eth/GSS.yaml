@@ -57,6 +57,12 @@ updated: 3/12/2024
   last: 1234
   reqs: GSS201
   id: '009655'
+- course: GSS 420
+  last: 1214
+  id: '010960'
+- course: GSS 426
+  last: 1214
+  id: '015984'
 - course: GSS 465
   last: 1244
   id: '017081'

@@ -24,8 +24,15 @@ updated: 3/12/2024
   last: 1242
   reqs: CALCULUS
   id: '007948'
+- course: CEE 262A
+  last: 1214
+  equiv:
+    - CEE 262B
+  id: '007945'
 - course: CEE 262B
   last: 1234
+  equiv:
+    - CEE 262A
   id: '007946'
 - course: CEE 305
   last: 1242

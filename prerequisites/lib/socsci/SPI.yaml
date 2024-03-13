@@ -70,6 +70,10 @@ updated: 3/12/2024
 - course: SPI 328
   last: 1232
   id: '015697'
+- course: SPI 329
+  last: 1214
+  reqs: ECO100 & ECO101 & MAT103
+  id: '015943'
 - course: SPI 330
   last: 1224
   id: '012091'
@@ -91,6 +95,9 @@ updated: 3/12/2024
 - course: SPI 336
   last: 1244
   id: '015944'
+- course: SPI 337
+  last: 1214
+  id: '015945'
 - course: SPI 338
   last: 1224
   id: '016360'
@@ -158,6 +165,9 @@ updated: 3/12/2024
 - course: SPI 394
   last: 1242
   id: '016103'
+- course: SPI 395
+  last: 1214
+  id: '015947'
 - course: SPI 396
   last: 1232
   reqs: ECO100 & STATS

@@ -37,6 +37,9 @@ updated: 3/12/2024
 - course: DAN 225
   last: 1244
   id: '014896'
+- course: DAN 226
+  last: 1214
+  id: '015957'
 - course: DAN 229
   last: 1222
   id: '016092'
@@ -55,6 +58,9 @@ updated: 3/12/2024
 - course: DAN 310
   last: 1234
   id: '013260'
+- course: DAN 314
+  last: 1214
+  id: '015767'
 - course: DAN 316
   last: 1234
   id: '013990'
@@ -89,6 +95,9 @@ updated: 3/12/2024
   last: 1244
   travel: null
   id: '017112'
+- course: DAN 329
+  last: 1214
+  id: '015902'
 - course: DAN 351
   last: 1242
   id: '016656'

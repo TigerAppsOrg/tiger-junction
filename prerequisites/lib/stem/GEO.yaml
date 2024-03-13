@@ -63,6 +63,10 @@ updated: 3/12/2024
   last: 1222
   reqs: MULTI & PHYS
   id: '003010'
+- course: GEO 372
+  last: 1214
+  reqs: GEO378
+  id: '011157'
 - course: GEO 373
   last: 1242
   travel: null
@@ -131,3 +135,7 @@ updated: 3/12/2024
 - course: GEO 464
   last: 1244
   id: '011181'
+- course: GEO 470
+  last: 1214
+  reqs: CHEM1
+  id: '008546'

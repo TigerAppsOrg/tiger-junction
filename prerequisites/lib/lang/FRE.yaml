@@ -132,6 +132,9 @@ vars:
 - course: FRE 328
   last: 1232
   id: '016520'
+- course: FRE 337
+  last: 1214
+  id: '015905'
 - course: FRE 338
   last: 1234
   id: '012817'
@@ -186,6 +189,10 @@ vars:
   last: 1244
   reqs: FRE2**
   id: '017126'
+- course: FRE 384
+  last: 1214
+  reqs: FRE207 | FRE221 | FRE222 | FRE224
+  id: '015966'
 - course: FRE 385
   last: 1242
   reqs: FRE2**
@@ -206,6 +213,10 @@ vars:
   last: 1244
   reqs: FRE 2**
   id: '002906'
+- course: FRE 403
+  last: 1214
+  reqs: FRE2**
+  id: '014232'
 - course: FRE 407
   last: 1242
   reqs: FRE3**
@@ -218,6 +229,10 @@ vars:
   last: 1242
   reqs: FRE2** | FRE3**
   id: '016875'
+- course: FRE 435
+  last: 1214
+  reqs: <FRE207
+  id: '015869'
 - course: FRE 480
   last: 1234
   id: '016674'

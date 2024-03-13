@@ -22,6 +22,9 @@ updated: 3/12/2024
 - course: COM 236
   last: 1234
   id: '010602'
+- course: COM 245
+  last: 1214
+  id: '015907'
 - course: COM 256
   last: 1242
   id: '017005'
@@ -88,6 +91,9 @@ updated: 3/12/2024
 - course: COM 381
   last: 1224
   id: '016722'
+- course: COM 382
+  last: 1214
+  id: '015901'
 - course: COM 385
   last: 1234
   id: '016652'
@@ -104,9 +110,18 @@ updated: 3/12/2024
   last: 1232
   reqs: HEB107
   id: '012478'
+- course: COM 432
+  last: 1214
+  id: '014067'
 - course: COM 437
   last: 1244k
   id: '016655'
+- course: COM 449
+  last: 1214
+  id: '015861'
+- course: COM 450
+  last: 1214
+  id: '015862'
 - course: COM 451
   last: 1234
   id: '012282'

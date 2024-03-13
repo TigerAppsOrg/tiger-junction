@@ -199,6 +199,9 @@ updated: 3/12/2024
 - course: WRI 175
   last: 1232
   id: '009045'
+- course: WRI 176
+  last: 1214
+  id: '009046'
 - course: WRI 177
   last: 1244
   id: '009048'
@@ -211,6 +214,12 @@ updated: 3/12/2024
 - course: WRI 180
   last: 1234
   id: '009075'
+- course: WRI 181
+  last: 1214
+  id: '009202'
+- course: WRI 182
+  last: 1214
+  id: '009203'
 - course: WRI 183
   last: 1244
   id: '009204'

@@ -7,9 +7,16 @@ updated: 3/12/2024
 - course: LIN 201
   last: 1244
   id: '004322'
+- course: LIN 202
+  last: 1214
+  id: '015922'
 - course: LIN 205
   last: 1244
   id: '014553'
+- course: LIN 206
+  last: 1214
+  reqs: LIN205
+  id: '014750'
 - course: LIN 207
   last: 1222
   reqs: ASL102
@@ -59,6 +66,10 @@ updated: 3/12/2024
   last: 1242
   reqs: LIN201
   id: '013798'
+- course: LIN 313
+  last: 1214
+  reqs: LIN201
+  id: '015923'
 - course: LIN 318
   last: 1234
   reqs: LIN201 & (LIN306 | LIN302)

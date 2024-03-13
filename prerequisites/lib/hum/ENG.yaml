@@ -22,6 +22,12 @@ updated: 3/12/2024
 - course: ENG 208
   last: 1222
   id: '016076'
+- course: ENG 214
+  last: 1214
+  id: '015407'
+- course: ENG 215
+  last: 1214
+  id: '013532'
 - course: ENG 216
   last: 1232
   id: '015959'
@@ -104,6 +110,9 @@ updated: 3/12/2024
 - course: ENG 325
   last: 1234
   id: '002613'
+- course: ENG 326
+  last: 1214
+  id: '002612'
 - course: ENG 328
   last: 1232
   id: '002615'
@@ -172,6 +181,9 @@ updated: 3/12/2024
 - course: ENG 379
   last: 1244
   id: '017092'
+- course: ENG 380
+  last: 1214
+  id: '012256'
 - course: ENG 383
   last: 1242
   id: '016871'
@@ -190,6 +202,9 @@ updated: 3/12/2024
 - course: ENG 390
   last: 1242
   id: '003825'
+- course: ENG 399
+  last: 1214
+  id: '015867'
 - course: ENG 400
   last: 1234
   id: '013539'
@@ -221,6 +236,9 @@ updated: 3/12/2024
 - course: ENG 415
   last: 1242
   id: '002665'
+- course: ENG 421
+  last: 1214
+  id: '012441'
 - course: ENG 422
   last: 1232
   id: '011843'

@@ -51,8 +51,16 @@ updated: 3/12/2024
   id: '012069'
 - course: COS 333
   last: 1244
+  equiv:
+    - COS 333I
   reqs: BOTHCOS
   id: '002065'
+- course: COS 333I
+  last: 1214
+  equiv:
+    - COS 333
+  reqs: BOTHCOS
+  id: '015699'
 - course: COS 340
   last: 1222
   reqs: BSEMATH & INTROCOS & $COS226
@@ -91,6 +99,10 @@ updated: 3/12/2024
   last: 1244
   reqs: COS226 & COS240
   id: '002071'
+- course: COS 424
+  last: 1214
+  reqs: LINEAR & INTROCOS & (ORF245 | ORF309)
+  id: '010279'
 - course: COS 426
   last: 1242
   reqs: BOTHCOS

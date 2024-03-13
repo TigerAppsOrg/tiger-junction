@@ -7,10 +7,17 @@ updated: 3/12/2024
 - course: AFS 101
   last: 1222
   id: '015616'
+- course: AFS 102
+  last: 1214
+  id: '015872'
 - course: AFS 106
   last: 1222
   reqs: AFS101
   id: '016091'
+- course: AFS 107
+  last: 1214
+  reqs: AFS105
+  id: '015079'
 - course: AFS 201
   last: 1234
   id: '016563'

@@ -23,6 +23,9 @@ updated: 3/12/2024
 - course: MUS 210
   last: 1244
   id: '004421'
+- course: MUS 212
+  last: 1214
+  id: '015924'
 - course: MUS 216
   last: 1244
   id: '017089'
@@ -32,6 +35,9 @@ updated: 3/12/2024
 - course: MUS 223
   last: 1224
   id: '012605'
+- course: MUS 225
+  last: 1214
+  id: '004414'
 - course: MUS 226
   last: 1224
   id: '004415'
@@ -103,6 +109,9 @@ updated: 3/12/2024
 - course: MUS 310
   last: 1232
   id: '004449'
+- course: MUS 312
+  last: 1214
+  id: '008504'
 - course: MUS 314
   last: 1242
   id: '004453'
@@ -112,6 +121,10 @@ updated: 3/12/2024
 - course: MUS 319
   last: 1234
   id: '014899'
+- course: MUS 323
+  last: 1214
+  reqs: MUS106 | MUS210
+  id: '004448'
 - course: MUS 326
   last: 1232
   reqs: MUS106
@@ -124,6 +137,10 @@ updated: 3/12/2024
   last: 1244
   reqs: MUS106
   id: '017091'
+- course: MUS 331
+  last: 1214
+  reqs: MUS105
+  id: '015926'
 - course: MUS 334
   last: 1234
   id: '014504'

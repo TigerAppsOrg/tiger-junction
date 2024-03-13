@@ -4,10 +4,6 @@ name: Mathematics
 category: STEM
 updated: 3/12/2024
 ---
-- course: MAT    NFO1
-  last: 1222
-- course: MAT    NFO2
-  last: 1222
 - course: MAT 100
   last: 1244
   id: '012071'
@@ -154,6 +150,10 @@ updated: 3/12/2024
   last: 1242
   reqs: MULTI
   id: '004199'
+- course: MAT 415
+  last: 1214
+  reqs: MAT335 & MAT345
+  id: '012065'
 - course: MAT 419
   last: 1244
   reqs: MAT345 & MAT346
@@ -166,6 +166,10 @@ updated: 3/12/2024
   last: 1244
   reqs: (MAT215 | MAT216) & (MAT217 | MAT218)
   id: '004168'
+- course: MAT 429
+  last: 1214
+  reqs: MAT320 | MAT325
+  id: '004203'
 - course: MAT 447
   last: 1232
   id: '012062'
@@ -186,3 +190,7 @@ updated: 3/12/2024
     Permission of instructor; linear algebra, basic probability, combinatorial
     mathematics or graph theory
   id: '014963'
+- course: MAT 490
+  last: 1214
+  reqs: CALCULUS & LINEAR & (ORF309 | MAT385)
+  id: '014297'

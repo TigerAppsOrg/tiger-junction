@@ -21,6 +21,10 @@ updated: 3/12/2024
   last: 1232
   reqs: CALCULUS & PHYS & CHEM1
   id: '015197'
+- course: MSE 305
+  last: 1214
+  reqs: PHYS & CHEM1
+  id: '015014'
 - course: MSE 309
   last: 1224
   id: '015495'

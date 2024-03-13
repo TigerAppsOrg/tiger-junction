@@ -25,6 +25,9 @@ updated: 3/12/2024
 - course: SOC 215
   last: 1222
   id: '015467'
+- course: SOC 218
+  last: 1214
+  id: '015935'
 - course: SOC 221
   last: 1222
   id: '006400'
@@ -61,6 +64,12 @@ updated: 3/12/2024
   last: 1234
   reqs: STATS
   id: '015936'
+- course: SOC 307
+  last: 1214
+  id: '013579'
+- course: SOC 308
+  last: 1214
+  id: '006414'
 - course: SOC 311
   last: 1232
   id: '016102'
@@ -76,6 +85,9 @@ updated: 3/12/2024
 - course: SOC 362
   last: 1234
   id: '016707'
+- course: SOC 370
+  last: 1214
+  id: '016004'
 - course: SOC 371
   last: 1232
   id: '016121'
@@ -119,3 +131,6 @@ updated: 3/12/2024
 - course: SOC 410
   last: 1242
   id: '017002'
+- course: SOC 414
+  last: 1214
+  id: '015937'
