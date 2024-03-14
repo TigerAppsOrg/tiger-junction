@@ -1,10 +1,17 @@
 # Princeton Course Prerequisites
-This directory contains the prerequisites for all courses at Princeton. The data is stored in YAML files, one for each department. This data is compiled into a JSON file for use in applications.
+This directory contains the prerequisites for all courses at Princeton since Fall 2020. The data is stored in formatted YAML files, one for each department. This data can be compiled into a JSON files for use in applications.
 
-Unfortunately, due to prerequisites not being strictly enforced at Princeton, they don't really exist in a structured format. Individual courses list their prerequisites in a paragraph of text, meaning that algorithms struggle to parse them accurately (especially and/or relationships). Another option would be to use some form of AI to parse the texts, but that could also be inaccurate and would be a lot of work to set up. Therefore, the data is manually compiled from the course catalogs.
+### Why manually-inputted data?
+At first glance, may would seem like some kind of algorithm could check prerequisites quickly, easily, and on-the-fly. Unfortunately, since prerequisites are not strictly enforced at Princeton, they don't exist in any official, structured format. Courses list their prerequisites in paragraph form, making algorithms struggle to accurately parse them and their relationships. 
+
+Furthermore, some courses (especially language courses) do not list their prerequisites correctly. A 300-level course in Spanish literature would obviously require an advanced understanding of Spanish, but sometimes these courses list no prerequisites. Compound this with multiple pathways to advanced Spanish proficiency, not all of which may be listed as prerequisites, and you can see why deterministic algorithms are not the way to go.
+
+A possible solution would be to use some form of NLP and AI. However, this would be a little overkill considering there's only around 10,000 courses every 4 years, and it would be difficult to ensure the model's accuracy without extensive work. Hence, I decided to just manually input the prerequisites.
+
 
 ## File Structure
-Each file begins with YAML front matter with the code, name, and other metadata.You can also place local variables here, with the `name` being replaced by the `equ` value in the `reqs` field. For example, in `GER.yaml`:
+The data is structured in a specific way so the compiler can understand it. Each file
+begins with YAML front matter with the code, name, and other metadata. You can also place local variables (macros) here, with the `name` being replaced by the `equ` value in the `reqs` field. For example, in `GER.yaml`:
 ```yaml
 vars:
   - name: ADVGER
@@ -12,14 +19,15 @@ vars:
 ```
 The rest of the file is a list of courses in that department with information about their prerequisites. The format is as follows:
 
-- `course` is the course code. Only list the first crosslisting, the compiler will automatically add the rest.
-- `last` is the code for the most recent term that the course was offered.
+- `course` is the course code. Only include the first (primary) crosslisting.
+- `last` is the term code for the most recent term in which the course was offered.
 - `travel` indicates that the course requires travel outside of the Princeton area.
-- `iw` indicates that the course is an independent work course only open to concentrators.
+- `iw` indicates that the course is an independent work course open only to concentrators.
 - `equiv` is a list of equivalent courses.
-- `notes` is any additional information about the prerequisites.
-- `reqs` is the boolean expression of the prerequisite. Use `|` for or, and `&` for and. The compiler will automatically convert this into a JSON object.
+- `notes` is any additional information about the prerequisites. Use sparingly.
+- `reqs` is the prerequisite boolean expression. Use `|` for or, and `&` for and, and separate with paranthesees. The expression should have no interpretational ambiguitiy.
 
+Example:
 ```yaml
 - course: ECE 250
   last: 1244
@@ -28,15 +36,14 @@ The rest of the file is a list of courses in that department with information ab
     - ECE 220
     - ECE 230
   notes: >-
-    All students are required to take the PHY 105 Special Relativity 
-    Minicourse, whether or not they are enrolled in PHY 105.
+    All students are required to take the PHY 105 Special Relativity Minicourse, whether or not they are enrolled in PHY 105.
   reqs: (ECE202 | ECE205) & ECE100
 ```
 
 Wildcard courses are also supported. For example, `MAT 2**` would match all courses in the MAT 200s. The compiler will automatically expand these into a list of courses. Placing a dollar sign before a course code means it can be taken as a corequisite. For example, `$MAT 202` means that MAT 202 can be taken as a corequisite. Placing a `<` before a coures code means that any course in the department with a course code greater than or equal to it satisfies the prerequisite.
 
-### Special Fields
-The following prerequisite groupings are common and have been given special tags that can be used like courses in the `reqs` field:
+## Special Macros
+The following prerequisite groupings are common and have been given special macros that can be used like courses in the `reqs` field:
 - `ISCA` -- **ISC231 & ISC232 & ISC233 & ISC234** -- complete integrated science sequence
 - `MECH` -- **PHY103 | PHY105 | ISC231 | EGR151** -- classical mechanics
 - `EAM` -- **PHY104 | PHY106 | ISC233 | EGR153** -- electricity and magnetism
@@ -52,16 +59,15 @@ The following prerequisite groupings are common and have been given special tags
 - `STATS` -- **ECO202 | EEB355 | ORF245 | POL345 | PSY251 | SOC301 | SML101 | SML 201** --introductory statistics 
 - `INTROMOL` -- **MOL214 | ISCA** -- introductory molecular biology 
 
-## Guidelines
+## Update Guidelines
 To update the data, please follow these guidelines:
-- Record the prerequisites exactly as they are written in the course catalog even if they are somewhat incorrect with the exception of the special fields.
-- Do not record recommendations, only requirements. If a reccomendation is important, it can be included in the notes field.
-- Stylistically, include a space for the course name and equivalent courses, but not in the `reqs` field. This is for readability (the compiler will remove the spaces).
+- Interpret the prerequisite information to the best of your ability. When a blatantly obvious prerequisite is missing, read the course description carefully and add it. Otherwise, even if a listed prerequiste seems silly, still include it. When in doubt, be conservative about what prerequisites you list.
+- Do not record recommendations, only requirements.
+- Use the special macros whenever you can. Define local macros when there's a consistently reappearing pattern within a file.
+- Include a space for the course name and equivalent courses, but not in the `reqs` field. 
 - Put courses in numeric order.
 
-Even if a course has no prerequisites, it should still be listed with no fields. The `travel`, `special`, `equiv`, and `notes` fields are optional. Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
-
-Run `node scripts/reformat.js` to reformat the data to the correct style.
+Prerequisites for a course can change over time. When updating the data, prioritize the most recent information.
 
 ## Scripts
 There are 4 scripts in the `scripts` directory which make up the complete compilation process:
