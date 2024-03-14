@@ -8,15 +8,21 @@
   <i align="center">✨ Princeton course selection, amplified ✨</i>
 </p>
 
-`TigerJunction` is the ultimate application for seamless, customizable Princeton course planning and selection. It features 3 fully integrated applications and an API:
+`TigerJunction` is the ultimate application for seamless, customizable Princeton course planning and selection. It features 3 fully integrated applications (with fast performance and beautiful themes) and an API:
 
 ### ReCal+
+Based heavily on [ReCal](https://recal.io/), `ReCal+` allows easy schedule planning with a visual calendar, powerful advanced search and filtering, built-in course ratings, and iCal exporting.
 
 ### CourseGenie (Coming Very Soon)
+`CourseGenie` enables students to see what programs (majors, minors, certificates) they have made progress towards, as well as be reccomended courses to meet program requirements (essentially a bi-directional, updated version of [TigerPath](https://www.tigerpath.io/)). With `TableView`, courses from all terms can be quickly searched for and filtered, displaying all neccesary data in a clean table.
+
+As part of TigerJunction Phase 3 (Winter 2024 or Spring 2025), CourseGenie will provide AI-powered course reccomendations. 
 
 ### Panthera (Coming Very Soon)
+A visual playground, `Panthera` beautifully showcases the relationships between courses, prerequisites, and programs, and enables users to easily create their own academic data visualizations and share them with friends.
 
 ### Student Developer API (Coming Soon)
+GraphQL and REST APIs for Princeton student developers. Data sources include course details, prerequisites, program requirements (majors, minors, certificates), and TigerJunction specific data. Once released, information about obtaining an API Key will be avaliable.
 
 ## Tech Stack
 Unlike most Princeton student applications, `TigerJunction` utilizes a JS backend (with SvelteKit) and is hosted primarily with serverless cloud providers. There are many reasons for this, the main ones being cloud cost minimization, being developed separately from COS333 (Princeton's project-based software engineering course), and preferring JS over Python for web development.
