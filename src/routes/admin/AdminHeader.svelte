@@ -2,7 +2,7 @@
 import { goto } from "$app/navigation";
 import { darkTheme } from "$lib/stores/state";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import logo from "$lib/img/tjlogolarge.png";
+import logo from "$lib/img/tjlogonew.png";
 export let supabase: SupabaseClient;
 
 // Logout the user
