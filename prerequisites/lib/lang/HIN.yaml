@@ -1,0 +1,33 @@
+---
+code: HIN
+name: Hindi
+category: World Languages
+updated: 3/13/2024
+---
+- course: HIN 101
+  last: 1242
+  id: '009403'
+- course: HIN 102
+  last: 1244
+  reqs: HIN101
+  id: '009513'
+- course: HIN 105
+  last: 1242
+  reqs: HIN102
+  id: '009649'
+- course: HIN 107
+  last: 1244
+  reqs: HIN105
+  id: '009983'
+- course: HIN 303
+  last: 1242
+  reqs: HIN107 | URD107
+  id: '014727'
+- course: HIN 304
+  last: 1212
+  reqs: HIN107
+  id: '015011'
+- course: HIN 305
+  last: 1244
+  reqs: HIN107
+  id: '015235'

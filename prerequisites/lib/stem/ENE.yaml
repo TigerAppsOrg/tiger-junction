@@ -1,0 +1,49 @@
+---
+code: ENE
+name: Energy Studies
+category: STEM
+updated: 3/13/2024
+---
+- course: ENE 202
+  last: 1242
+  id: '012686'
+- course: ENE 259
+  last: 1212
+  id: '015023'
+- course: ENE 267
+  last: 1232
+  id: '013703'
+- course: ENE 273
+  last: 1244
+  id: '014275'
+- course: ENE 308
+  last: 1244
+  id: '013531'
+- course: ENE 318
+  last: 1244
+  id: '013062'
+- course: ENE 321
+  last: 1244
+  id: '015186'
+- course: ENE 372
+  last: 1244
+  id: '015001'
+- course: ENE 373
+  last: 1234
+  id: '016666'
+- course: ENE 410
+  last: 1214
+  reqs: CALCULUS & LINEAR & INTROCOS
+  id: '015904'
+- course: ENE 419
+  last: 1242
+  id: '016448'
+- course: ENE 422
+  last: 1244
+  id: '015499'
+- course: ENE 431
+  last: 1234
+  id: '010764'
+- course: ENE 475
+  last: 1242
+  id: '014228'

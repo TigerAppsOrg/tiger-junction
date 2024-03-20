@@ -1,0 +1,196 @@
+---
+code: VIS
+name: Visual Arts
+category: Visual and Performing Arts
+updated: 3/13/2024
+---
+- course: VIS 201
+  last: 1242
+  id: '007216'
+- course: VIS 202
+  last: 1244
+  id: '007217'
+- course: VIS 203
+  last: 1242
+  id: '007218'
+- course: VIS 204
+  last: 1244
+  id: '007219'
+- course: VIS 205
+  last: 1212
+  id: '015769'
+- course: VIS 206
+  last: 1214
+  id: '015952'
+- course: VIS 207
+  last: 1234
+  id: '016732'
+- course: VIS 208
+  last: 1244
+  id: '016307'
+- course: VIS 209
+  last: 1212
+  id: '015487'
+- course: VIS 211
+  last: 1244
+  id: '007220'
+- course: VIS 212
+  last: 1224
+  id: '007221'
+- course: VIS 213
+  last: 1244
+  id: '008907'
+- course: VIS 215
+  last: 1242
+  id: '012668'
+- course: VIS 216
+  last: 1242
+  id: '012327'
+- course: VIS 217
+  last: 1244
+  id: '012667'
+- course: VIS 218
+  last: 1242
+  id: '014958'
+- course: VIS 220
+  last: 1244
+  id: '014277'
+- course: VIS 221
+  last: 1242
+  id: '007222'
+- course: VIS 222
+  last: 1244
+  id: '007223'
+- course: VIS 226
+  last: 1242
+  id: '015209'
+- course: VIS 227
+  last: 1212
+  id: '015756'
+- course: VIS 228
+  last: 1224
+  id: '016308'
+- course: VIS 229
+  last: 1242
+  id: '015624'
+- course: VIS 230
+  last: 1234
+  id: '015501'
+- course: VIS 231
+  last: 1234
+  id: '015472'
+- course: VIS 232
+  last: 1244
+  id: '016116'
+- course: VIS 233
+  last: 1244
+  id: '017176'
+- course: VIS 234
+  last: 1242
+  id: '016927'
+- course: VIS 263
+  last: 1242
+  id: '012132'
+- course: VIS 265
+  last: 1244
+  id: '014913'
+- course: VIS 300
+  last: 1214
+  id: '011722'
+- course: VIS 301
+  last: 1242
+  reqs: VIS2**
+  id: '016896'
+- course: VIS 309
+  last: 1244
+  reqs: VIS2**
+  id: '007240'
+- course: VIS 312
+  last: 1212
+  id: '015622'
+- course: VIS 313
+  last: 1244
+  reqs: VIS211 | VIS212
+  id: '007232'
+- course: VIS 314
+  last: 1232
+  id: '016476'
+- course: VIS 321
+  last: 1232
+  id: '013075'
+- course: VIS 323
+  last: 1214
+  reqs: VIS***
+  id: '015953'
+- course: VIS 324
+  last: 1244
+  id: '016309'
+- course: VIS 326
+  last: 1242
+  reqs: VIS211 | VIS212 | VIS213
+  id: '014535'
+- course: VIS 331
+  last: 1244
+  id: '007224'
+- course: VIS 354
+  last: 1234
+  reqs: ART2** | CWR2** | DAN2** | MUS2** | THR2** | VIS2**
+  id: '014979'
+- course: VIS 363
+  last: 1244
+  reqs: VIS263 | FRS138 | URB202
+  id: '014980'
+- course: VIS 365
+  last: 1242
+  reqs: VIS265
+  id: '014998'
+- course: VIS 373
+  last: 1222
+  id: '016105'
+- course: VIS 392
+  last: 1242
+  id: '007255'
+- course: VIS 404
+  last: 1244
+  reqs: VIS201 | VIS202 | VIS203 | VIS204 | VIS309
+  id: '007258'
+- course: VIS 407
+  last: 1244
+  reqs: VIS2**
+  id: '014734'
+- course: VIS 411
+  last: 1244
+  reqs: VIS211 | VIS212 | VIS213 | VIS219 | VIS315 | VIS316
+  id: '007259'
+- course: VIS 415
+  last: 1244
+  reqs: VIS214 | VIS215 | VIS216 | VIS217
+  id: '012090'
+- course: VIS 416
+  last: 1242
+  id: '011446'
+- course: VIS 418
+  last: 1234
+  reqs: VIS2** | VIS3** | (CEE2** & (ARC2** | EGR2** | MAE2**))
+  id: '013304'
+- course: VIS 419
+  last: 1244
+  iw: null
+  id: '014536'
+- course: VIS 421
+  last: 1244
+  reqs: VIS221 | VIS222
+  id: '007261'
+- course: VIS 423
+  last: 1244
+  id: '017177'
+- course: VIS 424
+  last: 1234
+  id: '016341'
+- course: VIS 425
+  last: 1242
+  id: '016897'
+- course: VIS 440
+  last: 1224
+  reqs: VIS212 | VIS213 | VIS263 | VIS265
+  id: '016311'

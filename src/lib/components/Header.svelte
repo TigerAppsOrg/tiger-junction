@@ -22,8 +22,8 @@ dark:border-zinc-700 border-zinc-200" style={cssVarStyles}>
     <div class="flex justify-between items-center px-4">
         <div id="left">
             <div class="flex items-center">
-                <img src="tjlogolarge.png" alt="Tiger Junction logo"
-                class="w-10 h-10">
+                <img src="tjlogonew.png" alt="Tiger Junction logo"
+                class="w-10 h-10 p-[2px]">
                 <span class="text-xl dark:text-zinc-100">TigerJunction</span>
             </div>
         </div>

@@ -1,0 +1,13 @@
+---
+code: PLS
+name: Polish
+category: World Languages
+updated: 3/13/2024
+---
+- course: PLS 101
+  last: 1242
+  id: '010391'
+- course: PLS 102
+  last: 1244
+  reqs: PLS101
+  id: '010502'

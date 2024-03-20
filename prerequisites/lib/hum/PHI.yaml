@@ -1,0 +1,181 @@
+---
+code: PHI
+name: Philosophy
+category: Humanities
+updated: 3/13/2024
+---
+- course: PHI 200
+  last: 1244
+  id: '004890'
+- course: PHI 201
+  last: 1244
+  id: '004891'
+- course: PHI 202
+  last: 1244
+  id: '004892'
+- course: PHI 203
+  last: 1242
+  id: '004893'
+- course: PHI 205
+  last: 1242
+  id: '004896'
+- course: PHI 208
+  last: 1232
+  id: '016462'
+- course: PHI 209
+  last: 1234
+  id: '016693'
+- course: PHI 211
+  last: 1244
+  id: '017135'
+- course: PHI 215
+  last: 1224
+  id: '014510'
+- course: PHI 277
+  last: 1214
+  id: '014024'
+- course: PHI 300
+  last: 1214
+  reqs: PHI***
+  id: '004901'
+- course: PHI 301
+  last: 1244
+  id: '004902'
+- course: PHI 302
+  last: 1214
+  id: '004903'
+- course: PHI 304
+  last: 1222
+  reqs: PHI***
+  id: '004905'
+- course: PHI 306
+  last: 1232
+  id: '004907'
+- course: PHI 307
+  last: 1244
+  reqs: PHI***
+  id: '004908'
+- course: PHI 309
+  last: 1212
+  id: '004910'
+- course: PHI 311
+  last: 1242
+  reqs: PHI*** & PHI*** & PHI***
+  id: '010693'
+- course: PHI 312
+  last: 1244
+  reqs: PHI201
+  id: '004913'
+- course: PHI 313
+  last: 1222
+  id: '004914'
+- course: PHI 314
+  last: 1234
+  reqs: PHI***
+  id: '004915'
+- course: PHI 315
+  last: 1244
+  id: '004916'
+- course: PHI 317
+  last: 1212
+  id: '004918'
+- course: PHI 318
+  last: 1244
+  id: '004919'
+- course: PHI 320
+  last: 1214
+  id: '004921'
+- course: PHI 321
+  last: 1242
+  id: '004922'
+- course: PHI 322
+  last: 1242
+  reqs: PHI***
+  id: '004923'
+- course: PHI 323
+  last: 1242
+  id: '004924'
+- course: PHI 325
+  last: 1244
+  reqs: PHI***
+  id: '004926'
+- course: PHI 326
+  last: 1232
+  id: '004927'
+- course: PHI 327
+  last: 1232
+  reqs: PHI***
+  id: '004928'
+- course: PHI 332
+  last: 1234
+  id: '004931'
+- course: PHI 333
+  last: 1224
+  id: '004932'
+- course: PHI 334
+  last: 1222
+  id: '014707'
+- course: PHI 335
+  last: 1232
+  reqs: PHI***
+  id: '004934'
+- course: PHI 338
+  last: 1214
+  id: '004936'
+- course: PHI 339
+  last: 1234
+  reqs: PHI***
+  id: '013095'
+- course: PHI 340
+  last: 1232
+  reqs: PHI201
+  id: '009262'
+- course: PHI 345
+  last: 1214
+  id: '015954'
+- course: PHI 350
+  last: 1214
+  id: '015938'
+- course: PHI 351
+  last: 1224
+  id: '016275'
+- course: PHI 352
+  last: 1232
+  id: '014025'
+- course: PHI 356
+  last: 1242
+  reqs: PHI***
+  id: '016885'
+- course: PHI 357
+  last: 1244
+  id: '017139'
+- course: PHI 363
+  last: 1212
+  id: '014708'
+- course: PHI 370
+  last: 1224
+  reqs: PHI***
+  id: '014965'
+- course: PHI 371
+  last: 1234
+  id: '015020'
+- course: PHI 372
+  last: 1224
+  id: '015667'
+- course: PHI 380
+  last: 1232
+  reqs: PHI***
+  id: '004947'
+- course: PHI 383
+  last: 1244
+  id: '013778'
+- course: PHI 401
+  last: 1234
+  id: '016723'
+- course: PHI 403
+  last: 1234
+  id: '016778'
+- course: PHI 411
+  last: 1222
+  reqs: PHI*** | SPI*** | POL*** | CHV***
+  id: '013933'

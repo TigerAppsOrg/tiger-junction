@@ -1,0 +1,204 @@
+---
+code: REL
+name: Religion
+category: Humanities
+updated: 3/13/2024
+---
+- course: REL 100
+  last: 1242
+  id: '016113'
+- course: REL 205
+  last: 1214
+  id: '015932'
+- course: REL 214
+  last: 1214
+  id: '015955'
+- course: REL 226
+  last: 1244
+  id: '005956'
+- course: REL 227
+  last: 1234
+  id: '011322'
+- course: REL 228
+  last: 1212
+  id: '005958'
+- course: REL 230
+  last: 1242
+  id: '005959'
+- course: REL 234
+  last: 1244
+  id: '017142'
+- course: REL 235
+  last: 1232
+  id: '005962'
+- course: REL 236
+  last: 1244
+  id: '005963'
+- course: REL 239
+  last: 1234
+  id: '014711'
+- course: REL 244
+  last: 1232
+  id: '014712'
+- course: REL 246
+  last: 1242
+  id: '011608'
+- course: REL 251
+  last: 1244
+  id: '005971'
+- course: REL 252
+  last: 1234
+  id: '005972'
+- course: REL 254
+  last: 1222
+  id: '016100'
+- course: REL 255
+  last: 1244
+  id: '017143'
+- course: REL 256
+  last: 1242
+  id: '012487'
+- course: REL 257
+  last: 1244
+  id: '011106'
+- course: REL 260
+  last: 1234
+  id: '014959'
+- course: REL 261
+  last: 1242
+  id: '005979'
+- course: REL 263
+  last: 1242
+  id: '015463'
+- course: REL 264
+  last: 1234
+  id: '015215'
+- course: REL 271
+  last: 1224
+  id: '014256'
+- course: REL 280
+  last: 1232
+  id: '015464'
+- course: REL 281
+  last: 1224
+  id: '013573'
+- course: REL 303
+  last: 1244
+  id: '016280'
+- course: REL 304
+  last: 1212
+  id: '015669'
+- course: REL 307
+  last: 1224
+  id: '016281'
+- course: REL 308
+  last: 1242
+  id: '015701'
+- course: REL 311
+  last: 1234
+  id: '009668'
+- course: REL 313
+  last: 1242
+  id: '016465'
+- course: REL 320
+  last: 1234
+  id: '016698'
+- course: REL 323
+  last: 1234
+  id: '015933'
+- course: REL 324
+  last: 1232
+  id: '010957'
+- course: REL 326
+  last: 1244
+  id: '006010'
+- course: REL 332
+  last: 1244
+  id: '017145'
+- course: REL 333
+  last: 1214
+  id: '014957'
+- course: REL 337
+  last: 1242
+  id: '013577'
+- course: REL 342
+  last: 1214
+  id: '014714'
+- course: REL 347
+  last: 1224
+  id: '006028'
+- course: REL 348
+  last: 1244
+  id: '017146'
+- course: REL 350
+  last: 1214
+  id: '006031'
+- course: REL 352
+  last: 1222
+  id: '009117'
+- course: REL 354
+  last: 1212
+  id: '015753'
+- course: REL 355
+  last: 1212
+  id: '011323'
+- course: REL 356
+  last: 1234
+  id: '016727'
+- course: REL 357
+  last: 1222
+  id: '006038'
+- course: REL 359
+  last: 1242
+  id: '014715'
+- course: REL 361
+  last: 1242
+  id: '014959'
+- course: REL 364
+  last: 1244
+  id: '008519'
+- course: REL 365
+  last: 1232
+  id: '012469'
+- course: REL 373
+  last: 1222
+  id: '006053'
+- course: REL 377
+  last: 1242
+  id: '010652'
+- course: REL 380
+  last: 1214
+  id: '010691'
+- course: REL 382
+  last: 1244
+  travel: null
+  id: '017147'
+- course: REL 383
+  last: 1244
+  id: '013098'
+- course: REL 393
+  last: 1224
+  id: '016282'
+- course: REL 394
+  last: 1222
+  id: '016101'
+- course: REL 395
+  last: 1234
+  id: '016699'
+- course: REL 397
+  last: 1234
+  id: '016726'
+- course: REL 399
+  last: 1242
+  iw: null
+  id: '013336'
+- course: REL 402
+  last: 1242
+  id: '014907'
+- course: REL 403
+  last: 1234
+  reqs: HEB107
+  id: '016777'
+- course: REL 415
+  last: 1244
+  id: '016700'

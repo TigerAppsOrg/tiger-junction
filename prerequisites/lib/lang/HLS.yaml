@@ -1,0 +1,31 @@
+---
+code: HLS
+name: Helenic Studies
+category: World Languages
+updated: 3/13/2024
+---
+- course: HLS 101
+  last: 1242
+  id: '005099'
+- course: HLS 102
+  last: 1244
+  reqs: HLS101
+  id: '005100'
+- course: HLS 103
+  last: 1234
+  id: '016719'
+- course: HLS 105
+  last: 1242
+  reqs: HLS102
+  id: '005101'
+- course: HLS 107
+  last: 1244
+  reqs: HLS105
+  id: '005102'
+- course: HLS 222
+  last: 1242
+  id: '016851'
+- course: HLS 400
+  last: 1214
+  reqs: HLS103 | HLS107
+  id: '014115'

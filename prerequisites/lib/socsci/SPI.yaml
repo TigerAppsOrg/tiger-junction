@@ -1,0 +1,247 @@
+---
+code: SPI
+name: Public and International Affairs
+category: Social Sciences
+absorbed: WWS
+updated: 3/13/2024
+---
+- course: SPI 200
+  last: 1244
+  id: '012118'
+- course: SPI 298
+  last: 1242
+  id: '016301'
+- course: SPI 299
+  last: 1224
+  id: '016301'
+- course: SPI 300
+  last: 1224
+  equiv:
+    - ECO 300
+    - ECO 310
+  reqs: ECO100
+  id: '012094'
+- course: SPI 301
+  last: 1244
+  reqs: SPI300 | ECO300 | ECO310
+  id: '001408'
+- course: SPI 302
+  last: 1242
+  id: '011753'
+- course: SPI 304
+  last: 1244
+  equiv:
+    - ECO 300
+    - ECO 310
+  reqs: ECO100
+  id: '012094'
+- course: SPI 305
+  last: 1244
+  reqs: STATS & (SPI300 | ECO300 | ECO310)
+  id: '014999'
+- course: SPI 306
+  last: 1242
+  reqs: MAT103 & (SPI300 | ECO300 | ECO310)
+  id: '001405'
+- course: SPI 313
+  last: 1224
+  id: '016302'
+- course: SPI 315
+  last: 1234
+  id: '012111'
+- course: SPI 316
+  last: 1242
+  id: '011860'
+- course: SPI 318
+  last: 1244
+  id: '012190'
+- course: SPI 320
+  last: 1242
+  id: '014183'
+- course: SPI 322
+  last: 1244
+  id: '014537'
+- course: SPI 324
+  last: 1232
+  id: '015723'
+- course: SPI 327
+  last: 1234
+  id: '015375'
+- course: SPI 328
+  last: 1232
+  id: '015697'
+- course: SPI 329
+  last: 1214
+  reqs: ECO100 & ECO101 & MAT103
+  id: '015943'
+- course: SPI 330
+  last: 1224
+  id: '012091'
+- course: SPI 331
+  last: 1234
+  id: '010405'
+- course: SPI 332
+  last: 1242
+  id: '016892'
+- course: SPI 333
+  last: 1244
+  id: '012629'
+- course: SPI 334
+  last: 1224
+  id: '006762'
+- course: SPI 335
+  last: 1244
+  id: '016303'
+- course: SPI 336
+  last: 1244
+  id: '015944'
+- course: SPI 337
+  last: 1214
+  id: '015945'
+- course: SPI 338
+  last: 1224
+  id: '016360'
+- course: SPI 340
+  last: 1244
+  reqs: STATS
+  id: '006765'
+- course: SPI 342
+  last: 1244
+  id: '017157'
+- course: SPI 345
+  last: 1234
+  id: '011395'
+- course: SPI 350
+  last: 1234
+  id: '012119'
+- course: SPI 353
+  last: 1234
+  id: '012120'
+- course: SPI 354
+  last: 1224
+  id: '012113'
+- course: SPI 364
+  last: 1242
+  id: '016501'
+- course: SPI 365
+  last: 1234
+  id: '016712'
+- course: SPI 368
+  last: 1244
+  id: '016713'
+- course: SPI 370
+  last: 1242
+  id: '006754'
+- course: SPI 373
+  last: 1242
+  id: '015662'
+- course: SPI 377
+  last: 1242
+  id: '016893'
+- course: SPI 379
+  last: 1244
+  id: '017158'
+- course: SPI 383
+  last: 1244
+  id: '017159'
+- course: SPI 385
+  last: 1242
+  id: '016934'
+- course: SPI 386
+  last: 1244
+  id: '017160'
+- course: SPI 387
+  last: 1242
+  id: '016502'
+- course: SPI 390
+  last: 1242
+  id: '016894'
+- course: SPI 391
+  last: 1244
+  id: '017161'
+- course: SPI 393
+  last: 1244
+  id: '013032'
+- course: SPI 394
+  last: 1242
+  id: '016103'
+- course: SPI 395
+  last: 1214
+  id: '015947'
+- course: SPI 396
+  last: 1232
+  reqs: ECO100 & STATS
+  id: '016104'
+- course: SPI 401
+  last: 1242
+  iw: null
+  id: '006771'
+- course: SPI 402
+  last: 1244
+  iw: null
+  id: '006772'
+- course: SPI 403
+  last: 1242
+  iw: null
+  id: '012121'
+- course: SPI 404
+  last: 1244
+  iw: null
+  id: '012122'
+- course: SPI 405
+  last: 1242
+  id: '014685'
+- course: SPI 409
+  last: 1242
+  id: '015707'
+- course: SPI 421
+  last: 1244
+  id: '011873'
+- course: SPI 466
+  last: 1232
+  id: '012093'
+- course: SPI 480
+  last: 1232
+  id: '016503'
+- course: SPI 481
+  last: 1234
+  id: '016504'
+- course: SPI 482
+  last: 1232
+  id: '016505'
+- course: SPI 483
+  last: 1244
+  id: '017162'
+- course: SPI 484
+  last: 1244
+  id: '017232'
+- course: SPI 485
+  last: 1244
+  id: '016714'
+- course: SPI 486
+  last: 1244
+  id: '017163'
+- course: SPI 488
+  last: 1244
+  id: '017164'
+- course: SPI 490
+  last: 1242
+  id: '016506'
+- course: SPI 491
+  last: 1234
+  id: '016731'
+- course: SPI 492
+  last: 1244
+  id: '017165'
+- course: SPI 495
+  last: 1234
+  id: '016715'
+- course: SPI 496
+  last: 1244
+  id: '017166'
+- course: SPI 497
+  last: 1244
+  id: '017167'
+- course: SPI 499
+  last: 1244
+  id: '016793'

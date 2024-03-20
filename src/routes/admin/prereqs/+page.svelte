@@ -1,59 +1,59 @@
+<svelte:head>
+    <title>TigerJunction Prereq Manager</title>
+</svelte:head>
+
 <script lang="ts">
 import { toastStore } from "$lib/stores/toast";
+import { onMount } from "svelte";
 import AdminHeader from "../AdminHeader.svelte";
 
 export let data;
 
-type RegCourse = {
-    listing_id: string,
-    code: string,
-}
-
 type Course = {
     title: string,
+    id: string,
     prereqs: string | null,
     description: string,
+    other: string | null,
+    equiv: string | null,
 }
 
 let initialized = false;
 let loading = false;
 let locked = false;
-let courselist: RegCourse[] = [];
+let courselist: Course[] = [];
 let term = 1244;
 
-let previousCourse: Course;
-let currentCourse: Course;
-let nextCourse: Course;
 let currentCourseIndex = 0;
+$: currentCourse = courselist[currentCourseIndex];
 
 const handleInit = async () => {
     loading = true;
     console.log("Initializing prereq manager for term: ", term);
 
-    const rawCourselist = await fetch("/api/admin/prereqs/courselist?term=" + term)
-    if (!rawCourselist.ok) {
+    const ca = await fetch("/api/admin/prereqs/cache?term=" + term);
+    if (!ca.ok) {
         console.error("Failed to fetch courselist");
         loading = false;
         toastStore.add("error", "Invalid term or failed to fetch courselist");
         return;
     }
 
-    const jsonCourselist = await rawCourselist.json();
-    courselist = jsonCourselist.classes.class.map((x: any) => {
+    const jsonCourselist = await ca.json();
+    courselist = jsonCourselist.map((details: any) => {
         return {
-            listing_id: x.course_id,
-            code: x.crosslistings.replace(/\s/g, ""),
+            title: details.crosslistings + ": " + details.long_title,
+            id: details.course_id,
+            prereqs: details.other_restrictions,
+            description: details.description,
+            other: details.other_information,
+            equiv: details.course_equivalents.hasOwnProperty("course_equivalent") ? 
+            details.course_equivalents.course_equivalent.map(
+                (x: { subject: string; catnum: string; }) => {
+                return x.subject + x.catnum
+            }).join(", ") : null,
         }
-    });
-
-    const firstRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[0].listing_id);
-    currentCourse = processRawCourse(await firstRaw.json());
-    previousCourse = currentCourse;
-
-    const secondRaw = await fetch("/api/admin/prereqs/course?term=" + term + "&id=" + courselist[1].listing_id);
-    nextCourse = processRawCourse(await secondRaw.json());
-
-    console.log("Initialized with courses: ", currentCourse, nextCourse)
+    })
 
     loading = false;
     initialized = true;
@@ -61,29 +61,29 @@ const handleInit = async () => {
 
 const handleEnter = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
-        gotoIndex(parseInt((e.target as HTMLInputElement).value));
+        gotoIndex((e.target as HTMLInputElement).value);
+        (e.target as HTMLInputElement).value = "";
+    }
+}
+
+const watchArrows = (e: KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+        handleNextCourse();
+    } else if (e.key === "ArrowLeft") {
+        handlePreviousCourse();
     }
 }
 
 //----------------------------------------------------------------------
 
 // ! Warning - this is a very naive implementation 
-const handleNextCourse = async () => {
+const handleNextCourse = () => {
     if (currentCourseIndex === courselist.length - 1) {
         toastStore.add("error", "No next course");
         return;
     };
-    if (locked) return;
-    locked = true;
 
     currentCourseIndex++;
-    previousCourse = currentCourse;
-    currentCourse = nextCourse;
-
-    const rawNext = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[currentCourseIndex + 1].listing_id);
-    nextCourse = processRawCourse(await rawNext.json());
-    locked = false;
 }
 
 const handlePreviousCourse = async () => {
@@ -91,73 +91,36 @@ const handlePreviousCourse = async () => {
         toastStore.add("error", "No previous course");
         return;
     };
-    if (locked) return;
-    locked = true;
 
     currentCourseIndex--;
-    nextCourse = currentCourse;
-    currentCourse = previousCourse;
-
-    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[currentCourseIndex - 1].listing_id);
-    previousCourse = processRawCourse(await rawPrevious.json());
-
-    locked = false;
 }
 
-const gotoIndex = async (index: number) => {
-    if (locked) return;
-    if (index < 1 || index > courselist.length) {
+const gotoIndex = async (index: string) => {
+    const indexNum = parseInt(index);
+
+    if (isNaN(indexNum)) {
+        const searchIndex = courselist.findIndex((x) => 
+            x.title.split(" ")[0].toLowerCase() === index.toLowerCase()
+        );
+        if (searchIndex === -1) {
+            toastStore.add("error", "Invalid index");
+            return;
+        }
+        currentCourseIndex = searchIndex;
+        return;
+    }
+
+    if (indexNum < 1 || indexNum > courselist.length) {
         toastStore.add("error", "Invalid index");
         return;
     };
-    locked = true;
 
-    const rawCurrent = await fetch("/api/admin/prereqs/course?term="
-        + term + "&id=" + courselist[index - 1].listing_id);
-
-    // Yes this is a bit ugly but it doesn't matter it works
-    switch (index) {
-        case 1:
-            const rawNext = await fetch("/api/admin/prereqs/course?term="
-                + term + "&id=" + courselist[index].listing_id);
-            nextCourse = processRawCourse(await rawNext.json());
-            currentCourse = processRawCourse(await rawCurrent.json());
-            previousCourse = currentCourse;
-            currentCourseIndex = 0;
-            locked = false;
-            return;
-        case courselist.length:
-            const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-                + term + "&id=" + courselist[index - 2].listing_id);
-            previousCourse = processRawCourse(await rawPrevious.json());
-            currentCourse = processRawCourse(await rawCurrent.json());
-            nextCourse = currentCourse;
-            currentCourseIndex = index - 1;
-            locked = false;
-            return;
-    }
-
-    const rawPrevious = await fetch("/api/admin/prereqs/course?term=" 
-        + term + "&id=" + courselist[index - 2].listing_id);
-    const rawNext = await fetch("/api/admin/prereqs/course?term="
-        + term + "&id=" + courselist[index].listing_id);
-    previousCourse = processRawCourse(await rawPrevious.json());
-    nextCourse = processRawCourse(await rawNext.json());
-    currentCourse = processRawCourse(await rawCurrent.json());
-
-    currentCourseIndex = index - 1;
-    locked = false;
+    currentCourseIndex = indexNum - 1;
 }
 
-const processRawCourse = (rawCourse: any): Course => {
-    const details = rawCourse.course_details.course_detail[0];
-    return {
-        title: details.crosslistings + ": " + details.long_title,
-        prereqs: details.other_restrictions,
-        description: details.description,
-    }
-}
+onMount(() => {
+    document.addEventListener("keydown", watchArrows);
+})
 </script>
 
 <main class="h-screen bg-zinc-900 text-white">
@@ -215,18 +178,31 @@ const processRawCourse = (rawCourse: any): Course => {
         <div class="rounded-lg p-4 border-[1px] border-zinc-600 w-11/12 max-w-5xl mx-auto
         mt-6">
             <div class="space-y-2 mb-2">
-                <h1 class="text-xl">
+                <a class="text-xl hover:text-zinc-200 duration-100" target="_blank" 
+                href={`https://registrar.princeton.edu/course-offerings/course-details?courseid=${currentCourse.id}&term=${term}`}>
                     {currentCourseIndex + 1} / {courselist.length} - 
                     {currentCourse.title || "ERROR"}
-                </h1>
+                </a>
                 <!-- <p>
                     <span class="underline">Description: </span>
                     {currentCourse.description || "No Descrition"}
                 </p> -->
                 <p>
                     <span class="underline">Prerequisites: </span>
-                    {currentCourse.prereqs || "None"}
+                    {currentCourse.prereqs || "None."}
                 </p>
+                {#if currentCourse.equiv}
+                <p>
+                    <span class="underline">Equivalents: </span>
+                    {currentCourse.equiv}
+                </p>
+                {/if}
+                {#if currentCourse.other}
+                <p>
+                    <span class="underline">Other: </span>
+                    {currentCourse.other}
+                </p>
+                {/if}
             </div>
             <div class="flex gap-2">
                 <button class="handlerButton bg-orange-400 hover:bg-orange-500"

@@ -1,0 +1,19 @@
+---
+code: GHP
+name: Global Health and Health Policy
+category: STEM
+updated: 3/13/2024
+---
+- course: GHP 350
+  last: 1242
+  id: '010857'
+- course: GHP 351
+  last: 1244
+  reqs: STATS
+  id: '010855'
+- course: GHP 413
+  last: 1212
+  id: '015664'
+- course: GHP 414
+  last: 1214
+  id: '015906'

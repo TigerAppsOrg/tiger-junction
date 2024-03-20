@@ -1,0 +1,68 @@
+---
+code: KOR
+name: Korean
+category: World Languages
+updated: 3/13/2024
+---
+- course: KOR 101
+  last: 1242
+  id: '004878'
+- course: KOR 102
+  last: 1244
+  reqs: KOR101
+  id: '004879'
+- course: KOR 103
+  last: 1242
+  id: '012078'
+- course: KOR 105
+  last: 1242
+  equiv:
+    - KOR 105K
+  reqs: KOR102
+  id: '004880'
+- course: KOR 107
+  last: 1244
+  equiv:
+    - KOR 107K
+    - KOR 108
+  reqs: KOR105
+  id: '004881'
+- course: KOR 108
+  last: 1244
+  equiv:
+    - KOR 107
+    - KOR 107K
+  reqs: KOR103
+  id: '012303'
+- course: KOR 301
+  last: 1242
+  reqs: KOR107 | KOR108
+  id: '004882'
+- course: KOR 302
+  last: 1244
+  reqs: KOR301
+  id: '004883'
+- course: KOR 303
+  last: 1242
+  reqs: KOR108 | KOR302
+  id: '013763'
+- course: KOR 308
+  last: 1244
+  reqs: KOR303
+  id: '013910'
+- course: KOR 401
+  last: 1242
+  reqs: KOR308
+  id: '010189'
+- course: KOR 402
+  last: 1244
+  reqs: KOR401
+  id: '010261'
+- course: KOR 405
+  last: 1242
+  reqs: KOR402
+  id: '011739'
+- course: KOR 407
+  last: 1244
+  reqs: KOR405
+  id: '011583'
