@@ -25,6 +25,4 @@ export const GET: RequestHandler = async ({ url }) => {
         JSON.stringify(await rawCourseData.json()),
         { status: 200, headers: { "Content-Type": "application/json" } }
     );
-
-    return new Response();
 };

@@ -1,0 +1,32 @@
+---
+code: QCB
+name: Quantitative and Computational Biology
+category: STEM
+updated: 3/13/2024
+---
+- course: QCB 302
+  last: 1242
+  reqs: INTROMOL
+  id: '012834'
+- course: QCB 311
+  last: 1244
+  reqs: (MOL214 & INTROCOS) | ISCA
+  id: '016697'
+- course: QCB 408
+  last: 1244
+  reqs: >-
+    (STATS | (NEU314 | QCB455)) & CALCULUS & LINEAR & ((INTROCOS & MOL214) |
+    ISCA)
+  id: '014039'
+- course: QCB 455
+  last: 1242
+  reqs: INTROCOS
+  id: '010185'
+- course: QCB 470
+  last: 1244
+  reqs: (MOL214 | ISCA) & MOL345
+  id: '017182'
+- course: QCB 490
+  last: 1224
+  reqs: INTROMOL & MOL342
+  id: '013917'

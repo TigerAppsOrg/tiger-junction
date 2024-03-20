@@ -1,0 +1,121 @@
+---
+code: HUM
+name: Humanistic Studies
+category: Humanities
+updated: 3/13/2024
+---
+- course: HUM 216
+  last: 1242
+  id: '003777'
+- course: HUM 217
+  last: 1242
+  id: '003779'
+- course: HUM 218
+  last: 1244
+  id: '003780'
+- course: HUM 219
+  last: 1244
+  id: '003781'
+- course: HUM 230
+  last: 1224
+  id: '016262'
+- course: HUM 233
+  last: 1242
+  id: '010507'
+- course: HUM 234
+  last: 1244
+  id: '010036'
+- course: HUM 245
+  last: 1244
+  id: '015003'
+- course: HUM 247
+  last: 1242
+  id: '015189'
+- course: HUM 248
+  last: 1234
+  id: '015424'
+- course: HUM 290
+  last: 1244
+  id: '014698'
+- course: HUM 307
+  last: 1234
+  id: '016681'
+- course: HUM 315
+  last: 1242
+  id: '016879'
+- course: HUM 321
+  last: 1224
+  id: '016263'
+- course: HUM 328
+  last: 1244
+  id: '015660'
+- course: HUM 331
+  last: 1214
+  id: '015971'
+- course: HUM 335
+  last: 1242
+  id: '015686'
+- course: HUM 339
+  last: 1234
+  id: '011770'
+- course: HUM 340
+  last: 1232
+  travel: null
+  id: '016456'
+- course: HUM 346
+  last: 1244
+  id: '013536'
+- course: HUM 349
+  last: 1244
+  id: '017084'
+- course: HUM 350
+  last: 1212
+  travel: null
+  id: '014729'
+- course: HUM 352
+  last: 1244
+  id: '015916'
+- course: HUM 353
+  last: 1242
+  id: '016923'
+- course: HUM 360
+  last: 1244
+  id: '017130'
+- course: HUM 363
+  last: 1214
+  id: '015917'
+- course: HUM 365
+  last: 1242
+  id: '003821'
+- course: HUM 372
+  last: 1244
+  id: '017193'
+- course: HUM 402
+  last: 1234
+  id: '016751'
+- course: HUM 410
+  last: 1212
+  id: '015661'
+- course: HUM 412
+  last: 1234
+  id: '016683'
+- course: HUM 417
+  last: 1232
+  travel: null
+  id: '016497'
+- course: HUM 423
+  last: 1234
+  travel: null
+  id: '016684'
+- course: HUM 434
+  last: 1232
+  id: '016457'
+- course: HUM 450
+  last: 1222
+  id: '016093'
+- course: HUM 470
+  last: 1234
+  id: '012282'
+- course: HUM 475
+  last: 1224
+  id: '016336'

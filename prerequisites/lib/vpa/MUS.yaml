@@ -1,0 +1,195 @@
+---
+code: MUS
+name: Music
+category: Visual and Performing Arts
+updated: 3/13/2024
+---
+- course: MUS 103
+  last: 1224
+  id: '004398'
+- course: MUS 105
+  last: 1242
+  id: '004400'
+- course: MUS 106
+  last: 1244
+  id: '004401'
+- course: MUS 203
+  last: 1224
+  id: '015026'
+- course: MUS 205
+  last: 1242
+  reqs: MUS105 | MUS106
+  id: '004408'
+- course: MUS 210
+  last: 1244
+  id: '004421'
+- course: MUS 212
+  last: 1214
+  id: '015924'
+- course: MUS 216
+  last: 1244
+  id: '017089'
+- course: MUS 221
+  last: 1244
+  id: '004405'
+- course: MUS 223
+  last: 1224
+  id: '012605'
+- course: MUS 225
+  last: 1214
+  id: '004414'
+- course: MUS 226
+  last: 1224
+  id: '004415'
+- course: MUS 230
+  last: 1232
+  id: '004443'
+- course: MUS 232
+  last: 1234
+  id: '004444'
+- course: MUS 234
+  last: 1212
+  id: '004406'
+- course: MUS 235
+  last: 1244
+  id: '017090'
+- course: MUS 236
+  last: 1234
+  id: '008181'
+- course: MUS 238
+  last: 1232
+  id: '004407'
+- course: MUS 240
+  last: 1222
+  id: '004411'
+- course: MUS 242
+  last: 1244
+  id: '004420'
+- course: MUS 245
+  last: 1224
+  reqs: MUS105
+  id: '016349'
+- course: MUS 246
+  last: 1234
+  id: '014021'
+- course: MUS 247
+  last: 1234
+  id: '014996'
+- course: MUS 248
+  last: 1234
+  id: '015500'
+- course: MUS 249
+  last: 1242
+  id: '016882'
+- course: MUS 259
+  last: 1244
+  id: '015017'
+- course: MUS 261
+  last: 1232
+  id: '015770'
+- course: MUS 262
+  last: 1244
+  id: '004412'
+- course: MUS 263
+  last: 1244
+  reqs: MUS261
+  id: '015925'
+- course: MUS 264
+  last: 1244
+  id: '004413'
+- course: MUS 300
+  last: 1242
+  iw: null
+  id: '015657'
+- course: MUS 306
+  last: 1244
+  reqs: MUS106
+  id: '011426'
+- course: MUS 308
+  last: 1244
+  reqs: MUS210 | MUS310 | MUS329
+  id: '004437'
+- course: MUS 310
+  last: 1232
+  id: '004449'
+- course: MUS 312
+  last: 1214
+  id: '008504'
+- course: MUS 314
+  last: 1242
+  id: '004453'
+- course: MUS 316
+  last: 1244
+  id: '004455'
+- course: MUS 319
+  last: 1234
+  id: '014899'
+- course: MUS 323
+  last: 1214
+  reqs: MUS106 | MUS210
+  id: '004448'
+- course: MUS 326
+  last: 1232
+  reqs: MUS106
+  id: '016498'
+- course: MUS 329
+  last: 1244
+  reqs: MUS105 | MUS205 | MUS214 | MUS210 | MUS310
+  id: '013079'
+- course: MUS 330
+  last: 1244
+  reqs: MUS106
+  id: '017091'
+- course: MUS 331
+  last: 1214
+  reqs: MUS105
+  id: '015926'
+- course: MUS 334
+  last: 1234
+  id: '014504'
+- course: MUS 338
+  last: 1244
+  id: '016883'
+- course: MUS 340
+  last: 1242
+  id: '014246'
+- course: MUS 341
+  last: 1242
+  reqs: MUS106
+  id: '016899'
+- course: MUS 343
+  last: 1242
+  id: '016909'
+- course: MUS 344
+  last: 1244
+  id: '016900'
+- course: MUS 345
+  last: 1232
+  id: '015028'
+- course: MUS 346
+  last: 1234
+  id: '016783'
+- course: MUS 347
+  last: 1242
+  id: '016898'
+- course: MUS 348
+  last: 1244
+  id: '017141'
+- course: MUS 350
+  last: 1242
+  id: '015221'
+- course: MUS 351
+  last: 1232
+  id: '016499'
+- course: MUS 357
+  last: 1242
+  id: '016557'
+- course: MUS 359
+  last: 1234
+  id: '014516'
+- course: MUS 365
+  last: 1244
+  id: '016349'
+- course: MUS 436
+  last: 1234
+  id: '016692'

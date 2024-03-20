@@ -1,0 +1,65 @@
+---
+code: ARA
+name: Arabic
+category: World Languages
+updated: 3/13/2024
+---
+- course: ARA 101
+  last: 1242
+  id: '000488'
+- course: ARA 102
+  last: 1244
+  reqs: ARA101
+  id: '000489'
+- course: ARA 105
+  last: 1242
+  reqs: ARA102
+  id: '000490'
+- course: ARA 107
+  last: 1244
+  reqs: ARA105
+  id: '000491'
+- course: ARA 301
+  last: 1242
+  reqs: ARA107
+  id: '000495'
+- course: ARA 303
+  last: 1242
+  reqs: ARA107
+  id: '010438'
+- course: ARA 305
+  last: 1242
+  reqs: ARA107
+  id: '010831'
+- course: ARA 306
+  last: 1244
+  reqs: ARA305
+  id: '010940'
+- course: ARA 307
+  last: 1212
+  reqs: ARA107
+  id: '011263'
+- course: ARA 308
+  last: 1234
+  reqs: ARA107
+  id: '011265'
+- course: ARA 309
+  last: 1244
+  reqs: ARA107
+  id: '011841'
+- course: ARA 313
+  last: 1244
+  reqs: ARA107
+  id: '013912'
+- course: ARA 315
+  last: 1234
+  reqs: ARA107
+  id: '016646'
+- course: ARA 403
+  last: 1242
+  reqs: ARA301
+  id: '013234'
+- course: ARA 404
+  last: 1244
+  reqs: ARA301
+  id: '013486'

@@ -1,0 +1,110 @@
+---
+code: EEB
+name: Ecology and Evolutionary Biology
+category: STEM
+updated: 3/13/2024
+---
+- course: EEB 211
+  last: 1242
+  id: '001521'
+- course: EEB 308
+  last: 1242
+  reqs: EEB211
+  id: '001525'
+- course: EEB 309
+  last: 1242
+  reqs: EEB211 & (MOL214 | ISCA)
+  id: '001526'
+- course: EEB 313
+  last: 1244
+  reqs: EEB211
+  id: '013268'
+- course: EEB 314
+  last: 1234
+  reqs: EEB211
+  id: '001534'
+- course: EEB 317
+  last: 1242
+  travel: null
+  id: '016948'
+- course: EEB 321
+  last: 1242
+  id: '001538'
+- course: EEB 324
+  last: 1234
+  reqs: CALCULUS
+  id: '001540'
+- course: EEB 325
+  last: 1242
+  reqs: CALCULUS
+  id: '012479'
+- course: EEB 327
+  last: 1242
+  reqs: EEB211 & (MOL214 | ISCA)
+  id: '011183'
+- course: EEB 328
+  last: 1234
+  travel: null
+  reqs: EEB321
+  id: '001542'
+- course: EEB 329
+  last: 1242
+  reqs: EEB211
+  id: '013699'
+- course: EEB 330
+  last: 1242
+  id: '016904'
+- course: EEB 331
+  last: 1244
+  reqs: EEB309
+  id: '015883'
+- course: EEB 332
+  last: 1234
+  travel: null
+  reqs: EEB321
+  id: '001543'
+- course: EEB 338
+  last: 1244
+  id: '001546'
+- course: EEB 344
+  last: 1214
+  id: '015988'
+- course: EEB 346
+  last: 1244
+  reqs: EEB321
+  id: '001548'
+- course: EEB 355
+  last: 1244
+  id: '017118'
+- course: EEB 380
+  last: 1224
+  travel: null
+  id: '009990'
+- course: EEB 384
+  last: 1234
+  travel: null
+  reqs: EEB321
+  id: '014455'
+- course: EEB 388
+  last: 1244
+  id: '015406'
+- course: EEB 403
+  last: 1234
+  reqs: INTROMOL & (EEB211 | NEU201 | MOL342)
+  id: '013527'
+- course: EEB 404
+  last: 1244
+  reqs: EEB 211
+  id: '008506'
+- course: EEB 406
+  last: 1234
+  travel: null
+  reqs: EEB211 & EEB321
+  id: '012181'
+- course: EEB 417A
+  last: 1242
+  id: '008594'
+- course: EEB 428
+  last: 1244
+  reqs: EEB309
+  id: '016658'

@@ -1,0 +1,110 @@
+---
+code: ORF
+name: Operations Research and Financial Engineering
+category: Engineering
+updated: 3/13/2024
+---
+- course: ORF 245
+  last: 1244
+  reqs: $MULTI
+  id: '007996'
+- course: ORF 307
+  last: 1244
+  reqs: LINEAR
+  id: '007998'
+- course: ORF 309
+  last: 1244
+  reqs: MULTI
+  id: '007999'
+- course: ORF 311
+  last: 1244
+  reqs: ORF245 & ORF307
+  id: '008000'
+- course: ORF 335
+  last: 1244
+  reqs: ORF309
+  id: '008001'
+- course: ORF 350
+  last: 1244
+  reqs: ORF309 & ORF245 & LINEAR
+  id: '012309'
+- course: ORF 363
+  last: 1244
+  reqs: BSEMATH
+  id: '012833'
+- course: ORF 375
+  last: 1242
+  iw: null
+  id: '008002'
+- course: ORF 376
+  last: 1244
+  iw: null
+  id: '008003'
+- course: ORF 387
+  last: 1244
+  reqs: ORF309
+  id: '015450'
+- course: ORF 401
+  last: 1244
+  reqs: INTROCOS
+  id: '008004'
+- course: ORF 405
+  last: 1242
+  reqs: ORF245 & ORF309
+  id: '008005'
+- course: ORF 407
+  last: 1234
+  reqs: ORF309
+  id: '010721'
+- course: ORF 409
+  last: 1242
+  reqs: ORF245 & ORF309
+  id: '010402'
+- course: ORF 418
+  last: 1242
+  reqs: ORF309
+  id: '010655'
+- course: ORF 435
+  last: 1242
+  reqs: ORF245 | ORF309 | ORF335 | $ECO465
+  id: '008007'
+- course: ORF 445
+  last: 1244
+  reqs: ORF309 & ORF405
+  id: '015797'
+- course: ORF 455
+  last: 1242
+  reqs: ORF309
+  id: '012553'
+- course: ORF 467
+  last: 1242
+  reqs: ORF245
+  id: '008008'
+- course: ORF 473
+  last: 1232
+  reqs: ORF245 & ORF309 & ORF335
+  id: '012024'
+- course: ORF 474
+  last: 1234
+  reqs: ORF309 & ORF405
+  id: '008050'
+- course: ORF 478
+  last: 1244
+  iw: null
+  id: '008009'
+- course: ORF 479
+  last: 1234
+  id: '010065'
+- course: ORF 497
+  last: 1244
+  iw: null
+  id: '010065'
+- course: ORF 498
+  last: 1242
+  iw: null
+  id: '017004'
+- course: ORF 499
+  last: 1244
+  iw: null
+  reqs: ORF498
+  id: '017186'

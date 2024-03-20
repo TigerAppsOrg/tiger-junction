@@ -1,0 +1,30 @@
+---
+code: MSE
+name: Materials Science and Engineering
+category: Engineering
+updated: 3/13/2024
+---
+- course: MSE 200
+  last: 1244
+  id: '017087'
+- course: MSE 201
+  last: 1224
+  id: '015440'
+- course: MSE 301
+  last: 1244
+  id: '001191'
+- course: MSE 302
+  last: 1242
+  reqs: MSE301 | MAE324 | CEE364
+  id: '001192'
+- course: MSE 304
+  last: 1232
+  reqs: CALCULUS & PHYS & CHEM1
+  id: '015197'
+- course: MSE 305
+  last: 1214
+  reqs: PHYS & CHEM1
+  id: '015014'
+- course: MSE 309
+  last: 1224
+  id: '015495'

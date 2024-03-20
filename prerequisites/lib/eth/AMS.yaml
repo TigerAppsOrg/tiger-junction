@@ -1,0 +1,81 @@
+---
+code: AMS
+name: American Studies
+category: Ethnic and Cultural Studies
+updated: 3/13/2024
+---
+- course: AMS 101
+  last: 1242
+  id: '012189'
+- course: AMS 240
+  last: 1214
+  id: '015995'
+- course: AMS 304
+  last: 1234
+  id: '016588'
+- course: AMS 305
+  last: 1244
+  id: '015700'
+- course: AMS 306
+  last: 1244
+  travel: null
+  id: '013716'
+- course: AMS 312
+  last: 1224
+  id: '016328'
+- course: AMS 316
+  last: 1244
+  id: '017073'
+- course: AMS 317
+  last: 1234
+  travel: null
+  id: '015617'
+- course: AMS 322
+  last: 1232
+  id: '016060'
+- course: AMS 334
+  last: 1244
+  id: '015908'
+- course: AMS 343
+  last: 1212
+  id: '015618'
+- course: AMS 351
+  last: 1242
+  travel: null
+  id: '016229'
+- course: AMS 354
+  last: 1232
+  id: '015233'
+- course: AMS 365
+  last: 1224
+  id: '011861'
+- course: AMS 398
+  last: 1234
+  id: '015155'
+- course: AMS 399
+  last: 1222
+  id: '012497'
+- course: AMS 403
+  last: 1244
+  equiv:
+    - AMS 354
+  id: '014668'
+- course: AMS 404
+  last: 1244
+  id: '014665'
+- course: AMS 406
+  last: 1242
+  id: '015156'
+- course: AMS 415
+  last: 1234
+  id: '015913'
+- course: AMS 419
+  last: 1224
+  id: '015030'
+- course: AMS 425
+  last: 1244
+  id: '017094'
+- course: AMS 442
+  last: 1234
+  travel: null
+  id: '016610'

@@ -1,0 +1,259 @@
+---
+code: ANT
+name: Anthropology
+category: Social Sciences
+updated: 3/13/2024
+---
+- course: ANT 201
+  last: 1242
+  id: '000146'
+- course: ANT 203
+  last: 1234
+  id: '013239'
+- course: ANT 206
+  last: 1244
+  id: '012600'
+- course: ANT 206A
+  last: 1214
+  id: '012600'
+- course: ANT 211
+  last: 1242
+  id: '016525'
+- course: ANT 214
+  last: 1234
+  id: '016749'
+- course: ANT 217
+  last: 1244
+  id: '015874'
+- course: ANT 219
+  last: 1242
+  id: '014666'
+- course: ANT 223
+  last: 1234
+  id: '014873'
+- course: ANT 225
+  last: 1224
+  id: '014224'
+- course: ANT 227
+  last: 1224
+  id: '015165'
+- course: ANT 228
+  last: 1244
+  travel: null
+  id: '017238'
+- course: ANT 231
+  last: 1212
+  id: '015296'
+- course: ANT 232
+  last: 1242
+  id: '016964'
+- course: ANT 233
+  last: 1244
+  id: '017095'
+- course: ANT 238
+  last: 1244
+  id: '016736'
+- course: ANT 240
+  last: 1244
+  id: '000180'
+- course: ANT 244
+  last: 1232
+  id: '016062'
+- course: ANT 245
+  last: 1234
+  id: '016591'
+- course: ANT 246
+  last: 1244
+  id: '015157'
+- course: ANT 256
+  last: 1244
+  id: '017061'
+- course: ANT 263
+  last: 1242
+  id: '016839'
+- course: ANT 264
+  last: 1242
+  id: '016223'
+- course: ANT 272
+  last: 1214
+  id: '015374'
+- course: ANT 300
+  last: 1242
+  id: '012473'
+- course: ANT 301
+  last: 1244
+  notes: ANT 300 is strongly recommended.
+  reqs: ANT***
+  id: '000157'
+- course: ANT 302
+  last: 1242
+  id: '016477'
+- course: ANT 304
+  last: 1222
+  id: '000160'
+- course: ANT 305
+  last: 1232
+  id: '011188'
+- course: ANT 306
+  last: 1232
+  id: '000162'
+- course: ANT 308
+  last: 1234
+  id: '016644'
+- course: ANT 311
+  last: 1234
+  id: '016312'
+- course: ANT 314
+  last: 1242
+  id: '010770'
+- course: ANT 316
+  last: 1234
+  id: '016598'
+- course: ANT 318
+  last: 1244
+  id: '017071'
+- course: ANT 319
+  last: 1214
+  id: '014429'
+- course: ANT 320
+  last: 1244
+  reqs: ANT***
+  id: '017060'
+- course: ANT 321
+  last: 1242
+  equiv:
+    - ANT 305
+  id: '016854'
+- course: ANT 322
+  last: 1224
+  id: '016313'
+- course: ANT 325
+  last: 1244
+  id: '017062'
+- course: ANT 326
+  last: 1222
+  id: '014200'
+- course: ANT 328
+  last: 1222
+  travel: null
+  id: '016083'
+- course: ANT 331
+  last: 1224
+  reqs: ANT***
+  id: '015158'
+- course: ANT 332
+  last: 1214
+  id: '015894'
+- course: ANT 337
+  last: 1242
+  id: '015677'
+- course: ANT 339
+  last: 1242
+  id: '016521'
+- course: ANT 342
+  last: 1244
+  id: '000185'
+- course: ANT 344
+  last: 1244
+  id: '016750'
+- course: ANT 345
+  last: 1232
+  id: '013720'
+- course: ANT 347
+  last: 1242
+  id: '010826'
+- course: ANT 352
+  last: 1244
+  id: '016737'
+- course: ANT 354
+  last: 1244
+  id: '017074'
+- course: ANT 357
+  last: 1244
+  id: '016593'
+- course: ANT 360
+  last: 1244
+  id: '010234'
+- course: ANT 363
+  last: 1244
+  id: '014819'
+- course: ANT 364
+  last: 1224
+  id: '016314'
+- course: ANT 368
+  last: 1232
+  id: '012258'
+- course: ANT 369
+  last: 1214
+  id: '015678'
+- course: ANT 387
+  last: 1222
+  id: '016063'
+- course: ANT 390
+  last: 1242
+  reqs: ANT***
+  id: '000199'
+- course: ANT 403
+  last: 1234
+  id: '009139'
+- course: ANT 405
+  last: 1214
+  id: '000205'
+- course: ANT 408
+  last: 1224
+  id: '016224'
+- course: ANT 417
+  last: 1234
+  id: '013733'
+- course: ANT 419
+  last: 1212
+  id: '015619'
+- course: ANT 426
+  last: 1222
+  id: '016064'
+- course: ANT 428
+  last: 1232
+  id: '015875'
+- course: ANT 430
+  last: 1244
+  id: '017187'
+- course: ANT 432
+  last: 1214
+  id: '010728'
+- course: ANT 434
+  last: 1224
+  id: '014889'
+- course: ANT 436
+  last: 1234
+  id: '016645'
+- course: ANT 437
+  last: 1242
+  id: '016840'
+- course: ANT 440
+  last: 1232
+  id: '016315'
+- course: ANT 443
+  last: 1242
+  id: '016856'
+- course: ANT 446
+  last: 1244
+  id: '014917'
+- course: ANT 452
+  last: 1212
+  id: '015620'
+- course: ANT 453
+  last: 1222
+  id: '013469'
+- course: ANT 454
+  last: 1214
+  id: '014430'
+- course: ANT 455
+  last: 1222
+  reqs: ANT***
+  id: '014667'
+- course: ANT 456
+  last: 1244
+  id: '016438'
+- course: ANT 461
+  last: 1242
+  id: '014890'

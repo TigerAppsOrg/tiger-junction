@@ -1,0 +1,128 @@
+---
+code: SLA
+name: Slavic Languages and Literatures
+category: Ethnic and Cultural Studies
+updated: 3/13/2024
+---
+- course: SLA 203
+  last: 1224
+  id: '016284'
+- course: SLA 210
+  last: 1224
+  id: '016285'
+- course: SLA 213
+  last: 1242
+  id: '016888'
+- course: SLA 214
+  last: 1244
+  id: '017149'
+- course: SLA 219
+  last: 1242
+  id: '006290'
+- course: SLA 220
+  last: 1244
+  id: '006291'
+- course: SLA 221
+  last: 1244
+  id: '006292'
+- course: SLA 300
+  last: 1244
+  id: '013330'
+- course: SLA 303
+  last: 1222
+  id: '015671'
+- course: SLA 304
+  last: 1234
+  reqs: RUS108
+  id: '016748'
+- course: SLA 305
+  last: 1242
+  reqs: RUS207
+  id: '016889'
+- course: SLA 306
+  last: 1224
+  id: '016294'
+- course: SLA 307
+  last: 1212
+  id: '015651'
+- course: SLA 309
+  last: 1212
+  id: '015646'
+- course: SLA 313
+  last: 1232
+  id: '016467'
+- course: SLA 314
+  last: 1234
+  id: '016701'
+- course: SLA 315
+  last: 1234
+  reqs: RUS208
+  id: '015891'
+- course: SLA 319
+  last: 1232
+  id: '016483'
+- course: SLA 322
+  last: 1234
+  id: '016702'
+- course: SLA 324
+  last: 1234
+  id: '016703'
+- course: SLA 326
+  last: 1234
+  id: '016704'
+- course: SLA 330
+  last: 1224
+  id: '016297'
+- course: SLA 332
+  last: 1244
+  reqs: RUS108 | RUS207
+  id: '017150'
+- course: SLA 337
+  last: 1232
+  id: '016482'
+- course: SLA 338
+  last: 1244
+  id: '010763'
+- course: SLA 345
+  last: 1244
+  id: '011145'
+- course: SLA 350
+  last: 1224
+  id: '015022'
+- course: SLA 368
+  last: 1222
+  id: '013977'
+- course: SLA 369
+  last: 1214
+  id: '015491'
+- course: SLA 401
+  last: 1242
+  iw: null
+  id: '015672'
+- course: SLA 409
+  last: 1212
+  reqs: RUS105
+  id: '012317'
+- course: SLA 411
+  last: 1234
+  reqs: RUS107 | RUS107R | RUS108
+  id: '006301'
+- course: SLA 412
+  last: 1214
+  id: '006302'
+- course: SLA 415
+  last: 1244
+  id: '008127'
+- course: SLA 416
+  last: 1232
+  id: '006306'
+- course: SLA 417
+  last: 1232
+  id: '006307'
+- course: SLA 420
+  last: 1214
+  id: '012320'
+- course: SLA 422
+  last: 1234
+  reqs: RUS207
+  id: '015461'

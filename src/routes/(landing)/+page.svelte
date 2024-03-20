@@ -33,10 +33,10 @@ const handleLogin = async () => {
 
 <nav class="flex justify-between items-center text-lg h-20 std-padding">
     <div id="left">
-        <a href="/" class="flex items-center">
-            <img src="tjlogolarge.png" alt="Tiger Junction logo"
-            class="w-16 h-16">
-            <span class="text-std-darkOrange">TigerJunction</span>
+        <a href="/" class="flex items-center gap-1">
+            <img src="tjlogonew.png" alt="Tiger Junction logo"
+            class="w-14 h-14">
+            <span class="text-std-darkOrange text2xl">TigerJunction</span>
         </a>
     </div>
     <div id="right" class="space-x-6">
@@ -59,11 +59,8 @@ const handleLogin = async () => {
             <span class="text-std-darkPurple">PLANNING</span>
         </h1>
         <p class="mb-6 font-light text-lg">
-            Your All-in-One Solution for Effortless Course 
-            Planning at Princeton University. Experience a 
-            seamless blend of modern design and integrated features, 
-            simplifying your academic journey. Explore, plan, and 
-            succeed.
+            Princeton's Premier Course Planner: Streamline your planning, 
+            explore with ease, and excel effortlessly.
         </p>
         <button on:click={handleLogin}
         class="btn btn-green text-lg space-y-0">

@@ -1,0 +1,249 @@
+---
+code: FRE
+name: French
+category: World Languages
+updated: 3/13/2024
+vars:
+  - name: ADVFRE
+    equ: FRE1027 | FRE107 | FRE108
+  - name: TWOFRE
+    equ: FRE207 | FRE208
+---
+- course: FRE 101
+  last: 1244
+  id: '002845'
+- course: FRE 102
+  last: 1244
+  reqs: FRE101
+  id: '002846'
+- course: FRE 1027
+  last: 1244
+  equiv:
+    - FRE 107
+    - FRE 108
+  reqs: FRE101
+  id: '002848'
+- course: FRE 103
+  last: 1242
+  equiv:
+    - FRE 105
+  id: '002849'
+- course: FRE 103
+  last: 1244
+  equiv:
+    - FRE 105
+  id: '002849'
+- course: FRE 105
+  last: 1242
+  equiv:
+    - FRE 103
+  id: '002851'
+- course: FRE 107
+  last: 1244
+  equiv:
+    - FRE 1027
+    - FRE 108
+  reqs: FRE102 | FRE103
+  id: '002853'
+- course: FRE 108
+  last: 1244
+  equiv:
+    - FRE 1027
+    - FRE 107
+  reqs: FRE105
+  id: '002854'
+- course: FRE 207
+  last: 1244
+  equiv:
+    - FRE 207F
+  reqs: ADVFRE
+  id: '002859'
+- course: FRE 208
+  last: 1244
+  reqs: ADVFRE
+  id: '015412'
+- course: FRE 211
+  last: 1242
+  reqs: ADVFRE
+  id: '010093'
+- course: FRE 215
+  last: 1242
+  reqs: TWOFRE
+  id: '002861'
+- course: FRE 217
+  last: 1242
+  travel: null
+  reqs: TWOFRE
+  id: '010824'
+- course: FRE 221
+  last: 1242
+  reqs: ADVFRE
+  id: '008595'
+- course: FRE 222
+  last: 1244
+  reqs: TWOFRE
+  id: '008596'
+- course: FRE 224
+  last: 1242
+  reqs: ADVFRE
+  id: '002864'
+- course: FRE 227
+  last: 1244
+  reqs: TWOFRE
+  id: '017191'
+- course: FRE 228
+  last: 1234
+  reqs: TWOFRE | FRE108 | FRE211
+  id: '015880'
+- course: FRE 230
+  last: 1232
+  reqs: ADVFRE
+  id: '015654'
+- course: FRE 240
+  last: 1244
+  reqs: ADVFRE
+  id: '017124'
+- course: FRE 245
+  last: 1224
+  id: '013920'
+- course: FRE 250
+  last: 1232
+  reqs: ADVFRE
+  id: '015961'
+- course: FRE 260
+  last: 1244
+  reqs: ADVFRE
+  id: '017125'
+- course: FRE 307
+  last: 1244
+  reqs: FRE2**
+  id: '002868'
+- course: FRE 310
+  last: 1224
+  id: '016266'
+- course: FRE 311
+  last: 1234
+  reqs: FRE2**
+  id: '011303'
+- course: FRE 319
+  last: 1244
+  reqs: FRE2**
+  id: '013544'
+- course: FRE 328
+  last: 1232
+  id: '016520'
+- course: FRE 334
+  last: 1212
+  id: '015682'
+- course: FRE 335
+  last: 1212
+  reqs: FRE2**
+  id: '015652'
+- course: FRE 337
+  last: 1214
+  id: '015905'
+- course: FRE 338
+  last: 1234
+  id: '012817'
+- course: FRE 339
+  last: 1234
+  reqs: TWOFRE
+  id: '012293'
+- course: FRE 348
+  last: 1232
+  id: '015881'
+- course: FRE 350
+  last: 1222
+  travel: null
+  reqs: TWOFRE
+  id: '016079'
+- course: FRE 351
+  last: 1222
+  reqs: FRE2**
+  id: '002889'
+- course: FRE 352
+  last: 1224
+  reqs: TWOFRE
+  id: '002890'
+- course: FRE 354
+  last: 1244
+  reqs: FRE2**
+  id: '016673'
+- course: FRE 355
+  last: 1232
+  reqs: FRE2**
+  id: '016453'
+- course: FRE 358
+  last: 1244
+  id: '013028'
+- course: FRE 362
+  last: 1224
+  reqs: TWOFRE
+  id: '002894'
+- course: FRE 367
+  last: 1234
+  reqs: FRE2**
+  id: '002898'
+- course: FRE 372
+  last: 1242
+  reqs: TWOFRE
+  id: '015868'
+- course: FRE 376
+  last: 1244
+  reqs: FRE2**
+  id: '013704'
+- course: FRE 382
+  last: 1244
+  reqs: FRE2**
+  id: '017126'
+- course: FRE 384
+  last: 1214
+  reqs: FRE207 | FRE221 | FRE222 | FRE224
+  id: '015966'
+- course: FRE 385
+  last: 1242
+  reqs: FRE2**
+  id: '014475'
+- course: FRE 389
+  last: 1212
+  reqs: FRE2**
+  id: '014212'
+- course: FRE 390
+  last: 1242
+  reqs: FRE2**
+  id: '016080'
+- course: FRE 392
+  last: 1244
+  travel: null
+  reqs: FRE2**
+  id: '017129'
+- course: FRE 398
+  last: 1242
+  id: '012819'
+- course: FRE 401
+  last: 1244
+  reqs: FRE 2**
+  id: '002906'
+- course: FRE 403
+  last: 1214
+  reqs: FRE2**
+  id: '014232'
+- course: FRE 407
+  last: 1242
+  reqs: FRE3**
+  id: '002908'
+- course: FRE 417
+  last: 1222
+  reqs: FRE2**
+  id: '016081'
+- course: FRE 420
+  last: 1242
+  reqs: FRE2** | FRE3**
+  id: '016875'
+- course: FRE 435
+  last: 1214
+  reqs: <FRE207
+  id: '015869'
+- course: FRE 480
+  last: 1234
+  id: '016674'

@@ -23,7 +23,8 @@ const resolveFeedback = async (feedback: { id: number; }) => {
     <title>TigerJunction Admin Dashboard</title>
 </svelte:head>
 
-<main class="h-screen flex flex-col bg-zinc-100 dark:bg-synth-medium">
+<main class="min-h-screen flex flex-col bg-zinc-100 dark:bg-synth-medium
+    h-fit">
     <AdminHeader supabase={data.supabase} />
 
     <div class="w-screen px-12 pb-4">
@@ -83,11 +84,11 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     </button>
                 </div>
             </form>
-            <button class="btn btn-green" on:click={() => {
+            <!-- <button class="btn btn-green" on:click={() => {
                 fetch("/api/server/refresh/ical")
             }}>
                 API Test
-            </button>
+            </button> -->
         </div>
 
         <div class="area area-std">
