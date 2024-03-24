@@ -44,6 +44,7 @@
                 love to hear your feedback on TigerJunction ReCal+.
                 Anything at all is appreciated -- be it feature suggestions, problems you face, 
                 or just your overall impressions.
+                It only takes a moment to fill out, but it provides us with monumental help.
                 Thank you for being an essential part of this project! 🐯🧡
             </p>
             <p class="mb-2 italic">
