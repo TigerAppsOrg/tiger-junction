@@ -3,6 +3,7 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     
     export let showModal: boolean = false;
     export let supabase: SupabaseClient;
@@ -39,14 +40,17 @@
         <div>
             <p class="mb-2">
                 With the original
-                <strong>ReCal retiring at the end of the semester</strong>, I would
+                <strong>ReCal retiring at the end of the semester</strong>, we would
                 love to hear your feedback on TigerJunction ReCal+.
                 Anything at all is appreciated -- be it feature suggestions, problems you face, 
                 or just your overall impressions.
-                Thank you for being an essential part of this project! - Joshua Lau 🐯🧡
+                Thank you for being an essential part of this project! 🐯🧡
             </p>
             <p class="mb-2 italic">
                 All feedback is anonymous. If you would like a response, please write your email in the message.
+                If you would like monthly updates, please join our emailing list <a href={EMAIL_LIST_FORM_LINK}
+                target="_blank"
+                class="underline hover:opacity-80">here</a>!
             </p>
             {#if isError}
                 <p class="text-red-500">Feedback cannot be empty!</p>
