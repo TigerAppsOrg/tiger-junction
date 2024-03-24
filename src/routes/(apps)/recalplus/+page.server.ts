@@ -6,8 +6,6 @@ import type { SectionData } from "$lib/stores/rsections";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { getSession, supabase } }) => {
-    let starTime = Date.now();
-
     const redisClient = createClient({
         password: REDIS_PASSWORD,
         socket: {
@@ -73,8 +71,6 @@ export const load = async ({ locals: { getSession, supabase } }) => {
     for (let i = 0; i < assocResults.length; i++) {
         associations[userSchedules[i].id] = assocResults[i].data;
     }
-
-    console.log("Load time:", Date.now() - starTime);
     
     return {
         status: 200,

@@ -38,12 +38,12 @@
     <div slot="main">
         <div>
             <p class="mb-2">
-                With
-                <strong>ReCal retiring at the end of the semester</strong>, we would
+                With the original
+                <strong>ReCal retiring at the end of the semester</strong>, I would
                 love to hear your feedback on TigerJunction ReCal+.
                 Anything at all is appreciated -- be it feature suggestions, problems you face, 
                 or just your overall impressions.
-                Thank you for being an essential part of this project! 🐯🧡
+                Thank you for being an essential part of this project! - Joshua Lau 🐯🧡
             </p>
             <p class="mb-2 italic">
                 All feedback is anonymous. If you would like a response, please write your email in the message.

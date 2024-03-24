@@ -17,8 +17,6 @@ import Feedback from "./Feedback.svelte";
 import FeedbackPop from "../feedbackpopup/FeedbackPop.svelte";
 
 export let supabase: SupabaseClient;
-
-$modalStore = "feedbackpop"; // TODO remove this line
 </script>
 
 {#if $modalStore === "adv"}
