@@ -74,5 +74,5 @@ $modalStore = "feedbackpop"; // TODO remove this line
 {/if}
 
 {#if $modalStore === "feedbackpop"}
-<FeedbackPop showModal={$modalStore === "feedbackpop"} />
+<FeedbackPop showModal={$modalStore === "feedbackpop"} {supabase} />
 {/if}

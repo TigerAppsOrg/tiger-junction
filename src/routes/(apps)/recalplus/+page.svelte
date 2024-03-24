@@ -20,9 +20,12 @@ export let data: {
         sections: SectionData[];
         schedules: any[];
         associations: any[];
+        doneFeedback: boolean;
     }
 };
 
+
+console.log(data.body.doneFeedback)
 onMount(async () => {
     if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
         rawCourseData.update(x => {
