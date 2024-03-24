@@ -3,7 +3,6 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
-    import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     
     export let showModal: boolean = false;
     export let supabase: SupabaseClient;
@@ -60,7 +59,7 @@
     </div>
     <div class="flex gap-2 w-full items-center" slot="buttons">
         <button class="w-1/3 min-w-24" on:click={declineFeedback} style={declineStyle}>
-            Decline
+            Decline :(
         </button>
         <button class="flex-1" on:click={submitFeedback} style={submitStyle}>
             Submit
