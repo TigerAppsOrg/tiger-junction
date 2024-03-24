@@ -49,9 +49,6 @@
             </p>
             <p class="mb-2 italic">
                 All feedback is anonymous. If you would like a response, please write your email in the message.
-                If you would like monthly updates, please join our emailing list <a href={EMAIL_LIST_FORM_LINK}
-                target="_blank"
-                class="underline hover:opacity-80">here</a>!
             </p>
             {#if isError}
                 <p class="text-red-500">Feedback cannot be empty!</p>
