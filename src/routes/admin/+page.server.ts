@@ -13,6 +13,13 @@ export const load = async ({ locals }) => {
         .select("*", { count: "estimated", head: true });
     if (users.error) throw new Error(users.error.message);
 
+    const seenCount = await locals.supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("doneFeedback", true); 
+
+    if (seenCount.error) throw new Error(seenCount.error.message);
+    
     const feedback = await locals.supabase
         .from("feedback")
         .select("id, feedback", { count: "exact", head: false })
@@ -21,6 +28,7 @@ export const load = async ({ locals }) => {
 
     return {
         users: users.count,
+        seenCount: seenCount.count,
         feedbackCount: feedback.count,
         feedback: feedback.data
     }

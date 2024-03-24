@@ -119,6 +119,10 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     <span class="font-bold">{data.users}</span>
                 </div>
                 <div class="flex justify-between text-sm">
+                    <span>Seen Popup</span>
+                    <span class="font-bold">{data.seenCount}</span>
+                </div>
+                <div class="flex justify-between text-sm">
                     <span>Unresolved Feedback</span>
                     <span class="font-bold">{data.feedbackCount}</span>
                 </div>
