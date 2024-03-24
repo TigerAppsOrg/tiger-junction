@@ -14,9 +14,9 @@ import RecalUtils from "../recal/modals/RecalUtils.svelte";
 import RecalStats from "../recal/modals/RecalStats.svelte";
 import SiteTimer from "../recal/modals/SiteTimer.svelte";
 import Feedback from "./Feedback.svelte";
+import FeedbackPop from "../feedbackpopup/FeedbackPop.svelte";
 
 export let supabase: SupabaseClient;
-
 </script>
 
 {#if $modalStore === "adv"}
@@ -69,4 +69,8 @@ export let supabase: SupabaseClient;
 
 {#if $modalStore === "feedback"}
 <Feedback showModal={$modalStore === "feedback"} {supabase} />
+{/if}
+
+{#if $modalStore === "feedbackpop"}
+<FeedbackPop showModal={$modalStore === "feedbackpop"} {supabase} />
 {/if}
