@@ -36,11 +36,9 @@ export const load = async ({ locals: { getSession, supabase } }) => {
         const cleaningPromises = [];
         cleaningPromises.push(redisClient.disconnect());
         cleaningPromises.push(supabase.from("profiles").update({ doneFeedback: true }).eq("id", userId));
-        cleaningPromises.push(supabase.from("schedules").insert([{ user_id: userId, CURRENT_TERM_ID, title: "My Schedule" }]).select().single());
+        cleaningPromises.push(supabase.from("schedules").insert([{ user_id: userId, term: CURRENT_TERM_ID, title: "My Schedule" }]).select().single());
         const [_, __, newScheduleRaw] = await Promise.all(cleaningPromises);
         const newSchedule = newScheduleRaw.data;
-
-        console.log("Load time:", Date.now() - starTime);
 
         return {
             status: 200,
