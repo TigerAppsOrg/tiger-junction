@@ -5,6 +5,10 @@ import type { RawSectionData } from "./stores/rsections";
 
 // Add the new term at the top of the list
 export const TERM_MAP: Record<number, Record<string, string>> = {
+    1252: {
+        "name": "Fall 2024",
+        "mobile_name": "F24"
+    },
     1244: {
         "name": "Spring 2024",
         "mobile_name": "S24"
@@ -57,6 +61,7 @@ export const TERM_MAP: Record<number, Record<string, string>> = {
 
 // Add the new term at the top of the list
 export const EVALS_TERM_MAP: Record<number, string> = {
+    1252: "2024-2025 Fall Course Evaluation Results",
     1244: "2023-2024 Spring Course Evaluation Results",
     1242: "2023-2024 Fall Course Evaluation Results",
     1234: "2022-2023 Spring Course Evaluation Results",
@@ -77,6 +82,13 @@ export const EVALS_TERM_MAP: Record<number, string> = {
 // Ignore exclusions for now, they're not used, set to []
 // Delete the old term at the bottom of the list
 export const CALENDAR_INFO: Record<string, Calendar_Info> = {
+    "1252": {
+        "name": "Fall 2024",
+        "start":[2024, 9, 3],
+        "start_day": 2,
+        "end": [2024, 12, 5],
+        "exclusions": [],
+    },
     "1244": {
         "name": "Spring 2024",
         "start":[2024, 1, 29],
@@ -91,25 +103,18 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         "end": [2023, 12, 8],
         "exclusions": [[2023, 10, 16, 6], [2023, 11, 22, 4]]
     },
-    "1234": {
-        "name": "Spring 2023",
-        "start": [2023, 2, 7], 
-        "start_day": 1,
-        "end": [2023, 5, 10], 
-        "exclusions": [],
-    },
 } as const;
 
 // Add the new term and delete the oldest term (be careful!)
-export type ActiveTerms = 1234 | 1242 | 1244;
+export type ActiveTerms = 1252 | 1242 | 1244;
 
 // Add the new term at the top of the list
 // Set the most recent term to true, and the rest to false
 // Delete the oldest term (at the bottom)
 export const sectionDone = writable({
-    1244: true,
+    1244: false,
     1242: false,
-    1234: false,
+    1252: true,
 });
 
 //----------------------------------------------------------------------
