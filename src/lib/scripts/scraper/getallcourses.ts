@@ -5,7 +5,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getToken } from "./getToken";
 import { timeToValue } from "../convert";
 import { createClient } from "redis";
-import { TERM_MAP } from "$lib/changeme";
 
 type RegCourse = {
     listing_id: string,
@@ -24,35 +23,26 @@ refreshGrading: boolean = false) => {
     console.log("Populating courses for term", term);
 
     // Fetch all course ids and open status for the given term
-    // const token = await getToken();
-    // const rawCourselist = await fetch(`${TERM_URL}${term}`, {
-    //     method: "GET",
-    //     headers: {
-    //         "Authorization": token
-    //     }
-    // });
+    const token = await getToken();
+    const rawCourselist = await fetch(`${TERM_URL}${term}`, {
+        method: "GET",
+        headers: {
+            "Authorization": token
+        }
+    });
 
-    // const jsonCourselist = await rawCourselist.json();
-    // const courselist: RegCourse[] = jsonCourselist.classes.class.map((x: any) => {
-    //     return {
-    //         listing_id: x.course_id,
-    //         code: x.crosslistings.replace(/\s/g, ""),
-    //         dists: x.distribution_area ?
-    //             x.distribution_area.split(" or ").sort() :
-    //             null,
-    //     }
-    // });
+    const jsonCourselist = await rawCourselist.json();
+    const courselist: RegCourse[] = jsonCourselist.classes.class.map((x: any) => {
+        return {
+            listing_id: x.course_id,
+            code: x.crosslistings.replace(/\s/g, ""),
+            dists: x.distribution_area ?
+                x.distribution_area.split(" or ").sort() :
+                null,
+        }
+    });
 
     const startTime = Date.now();
-    
-    let { data: currentListings, error: listFetchError } = await supabase
-        .from("listings")
-        .select("id, title, aka, ult_term, pen_term")
-
-    if (listFetchError) {
-        console.error(listFetchError);
-        return "Error fetching listings";
-    }
 
     /**
      * Fetch course data for courses in the given subject (department)
@@ -93,35 +83,14 @@ refreshGrading: boolean = false) => {
          * Fetch course data for a given course
          * @param courseSubjectDetails
          */
-        const handleCourse = async (courseSubjectDetails: any, waitTime: number, dept: string) => {
+        const handleCourse = async (courseSubjectDetails: any, waitTime: number) => {
             await new Promise(resolve => setTimeout(resolve, waitTime));
 
-            // const courseIdCodeDist = courselist.find(x => 
-            //     x.listing_id === courseSubjectDetails.course_id);
-            // if (!courseIdCodeDist) {
-            //     console.log("Course not found for term", term, ":", courseSubjectDetails.course_id);
-            //     return;
-            // }
-            
-            // TODO: TEMP!
-            let codeString = ""
-            if (courseSubjectDetails.crosslistings.length > 0) {
-                codeString = courseSubjectDetails.crosslistings.map((x: any) => {
-                    return x.subject + x.catalog_number;
-                }).join("/");
-            } else {
-                codeString = dept + courseSubjectDetails.catalog_number;
-            }
-
-            if(codeString === "") {
-                console.log("No code for", courseSubjectDetails)
-            }
-            console.log(codeString)
-
-            const courseIdCodeDist = {
-                listing_id: courseSubjectDetails.course_id,
-                code: codeString,
-                dists: null,
+            const courseIdCodeDist = courselist.find(x => 
+                x.listing_id === courseSubjectDetails.course_id);
+            if (!courseIdCodeDist) {
+                console.log("Course not found for term", term, ":", courseSubjectDetails.course_id);
+                return;
             }
 
             // Calculate course status
@@ -170,112 +139,6 @@ refreshGrading: boolean = false) => {
                     }) : 
                     null,
             }
-
-            // console.log(course)
-
-            //---- LISTING HANDLING TODO REMOVE !!
-
-            let listingInsert = {
-                id: courseIdCodeDist.listing_id,
-                code: courseIdCodeDist.code.split("/")[0].slice(0, 3) + " " + courseIdCodeDist.code.split("/")[0].slice(3),
-                title: courseSubjectDetails.title,
-                aka: null,
-                ult_term: term,
-                pen_term: null,
-            }
-            
-            async function addNewListing(listingInsert: any) {
-                // Insert listing if it doesn't exist
-                if (!currentListings || currentListings.length === 0) {
-                    let { error } = await supabase
-                        .from("listings")
-                        .insert(listingInsert);
-        
-                    if (error) console.log("Error 179");
-                    
-                // Update or continue if it does exist
-                } else {
-                    // let current = currentListings[0];
-                    let index = currentListings.findIndex(x => x.id === listingInsert.id);
-        
-                    if (index === -1) {
-                        let { error } = await supabase
-                            .from("listings")
-                            .insert(listingInsert);
-        
-                        if (error) console.log("Error 1901");
-                        return;
-                    }
-        
-                    listingInsert.aka = currentListings[index].aka;
-        
-                    const termCodes = Object.keys(TERM_MAP);
-                    const newIndex = termCodes.indexOf(String(term));
-                    const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
-                    const penIndex = termCodes.indexOf(currentListings[index].pen_term);
-                    let newTitle: string = listingInsert.title;
-
-                
-                    // Helper function to add a new aka to a listing
-                    const addNewAka = (aka: string[] | null, title: string) => {
-                        if (aka === null) return [title];
-                        if (aka.includes(title)) return aka;
-
-                        aka.push(title);
-                        return aka.sort();
-                    }
-        
-                    const checkAka = () => {
-                        if (currentListings && newTitle !== currentListings[index].title) 
-                            listingInsert.aka = addNewAka(
-                                    listingInsert.aka, 
-                                    newTitle);
-                    }
-        
-                    // Term is the same as current ultimate term
-                    if (newIndex === ultIndex) {
-                        return;
-        
-                    // Term is more recent than current ultimate term
-                    } else if (newIndex < ultIndex) {
-                        checkAka();
-                        listingInsert.pen_term = currentListings[index].ult_term;
-        
-                    // Term is older than current ultimate term
-                    } else {
-                        listingInsert.title = currentListings[index].title;
-        
-                        // Penultimate term is null 
-                        // or is more recent than current penultimate term
-                        if (penIndex === -1 || newIndex < penIndex) {
-                            checkAka();
-                            listingInsert.ult_term = currentListings[index].ult_term;
-                            listingInsert.pen_term = term;
-        
-                        // Term is the same as current penultimate term
-                        } else if (newIndex === penIndex) {
-                            return;
-        
-                        // Term is older than current penultimate term
-                        } else {
-                            checkAka();
-                            listingInsert.ult_term = currentListings[index].ult_term;
-                            listingInsert.pen_term = currentListings[index].pen_term;   
-                        }
-                    }
-        
-                    let { error } = await supabase
-                        .from("listings")
-                        .update(listingInsert)
-                        .eq("id", listingInsert.id);
-        
-                        if (error) console.log("error 258")
-                }
-            }
-
-            await addNewListing(listingInsert);
-
-            //---- END LISTING HANDLING !!
             
             if (refreshGrading) {
                 // Fetch individual course details
@@ -287,7 +150,7 @@ refreshGrading: boolean = false) => {
                         `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${courseSubjectDetails.course_id}&fmt=json`, {
                             method: "GET",
                             headers: {
-                                "Authorization": API_ACCESS_TOKEN
+                                "Authorization": token
                             }
                         }
                     );
@@ -497,10 +360,10 @@ refreshGrading: boolean = false) => {
             for (let i = 0; i < courseChunks.length; i++) {
                 await Promise.all(Object.keys(courseChunks[i]).map(x => 
                     handleCourse(subjectData.find((y: any) => 
-                        y.course_id === x), courseChunks[i][x], subject)));
+                        y.course_id === x), courseChunks[i][x])));
             }
         } else {
-            await Promise.all(subjectData.map((x: any) => handleCourse(x, 0, subject)));
+            await Promise.all(subjectData.map((x: any) => handleCourse(x, 0)));
         }
 
     } // ? End handleDepartment
