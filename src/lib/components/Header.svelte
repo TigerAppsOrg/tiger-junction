@@ -5,8 +5,9 @@
     import { darkTheme } from "$lib/stores/state";
     import { modalStore } from "$lib/stores/modal";
     import { isMobile } from "$lib/stores/mobile";
+    import { getContext } from "svelte";
 
-    export let supabase: SupabaseClient;
+    let supabase = getContext("supabase") as SupabaseClient;
 
     const handleLogout = async () => {
         await supabase.auth.signOut();

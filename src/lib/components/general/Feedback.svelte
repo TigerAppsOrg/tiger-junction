@@ -4,8 +4,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import StdButton from "../elements/StdButton.svelte";
 import { toastStore } from "$lib/stores/toast";
 import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
+import { getContext } from "svelte";
 
-export let supabase: SupabaseClient;
+let supabase = getContext("supabase") as SupabaseClient;
 export let showModal: boolean = false;
 
 let feedback: string = "";
