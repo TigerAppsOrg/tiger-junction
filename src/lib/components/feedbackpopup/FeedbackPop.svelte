@@ -3,9 +3,10 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { getContext } from "svelte";
     
     export let showModal: boolean = false;
-    export let supabase: SupabaseClient;
+    let supabase = getContext("supabase") as SupabaseClient;
 
     let feedback: string = "";
     let isError: boolean = false;

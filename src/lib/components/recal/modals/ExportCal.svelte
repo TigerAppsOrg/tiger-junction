@@ -11,9 +11,10 @@ import { sectionData } from "$lib/stores/rsections";
 import { toastStore } from "$lib/stores/toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createEvents, type DateArray, type EventAttributes } from "ics";
+import { getContext } from "svelte";
 
 export let showModal: boolean = false;
-export let supabase: SupabaseClient;
+let supabase = getContext("supabase") as SupabaseClient;
 
 let link: string = "";
 
