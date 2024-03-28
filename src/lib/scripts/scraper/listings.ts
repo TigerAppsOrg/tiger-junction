@@ -68,6 +68,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
         }
     }
 
+    console.log(formatted);
+
     // Limit entries 
     // formatted = formatted.slice(0, 30);
 
@@ -84,7 +86,9 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     let updateCount = 0;
     let unchangedCount = 0;
 
+    console.log(formatted.length)
     for (let i = 0; i < formatted.length; i++) {
+        console.log(i);
         // Insert listing if it doesn't exist
         if (!currentListings || currentListings.length === 0) {
             let { error } = await supabase
