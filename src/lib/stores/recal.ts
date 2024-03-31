@@ -315,6 +315,8 @@ export const searchResults = {
 
         if (get(searchResults).length === 0) {
             isResult.set(false);
+        } else {
+            isResult.set(true);
         }
     },
 }
