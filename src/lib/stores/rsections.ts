@@ -10,7 +10,7 @@ export type RawSectionData = {
 }
 
 // course_id -> SectionData[]
-type SectionMap = {
+export type SectionMap = {
     [key: string]: SectionData[]
 }
 
