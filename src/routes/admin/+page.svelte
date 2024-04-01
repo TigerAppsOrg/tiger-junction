@@ -78,6 +78,10 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     class="btn btn-blue">
                        Push Evaluations
                     </button>
+                    <button formaction="?/redisTransfer"
+                    class="btn btn-green">
+                          Redis Transfer
+                    </button>
                     <button formaction="?/rapidPush"
                     class="btn btn-green">
                        Rapid Seat Refresh

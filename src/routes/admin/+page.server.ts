@@ -5,6 +5,7 @@ import { populateRatings } from "$lib/scripts/scraper/ratings";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
 import { TERM_MAP } from "$lib/changeme.js";
+import { redisTransfer } from "$lib/scripts/scraper/redisTransfer";
 
 export const load = async ({ locals }) => {
     // Get #users, #schedules, #course_schedule_associations, #unresolved feedback
@@ -114,6 +115,21 @@ export const actions: Actions = {
         console.log("Finished pushing ratings in " + (new Date().getTime() - currentTime) + "ms");
         return {
             message: "Successfully pushed ratings"
+        };
+    },
+    redisTransfer: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+        await redisTransfer(locals.supabase, termInt);
+        return {
+            message: "Successfully transferred data to Redis"
         };
     },
     rapidPush: async ({ request, locals }) => {
