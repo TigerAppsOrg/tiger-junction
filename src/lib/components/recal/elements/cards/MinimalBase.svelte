@@ -154,7 +154,7 @@ on:blur={handleLeave}
 on:focus={handleHover}
 use:inview={options}
 on:inview_enter={(e) => isInView = e.detail.inView}>   
-    <div id="topcard" class="flex justify-between items-stretch duration-100
+    <div id="topcard" class="flex justify-between items-stretch duration-75
     {$hovStyleRev === course.id ? "tchover" : ""}">
         <button 
         class="text-xs font-light text-left w-[75%] p-1"
@@ -267,6 +267,7 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
 .tchover {
     background-color: var(--hoverColor);
     color: var(--hoverText);
+    opacity: var(--alpha);
 }
 
 #topcard:hover {
