@@ -34,6 +34,9 @@ export const research: Writable<boolean> = writable(false);
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
 
+export const hovStyle: Writable<CourseData | null> = writable(null);
+export const hovStyleRev: Writable<number | null> = writable(null);
+
 // Current schedule id
 export const currentSchedule: Writable<number> = writable();
 
