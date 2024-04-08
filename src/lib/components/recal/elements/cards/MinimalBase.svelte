@@ -4,7 +4,7 @@ import plusIcon from "$lib/img/icons/addicon.svg"
 // import pinIcon from "$lib/img/icons/pinicon.svg"
 import removeIcon from "$lib/img/icons/subtractionicon.svg"
 import { slide } from "svelte/transition";
-import { currentSchedule, hovStyle, hoveredCourse, searchSettings } from "$lib/stores/recal";
+import { currentSchedule, hovStyle, hoveredCourse, searchSettings, hovStyleRev } from "$lib/stores/recal";
 import { currentTerm } from "$lib/changeme";
 import { getLinks } from "$lib/scripts/ReCal+/getLinks";
 import * as cf from "$lib/scripts/ReCal+/cardFunctions";
@@ -154,7 +154,8 @@ on:blur={handleLeave}
 on:focus={handleHover}
 use:inview={options}
 on:inview_enter={(e) => isInView = e.detail.inView}>   
-    <div id="topcard" class="flex justify-between items-stretch duration-100">
+    <div id="topcard" class="flex justify-between items-stretch duration-100
+    {$hovStyleRev === course.id ? "tchover" : ""}">
         <button 
         class="text-xs font-light text-left w-[75%] p-1"
         on:click={() => flipped = !flipped}>
@@ -261,6 +262,11 @@ on:inview_enter={(e) => isInView = e.detail.inView}>
     background-color: var(--color);
     color: var(--text);
     border-left: 4px var(--trans) var(--border);
+}
+
+.tchover {
+    background-color: var(--hoverColor);
+    color: var(--hoverText);
 }
 
 #topcard:hover {

@@ -5,7 +5,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
-import { hovStyle } from "$lib/stores/recal";
+import { hovStyle, hovStyleRev } from "$lib/stores/recal";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -93,6 +93,8 @@ const handleClick = () => {
         }
     });
 }
+
+$: $hovStyleRev, console.log($hovStyleRev);
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
@@ -101,8 +103,14 @@ rounded-sm duration-75
 {hovered || ($hovStyle && $hovStyle.id) === section.course_id ? "hovered" : ""}"
 style={cssVarStyles}
 on:click={handleClick} 
-on:mouseenter={() => hovered = true}
-on:mouseleave={() => hovered = false}>
+on:mouseenter={() => {
+    hovered = true;
+    $hovStyleRev = section.course_id;
+}}
+on:mouseleave={() => {
+    hovered = false
+    $hovStyleRev = null
+}}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
         <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(section.start_time, section.end_time)}
