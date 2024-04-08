@@ -5,6 +5,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
+import { hovStyle } from "$lib/stores/recal";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -31,6 +32,16 @@ let styles = {
     "left": `${params.left}`,
     "height": `${params.height}`,
     "width": `${params.width}`,
+    "hoverColor": "",
+    "hoverText": "",
+}
+
+if (parseInt(styles.bg.split(",")[2].split("%")[0]) > 50) {
+        styles.hoverColor = darkenHSL(styles.bg, 10);
+        styles.hoverText = darkenHSL(styles.text, 70);
+    } else {
+        styles.hoverColor = darkenHSL(styles.bg, -10);
+        styles.hoverText = darkenHSL(styles.text, -70);
 }
 
 $: cssVarStyles = Object.entries(styles)
@@ -86,7 +97,8 @@ const handleClick = () => {
 
 <!-- Height is on scale from 0 to 90 -->
 <button id="box" class="absolute text-left flex p-[1px] cursor-pointer
-rounded-sm" 
+rounded-sm duration-75
+{hovered || ($hovStyle && $hovStyle.id) === section.course_id ? "hovered" : ""}"
 style={cssVarStyles}
 on:click={handleClick} 
 on:mouseenter={() => hovered = true}
@@ -125,5 +137,10 @@ button {
     left: var(--left);
     height: var(--height);
     width: var(--width);
+}
+
+.hovered {
+    background-color: var(--hoverColor);
+    color: var(--hoverText);
 }
 </style>
