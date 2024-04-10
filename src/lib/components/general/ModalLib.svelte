@@ -1,6 +1,5 @@
 <script lang="ts">
 import { modalStore } from "$lib/stores/modal";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import AdvancedSearch from "../recal/modals/AdvancedSearch.svelte";
 import EditCb from "../recal/modals/EditCb.svelte";
 import ManageCb from "../recal/modals/ManageCb.svelte";
@@ -14,8 +13,7 @@ import RecalUtils from "../recal/modals/RecalUtils.svelte";
 import RecalStats from "../recal/modals/RecalStats.svelte";
 import SiteTimer from "../recal/modals/SiteTimer.svelte";
 import Feedback from "./Feedback.svelte";
-
-export let supabase: SupabaseClient;
+import FeedbackPop from "../feedbackpopup/FeedbackPop.svelte";
 
 </script>
 
@@ -36,15 +34,15 @@ export let supabase: SupabaseClient;
 {/if}
 
 {#if $modalStore === "exportCal"}
-<ExportCal showModal={$modalStore === "exportCal"} {supabase} />
+<ExportCal showModal={$modalStore === "exportCal"} />
 {/if}
 
 {#if $modalStore === "addSchedule"}
-<AddSchedule showModal={$modalStore === "addSchedule"} {supabase} />
+<AddSchedule showModal={$modalStore === "addSchedule"} />
 {/if}
 
 {#if $modalStore === "editSchedule"}
-<EditSchedule showModal={$modalStore === "editSchedule"} {supabase} />
+<EditSchedule showModal={$modalStore === "editSchedule"} />
 {/if}
 
 {#if $modalStore === "rcolors"}
@@ -68,5 +66,9 @@ export let supabase: SupabaseClient;
 {/if}
 
 {#if $modalStore === "feedback"}
-<Feedback showModal={$modalStore === "feedback"} {supabase} />
+<Feedback showModal={$modalStore === "feedback"} />
+{/if}
+
+{#if $modalStore === "feedbackpop"}
+<FeedbackPop showModal={$modalStore === "feedbackpop"} />
 {/if}

@@ -78,6 +78,10 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                     class="btn btn-blue">
                        Push Evaluations
                     </button>
+                    <button formaction="?/redisTransfer"
+                    class="btn btn-green">
+                          Redis Transfer
+                    </button>
                     <button formaction="?/rapidPush"
                     class="btn btn-green">
                        Rapid Seat Refresh
@@ -117,6 +121,10 @@ const resolveFeedback = async (feedback: { id: number; }) => {
                 <div class="flex justify-between text-sm">
                     <span>Total Users</span>
                     <span class="font-bold">{data.users}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Seen Popup</span>
+                    <span class="font-bold">{data.seenCount}</span>
                 </div>
                 <div class="flex justify-between text-sm">
                     <span>Unresolved Feedback</span>

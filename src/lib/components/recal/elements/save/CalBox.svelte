@@ -5,6 +5,7 @@ import type { CalBoxParam } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calColors } from "$lib/stores/styles";
 import { rMeta } from "$lib/stores/rmeta";
+import { hovStyle, hovStyleRev } from "$lib/stores/recal";
 
 export let params: CalBoxParam;
 export let supabase: SupabaseClient;
@@ -31,6 +32,16 @@ let styles = {
     "left": `${params.left}`,
     "height": `${params.height}`,
     "width": `${params.width}`,
+    "hoverColor": "",
+    "hoverText": "",
+}
+
+if (parseInt(styles.bg.split(",")[2].split("%")[0]) > 50) {
+        styles.hoverColor = darkenHSL(styles.bg, 10);
+        styles.hoverText = darkenHSL(styles.text, 70);
+    } else {
+        styles.hoverColor = darkenHSL(styles.bg, -10);
+        styles.hoverText = darkenHSL(styles.text, -70);
 }
 
 $: cssVarStyles = Object.entries(styles)
@@ -82,15 +93,24 @@ const handleClick = () => {
         }
     });
 }
+
+$: $hovStyleRev, console.log($hovStyleRev);
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
 <button id="box" class="absolute text-left flex p-[1px] cursor-pointer
-rounded-sm" 
+rounded-sm duration-75
+{hovered || ($hovStyle && $hovStyle.id) === section.course_id ? "hovered" : ""}"
 style={cssVarStyles}
 on:click={handleClick} 
-on:mouseenter={() => hovered = true}
-on:mouseleave={() => hovered = false}>
+on:mouseenter={() => {
+    hovered = true;
+    $hovStyleRev = section.course_id;
+}}
+on:mouseleave={() => {
+    hovered = false
+    $hovStyleRev = null
+}}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
         <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(section.start_time, section.end_time)}
@@ -125,5 +145,10 @@ button {
     left: var(--left);
     height: var(--height);
     width: var(--width);
+}
+
+.hovered {
+    background-color: var(--hoverColor);
+    color: var(--hoverText);
 }
 </style>

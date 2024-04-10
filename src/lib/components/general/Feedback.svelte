@@ -4,8 +4,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import StdButton from "../elements/StdButton.svelte";
 import { toastStore } from "$lib/stores/toast";
 import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
+import { getContext } from "svelte";
 
-export let supabase: SupabaseClient;
+let supabase = getContext("supabase") as SupabaseClient;
 export let showModal: boolean = false;
 
 let feedback: string = "";
@@ -31,11 +32,14 @@ const submitFeedback = () => {
     <div slot="main">
         <div>
             <p class="mb-2">
-                Please leave any feedback you have about TigerJunction here.
-                This can be anything from a bug report to a feature request.
-                Feedback is anonymous, but if you would like a response,
-                please leave your email somewhere in the message.
-                All feedback is greatly appreciated!
+                We always love to hear any feedback about TigerJunction!
+                Anything at all is appreciated -- be it feature suggestions, problems you face, 
+                or just your overall impressions.
+                Thank you for being an essential part of this project!
+
+            </p>
+            <p class="mb-2 italic">
+                All feedback is anonymous. If you would like a response, please write your email in the message.
                 If you would like monthly updates, please join our email list <a href={EMAIL_LIST_FORM_LINK}
                 target="_blank"
                 class="underline hover:opacity-80">here</a>!

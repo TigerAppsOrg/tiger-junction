@@ -12,6 +12,7 @@ import { sectionData, type SectionData } from "$lib/stores/rsections.js";
 import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { modalStore } from "$lib/stores/modal";
 
 export let data: {
     supabase: SupabaseClient;
@@ -20,10 +21,16 @@ export let data: {
         sections: SectionData[];
         schedules: any[];
         associations: any[];
+        doneFeedback: boolean;
     }
 };
 
+
 onMount(async () => {
+    if (!data.body.doneFeedback) {
+        modalStore.open("feedbackpop", { clear: true });
+    }
+
     if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
         rawCourseData.update(x => {
             let cur: CourseData[] = (data.body.courses as CourseData[]).map(y => {

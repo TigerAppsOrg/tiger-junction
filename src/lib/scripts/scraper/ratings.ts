@@ -1,6 +1,7 @@
 import type { DualId } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCourseDualIds } from "./reg";
+import { redisTransfer } from "./redisTransfer";
 
 const PARALLEL_REQUESTS = 100; // Number of parallel requests to send
 const RATE = 0; // Number of milliseconds between requests
@@ -221,6 +222,8 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
 
     // Wait for all requests to finish
     await Promise.all(promises);
+
+    await redisTransfer(supabase, term);
 
     // Return success message
     // let msg = `Finished updating ratings for ${term}. 

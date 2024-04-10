@@ -5,6 +5,7 @@ import { populateRatings } from "$lib/scripts/scraper/ratings";
 import { updateSeats } from "$lib/scripts/scraper/newRapid.js";
 import { getAllCourses } from "$lib/scripts/scraper/getallcourses.js";
 import { TERM_MAP } from "$lib/changeme.js";
+import { redisTransfer } from "$lib/scripts/scraper/redisTransfer";
 
 export const load = async ({ locals }) => {
     // Get #users, #schedules, #course_schedule_associations, #unresolved feedback
@@ -13,6 +14,13 @@ export const load = async ({ locals }) => {
         .select("*", { count: "estimated", head: true });
     if (users.error) throw new Error(users.error.message);
 
+    const seenCount = await locals.supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("doneFeedback", true); 
+
+    if (seenCount.error) throw new Error(seenCount.error.message);
+    
     const feedback = await locals.supabase
         .from("feedback")
         .select("id, feedback", { count: "exact", head: false })
@@ -21,6 +29,7 @@ export const load = async ({ locals }) => {
 
     return {
         users: users.count,
+        seenCount: seenCount.count,
         feedbackCount: feedback.count,
         feedback: feedback.data
     }
@@ -106,6 +115,21 @@ export const actions: Actions = {
         console.log("Finished pushing ratings in " + (new Date().getTime() - currentTime) + "ms");
         return {
             message: "Successfully pushed ratings"
+        };
+    },
+    redisTransfer: async ({ request, locals }) => {
+        const formData = await request.formData();
+        const term = formData.get("term") as string;
+        const termInt = parseInt(term);
+        if (isNaN(termInt) || !Object.keys(TERM_MAP).includes(term)) {
+            console.log("Invalid term: " + term);
+            return {
+                message: "Invalid term"
+            };
+        }
+        await redisTransfer(locals.supabase, termInt);
+        return {
+            message: "Successfully transferred data to Redis"
         };
     },
     rapidPush: async ({ request, locals }) => {

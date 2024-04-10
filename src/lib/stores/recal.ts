@@ -3,7 +3,7 @@ import { normalizeText, valueToDays } from "$lib/scripts/convert";
 import type { CourseData } from "$lib/types/dbTypes";
 import { BASE_OBJ, type RawCourseData } from "$lib/changeme";
 import { get, writable, type Writable } from "svelte/store";
-import { sectionData } from "./rsections";
+import { sectionData, type SectionMap } from "./rsections";
 import { sectionDone } from "$lib/changeme";
 import { savedCourses } from "./rpool";
 import { rMeta } from "./rmeta";
@@ -33,6 +33,9 @@ export const research: Writable<boolean> = writable(false);
 
 // Hovered course
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
+
+export const hovStyle: Writable<CourseData | null> = writable(null);
+export const hovStyleRev: Writable<number | null> = writable(null);
 
 // Current schedule id
 export const currentSchedule: Writable<number> = writable();
@@ -136,37 +139,7 @@ export const searchResults = {
         if (settings.filters["No Conflicts"].enabled) {
             // Fetch all sections for all courses in term
             let termSec = get(sectionData)[term];
-
-            if (!get(sectionDone)[term as ActiveTerms]) {
-                // Fetch Sections
-                const secs = await fetch(`/api/client/sections/${term}`);
-                const sections = await secs.json();
-
-                // Blacklist of courses that are already loaded
-                let blacklist: number[] = [];
-                for (let courseId in termSec) 
-                    blacklist.push(parseInt(courseId));
-
-                // Sort through sections and add to sectionData
-                for (let i = 0; i < sections.length; i++) {
-                    let sec = sections[i];
-                    let courseId = sec.course_id;
-
-                    if (blacklist.includes(courseId)) continue;
-
-                    // Add course to sectionData 
-                    if (!termSec[courseId]) {
-                        termSec[courseId] = [];
-                    }
-                    termSec[courseId].push(sec);
-                }
-
-                // Mark sections for term as fully loaded
-                sectionDone.update(x => {
-                    x[term as ActiveTerms] = true;
-                    return x;
-                });
-            }
+            await loadSections(term, termSec);
 
             // Get confirmed sections and format into array
             let conflictList: Record<number, [number, number][]> = {
@@ -230,10 +203,67 @@ export const searchResults = {
                 data = data.filter(x => !doesConflict(x, 
                     conflictList, 
                     settings.filters["No Conflicts"]
-                        .values["Only Available Sections"]));
+                        .values["Only Available Sections"],
+                    settings.filters["Days"]));
 
             } // ! End of if (saved && meta)
         } // ! End of "Does Not Conflict" filter
+
+        // * Days
+        if (settings.filters["Days"].enabled) {
+            let termSec = get(sectionData)[term];
+            await loadSections(term, termSec);
+
+            data = data.filter(x => {
+                const courseSections = termSec[x.id];
+
+                // Default -- if no sections, return false
+                if (courseSections.length === 0) return false;
+
+                let scheduledSectionExists = false;
+                for (let i = 0; i < courseSections.length; i++) {
+                    if (courseSections[i].start_time !== -42) {
+                        scheduledSectionExists = true;
+                        break;
+                    }
+                }
+                if (!scheduledSectionExists) return false;
+
+                const catmap: Record<string, boolean> = {};
+                for (let i = 0; i < courseSections.length; i++) {
+                    const section = courseSections[i];
+                    const daysNum = valueToDays(section.days);
+                    const dayMap: Record<number, string> = {
+                        1: "M",
+                        2: "T",
+                        3: "W",
+                        4: "R",
+                        5: "F",
+                    }
+                    const days = daysNum.map(x => dayMap[x]);
+                    const category = section.category;
+
+                    let isThisSectionOkay = true;
+                    for (let j = 0; j < days.length; j++) {
+                        if (!settings.filters["Days"].values[days[j]]) {
+                            isThisSectionOkay = false;
+                            break;
+                        }
+                    }
+                    if (isThisSectionOkay) catmap[category] = true;
+                    else if (!catmap.hasOwnProperty(category)) catmap[category] = false;
+                }
+
+                let isCourseOkay = true;
+                for (let category in catmap) {
+                    if (!catmap[category]) {
+                        isCourseOkay = false;
+                        break;
+                    }
+                }
+                return isCourseOkay;
+            })
+        }
 
         //--------------------------------------------------------------
         // SortBy Settings
@@ -268,7 +298,6 @@ export const searchResults = {
             });
         }
 
-
         //--------------------------------------------------------------
         // Filter by search query
         //--------------------------------------------------------------
@@ -286,6 +315,12 @@ export const searchResults = {
             return normalizeText(x.title).includes(query) 
                 || normalizeText(x.code).includes(query);
         }));
+
+        if (get(searchResults).length === 0) {
+            isResult.set(false);
+        } else {
+            isResult.set(true);
+        }
     },
 }
 
@@ -492,6 +527,16 @@ export const DEFAULT_SETTINGS: SearchSettings = {
                 "5": true,
             }
         },
+        "Days": {
+            "enabled": false,
+            "values": {
+                "M": true,
+                "T": true,
+                "W": true,
+                "R": true,
+                "F": true,
+            }
+        },
         "PDFable": {
             "enabled": false,
         },
@@ -539,6 +584,39 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         // "Show Tooltips": true,
         "Show Time Marks": false,
         "Duck": false,
+    }
+}
+
+const loadSections = async (term: number, termSec: SectionMap) => {
+    if (!get(sectionDone)[term as ActiveTerms]) {
+        // Fetch Sections
+        const secs = await fetch(`/api/client/sections/${term}`);
+        const sections = await secs.json();
+
+        // Blacklist of courses that are already loaded
+        let blacklist: number[] = [];
+        for (let courseId in termSec) 
+            blacklist.push(parseInt(courseId));
+
+        // Sort through sections and add to sectionData
+        for (let i = 0; i < sections.length; i++) {
+            let sec = sections[i];
+            let courseId = sec.course_id;
+
+            if (blacklist.includes(courseId)) continue;
+
+            // Add course to sectionData 
+            if (!termSec[courseId]) {
+                termSec[courseId] = [];
+            }
+            termSec[courseId].push(sec);
+        }
+
+        // Mark sections for term as fully loaded
+        sectionDone.update(x => {
+            x[term as ActiveTerms] = true;
+            return x;
+        });
     }
 }
 
