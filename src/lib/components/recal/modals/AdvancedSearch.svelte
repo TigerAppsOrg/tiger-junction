@@ -69,6 +69,37 @@ const resetSearchSettings = () => {
 
                 <!-- * Filter Specifications -->
                 <div class="mt-4">
+                    {#if $searchSettings.filters["Rating"].enabled}
+                    <div class="border-slate-600/30 mx-8 p-2
+                    dark:border-slate-200/30 border-t-2 mt-2">
+                        <div class="mb-2 flex items-center gap-4">
+                            <h3 class="text-lg font-semibold">Rating</h3>
+                            <p class="italic">Note: courses with no rating correspond to 0</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="number" step="0.1" 
+                            max="5" min="0" bind:value={minInput}
+                            placeholder="Min Rating" 
+                            class="p-2 h-10 std-area w-36"
+                            on:input={handleMin}>
+                            <span>to</span>
+                            <input type="number" step="0.1" 
+                            max="5" min="0" bind:value={maxInput}
+                            placeholder="Max Rating" 
+                            class="p-2 h-10 std-area w-36"
+                            on:input={handleMax}>
+
+                            <StdButton message="Reset"
+                            onClick={() => {
+                                minInput = 0;
+                                maxInput = 5;
+                                $searchSettings.filters["Rating"].min = 0;
+                                $searchSettings.filters["Rating"].max = 5;
+                            }} scheme="4" />
+                        </div>
+                    </div>
+                    {/if}
+
                     {#each Object.keys($searchSettings.filters) as filter}
                     {#if $searchSettings.filters[filter].enabled 
                     && $searchSettings.filters[filter].hasOwnProperty("values")}
@@ -118,37 +149,6 @@ const resetSearchSettings = () => {
                         </div>
                     {/if}
                     {/each}
-
-                    {#if $searchSettings.filters["Rating"].enabled}
-                    <div class="border-slate-600/30 mx-8 p-2
-                    dark:border-slate-200/30 border-t-2 mt-2">
-                        <div class="mb-2 flex items-center gap-4">
-                            <h3 class="text-lg font-semibold">Rating</h3>
-                            <p class="italic">Note: courses with no rating correspond to 0</p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <input type="number" step="0.1" 
-                            max="5" min="0" bind:value={minInput}
-                            placeholder="Min Rating" 
-                            class="p-2 h-10 std-area w-36"
-                            on:input={handleMin}>
-                            <span>to</span>
-                            <input type="number" step="0.1" 
-                            max="5" min="0" bind:value={maxInput}
-                            placeholder="Max Rating" 
-                            class="p-2 h-10 std-area w-36"
-                            on:input={handleMax}>
-
-                            <StdButton message="Reset"
-                            onClick={() => {
-                                minInput = 0;
-                                maxInput = 5;
-                                $searchSettings.filters["Rating"].min = 0;
-                                $searchSettings.filters["Rating"].max = 5;
-                            }} scheme="4" />
-                        </div>
-                    </div>
-                    {/if}
 
                 </div>
             </div>
