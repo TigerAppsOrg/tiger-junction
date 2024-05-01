@@ -5,7 +5,6 @@ import { currentTerm, schedules } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import duck from "$lib/img/duck.gif";
 
-import { darkTheme } from "$lib/stores/state";
 import { modalStore } from "$lib/stores/modal";
 import { goto } from "$app/navigation";
 import Loader from "../elements/Loader.svelte";
@@ -15,6 +14,7 @@ import { toastStore } from "$lib/stores/toast";
 import { SCHEDULE_CAP } from "$lib/constants";
 import { calColors, calculateCssVars } from "$lib/stores/styles";
 import { ACTIVE_TERMS } from "$lib/changeme";
+    import confetti from "canvas-confetti";
 
 export let supabase: SupabaseClient;
 
@@ -61,6 +61,45 @@ const handleAddSchedule = () => {
 
     modalStore.open("addSchedule", { clear: true });
 }
+
+const invokeFun = () => {
+    var count = 200;
+    var defaults = {
+        origin: { y: 0.7 }
+    };
+
+    function fire(particleRatio: number, opts: any) {
+        confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(count * particleRatio)
+        });
+    }
+
+    fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+    });
+    fire(0.2, {
+        spread: 60,
+    });
+    fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8
+    });
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2
+    });
+    fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+    });
+}
+
 
 // Handle theme changes
 $: cssVarStyles = calculateCssVars("0", $calColors);
@@ -159,10 +198,11 @@ dark:text-zinc-100 text-sm">
     
         {#if $searchSettings.style["Duck"]}
         <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
-        <div class="h-6 relative pointer-events-none ml-[-10%] w-[120%]">
-            <div id="duck" class="w-12 h-12 absolute bottom-[6px]">
+        <div class="h-6 relative cursor-default ml-[-10%] w-[120%]">
+            <button on:click={invokeFun}
+            id="duck" class="w-12 h-12 absolute bottom-[6px] cursor-default">
                 <img src={duck} alt="duck">
-            </div>
+            </button>
         </div>
         {/if}
 </div>
