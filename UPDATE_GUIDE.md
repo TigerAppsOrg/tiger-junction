@@ -12,10 +12,10 @@ VALUES (new.id, 'My Schedule', 1242),
 ```
 Find the oldest term and replace it with the new term. For example, in the example above, the oldest term is `1234`, so you would replace that with whatever the new term is.
 
-Additionally, you should update the `db/createUser.sql` file in the codebase with the new term. While this is not necessary, it is good practice to keep the codebase up to date with the database.
+Additionally, you should update the [`db/createUser.sql`](db/createUser.sql) file in the codebase with the new term. While this is not necessary, it is good practice to keep the codebase up to date with the database.
 
 ## Step 2: Update the Codebase
-Create a new branch. There is only 1 file that needs to be updated: `src/lib/changeme.ts`. There are 5 things that need to be updated in the file, and they all have comments next to them explaining what needs to be done. Once you have updated the file, commit the changes and push the branch to GitHub. 
+Create a new branch. There is only 1 file that needs to be updated: [`src/lib/changeme.ts`](src/lib/changeme.ts). There are 5 things that need to be updated in the file, and they all have comments next to them explaining what needs to be done. Once you have updated the file, commit the changes and push the branch to GitHub. 
 
 ## Step 3: Populate the Database
 Run `npm run dev` in the terminal to start the development server. Once the server is running, go to `localhost:5173/admin` in your browser. This may require you to login, in which case you will have to replace `junction.tigerapps.org` with `localhost:5173` in the URL when the login page redirects you (you will receive an error if not already logged in on localhost). If you do not have admin access, grant yourself admin access by going to the `private_profiles` table in Supabase and setting the `is_admin` column to `true` for your user. *PLEASE BE CAREFUL TO NOT ACCIDENTLY GRANT ADMIN ACCESS TO SOMEONE ELSE*.
@@ -29,7 +29,10 @@ Vercel will automatically create a production deployment of the new branch. Logi
 
 Create a pull request and merge the branch into `main`. Once the branch has been merged, you can delete the branch.
 
-## Step 5: Clean Up the Database
+## Step 5: Check Department List
+In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTMENTS against the list of departments on the Princeton course offerings [website](https://registrar.princeton.edu/course-offerings). If there are any new departments, add them to the array. Do not remove anything from the array.
+
+## Step 6: Clean Up the Database
 **WARNING: EXERCISE EXTREME CAUTION WHILE PERFORMING THIS STEP!!!**
 
 In Supabase, go to the `Table Editor` tab on the left bar. Click on the `schedules` table and filter by the `term` column for the term that was just removed. Delete all of the rows that show up. Similarly, in the `courses` table, filter by the `term` column for the term that was just removed. Delete all of the rows that show up. *DO NOT DELETE ANY ROWS THAT ARE NOT IN THE TERM THAT WAS JUST REMOVED*. If you do, it is game over as there is no way to recover the data. If you are unsure, please ask someone for help.

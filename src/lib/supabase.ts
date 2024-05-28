@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
@@ -17,4 +18,20 @@ export const checkAdmin = async (supabase: SupabaseClient): Promise<boolean> => 
         .single();
     
     return !error && data && data.is_admin;
+}
+
+export const handleLogin = async (supabase: SupabaseClient) => { 
+    // Redirect if user is already logged in
+    const user = (await supabase.auth.getSession()).data.session?.user;
+    if (user) {
+        goto("/recalplus");
+        return;
+    }
+
+    await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+            redirectTo: "https://junction.tigerapps.org/auth/callback"
+        }
+    });
 }
