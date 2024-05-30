@@ -40,7 +40,7 @@
 </div>
 
 <style lang="postcss">
-    .link {
+    /* .link {
         @apply inline-block mt-0 text-black hover:text-gray-600 mr-4;
-    }
+    } */
 </style>
