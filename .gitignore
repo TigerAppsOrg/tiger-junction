@@ -12,3 +12,6 @@ storybook.log
 .VSCODECounter
 .vercel
 /src/lib/scripts/scraper/localcache
+
+# sst
+.sst

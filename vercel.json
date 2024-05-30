@@ -1,6 +1,0 @@
-{
-    "crons": [{
-        "path": "/api/server/refresh/ical",
-        "schedule": "0 0 * * *"
-    }]
-}

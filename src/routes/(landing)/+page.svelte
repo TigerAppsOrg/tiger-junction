@@ -116,9 +116,13 @@
                     <img src="/home/melt.png" alt="MeltUI"
                     class="logo">
                 </a>
-                <a href="https://vercel.com/" target="_blank">
-                    <img src="/home/vercel.svg" alt="Vercel"
+                <a href="https://sst.dev/" target="_blank">
+                    <img src="/home/sst.svg" alt="SST"
                     class="logo">
+                </a>
+                <a href="https://aws.amazon.com/what-is-cloud-computing" target="_blank">
+                    <img src="/home/aws.png" 
+                    alt="Powered by AWS Cloud Computing" class="logo">
                 </a>
                 <a href="https://www.cloudflare.com/" target="_blank">
                     <img src="/home/cloudflare.png" alt="Cloudflare"
