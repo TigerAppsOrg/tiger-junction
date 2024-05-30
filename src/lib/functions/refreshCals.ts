@@ -1,19 +1,23 @@
 // Cron job to refresh calendars every day
 import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SERVICE_KEY } from '$env/static/private';
 import { createEvents, type DateArray, type EventAttributes } from 'ics';
 import { calculateStart, valueToRRule } from '$lib/scripts/ReCal+/ical';
 import { CALENDAR_INFO } from '$lib/changeme.js';
+import { config } from 'dotenv';
 
 export async function handler() {
-    const supabase = createClient(PUBLIC_SUPABASE_URL, SERVICE_KEY, {
+    config();
+    // Environment variables are loaded into AWS Lambda manually
+    const supabase = createClient(process.env.PUBLIC_SUPABASE_URL as string, 
+        process.env.SERVICE_KEY as string, {
         auth: {
             autoRefreshToken: false,
             persistSession: false
         }
     });
     
+    console.log("Getting calendars...");
+    let startTime = Date.now();
     const { data, error } = await supabase.from("icals")
         .select(`
             *,
@@ -34,8 +38,10 @@ export async function handler() {
         return new Response(JSON.stringify(error), { status: 500 });
     }
     
-    console.log("Found " + data.length + " calendars");
+    console.log("Found " + data.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
+    const upsertPromises: Promise<any>[] = [];
     
+    startTime = Date.now();
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
         const events: EventAttributes[] = [];
@@ -87,11 +93,24 @@ export async function handler() {
                     location: section.room ? section.room : "",
                     description: description,
                 };
-                events.push(newEvent);
+                if (!newEvent.start.includes(NaN)) {
+                    events.push(newEvent);
+                }
             }
         }
     
-        await createEvents(events, async (error, value) => {
+        if (events.length === 0) {
+            upsertPromises.push(supabase.storage
+                .from("calendars")
+                .update(data[i].id + ".ics", "", {
+                    cacheControl: "900",
+                    upsert: true,
+                    contentType: "text/calendar",
+                }));
+            continue;
+        }
+
+        createEvents(events, async (error, value) => {
             if (error) {
                 console.log(error);
                 return new Response(JSON.stringify(error), { status: 500 });
@@ -101,16 +120,21 @@ export async function handler() {
             value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
     
             // Push to supabase storage
-            supabase.storage
+            upsertPromises.push(supabase.storage
                 .from("calendars")
                 .update(data[i].id + ".ics", value, {
                     cacheControl: "900",
                     upsert: true,
                     contentType: "text/calendar",
-                })
+                }));
         });
     }
-    
-    const returnString = "Successfully refreshed " + data.length + " calendars";
-    console.log(returnString);
+    console.log("Generated " + upsertPromises.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
+
+    const CONCURRENT_REQUESTS = 10;
+    for (let i = 0; i < upsertPromises.length; i += CONCURRENT_REQUESTS) {
+        await Promise.all(upsertPromises.slice(i, i + CONCURRENT_REQUESTS));
+    }
+
+    console.log("Processed " + data.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
 }
