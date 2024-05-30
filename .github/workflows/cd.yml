@@ -1,0 +1,53 @@
+name: SST CD
+on: 
+  push:
+    branches:
+      - main
+
+# Concurrency group name ensures concurrent workflow 
+# runs wait for any in-progress job to finish
+concurrency:
+  group: merge-${{ github.ref }}
+
+permissions:
+  id-token: write 
+  contents: read 
+
+jobs:
+  TestBuild:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+    steps:
+        - name: Git clone the repository
+          uses: actions/checkout@v3
+        - name: Use Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '18'
+        - name: Install dependencies
+          run: npm i
+        - name: Test build
+          run: npm run build
+        
+  Deploy:
+    needs: TestBuild
+    runs-on: ubuntu-latest
+    env:
+        PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+        PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::1234567890:role/GitHub
+          role-duration-seconds: 600
+          aws-region: us-east-1
+      - name: Deploy app
+        run: |
+          npm i && npx sst deploy --stage prod
