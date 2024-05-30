@@ -131,7 +131,7 @@ export async function handler() {
     }
     console.log("Generated " + upsertPromises.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
 
-    const CONCURRENT_REQUESTS = 5;
+    const CONCURRENT_REQUESTS = 10;
     for (let i = 0; i < upsertPromises.length; i += CONCURRENT_REQUESTS) {
         await Promise.all(upsertPromises.slice(i, i + CONCURRENT_REQUESTS));
     }
