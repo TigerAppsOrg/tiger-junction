@@ -48,8 +48,8 @@
                 <p class="mt-2 max-w-2xl text-lg sm:text-xl
                 lg:text-2xl
                  text-gray-500 lg:mx-auto">
-                    Princeton's premier academic planning platform.
-                    Ultimate customization. Seamless integration.
+                    Princeton's premier academic planning platform. 
+                    Explore courses, plan your schedule, and succeed.
                 </p>
             </div>
         
