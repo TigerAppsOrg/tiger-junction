@@ -77,7 +77,9 @@ const createIcal = async () => {
 
             if (section.room) newEvent.location = section.room;
             
-            events.push(newEvent);
+            if (!newEvent.start.includes(NaN)) {
+                events.push(newEvent);
+            }
         }
     }
 

@@ -38,8 +38,8 @@ export async function handler() {
         return new Response(JSON.stringify(error), { status: 500 });
     }
     
-    console.log("Found " + data.length + " calendars in " + (Date.now() - startTime) + "ms");
-    let count = 0;
+    console.log("Found " + data.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
+    const upsertPromises: Promise<any>[] = [];
     
     startTime = Date.now();
     // Loop through each schedule
@@ -93,10 +93,23 @@ export async function handler() {
                     location: section.room ? section.room : "",
                     description: description,
                 };
-                events.push(newEvent);
+                if (!newEvent.start.includes(NaN)) {
+                    events.push(newEvent);
+                }
             }
         }
     
+        if (events.length === 0) {
+            upsertPromises.push(supabase.storage
+                .from("calendars")
+                .update(data[i].id + ".ics", "", {
+                    cacheControl: "900",
+                    upsert: true,
+                    contentType: "text/calendar",
+                }));
+            continue;
+        }
+
         createEvents(events, async (error, value) => {
             if (error) {
                 console.log(error);
@@ -107,20 +120,21 @@ export async function handler() {
             value = value.replace(/DTSTART/g, "DTSTART;TZID=America/New_York");
     
             // Push to supabase storage
-            supabase.storage
+            upsertPromises.push(supabase.storage
                 .from("calendars")
                 .update(data[i].id + ".ics", value, {
                     cacheControl: "900",
                     upsert: true,
                     contentType: "text/calendar",
-                });
-            count++;
+                }));
         });
     }
-    console.log("Generated " + count + " calendars in " + (Date.now() - startTime) + "ms");
+    console.log("Generated " + upsertPromises.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
 
-    const returnString = "Successfully refreshed " + count + " calendars in " + (Date.now() - startTime) + "ms";
-    console.log(returnString);
+    const CONCURRENT_REQUESTS = 5;
+    for (let i = 0; i < upsertPromises.length; i += CONCURRENT_REQUESTS) {
+        await Promise.all(upsertPromises.slice(i, i + CONCURRENT_REQUESTS));
+    }
+
+    console.log("Processed " + data.length + " calendars in " + (Date.now() - startTime)/1000 + "s");
 }
-
-handler();
