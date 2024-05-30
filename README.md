@@ -31,7 +31,7 @@ Unlike most Princeton student applications, `TigerJunction` utilizes a JS backen
 
 **Libraries/Frameworks:** Svelte, SvelteKit, TailwindCSS, MeltUI, Vite
 
-**Backend:** Supabase (PostgreSQL and Deno), Vercel, Cloudflare (DNS, DoS Protection, R2, and Workers), Redis, NodeJS, Princeton StudentApp API
+**Backend:** Supabase (PostgreSQL and Deno), AWS (Lambda, S3, Cloudfront; through SST), Cloudflare (DNS, DoS Protection, R2, and Workers), Redis, NodeJS, Princeton StudentApp API
 
 **Dev Tools:** Git, GitHub, Storybook, Visual Studio Code
 

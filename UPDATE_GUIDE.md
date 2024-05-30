@@ -17,20 +17,18 @@ Additionally, you should update the [`db/createUser.sql`](db/createUser.sql) fil
 ## Step 2: Update the Codebase
 Create a new branch. There is only 1 file that needs to be updated: [`src/lib/changeme.ts`](src/lib/changeme.ts). There are 5 things that need to be updated in the file, and they all have comments next to them explaining what needs to be done. Once you have updated the file, commit the changes and push the branch to GitHub. 
 
-## Step 3: Populate the Database
+## Step 3: Check Department List
+In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTMENTS against the list of departments on the Princeton course offerings [website](https://registrar.princeton.edu/course-offerings). If there are any new departments, add them to the array. Do not remove anything from the array.
+
+## Step 4: Populate the Database
 Run `npm run dev` in the terminal to start the development server. Once the server is running, go to `localhost:5173/admin` in your browser. This may require you to login, in which case you will have to replace `junction.tigerapps.org` with `localhost:5173` in the URL when the login page redirects you (you will receive an error if not already logged in on localhost). If you do not have admin access, grant yourself admin access by going to the `private_profiles` table in Supabase and setting the `is_admin` column to `true` for your user. *PLEASE BE CAREFUL TO NOT ACCIDENTLY GRANT ADMIN ACCESS TO SOMEONE ELSE*.
 
 Once you are on the admin page, input the term you are adding into the term field, and click `Push Listings`. This should take less than a minute to complete. Once it is done, input the term again and check the `Refresh Grading` checkbox. Then, click `Push Courses` and wait for it to complete. This will take a while (around 30 minutes). Finally, input the term again and click `Push Ratings`. This shoudl take less than a minute to complete. Once all of these are done, you can close the server.
 
 *Make sure to do this on localhost and not on the production site, it will timeout*.
 
-## Step 4: Test and Deploy
-Vercel will automatically create a production deployment of the new branch. Login to Vercel and ensure that this branch built properly, and play around with it to ensure that there are no catastrophics bugs. If there are, fix them and push the changes to the branch. Once you are satisfied with the changes, proceed to the next step.
-
-Create a pull request and merge the branch into `main`. Once the branch has been merged, you can delete the branch.
-
-## Step 5: Check Department List
-In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTMENTS against the list of departments on the Princeton course offerings [website](https://registrar.princeton.edu/course-offerings). If there are any new departments, add them to the array. Do not remove anything from the array.
+## Step 5: Test and Deploy
+Run the branch locally with `npx sst dev` and `npm run dev` (in a separate terminal window). Play around with the app to ensure that there are no bugs. If there are, fix them and push the changes to the branch. Once the update branch is bug-free, create a pull request and merge the branch into `main`. GitHub Actions will automatically create a production deployment of the new branch through SST onto AWS. Once the branch has been merged, you can delete the branch.
 
 ## Step 6: Clean Up the Database
 **WARNING: EXERCISE EXTREME CAUTION WHILE PERFORMING THIS STEP!!!**
