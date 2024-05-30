@@ -48,8 +48,8 @@
                 <p class="mt-2 max-w-2xl text-lg sm:text-xl
                 lg:text-2xl
                  text-gray-500 lg:mx-auto">
-                    Princeton's premier academic planning platform.
-                    Ultimate customization. Seamless integration.
+                    Princeton's premier academic planning platform. 
+                    Explore courses, plan your schedule, and succeed.
                 </p>
             </div>
         
@@ -149,7 +149,7 @@
                   radial-gradient(74% 86% at 67% 38%, #4ECDC4FF 24%, #FF6B6B00 100%),
                   linear-gradient(125deg, #FF6B6BCC 1%, #FFFFFFFF 100%);
         background-size: 200% 200%;
-        animation: gradient 15s ease infinite;
+        animation: gradient 10s ease infinite;
     }
   
     @keyframes gradient {
