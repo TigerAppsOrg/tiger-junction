@@ -16,6 +16,8 @@ export async function handler() {
         }
     });
     
+    console.log("Getting calendars...");
+    let startTime = Date.now();
     const { data, error } = await supabase.from("icals")
         .select(`
             *,
@@ -36,9 +38,10 @@ export async function handler() {
         return new Response(JSON.stringify(error), { status: 500 });
     }
     
-    console.log("Found " + data.length + " calendars");
+    console.log("Found " + data.length + " calendars in " + (Date.now() - startTime) + "ms");
     let count = 0;
     
+    startTime = Date.now();
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
         const events: EventAttributes[] = [];
@@ -114,7 +117,10 @@ export async function handler() {
             count++;
         });
     }
-    
-    const returnString = "Successfully refreshed " + count + " calendars";
+    console.log("Generated " + count + " calendars in " + (Date.now() - startTime) + "ms");
+
+    const returnString = "Successfully refreshed " + count + " calendars in " + (Date.now() - startTime) + "ms";
     console.log(returnString);
 }
+
+handler();
