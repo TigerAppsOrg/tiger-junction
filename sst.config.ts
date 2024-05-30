@@ -16,7 +16,7 @@ export default {
       });
 
       // Calendar refresh cron job
-      new Cron(stack, "cron", {
+      new Cron(stack, "calRefresh", {
         schedule: "rate(1 day)",
         job: {
           function: {

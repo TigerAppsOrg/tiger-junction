@@ -1,13 +1,15 @@
 // Cron job to refresh calendars every day
 import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SERVICE_KEY } from '$env/static/private';
 import { createEvents, type DateArray, type EventAttributes } from 'ics';
 import { calculateStart, valueToRRule } from '$lib/scripts/ReCal+/ical';
 import { CALENDAR_INFO } from '$lib/changeme.js';
+import { config } from 'dotenv';
 
 export async function handler() {
-    const supabase = createClient(PUBLIC_SUPABASE_URL, SERVICE_KEY, {
+    config();
+    // Environment variables are loaded into AWS Lambda manually
+    const supabase = createClient(process.env.PUBLIC_SUPABASE_URL as string, 
+        process.env.SERVICE_KEY as string, {
         auth: {
             autoRefreshToken: false,
             persistSession: false
@@ -35,6 +37,7 @@ export async function handler() {
     }
     
     console.log("Found " + data.length + " calendars");
+    let count = 0;
     
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
@@ -91,7 +94,7 @@ export async function handler() {
             }
         }
     
-        await createEvents(events, async (error, value) => {
+        createEvents(events, async (error, value) => {
             if (error) {
                 console.log(error);
                 return new Response(JSON.stringify(error), { status: 500 });
@@ -107,10 +110,11 @@ export async function handler() {
                     cacheControl: "900",
                     upsert: true,
                     contentType: "text/calendar",
-                })
+                });
+            count++;
         });
     }
     
-    const returnString = "Successfully refreshed " + data.length + " calendars";
+    const returnString = "Successfully refreshed " + count + " calendars";
     console.log(returnString);
 }

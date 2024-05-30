@@ -49,6 +49,7 @@
     "@supabase/auth-helpers-sveltekit": "^0.10.1",
     "@supabase/supabase-js": "^2.26.0",
     "canvas-confetti": "^1.9.3",
+    "dotenv": "^16.4.5",
     "ics": "^3.5.0",
     "js-yaml": "^4.1.0",
     "jsdom": "^22.1.0",
