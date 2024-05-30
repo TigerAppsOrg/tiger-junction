@@ -93,8 +93,6 @@ const handleClick = () => {
         }
     });
 }
-
-$: $hovStyleRev, console.log($hovStyleRev);
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
