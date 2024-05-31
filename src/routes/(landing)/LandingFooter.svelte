@@ -4,7 +4,7 @@
         <div>
             © 2024 TigerJunction
         </div>
-        <a href="https://github.com/TigerAppsOrg/TigerJunction"
+        <a href="https://github.com/TigerAppsOrg/tiger-junction"
         target="_blank">
             <img src="/home/github.svg" alt="GitHub"
             class="w-4 h-4">
