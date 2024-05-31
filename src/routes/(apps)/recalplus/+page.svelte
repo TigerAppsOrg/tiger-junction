@@ -13,6 +13,7 @@ import type { CourseData } from "$lib/types/dbTypes.js";
 import { onMount } from "svelte";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { modalStore } from "$lib/stores/modal";
+    import { toastStore } from "$lib/stores/toast";
 
 export let data: {
     supabase: SupabaseClient;
@@ -109,6 +110,10 @@ onMount(async () => {
     let id = $schedules[CURRENT_TERM_ID][0].id;
     let courses =  $savedCourses[id] ? [...$savedCourses[id]] : [];
     searchCourseData.remove(CURRENT_TERM_ID, courses);
+
+    toastStore.add("warning", 
+    "TigerJunction is in maintenance mode until June 7th. Expect some bugs and downtime.", 
+    10)
 
     $ready = true;
 });

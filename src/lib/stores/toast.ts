@@ -18,7 +18,7 @@ export const toastStore = {
      * @param type 
      * @param message 
      */
-    add: (type: Toast["type"], message: string) => {
+    add: (type: Toast["type"], message: string, timeout=3) => {
         // Generate a random id
         const id = Math.floor(Math.random() * 1000000);
 
@@ -26,7 +26,7 @@ export const toastStore = {
         update((toasts: Toast[]) => [{ id, message, type }, ...toasts]);
 
         // Remove the toast after 3 seconds
-        setTimeout(() => toastStore.remove(id), 3000);
+        setTimeout(() => toastStore.remove(id), timeout * 1000);
     }, 
 
     /**
