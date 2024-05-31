@@ -168,7 +168,7 @@ const createIcal = async () => {
             with all your confirmed courses, 
             which you can add to your calendar app of choice by 
             downloading the file or copying the link.
-            If you use the lin, your calendar will automatically
+            If you use the link, your calendar will automatically
             update approximately every 24 hours.
             To update your calendar export immediately, simply export again.
             <span class="underline">
