@@ -5,7 +5,16 @@ import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
 
 // Load course data for default term from Redis
-export const load = async ({ locals: { getSession, supabase } }) => {
+export const load = async ({ locals: { supabase } }) => {
+    const { data: { user }} = await supabase.auth.getUser();
+    if (!user) {
+        return {
+            status: 401,
+            body: { message: "Unauthorized" }
+        }
+    }
+    const userId = user.id;
+
     const redisClient = createClient({
         password: REDIS_PASSWORD,
         socket: {
@@ -13,13 +22,8 @@ export const load = async ({ locals: { getSession, supabase } }) => {
             port: 10705
         }
     });
-    
     redisClient.on("error", err => console.log("Redis Client Error", err));
-
     await redisClient.connect();
-    const session = await getSession();
-
-    const userId = session?.user.id;
 
     const supaPromises = [];
     supaPromises.push(redisClient.json.get(`courses-${CURRENT_TERM_ID}`));
