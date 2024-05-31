@@ -22,7 +22,7 @@ export const checkAdmin = async (supabase: SupabaseClient): Promise<boolean> => 
 
 export const handleLogin = async (supabase: SupabaseClient) => { 
     // Redirect if user is already logged in
-    const user = (await supabase.auth.getSession()).data.session?.user;
+    const { data: { user }} = await supabase.auth.getUser();
     if (user) {
         goto("/recalplus");
         return;
