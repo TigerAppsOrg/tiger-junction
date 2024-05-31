@@ -16,7 +16,7 @@
 
     <p>
         If you have any questions or concerns about TigerJunction, please 
-        contact us at <a href="mailto:motoaki@princeton.edu">motoaki@princeton.edu</a>
+        contact us at <a href="mailto:it.admin@tigerapps.org">it.admin@tigerapps.org</a>
         or leave feedback using the form in the app.  
     </p>
 </div>

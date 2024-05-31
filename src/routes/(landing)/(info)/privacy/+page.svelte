@@ -74,7 +74,7 @@
         7. Contact Us
     </h2>
     <p>
-        If you have any questions about our privacy policy, please contact us at <a href="mailto:motoaki@princeton.edu">motoaki@princeton.edu</a>.
+        If you have any questions about our privacy policy, please contact us at <a href="mailto:it.admin@tigerapps.org">it.admin@tigerapps.org</a>.
     </p>
 </div>
 

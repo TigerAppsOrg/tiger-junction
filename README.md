@@ -41,7 +41,7 @@ This project is sponsored by [TigerApps](https://tigerapps.org/) (which is a Pri
 This project would also not have been possible without the numerous students who gave and continue to give valuable input and feedback.
 
 ## Contact
-Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link) to receive periodic updates on `TigerJunction`. If you have any questions, feedback, or need assistance, feel free to reach out to me at motoaki@princeton.edu. 
+Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVwd90RtgYf0WtPueOF2BUh8gX2zl-C6Tbjtfxo1E6jo6xA/viewform?usp=sf_link) to receive periodic updates on `TigerJunction`. If you have any questions, feedback, or need assistance, feel free to reach out to us at it.admin@tigerapps.org
 
 ## Screenshots
 <div align="center">
