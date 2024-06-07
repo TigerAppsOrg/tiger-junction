@@ -11,7 +11,8 @@
     "sst:deploy": "sst deploy",
     "sst:dev": "sst dev",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
@@ -20,6 +21,8 @@
     "autoprefixer": "^10.4.14",
     "aws-cdk-lib": "2.142.1",
     "constructs": "10.3.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
     "postcss": "^8.4.27",
     "prettier": "^3.3.1",
     "prettier-plugin-svelte": "^3.2.4",
@@ -49,5 +52,8 @@
     "svelte-inview": "^4.0.1",
     "theme-change": "^2.5.0",
     "uninstall": "^0.0.0"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
