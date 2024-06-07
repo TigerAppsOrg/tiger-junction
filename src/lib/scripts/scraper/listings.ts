@@ -12,23 +12,23 @@ const FAILURE_MESSAGE = "Failed to populate listings for term ";
 /**
  * @deprecated
  * @description Pushes all listings for all terms to the database.
- * @param supabase 
+ * @param supabase
  * @returns success or failure message
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
     let resultMessage: Record<number, any> = {};
     for (let term in Object.keys(TERM_MAP)) {
-        let termId = parseInt(term)
+        let termId = parseInt(term);
         let result = await populateListings(supabase, termId);
         resultMessage[termId] = result;
     }
     return resultMessage;
-}
+};
 
 /**
  * Pushes all listings for a given term to the database.
- * @param supabase 
- * @param term 
+ * @param supabase
+ * @param term
  * @returns success or failure message
  */
 const populateListings = async (supabase: SupabaseClient, term: number) => {
@@ -38,20 +38,21 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     const res = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": token
+            Authorization: token
         }
     });
 
     // Format course data
     const data = await res.json();
     const courses = data.classes.class;
-    let formatted: Listing[] = courses.map((x: any) => { 
+    let formatted: Listing[] = courses.map((x: any) => {
         return {
             id: x.course_id,
             code: x.subject + x.catnum,
-            title: x.topic_title === null ? 
-                    x.long_title : 
-                    x.long_title + ": " + x.topic_title,
+            title:
+                x.topic_title === null
+                    ? x.long_title
+                    : x.long_title + ": " + x.topic_title,
             aka: null,
             ult_term: term,
             pen_term: null
@@ -70,12 +71,12 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
     console.log(formatted);
 
-    // Limit entries 
+    // Limit entries
     // formatted = formatted.slice(0, 30);
 
     let { data: currentListings, error: listFetchError } = await supabase
         .from("listings")
-        .select("id, title, aka, ult_term, pen_term")
+        .select("id, title, aka, ult_term, pen_term");
 
     if (listFetchError) {
         console.error(listFetchError);
@@ -86,7 +87,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     let updateCount = 0;
     let unchangedCount = 0;
 
-    console.log(formatted.length)
+    console.log(formatted.length);
     for (let i = 0; i < formatted.length; i++) {
         console.log(i);
         // Insert listing if it doesn't exist
@@ -95,29 +96,33 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 .from("listings")
                 .insert(formatted[i]);
 
-            if (error) return {
-                message: FAILURE_MESSAGE + term 
-                    + " [" + error.message + "]",
-                course: formatted[i],
-            };
-            
+            if (error)
+                return {
+                    message:
+                        FAILURE_MESSAGE + term + " [" + error.message + "]",
+                    course: formatted[i]
+                };
+
             insertCount++;
 
-        // Update or continue if it does exist
+            // Update or continue if it does exist
         } else {
             // let current = currentListings[0];
-            let index = currentListings.findIndex(x => x.id === formatted[i].id);
+            let index = currentListings.findIndex(
+                x => x.id === formatted[i].id
+            );
 
             if (index === -1) {
                 let { error } = await supabase
                     .from("listings")
                     .insert(formatted[i]);
 
-                if (error) return {
-                    message: FAILURE_MESSAGE + term
-                        + " [" + error.message + "]",
-                    course: formatted[i],
-                };
+                if (error)
+                    return {
+                        message:
+                            FAILURE_MESSAGE + term + " [" + error.message + "]",
+                        course: formatted[i]
+                    };
                 continue;
             }
 
@@ -130,43 +135,44 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             let newTitle: string = formatted[i].title;
 
             const checkAka = () => {
-                if (currentListings && newTitle !== currentListings[index].title) 
-                    formatted[i].aka = addNewAka(
-                            formatted[i].aka, 
-                            newTitle);
-            }
+                if (
+                    currentListings &&
+                    newTitle !== currentListings[index].title
+                )
+                    formatted[i].aka = addNewAka(formatted[i].aka, newTitle);
+            };
 
             // Term is the same as current ultimate term
             if (newIndex === ultIndex) {
                 unchangedCount++;
                 continue;
 
-            // Term is more recent than current ultimate term
+                // Term is more recent than current ultimate term
             } else if (newIndex < ultIndex) {
                 checkAka();
                 formatted[i].pen_term = currentListings[index].ult_term;
 
-            // Term is older than current ultimate term
+                // Term is older than current ultimate term
             } else {
                 formatted[i].title = currentListings[index].title;
 
-                // Penultimate term is null 
+                // Penultimate term is null
                 // or is more recent than current penultimate term
                 if (penIndex === -1 || newIndex < penIndex) {
                     checkAka();
                     formatted[i].ult_term = currentListings[index].ult_term;
                     formatted[i].pen_term = term;
 
-                // Term is the same as current penultimate term
+                    // Term is the same as current penultimate term
                 } else if (newIndex === penIndex) {
                     unchangedCount++;
                     continue;
 
-                // Term is older than current penultimate term
+                    // Term is older than current penultimate term
                 } else {
                     checkAka();
                     formatted[i].ult_term = currentListings[index].ult_term;
-                    formatted[i].pen_term = currentListings[index].pen_term;   
+                    formatted[i].pen_term = currentListings[index].pen_term;
                 }
             }
 
@@ -175,12 +181,13 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 .update(formatted[i])
                 .eq("id", formatted[i].id);
 
-                if (error) return {
-                    message: FAILURE_MESSAGE + term 
-                        + " [" + error.message + "]",
-                    course: formatted[i],
+            if (error)
+                return {
+                    message:
+                        FAILURE_MESSAGE + term + " [" + error.message + "]",
+                    course: formatted[i]
                 };
-            
+
             updateCount++;
         }
     }
@@ -191,9 +198,9 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
         message: SUCCESS_MESSAGE + term,
         inserts: insertCount,
         updates: updateCount,
-        unchanged: unchangedCount,
+        unchanged: unchangedCount
     };
-}
+};
 
 // Helper function to add a new aka to a listing
 const addNewAka = (aka: string[] | null, title: string) => {
@@ -202,6 +209,6 @@ const addNewAka = (aka: string[] | null, title: string) => {
 
     aka.push(title);
     return aka.sort();
-}
+};
 
 export { populateAllListings, populateListings };

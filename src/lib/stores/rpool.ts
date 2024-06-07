@@ -11,18 +11,32 @@ import { rMeta, type RMetadata } from "./rmeta";
 
 // Course pool type
 type CoursePool = {
-    set: (this: void, value: Record<number, CourseData[]>) => void,
-    update: (this: void, updater: (value: Record<number, CourseData[]>) 
-        => Record<number, CourseData[]>) => void,
-    subscribe: (this: void, run: Subscriber<Record<number, CourseData[]>>, 
-        invalidate?: Invalidator<Record<number, CourseData[]>>) 
-        => Unsubscriber,
-    add: (supabase: SupabaseClient, scheduleId: number, course: CourseData, SCD?: boolean) 
-        => Promise<boolean>,
-    remove: (supabase: SupabaseClient, scheduleId: number, course: CourseData, SCD?: boolean) 
-        => Promise<boolean>,
-    clear: (supabase: SupabaseClient, scheduleId: number) => Promise<boolean>,
-}
+    set: (this: void, value: Record<number, CourseData[]>) => void;
+    update: (
+        this: void,
+        updater: (
+            value: Record<number, CourseData[]>
+        ) => Record<number, CourseData[]>
+    ) => void;
+    subscribe: (
+        this: void,
+        run: Subscriber<Record<number, CourseData[]>>,
+        invalidate?: Invalidator<Record<number, CourseData[]>>
+    ) => Unsubscriber;
+    add: (
+        supabase: SupabaseClient,
+        scheduleId: number,
+        course: CourseData,
+        SCD?: boolean
+    ) => Promise<boolean>;
+    remove: (
+        supabase: SupabaseClient,
+        scheduleId: number,
+        course: CourseData,
+        SCD?: boolean
+    ) => Promise<boolean>;
+    clear: (supabase: SupabaseClient, scheduleId: number) => Promise<boolean>;
+};
 
 //----------------------------------------------------------------------
 // Helpers
@@ -30,17 +44,20 @@ type CoursePool = {
 
 /**
  * Add default metadata to a course
- * @param course 
- * @param scheduleId 
+ * @param course
+ * @param scheduleId
  */
-export const addCourseMetadata = async (supabase: SupabaseClient, course: CourseData, 
-scheduleId: number): Promise<boolean> => {
+export const addCourseMetadata = async (
+    supabase: SupabaseClient,
+    course: CourseData,
+    scheduleId: number
+): Promise<boolean> => {
     // Create default metadata
     let meta: any = {
         complete: false,
         color: undefined,
         sections: [],
-        confirms: {},
+        confirms: {}
     };
 
     // * Handle color
@@ -53,10 +70,10 @@ scheduleId: number): Promise<boolean> => {
     rMeta.subscribe(x => {
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
         for (let i = 0; i < otherIds.length; i++) {
-            otherColors.push(x[scheduleId][otherIds[i]].color)
+            otherColors.push(x[scheduleId][otherIds[i]].color);
         }
     })();
-        
+
     let colorMap: Record<number, number> = {};
     for (const o of otherColors) {
         if (colorMap.hasOwnProperty(o)) colorMap[o] += 1;
@@ -93,7 +110,7 @@ scheduleId: number): Promise<boolean> => {
         let uniqueCategories = [...new Set(categories)];
         meta.sections = uniqueCategories.sort();
 
-    // Sections are not loaded
+        // Sections are not loaded
     } else {
         // Load section data
         let res = await sectionData.add(supabase, getCurrentTerm(), course.id);
@@ -102,7 +119,9 @@ scheduleId: number): Promise<boolean> => {
 
         // Get section data
         sectionData.subscribe(x => {
-            sections = x[course.term][course.id] ? x[course.term][course.id] : [];
+            sections = x[course.term][course.id]
+                ? x[course.term][course.id]
+                : [];
         })();
 
         // Add categories
@@ -113,7 +132,7 @@ scheduleId: number): Promise<boolean> => {
 
     // Auto-Add if only one section in a category and check if complete
     meta.complete = true;
-    for (let i = 0; i  < meta.sections.length; i++) {
+    for (let i = 0; i < meta.sections.length; i++) {
         let category = meta.sections[i];
         let categorySections = sections.filter(x => x.category === category);
         if (categorySections.length === 1) {
@@ -131,36 +150,38 @@ scheduleId: number): Promise<boolean> => {
     });
 
     return true;
-}
+};
 /**
  * Get the current pool for a given schedule
- * @param pool 
- * @param scheduleId 
+ * @param pool
+ * @param scheduleId
  * @returns course data array for the current pool
  */
-const getCurrentPool = (pool: CoursePool, scheduleId: number): 
-CourseData[] => {
+const getCurrentPool = (pool: CoursePool, scheduleId: number): CourseData[] => {
     let data: CourseData[] = [];
-    pool.subscribe((x) => {
+    pool.subscribe(x => {
         if (x.hasOwnProperty(scheduleId)) data = x[scheduleId];
         else data = [];
     })();
     return data;
-}
+};
 
 /**
  * Initialize a course pool
- * @param supabase 
- * @param scheduleId 
- * @param term 
+ * @param supabase
+ * @param scheduleId
+ * @param term
  */
-export const initSchedule = async (supabase: SupabaseClient, scheduleId: number, 
-term: number) => {
+export const initSchedule = async (
+    supabase: SupabaseClient,
+    scheduleId: number,
+    term: number
+) => {
     let loaded = false;
     savedCourses.update(x => {
         if (x.hasOwnProperty(scheduleId)) loaded = true;
         else x[scheduleId] = [];
-        
+
         return x;
     });
     if (loaded) return;
@@ -168,9 +189,10 @@ term: number) => {
     const rawCourses = rawCourseData.get(term);
 
     // Fetch course-schedule-associations
-    let { data, error } = await supabase.from("course_schedule_associations")
+    let { data, error } = await supabase
+        .from("course_schedule_associations")
         .select("course_id, metadata")
-        .eq("schedule_id", scheduleId)
+        .eq("schedule_id", scheduleId);
 
     if (error) {
         console.log(error);
@@ -202,34 +224,37 @@ term: number) => {
             x[scheduleId] = [...x[scheduleId], cur];
             return x;
         });
-    }        
-}
+    }
+};
 
 /**
  * Add a course to a pool
- * @param supabase 
- * @param pool 
- * @param scheduleId 
- * @param course 
- * @param SCD 
+ * @param supabase
+ * @param pool
+ * @param scheduleId
+ * @param course
+ * @param SCD
  * @returns true if successful, false if failure
  */
-const addCourse = async (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number, course: CourseData, SCD?: boolean): 
-Promise<boolean> => {
+const addCourse = async (
+    supabase: SupabaseClient,
+    pool: CoursePool,
+    scheduleId: number,
+    course: CourseData,
+    SCD?: boolean
+): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
-    
     // Add metadata
     let meta: RMetadata | {} = {};
     if (pool === savedCourses) {
         addCourseMetadata(supabase, course, scheduleId);
         rMeta.subscribe(x => {
-            meta =  x[scheduleId][course.id];
+            meta = x[scheduleId][course.id];
         })();
     }
-    
+
     // Update store
     pool.update(x => {
         if (currentPool.length === 0) x[scheduleId] = [course];
@@ -239,14 +264,13 @@ Promise<boolean> => {
 
     if (SCD) searchCourseData.remove(getCurrentTerm(), [course]);
 
-
     // Update course-schedule-associations table
     const { error } = await supabase
         .from("course_schedule_associations")
         .insert({
             course_id: course.id,
             schedule_id: scheduleId,
-            metadata: meta,
+            metadata: meta
         });
 
     // Revert if error
@@ -260,19 +284,24 @@ Promise<boolean> => {
         return false;
     }
     return true;
-}
+};
 
 /**
  * Remove a course from a pool
- * @param supabase 
- * @param pool 
- * @param scheduleId 
- * @param course 
- * @param SCD 
+ * @param supabase
+ * @param pool
+ * @param scheduleId
+ * @param course
+ * @param SCD
  * @returns true if successful, false if failure
  */
-const removeCourse = async (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
+const removeCourse = async (
+    supabase: SupabaseClient,
+    pool: CoursePool,
+    scheduleId: number,
+    course: CourseData,
+    SCD?: boolean
+): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
@@ -280,21 +309,22 @@ scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
 
     // Update store
     pool.update(x => {
-        x[scheduleId] = x[scheduleId].filter(y => y.id !== course.id)
+        x[scheduleId] = x[scheduleId].filter(y => y.id !== course.id);
         return x;
     });
 
     if (SCD) searchCourseData.add(getCurrentTerm(), [course]);
 
     // Update course-schedule-associations table
-    const { error } = await supabase.from("course_schedule_associations")
+    const { error } = await supabase
+        .from("course_schedule_associations")
         .delete()
         .eq("course_id", course.id)
-        .eq("schedule_id", scheduleId)
+        .eq("schedule_id", scheduleId);
 
     // Revert if error
     if (error) {
-        console.log(error)
+        console.log(error);
         pool.update(x => {
             x[scheduleId] = currentPool;
             return x;
@@ -303,17 +333,20 @@ scheduleId: number, course: CourseData, SCD?: boolean): Promise<boolean> => {
         return false;
     }
     return true;
-}
+};
 
 /**
  * Clear a pool
- * @param supabase 
- * @param pool 
- * @param scheduleId 
+ * @param supabase
+ * @param pool
+ * @param scheduleId
  * @returns true if successful, false if failure
  */
-const clearPool = async (supabase: SupabaseClient, pool: CoursePool, 
-scheduleId: number): Promise<boolean> => {
+const clearPool = async (
+    supabase: SupabaseClient,
+    pool: CoursePool,
+    scheduleId: number
+): Promise<boolean> => {
     // Get current pool courses
     let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
@@ -326,9 +359,10 @@ scheduleId: number): Promise<boolean> => {
     searchCourseData.add(getCurrentTerm(), currentPool);
 
     // Update course-schedule-associations table
-    const { error } = await supabase.from("course_schedule_associations")
+    const { error } = await supabase
+        .from("course_schedule_associations")
         .delete()
-        .eq("schedule_id", scheduleId)
+        .eq("schedule_id", scheduleId);
 
     // Revert if error
     if (error) {
@@ -341,14 +375,17 @@ scheduleId: number): Promise<boolean> => {
         return false;
     }
     return true;
-}
+};
 
 //----------------------------------------------------------------------
 // Saved courses
 //----------------------------------------------------------------------
 
-const { set: setSave, update: updateSave, subscribe: subscribeSave }: 
-Writable<Record<number, CourseData[]>> = writable({});
+const {
+    set: setSave,
+    update: updateSave,
+    subscribe: subscribeSave
+}: Writable<Record<number, CourseData[]>> = writable({});
 
 export const savedCourses: CoursePool = {
     set: setSave,
@@ -356,36 +393,50 @@ export const savedCourses: CoursePool = {
     subscribe: subscribeSave,
 
     /**
-     * 
-     * @param supabase 
-     * @param scheduleId 
-     * @param course 
+     *
+     * @param supabase
+     * @param scheduleId
+     * @param course
      */
-    add: async (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData, SCD?: boolean): Promise<boolean> => {
-        return await addCourse(supabase, savedCourses, scheduleId, 
-            course, SCD);
+    add: async (
+        supabase: SupabaseClient,
+        scheduleId: number,
+        course: CourseData,
+        SCD?: boolean
+    ): Promise<boolean> => {
+        return await addCourse(supabase, savedCourses, scheduleId, course, SCD);
     },
 
     /**
-     * 
-     * @param supabase 
-     * @param scheduleId 
-     * @param course 
+     *
+     * @param supabase
+     * @param scheduleId
+     * @param course
      */
-    remove: async (supabase: SupabaseClient, scheduleId: number, 
-    course: CourseData, SCD?: boolean): Promise<boolean> => {
-        return await removeCourse(supabase, savedCourses, scheduleId, 
-            course, SCD);
+    remove: async (
+        supabase: SupabaseClient,
+        scheduleId: number,
+        course: CourseData,
+        SCD?: boolean
+    ): Promise<boolean> => {
+        return await removeCourse(
+            supabase,
+            savedCourses,
+            scheduleId,
+            course,
+            SCD
+        );
     },
 
     /**
-     * 
-     * @param supabase 
-     * @param scheduleId 
+     *
+     * @param supabase
+     * @param scheduleId
      */
-    clear: async (supabase: SupabaseClient, scheduleId: number): 
-    Promise<boolean> => {
+    clear: async (
+        supabase: SupabaseClient,
+        scheduleId: number
+    ): Promise<boolean> => {
         return await clearPool(supabase, savedCourses, scheduleId);
     }
-}
+};

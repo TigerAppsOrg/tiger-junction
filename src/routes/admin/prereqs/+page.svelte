@@ -1,127 +1,134 @@
-<svelte:head>
-    <title>TigerJunction Prereq Manager</title>
-</svelte:head>
-
 <script lang="ts">
-import { toastStore } from "$lib/stores/toast";
-import { onMount } from "svelte";
-import AdminHeader from "../AdminHeader.svelte";
+    import { toastStore } from "$lib/stores/toast";
+    import { onMount } from "svelte";
+    import AdminHeader from "../AdminHeader.svelte";
 
-export let data;
+    export let data;
 
-type Course = {
-    title: string,
-    id: string,
-    prereqs: string | null,
-    description: string,
-    other: string | null,
-    equiv: string | null,
-}
+    type Course = {
+        title: string;
+        id: string;
+        prereqs: string | null;
+        description: string;
+        other: string | null;
+        equiv: string | null;
+    };
 
-let initialized = false;
-let loading = false;
-let locked = false;
-let courselist: Course[] = [];
-let term = 1244;
+    let initialized = false;
+    let loading = false;
+    let locked = false;
+    let courselist: Course[] = [];
+    let term = 1244;
 
-let currentCourseIndex = 0;
-$: currentCourse = courselist[currentCourseIndex];
+    let currentCourseIndex = 0;
+    $: currentCourse = courselist[currentCourseIndex];
 
-const handleInit = async () => {
-    loading = true;
-    console.log("Initializing prereq manager for term: ", term);
+    const handleInit = async () => {
+        loading = true;
+        console.log("Initializing prereq manager for term: ", term);
 
-    const ca = await fetch("/api/admin/prereqs/cache?term=" + term);
-    if (!ca.ok) {
-        console.error("Failed to fetch courselist");
-        loading = false;
-        toastStore.add("error", "Invalid term or failed to fetch courselist");
-        return;
-    }
-
-    const jsonCourselist = await ca.json();
-    courselist = jsonCourselist.map((details: any) => {
-        return {
-            title: details.crosslistings + ": " + details.long_title,
-            id: details.course_id,
-            prereqs: details.other_restrictions,
-            description: details.description,
-            other: details.other_information,
-            equiv: details.course_equivalents.hasOwnProperty("course_equivalent") ? 
-            details.course_equivalents.course_equivalent.map(
-                (x: { subject: string; catnum: string; }) => {
-                return x.subject + x.catnum
-            }).join(", ") : null,
+        const ca = await fetch("/api/admin/prereqs/cache?term=" + term);
+        if (!ca.ok) {
+            console.error("Failed to fetch courselist");
+            loading = false;
+            toastStore.add(
+                "error",
+                "Invalid term or failed to fetch courselist"
+            );
+            return;
         }
-    })
 
-    loading = false;
-    initialized = true;
-}
+        const jsonCourselist = await ca.json();
+        courselist = jsonCourselist.map((details: any) => {
+            return {
+                title: details.crosslistings + ": " + details.long_title,
+                id: details.course_id,
+                prereqs: details.other_restrictions,
+                description: details.description,
+                other: details.other_information,
+                equiv: details.course_equivalents.hasOwnProperty(
+                    "course_equivalent"
+                )
+                    ? details.course_equivalents.course_equivalent
+                          .map((x: { subject: string; catnum: string }) => {
+                              return x.subject + x.catnum;
+                          })
+                          .join(", ")
+                    : null
+            };
+        });
 
-const handleEnter = (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-        gotoIndex((e.target as HTMLInputElement).value);
-        (e.target as HTMLInputElement).value = "";
-    }
-}
-
-const watchArrows = (e: KeyboardEvent) => {
-    if (e.key === "ArrowRight") {
-        handleNextCourse();
-    } else if (e.key === "ArrowLeft") {
-        handlePreviousCourse();
-    }
-}
-
-//----------------------------------------------------------------------
-
-// ! Warning - this is a very naive implementation 
-const handleNextCourse = () => {
-    if (currentCourseIndex === courselist.length - 1) {
-        toastStore.add("error", "No next course");
-        return;
+        loading = false;
+        initialized = true;
     };
 
-    currentCourseIndex++;
-}
-
-const handlePreviousCourse = async () => {
-    if (currentCourseIndex === 0) {
-        toastStore.add("error", "No previous course");
-        return;
+    const handleEnter = (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+            gotoIndex((e.target as HTMLInputElement).value);
+            (e.target as HTMLInputElement).value = "";
+        }
     };
 
-    currentCourseIndex--;
-}
+    const watchArrows = (e: KeyboardEvent) => {
+        if (e.key === "ArrowRight") {
+            handleNextCourse();
+        } else if (e.key === "ArrowLeft") {
+            handlePreviousCourse();
+        }
+    };
 
-const gotoIndex = async (index: string) => {
-    const indexNum = parseInt(index);
+    //----------------------------------------------------------------------
 
-    if (isNaN(indexNum)) {
-        const searchIndex = courselist.findIndex((x) => 
-            x.title.split(" ")[0].toLowerCase() === index.toLowerCase()
-        );
-        if (searchIndex === -1) {
+    // ! Warning - this is a very naive implementation
+    const handleNextCourse = () => {
+        if (currentCourseIndex === courselist.length - 1) {
+            toastStore.add("error", "No next course");
+            return;
+        }
+
+        currentCourseIndex++;
+    };
+
+    const handlePreviousCourse = async () => {
+        if (currentCourseIndex === 0) {
+            toastStore.add("error", "No previous course");
+            return;
+        }
+
+        currentCourseIndex--;
+    };
+
+    const gotoIndex = async (index: string) => {
+        const indexNum = parseInt(index);
+
+        if (isNaN(indexNum)) {
+            const searchIndex = courselist.findIndex(
+                x => x.title.split(" ")[0].toLowerCase() === index.toLowerCase()
+            );
+            if (searchIndex === -1) {
+                toastStore.add("error", "Invalid index");
+                return;
+            }
+            currentCourseIndex = searchIndex;
+            return;
+        }
+
+        if (indexNum < 1 || indexNum > courselist.length) {
             toastStore.add("error", "Invalid index");
             return;
         }
-        currentCourseIndex = searchIndex;
-        return;
-    }
 
-    if (indexNum < 1 || indexNum > courselist.length) {
-        toastStore.add("error", "Invalid index");
-        return;
+        currentCourseIndex = indexNum - 1;
     };
 
-    currentCourseIndex = indexNum - 1;
-}
-
-onMount(() => {
-    document.addEventListener("keydown", watchArrows);
-})
+    onMount(() => {
+        document.addEventListener("keydown", watchArrows);
+    });
 </script>
+
+<svelte:head>
+    <title>TigerJunction Prereq Manager</title>
+</svelte:head>
 
 <main class="h-screen bg-zinc-900 text-white">
     <AdminHeader supabase={data.supabase} />
@@ -132,55 +139,71 @@ onMount(() => {
                 Prerequisite Manager of Death
             </h1>
             {#if !loading}
-
-            <div class="flex items-center justify-center gap-4">
-                <input type="text" placeholder="Enter term" 
-                class="textinput"
-                bind:value={term}>
-                <button class="button-85" on:click={() => handleInit()}>
-                    Start
-                </button>
-            </div>
-
+                <div class="flex items-center justify-center gap-4">
+                    <input
+                        type="text"
+                        placeholder="Enter term"
+                        class="textinput"
+                        bind:value={term} />
+                    <button class="button-85" on:click={() => handleInit()}>
+                        Start
+                    </button>
+                </div>
             {:else}
-            <p class="text-xl mb-2">
-                Loading...
-            </p>
-            <svg class="ip mx-auto" viewBox="0 0 256 128" width="256px" height="128px" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#5ebd3e" />
-                        <stop offset="33%" stop-color="#ffb900" />
-                        <stop offset="67%" stop-color="#f78200" />
-                        <stop offset="100%" stop-color="#e23838" />
-                    </linearGradient>
-                    <linearGradient id="grad2" x1="1" y1="0" x2="0" y2="0">
-                        <stop offset="0%" stop-color="#e23838" />
-                        <stop offset="33%" stop-color="#973999" />
-                        <stop offset="67%" stop-color="#009cdf" />
-                        <stop offset="100%" stop-color="#5ebd3e" />
-                    </linearGradient>
-                </defs>
-                <g fill="none" stroke-linecap="round" stroke-width="16">
-                    <g class="ip__track" stroke="#ddd">
-                        <path d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56"/>
-                        <path d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64"/>
+                <p class="text-xl mb-2">Loading...</p>
+                <svg
+                    class="ip mx-auto"
+                    viewBox="0 0 256 128"
+                    width="256px"
+                    height="128px"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#5ebd3e" />
+                            <stop offset="33%" stop-color="#ffb900" />
+                            <stop offset="67%" stop-color="#f78200" />
+                            <stop offset="100%" stop-color="#e23838" />
+                        </linearGradient>
+                        <linearGradient id="grad2" x1="1" y1="0" x2="0" y2="0">
+                            <stop offset="0%" stop-color="#e23838" />
+                            <stop offset="33%" stop-color="#973999" />
+                            <stop offset="67%" stop-color="#009cdf" />
+                            <stop offset="100%" stop-color="#5ebd3e" />
+                        </linearGradient>
+                    </defs>
+                    <g fill="none" stroke-linecap="round" stroke-width="16">
+                        <g class="ip__track" stroke="#ddd">
+                            <path
+                                d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56" />
+                            <path
+                                d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64" />
+                        </g>
+                        <g stroke-dasharray="180 656">
+                            <path
+                                class="ip__worm1"
+                                stroke="url(#grad1)"
+                                stroke-dashoffset="0"
+                                d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56" />
+                            <path
+                                class="ip__worm2"
+                                stroke="url(#grad2)"
+                                stroke-dashoffset="358"
+                                d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64" />
+                        </g>
                     </g>
-                    <g stroke-dasharray="180 656">
-                        <path class="ip__worm1" stroke="url(#grad1)" stroke-dashoffset="0" d="M8,64s0-56,60-56,60,112,120,112,60-56,60-56"/>
-                        <path class="ip__worm2" stroke="url(#grad2)" stroke-dashoffset="358" d="M248,64s0-56-60-56-60,112-120,112S8,64,8,64"/>
-                    </g>
-                </g>
-            </svg>
+                </svg>
             {/if}
         </div>
     {:else}
-        <div class="rounded-lg p-4 border-[1px] border-zinc-600 w-11/12 max-w-5xl mx-auto
+        <div
+            class="rounded-lg p-4 border-[1px] border-zinc-600 w-11/12 max-w-5xl mx-auto
         mt-6">
             <div class="space-y-2 mb-2">
-                <a class="text-xl hover:text-zinc-200 duration-100" target="_blank" 
-                href={`https://registrar.princeton.edu/course-offerings/course-details?courseid=${currentCourse.id}&term=${term}`}>
-                    {currentCourseIndex + 1} / {courselist.length} - 
+                <a
+                    class="text-xl hover:text-zinc-200 duration-100"
+                    target="_blank"
+                    href={`https://registrar.princeton.edu/course-offerings/course-details?courseid=${currentCourse.id}&term=${term}`}>
+                    {currentCourseIndex + 1} / {courselist.length} -
                     {currentCourse.title || "ERROR"}
                 </a>
                 <!-- <p>
@@ -192,28 +215,32 @@ onMount(() => {
                     {currentCourse.prereqs || "None."}
                 </p>
                 {#if currentCourse.equiv}
-                <p>
-                    <span class="underline">Equivalents: </span>
-                    {currentCourse.equiv}
-                </p>
+                    <p>
+                        <span class="underline">Equivalents: </span>
+                        {currentCourse.equiv}
+                    </p>
                 {/if}
                 {#if currentCourse.other}
-                <p>
-                    <span class="underline">Other: </span>
-                    {currentCourse.other}
-                </p>
+                    <p>
+                        <span class="underline">Other: </span>
+                        {currentCourse.other}
+                    </p>
                 {/if}
             </div>
             <div class="flex gap-2">
-                <button class="handlerButton bg-orange-400 hover:bg-orange-500"
-                on:click={handlePreviousCourse}>
+                <button
+                    class="handlerButton bg-orange-400 hover:bg-orange-500"
+                    on:click={handlePreviousCourse}>
                     Previous
                 </button>
-                <input type="text" class="textinput flex-1" 
-                placeholder="Go to index"
-                on:keydown={handleEnter}>
-                <button class="handlerButton bg-blue-400 hover:bg-blue-500"
-                on:click={handleNextCourse}>
+                <input
+                    type="text"
+                    class="textinput flex-1"
+                    placeholder="Go to index"
+                    on:keydown={handleEnter} />
+                <button
+                    class="handlerButton bg-blue-400 hover:bg-blue-500"
+                    on:click={handleNextCourse}>
                     Next
                 </button>
             </div>
@@ -250,8 +277,8 @@ onMount(() => {
 
     :root {
         --hue: 200;
-        --bg: hsl(var(--hue),90%,95%);
-        --fg: hsl(var(--hue),90%,5%);
+        --bg: hsl(var(--hue), 90%, 95%);
+        --fg: hsl(var(--hue), 90%, 5%);
         --trans-dur: 0.3s;
     }
 
@@ -260,7 +287,7 @@ onMount(() => {
         height: 4em;
     }
     .ip__track {
-        stroke: hsl(var(--hue),90%,90%);
+        stroke: hsl(var(--hue), 90%, 90%);
         transition: stroke var(--trans-dur);
     }
     .ip__worm1,
@@ -274,11 +301,11 @@ onMount(() => {
     /* Dark theme */
     @media (prefers-color-scheme: dark) {
         :root {
-            --bg: hsl(var(--hue),90%,5%);
-            --fg: hsl(var(--hue),90%,95%);
+            --bg: hsl(var(--hue), 90%, 5%);
+            --fg: hsl(var(--hue), 90%, 95%);
         }
         .ip__track {
-            stroke: hsl(var(--hue),90%,15%);
+            stroke: hsl(var(--hue), 90%, 15%);
         }
     }
 

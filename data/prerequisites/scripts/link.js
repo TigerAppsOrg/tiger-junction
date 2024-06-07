@@ -3,8 +3,8 @@
  * Usage: node link.js
  */
 
-import fs from 'fs';
-import yaml from 'js-yaml';
+import fs from "fs";
+import yaml from "js-yaml";
 
 /**
  * Links the courses in the prerequisite files to their respective
@@ -15,7 +15,9 @@ import yaml from 'js-yaml';
 export default function link() {
     console.log("Linking...");
 
-    const crossTable = JSON.parse(fs.readFileSync("../cache/resolve/cross_table.json", "utf-8"));
+    const crossTable = JSON.parse(
+        fs.readFileSync("../cache/resolve/cross_table.json", "utf-8")
+    );
 
     const prereqFiles = fs.readdirSync("lib");
     for (let i = 0; i < prereqFiles.length; i++) {
@@ -31,14 +33,18 @@ export default function link() {
 
             cl: for (let k = 0; k < courses.length; k++) {
                 if (!crossTable.hasOwnProperty(courses[k].course)) {
-                    if (courses[k].course === "MAT    NFO2" 
-                    || courses[k].course === "MAT    NFO1"
-                    || courses[k].course === "MAT NFO1"
-                    || courses[k].course === "MAT NFO2") {
+                    if (
+                        courses[k].course === "MAT    NFO2" ||
+                        courses[k].course === "MAT    NFO1" ||
+                        courses[k].course === "MAT NFO1" ||
+                        courses[k].course === "MAT NFO2"
+                    ) {
                         continue cl;
                     }
-                    console.error(`Course ${courses[k].course} not found in cross table`);
-                    console.error(`File ${file}`)
+                    console.error(
+                        `Course ${courses[k].course} not found in cross table`
+                    );
+                    console.error(`File ${file}`);
                     console.error("Exiting link process");
                     return false;
                 }
@@ -46,7 +52,13 @@ export default function link() {
                 courses[k].id = crossTable[courses[k].course].id;
             }
 
-            fs.writeFileSync(file, "---\n" + yaml.dump(frontMatter) + "---\n" + yaml.dump(courses).trim());
+            fs.writeFileSync(
+                file,
+                "---\n" +
+                    yaml.dump(frontMatter) +
+                    "---\n" +
+                    yaml.dump(courses).trim()
+            );
         }
     }
 

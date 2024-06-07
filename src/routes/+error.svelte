@@ -1,5 +1,5 @@
 <script lang="ts">
-import { page } from "$app/stores";
+    import { page } from "$app/stores";
 </script>
 
 <svelte:head>
@@ -14,23 +14,22 @@ import { page } from "$app/stores";
             <span class="text-std-darkPurple">noes!</span>
         </h1>
         <h2 class="text-5xl mb-8 text-zinc-700 font-light">
-            {$page.status} {$page.error?.message}
+            {$page.status}
+            {$page.error?.message}
         </h2>
         <a href="/">
-            <button class="btn text-2xl">
-                Go To Homepage →
-            </button>
+            <button class="btn text-2xl"> Go To Homepage → </button>
         </a>
     </div>
 </div>
 
 <style lang="postcss">
-.btn {
-    @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg
+    .btn {
+        @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg
     bg-std-green text-black hover:bg-std-darkGreen duration-150;
-}
+    }
 
-.btn:active {
-    @apply transform scale-95;
-}
+    .btn:active {
+        @apply transform scale-95;
+    }
 </style>

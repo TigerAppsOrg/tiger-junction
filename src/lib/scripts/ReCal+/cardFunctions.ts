@@ -14,10 +14,13 @@ import { toastStore } from "$lib/stores/toast";
 
 /**
  * Save a course from the search results
- * @param supabase 
- * @param course 
+ * @param supabase
+ * @param course
  */
-const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData) => {
+const saveCourseFromSearch = async (
+    supabase: SupabaseClient,
+    course: CourseData
+) => {
     // Check if section data is loaded
     if (!get(sectionData)[course.term][course.id]) return;
 
@@ -25,12 +28,11 @@ const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData
     if (get(savedCourses)[getCurrentSchedule()].length >= 50) {
         toastStore.add("error", "Schedules are limited to 50 courses.");
         return;
-    };
+    }
 
     hoveredCourse.set(null);
     await savedCourses.add(supabase, getCurrentSchedule(), course, true);
-}
-
+};
 
 //----------------------------------------------------------------------
 // From Saved
@@ -38,15 +40,14 @@ const saveCourseFromSearch = async (supabase: SupabaseClient, course: CourseData
 
 /**
  * Remove a course from the saved courses
- * @param supabase 
- * @param course 
+ * @param supabase
+ * @param course
  */
-const removeCourseFromSaved = async (supabase: SupabaseClient, course: CourseData) => {
+const removeCourseFromSaved = async (
+    supabase: SupabaseClient,
+    course: CourseData
+) => {
     await savedCourses.remove(supabase, getCurrentSchedule(), course, true);
-}
+};
 
-
-export {
-    saveCourseFromSearch,
-    removeCourseFromSaved,
-}
+export { saveCourseFromSearch, removeCourseFromSaved };

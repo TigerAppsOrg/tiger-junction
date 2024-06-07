@@ -4,11 +4,11 @@
  * Usage: node compile.js <earliest-term>
  */
 
-import reformat from './reformat.js';
-import add from './add.js';
-import link from './link.js';
-import assemble from './assemble.js';
-import { TERM_MAP } from './shared.js';
+import reformat from "./reformat.js";
+import add from "./add.js";
+import link from "./link.js";
+import assemble from "./assemble.js";
+import { TERM_MAP } from "./shared.js";
 
 const args = process.argv.slice(2);
 

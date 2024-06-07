@@ -1,7 +1,7 @@
 <script lang="ts">
     export let listData: string[] = [];
     export let url: string = "/";
-</script> 
+</script>
 
 <div>
     {#if listData.length === 0}

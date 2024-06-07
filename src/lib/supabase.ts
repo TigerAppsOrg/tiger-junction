@@ -3,26 +3,33 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Checks if the user is an admin
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
-export const checkAdmin = async (supabase: SupabaseClient): Promise<boolean> => {
-    const { data: { user }} = await supabase.auth.getUser();
+export const checkAdmin = async (
+    supabase: SupabaseClient
+): Promise<boolean> => {
+    const {
+        data: { user }
+    } = await supabase.auth.getUser();
     if (!user) {
         throw new Error("User not found");
     }
 
-    const { data, error } = await supabase.from("private_profiles")
+    const { data, error } = await supabase
+        .from("private_profiles")
         .select("is_admin")
         .eq("id", user.id)
         .single();
-    
-    return !error && data && data.is_admin;
-}
 
-export const handleLogin = async (supabase: SupabaseClient) => { 
+    return !error && data && data.is_admin;
+};
+
+export const handleLogin = async (supabase: SupabaseClient) => {
     // Redirect if user is already logged in
-    const { data: { user }} = await supabase.auth.getUser();
+    const {
+        data: { user }
+    } = await supabase.auth.getUser();
     if (user) {
         goto("/recalplus");
         return;
@@ -34,4 +41,4 @@ export const handleLogin = async (supabase: SupabaseClient) => {
             redirectTo: "https://junction.tigerapps.org/auth/callback"
         }
     });
-}
+};

@@ -5,7 +5,10 @@ export const GET: RequestHandler = async ({ params }) => {
     if (!uuid) throw new Error("No UUID provided");
 
     // Fetch file from Supabase Storage
-    const data = await fetch("https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/" + uuid);
+    const data = await fetch(
+        "https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/" +
+            uuid
+    );
 
     // Download file
     const buffer = await data.arrayBuffer();

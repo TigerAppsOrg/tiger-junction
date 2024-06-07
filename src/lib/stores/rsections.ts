@@ -6,28 +6,28 @@ import { writable, type Writable } from "svelte/store";
 
 // term -> SectionMap
 export type RawSectionData = {
-    [key: number]: SectionMap
-}
+    [key: number]: SectionMap;
+};
 
 // course_id -> SectionData[]
 export type SectionMap = {
-    [key: string]: SectionData[]
-}
+    [key: string]: SectionData[];
+};
 
 export type SectionData = {
-    cap: number,
-    category: string,
-    course_id: number,
-    days: number,
-    end_time: number,
-    id: number,
-    num: number,
-    room: string,
-    start_time: number,
-    title: string,
-    tot: number,
-    status: number,
-}
+    cap: number;
+    category: string;
+    course_id: number;
+    days: number;
+    end_time: number;
+    id: number;
+    num: number;
+    room: string;
+    start_time: number;
+    title: string;
+    tot: number;
+    status: number;
+};
 
 const { set, update, subscribe }: Writable<RawSectionData> = writable(
     JSON.parse(JSON.stringify(SECTION_OBJ))
@@ -40,12 +40,15 @@ export const sectionData = {
 
     /**
      * Add section data for a given course
-     * @param supabase 
-     * @param term 
-     * @param courseId 
+     * @param supabase
+     * @param term
+     * @param courseId
      */
-    add: async (supabase: SupabaseClient, term: keyof RawSectionData, 
-    courseId: number): Promise<boolean> => {
+    add: async (
+        supabase: SupabaseClient,
+        term: keyof RawSectionData,
+        courseId: number
+    ): Promise<boolean> => {
         // Check if the data is already loaded
         let loaded = false;
         sectionData.subscribe(x => {
@@ -72,4 +75,4 @@ export const sectionData = {
         });
         return true;
     }
-}
+};

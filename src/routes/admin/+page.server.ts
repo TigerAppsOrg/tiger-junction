@@ -17,10 +17,10 @@ export const load = async ({ locals }) => {
     const seenCount = await locals.supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
-        .eq("doneFeedback", true); 
+        .eq("doneFeedback", true);
 
     if (seenCount.error) throw new Error(seenCount.error.message);
-    
+
     const feedback = await locals.supabase
         .from("feedback")
         .select("id, feedback", { count: "exact", head: false })
@@ -32,8 +32,8 @@ export const load = async ({ locals }) => {
         seenCount: seenCount.count,
         feedbackCount: feedback.count,
         feedback: feedback.data
-    }
-}
+    };
+};
 
 export const actions: Actions = {
     // ! Pushers
@@ -51,7 +51,11 @@ export const actions: Actions = {
         const currentTime = new Date().getTime();
         console.log("Pushing listings for term " + term);
         await populateListings(locals.supabase, termInt);
-        console.log("Finished pushing listings in " + (new Date().getTime() - currentTime) + "ms");
+        console.log(
+            "Finished pushing listings in " +
+                (new Date().getTime() - currentTime) +
+                "ms"
+        );
         return {
             message: "Successfully pushed listings"
         };
@@ -72,9 +76,18 @@ export const actions: Actions = {
         if (refreshGradingField === "on") refreshGrading = true;
 
         const currentTime = new Date().getTime();
-        console.log("Pushing courses for term " + term + " with refreshGrading = " + refreshGrading);
+        console.log(
+            "Pushing courses for term " +
+                term +
+                " with refreshGrading = " +
+                refreshGrading
+        );
         await getAllCourses(locals.supabase, termInt, refreshGrading);
-        console.log("Finished pushing courses in " + (new Date().getTime() - currentTime) + "ms");
+        console.log(
+            "Finished pushing courses in " +
+                (new Date().getTime() - currentTime) +
+                "ms"
+        );
         return {
             message: "Successfully pushed courses"
         };
@@ -93,7 +106,11 @@ export const actions: Actions = {
         const currentTime = new Date().getTime();
         console.log("Pushing evaluations for term " + term);
         await populateEvaluations(locals.supabase, termInt);
-        console.log("Finished pushing evaluations in " + (new Date().getTime() - currentTime) + "ms");
+        console.log(
+            "Finished pushing evaluations in " +
+                (new Date().getTime() - currentTime) +
+                "ms"
+        );
         return {
             message: "Successfully pushed evaluations"
         };
@@ -112,7 +129,11 @@ export const actions: Actions = {
         const currentTime = new Date().getTime();
         console.log("Pushing ratings for term " + term);
         await populateRatings(locals.supabase, termInt);
-        console.log("Finished pushing ratings in " + (new Date().getTime() - currentTime) + "ms");
+        console.log(
+            "Finished pushing ratings in " +
+                (new Date().getTime() - currentTime) +
+                "ms"
+        );
         return {
             message: "Successfully pushed ratings"
         };
@@ -162,9 +183,9 @@ export const actions: Actions = {
         // Runs a test and increments successes or failures
         const runT = (test: () => boolean) => {
             test() ? successes++ : failures++;
-            console.log(" ")
-        }
-        
+            console.log(" ");
+        };
+
         // Run tests
         console.log("Testing...");
         for (let test of testList) runT(test);
@@ -174,7 +195,7 @@ export const actions: Actions = {
                                 ${failures} failures.`;
 
         console.log(returnMessage);
-        
+
         return {
             message: returnMessage
         };
