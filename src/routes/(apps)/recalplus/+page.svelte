@@ -111,10 +111,6 @@ onMount(async () => {
     let courses =  $savedCourses[id] ? [...$savedCourses[id]] : [];
     searchCourseData.remove(CURRENT_TERM_ID, courses);
 
-    toastStore.add("warning", 
-    "TigerJunction is in maintenance mode until June 7th. Expect some bugs and downtime.", 
-    10)
-
     $ready = true;
 });
 </script>
