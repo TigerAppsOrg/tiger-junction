@@ -6,8 +6,8 @@
     <h1 class="text-3xl mb-2 font-bold">Contact Us</h1>
 
     <p class="mb-2">
-        We see TigerJunction as a community-driven platform, and we value your
-        feedback and suggestions.
+        TigerJunction is a community-driven platform -- we rely on your feedback
+        and suggestions to continually improve the app.
     </p>
 
     <p>
