@@ -7,10 +7,10 @@ import { timeToValue } from "../convert";
 import { redisTransfer } from "./redisTransfer";
 
 type RegCourse = {
-    listing_id: string,
-    code: string,
-    dists: string[] | null
-}
+    listing_id: string;
+    code: string;
+    dists: string[] | null;
+};
 
 /**
  * Fetches all courses for the given term and inserts them into the database
@@ -18,8 +18,11 @@ type RegCourse = {
  * @param term The term id to fetch courses for
  * @param refreshGrading refresh grading basis and final exam data
  */
-export const getAllCourses = async (supabase: SupabaseClient, term: number, 
-refreshGrading: boolean = false) => {
+export const getAllCourses = async (
+    supabase: SupabaseClient,
+    term: number,
+    refreshGrading: boolean = false
+) => {
     console.log("Populating courses for term", term);
 
     // Fetch all course ids and open status for the given term
@@ -27,20 +30,22 @@ refreshGrading: boolean = false) => {
     const rawCourselist = await fetch(`${TERM_URL}${term}`, {
         method: "GET",
         headers: {
-            "Authorization": token
+            Authorization: token
         }
     });
 
     const jsonCourselist = await rawCourselist.json();
-    const courselist: RegCourse[] = jsonCourselist.classes.class.map((x: any) => {
-        return {
-            listing_id: x.course_id,
-            code: x.crosslistings.replace(/\s/g, ""),
-            dists: x.distribution_area ?
-                x.distribution_area.split(" or ").sort() :
-                null,
+    const courselist: RegCourse[] = jsonCourselist.classes.class.map(
+        (x: any) => {
+            return {
+                listing_id: x.course_id,
+                code: x.crosslistings.replace(/\s/g, ""),
+                dists: x.distribution_area
+                    ? x.distribution_area.split(" or ").sort()
+                    : null
+            };
         }
-    });
+    );
 
     const startTime = Date.now();
 
@@ -53,15 +58,22 @@ refreshGrading: boolean = false) => {
 
         const fetchStart = Date.now();
         const rawSubjectData = await fetch(
-            `https://api.princeton.edu/student-app/courses/courses?term=${term}&fmt=json&subject=${subject}`, {
+            `https://api.princeton.edu/student-app/courses/courses?term=${term}&fmt=json&subject=${subject}`,
+            {
                 method: "GET",
                 headers: {
-                    "Authorization": API_ACCESS_TOKEN
+                    Authorization: API_ACCESS_TOKEN
                 }
             }
         );
 
-        console.log("Fetched data for", subject, "in", (Date.now() - fetchStart) / 1000, "s");
+        console.log(
+            "Fetched data for",
+            subject,
+            "in",
+            (Date.now() - fetchStart) / 1000,
+            "s"
+        );
 
         let subjectData = await rawSubjectData.json();
         if (!subjectData.term[0].subjects) {
@@ -72,24 +84,35 @@ refreshGrading: boolean = false) => {
 
         // Find the index in the subjects array that matches the subject
         // (when querying for a subject, the crosslists are also included)
-        let correctIndex = subjectData.subjects.findIndex((x: any) => x.code === subject);
+        let correctIndex = subjectData.subjects.findIndex(
+            (x: any) => x.code === subject
+        );
         if (correctIndex === -1) {
             console.log("Subject not found:", subject);
             return;
-        };
+        }
         subjectData = subjectData.subjects[correctIndex].courses;
 
         /**
          * Fetch course data for a given course
          * @param courseSubjectDetails
          */
-        const handleCourse = async (courseSubjectDetails: any, waitTime: number) => {
+        const handleCourse = async (
+            courseSubjectDetails: any,
+            waitTime: number
+        ) => {
             await new Promise(resolve => setTimeout(resolve, waitTime));
 
-            const courseIdCodeDist = courselist.find(x => 
-                x.listing_id === courseSubjectDetails.course_id);
+            const courseIdCodeDist = courselist.find(
+                x => x.listing_id === courseSubjectDetails.course_id
+            );
             if (!courseIdCodeDist) {
-                console.log("Course not found for term", term, ":", courseSubjectDetails.course_id);
+                console.log(
+                    "Course not found for term",
+                    term,
+                    ":",
+                    courseSubjectDetails.course_id
+                );
                 return;
             }
 
@@ -132,14 +155,18 @@ refreshGrading: boolean = false) => {
                 title: courseSubjectDetails.title,
                 status: status,
                 dists: courseIdCodeDist.dists,
-                instructors: courseSubjectDetails.instructors ? 
-                    courseSubjectDetails.instructors.map((x: any) => {
-                        return x.full_name.split(" ").map((x: string) =>
-                            x[0].toUpperCase() + x.slice(1)).join(" ");
-                    }) : 
-                    null,
-            }
-            
+                instructors: courseSubjectDetails.instructors
+                    ? courseSubjectDetails.instructors.map((x: any) => {
+                          return x.full_name
+                              .split(" ")
+                              .map(
+                                  (x: string) => x[0].toUpperCase() + x.slice(1)
+                              )
+                              .join(" ");
+                      })
+                    : null
+            };
+
             if (refreshGrading) {
                 // Fetch individual course details
                 let rawCourseDetails;
@@ -147,10 +174,11 @@ refreshGrading: boolean = false) => {
 
                 if (courseIdCodeDist.listing_id !== "010855") {
                     rawCourseDetails = await fetch(
-                        `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${courseSubjectDetails.course_id}&fmt=json`, {
+                        `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${courseSubjectDetails.course_id}&fmt=json`,
+                        {
                             method: "GET",
                             headers: {
-                                "Authorization": token
+                                Authorization: token
                             }
                         }
                     );
@@ -163,35 +191,51 @@ refreshGrading: boolean = false) => {
                                 grading_final_exam: "0"
                             }
                         }
-                    }
+                    };
                 }
 
-                if (!courseDetails || !courseDetails.course_details || !courseDetails.course_details.course_detail) {
-                    console.log("No course details for", courseSubjectDetails.course_id, "in term", term);
+                if (
+                    !courseDetails ||
+                    !courseDetails.course_details ||
+                    !courseDetails.course_details.course_detail
+                ) {
+                    console.log(
+                        "No course details for",
+                        courseSubjectDetails.course_id,
+                        "in term",
+                        term
+                    );
                     return;
                 }
-    
+
                 const courseDetail = courseDetails.course_details.course_detail;
                 const basis: string = courseDetail.grading_basis;
-                const hasFinal = courseDetail.grading_final_exam && 
-                parseInt(courseDetail.grading_final_exam) > 0;
+                const hasFinal =
+                    courseDetail.grading_final_exam &&
+                    parseInt(courseDetail.grading_final_exam) > 0;
 
                 course = {
                     ...course,
                     basis: basis,
-                    has_final: hasFinal,
-                }
+                    has_final: hasFinal
+                };
             }
 
             // Check if course exists in supabase
-            const { data: exisCourse, error: exisCError } = await supabase.from("courses")
+            const { data: exisCourse, error: exisCError } = await supabase
+                .from("courses")
                 .select("id")
                 .eq("listing_id", course.listing_id)
                 .eq("term", course.term)
-                .order("id", { ascending: true })
+                .order("id", { ascending: true });
 
             if (exisCError) {
-                console.log("Error checking if course exists in supabase for", course.listing_id, "in term", course.term);
+                console.log(
+                    "Error checking if course exists in supabase for",
+                    course.listing_id,
+                    "in term",
+                    course.term
+                );
                 throw new Error(exisCError.message);
             }
 
@@ -201,10 +245,15 @@ refreshGrading: boolean = false) => {
                 let { error } = await supabase
                     .from("courses")
                     .update(course)
-                    .eq("id", exisCourse[0].id)
+                    .eq("id", exisCourse[0].id);
 
                 if (error) {
-                    console.log("Error updating course", course.listing_id, "in term", course.term);
+                    console.log(
+                        "Error updating course",
+                        course.listing_id,
+                        "in term",
+                        course.term
+                    );
                     throw new Error(error.message);
                 }
 
@@ -213,34 +262,52 @@ refreshGrading: boolean = false) => {
                 let { data, error } = await supabase
                     .from("courses")
                     .insert(course)
-                    .select("id")
-                
+                    .select("id");
+
                 if (error) {
-                    console.log("Error inserting course", course.listing_id, "in term", course.term);
+                    console.log(
+                        "Error inserting course",
+                        course.listing_id,
+                        "in term",
+                        course.term
+                    );
                     throw new Error(error.message);
                 }
 
                 if (!data) {
-                    console.log("No data returned from inserting course", course.listing_id, "in term", course.term);
+                    console.log(
+                        "No data returned from inserting course",
+                        course.listing_id,
+                        "in term",
+                        course.term
+                    );
                     return;
                 }
                 courseId = data[0].id;
             }
 
             // Check for removed sections and prune them from supabase
-            const { data: exisSections, error: exisSError } = await supabase.from("sections")
+            const { data: exisSections, error: exisSError } = await supabase
+                .from("sections")
                 .select("id, num")
                 .eq("course_id", courseId)
                 .order("id", { ascending: true });
 
             if (exisSError) {
-                console.log("Error checking if sections exist in supabase for", course.listing_id, "in term", course.term);
+                console.log(
+                    "Error checking if sections exist in supabase for",
+                    course.listing_id,
+                    "in term",
+                    course.term
+                );
                 throw new Error(exisSError.message);
             }
 
             const exisSectionNums = exisSections.map(x => x.num);
             const newSectionNums = sections.map(x => parseInt(x.class_number));
-            const removedSections = exisSectionNums.filter(x => !newSectionNums.includes(x));
+            const removedSections = exisSectionNums.filter(
+                x => !newSectionNums.includes(x)
+            );
 
             // Check for duplicate sections and prune them from supabase
             let duplicateSections: number[] = [];
@@ -248,9 +315,8 @@ refreshGrading: boolean = false) => {
                 const num = exisSectionNums[k];
                 if (duplicateSections.includes(num)) continue;
 
-                if (exisSectionNums.indexOf(num) !== k) 
+                if (exisSectionNums.indexOf(num) !== k)
                     duplicateSections.push(num);
-
             }
 
             // Prune duplicate sections
@@ -283,10 +349,17 @@ refreshGrading: boolean = false) => {
                 const { error } = await supabase
                     .from("sections")
                     .delete()
-                    .in("num", removedSections)
+                    .in("num", removedSections);
 
                 if (error) {
-                    console.log("Error deleting sections", removedSections, "for course", course.listing_id, "in term", course.term);
+                    console.log(
+                        "Error deleting sections",
+                        removedSections,
+                        "for course",
+                        course.listing_id,
+                        "in term",
+                        course.term
+                    );
                     throw new Error(error.message);
                 }
             }
@@ -298,9 +371,12 @@ refreshGrading: boolean = false) => {
                 for (let l = 0; l < section.schedule.meetings.length; l++) {
                     const meeting = section.schedule.meetings[l];
 
-                    const room = meeting.building && meeting.building.name && meeting.room ? 
-                        meeting.building.name + " " + meeting.room : 
-                        null;
+                    const room =
+                        meeting.building &&
+                        meeting.building.name &&
+                        meeting.room
+                            ? meeting.building.name + " " + meeting.room
+                            : null;
 
                     const sectionData = {
                         course_id: courseId,
@@ -313,37 +389,52 @@ refreshGrading: boolean = false) => {
                         days: daysToValue(meeting.days),
                         start_time: timeToValue(meeting.start_time),
                         end_time: timeToValue(meeting.end_time),
-                        status: section.pu_calc_status === "Open" ? 0 :
-                            section.pu_calc_status === "Closed" ? 1 : 2,
-                    }
+                        status:
+                            section.pu_calc_status === "Open"
+                                ? 0
+                                : section.pu_calc_status === "Closed"
+                                  ? 1
+                                  : 2
+                    };
 
                     // Check if section exists in supabase
-                    const exisSection = exisSections.filter(x => 
-                        x.num === parseInt(sectionData.num));
+                    const exisSection = exisSections.filter(
+                        x => x.num === parseInt(sectionData.num)
+                    );
 
                     if (exisSection[l] !== undefined) {
                         let { error } = await supabase
                             .from("sections")
                             .update(sectionData)
-                            .eq("id", exisSection[l].id)
+                            .eq("id", exisSection[l].id);
 
                         if (error) {
-                            console.log("Error updating section", sectionData.course_id, "in term", term);
+                            console.log(
+                                "Error updating section",
+                                sectionData.course_id,
+                                "in term",
+                                term
+                            );
                             throw new Error(error.message);
                         }
                     } else {
                         let { error } = await supabase
                             .from("sections")
-                            .insert(sectionData)
+                            .insert(sectionData);
 
                         if (error) {
-                            console.log("Error inserting section", sectionData.course_id, "in term", term);
+                            console.log(
+                                "Error inserting section",
+                                sectionData.course_id,
+                                "in term",
+                                term
+                            );
                             throw new Error(error.message);
                         }
                     }
                 }
             }
-        } // ? End handleCourse
+        }; // ? End handleCourse
 
         // Fetch data for each course in the subject in parallel with a delay
         if (refreshGrading) {
@@ -351,22 +442,31 @@ refreshGrading: boolean = false) => {
             const WAIT_INTERVAL = 3000;
             const courseChunks: Record<string, number>[] = [];
             for (let i = 0; i < subjectData.length; i += PARALLEL_REQUESTS) {
-                const tempArr: any[] = subjectData.slice(i, i + PARALLEL_REQUESTS);
+                const tempArr: any[] = subjectData.slice(
+                    i,
+                    i + PARALLEL_REQUESTS
+                );
                 const tempObj: Record<string, number> = {};
-                tempArr.forEach((x, i) => tempObj[x.course_id] = i * WAIT_INTERVAL);
+                tempArr.forEach(
+                    (x, i) => (tempObj[x.course_id] = i * WAIT_INTERVAL)
+                );
                 courseChunks.push(tempObj);
             }
-    
+
             for (let i = 0; i < courseChunks.length; i++) {
-                await Promise.all(Object.keys(courseChunks[i]).map(x => 
-                    handleCourse(subjectData.find((y: any) => 
-                        y.course_id === x), courseChunks[i][x])));
+                await Promise.all(
+                    Object.keys(courseChunks[i]).map(x =>
+                        handleCourse(
+                            subjectData.find((y: any) => y.course_id === x),
+                            courseChunks[i][x]
+                        )
+                    )
+                );
             }
         } else {
             await Promise.all(subjectData.map((x: any) => handleCourse(x, 0)));
         }
-
-    } // ? End handleDepartment
+    }; // ? End handleDepartment
 
     // Fetch data for each department in parallel
     const PARALLEL_REQUESTS = 6;
@@ -375,20 +475,33 @@ refreshGrading: boolean = false) => {
     for (let i = 0; i < DEPARTMENTS.length; i += PARALLEL_REQUESTS) {
         const tempArr: string[] = DEPARTMENTS.slice(i, i + PARALLEL_REQUESTS);
         const tempObj: Record<string, number> = {};
-        tempArr.forEach((x, i) => tempObj[x] = i * WAIT_INTERVAL);
+        tempArr.forEach((x, i) => (tempObj[x] = i * WAIT_INTERVAL));
         departmentChunks.push(tempObj);
     }
 
     for (let i = 0; i < departmentChunks.length; i++) {
-        await Promise.all(Object.keys(departmentChunks[i]).map(x => handleDepartment(x, departmentChunks[i][x])));
-        console.log("Finished fetching data for", Object.keys(departmentChunks[i]).join(", "));
+        await Promise.all(
+            Object.keys(departmentChunks[i]).map(x =>
+                handleDepartment(x, departmentChunks[i][x])
+            )
+        );
+        console.log(
+            "Finished fetching data for",
+            Object.keys(departmentChunks[i]).join(", ")
+        );
     }
 
     const endTime = Date.now();
 
-    console.log("Finished fetching courses for term", term, "in", (endTime - startTime) / 1000, "s");
+    console.log(
+        "Finished fetching courses for term",
+        term,
+        "in",
+        (endTime - startTime) / 1000,
+        "s"
+    );
     await redisTransfer(supabase, term);
-}
+};
 
 const daysToValue = (days: string[]) => {
     let value = 0;
@@ -398,4 +511,4 @@ const daysToValue = (days: string[]) => {
     if (days.includes("Th")) value += 8;
     if (days.includes("F")) value += 16;
     return value;
-}
+};

@@ -7,16 +7,22 @@ import { valueToDays } from "../convert";
 /**
  * Check if there is any conflict in the given list of time
  * @param conflictList map of day (1-5) to list of [start, end] time
- * @returns false if, for every section type, there is a 
+ * @returns false if, for every section type, there is a
  * section that does not conflict and true otherwise
  */
-export const doesConflict = (course: CourseData, 
-conflictList: Record<number, [number, number][]>, 
-onlyAvailable: boolean, dayFilter: any): boolean => {
-
+export const doesConflict = (
+    course: CourseData,
+    conflictList: Record<number, [number, number][]>,
+    onlyAvailable: boolean,
+    dayFilter: any
+): boolean => {
     let daysChecked = {
-        1: true, 2: true, 3: true, 4: true, 5: true
-    }
+        1: true,
+        2: true,
+        3: true,
+        4: true,
+        5: true
+    };
     if (dayFilter.enabled) {
         const values = dayFilter.values;
         daysChecked = {
@@ -25,8 +31,8 @@ onlyAvailable: boolean, dayFilter: any): boolean => {
             3: values["W"],
             4: values["R"],
             5: values["F"]
-        }
-    }    
+        };
+    }
 
     // Get sections of the course
     const sections = get(sectionData)[get(currentTerm)][course.id];
@@ -36,36 +42,51 @@ onlyAvailable: boolean, dayFilter: any): boolean => {
 
     // Separate into section categories (Category -> Title -> Data[])
     // Data[] = [days, start_time, end_time, status]
-    const sectionMap: Record<string, Record<string, [number, number, number, number][]>> = {};
+    const sectionMap: Record<
+        string,
+        Record<string, [number, number, number, number][]>
+    > = {};
     sections.forEach(x => {
         if (!sectionMap[x.category]) sectionMap[x.category] = {};
-        if (!sectionMap[x.category][x.title]) sectionMap[x.category][x.title] = [];
-        sectionMap[x.category][x.title].push([x.days, x.start_time, x.end_time, x.status]);
+        if (!sectionMap[x.category][x.title])
+            sectionMap[x.category][x.title] = [];
+        sectionMap[x.category][x.title].push([
+            x.days,
+            x.start_time,
+            x.end_time,
+            x.status
+        ]);
     });
 
     // Check if there is a nonconflicting section for each category
     o: for (const sectionList of Object.values(sectionMap)) {
-            for (const section of Object.values(sectionList))
-                if (!doesSectionConflict(section, conflictList, daysChecked) 
-                && (!onlyAvailable || isSectionAvailable(section))) 
-                    continue o;
-            return true;
+        for (const section of Object.values(sectionList))
+            if (
+                !doesSectionConflict(section, conflictList, daysChecked) &&
+                (!onlyAvailable || isSectionAvailable(section))
+            )
+                continue o;
+        return true;
     }
     return false;
-}
+};
 
 // Check if a section is open (and handle edge cases)
-const isSectionAvailable = (sectionInfo: [number, number, number, number][]) => {
+const isSectionAvailable = (
+    sectionInfo: [number, number, number, number][]
+) => {
     for (const x of sectionInfo) {
         if (x[3] === 0) return true;
     }
     return false;
-}
+};
 
 // Check if a section conflicts with the conflict list
-const doesSectionConflict = (sectionInfo: [number, number, number, number][], 
-conflictList: Record<number, [number, number][]>,
-daysChecked: Record<string, boolean>): boolean => {
+const doesSectionConflict = (
+    sectionInfo: [number, number, number, number][],
+    conflictList: Record<number, [number, number][]>,
+    daysChecked: Record<string, boolean>
+): boolean => {
     for (const [day_inf, start_time, end_time] of sectionInfo) {
         const days = valueToDays(day_inf);
         for (const day of days) {
@@ -79,4 +100,4 @@ daysChecked: Record<string, boolean>): boolean => {
     }
 
     return false;
-}   
+};

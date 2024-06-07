@@ -1,7 +1,7 @@
 /**
  * createResolve.js
  * A dump of the listings table (listings_dump.json) must be present
- * Generates linking_map.json, which maps crosslistings to their primary 
+ * Generates linking_map.json, which maps crosslistings to their primary
  * listing ids
  * Usage: node createResolve.js
  */
@@ -9,7 +9,7 @@
 import fs from "fs";
 
 const dir = "coursedata";
-const files = fs.readdirSync(dir).filter((file) => file.endsWith(".json"));
+const files = fs.readdirSync(dir).filter(file => file.endsWith(".json"));
 
 //----------------------------------------------------------------------
 // Map
@@ -25,7 +25,7 @@ for (let i = 0; i < files.length; i++) {
                 crossDump.push({
                     code: crosslisting,
                     id: data[j].course_id,
-                    term: parseInt(data[j].term),
+                    term: parseInt(data[j].term)
                 });
             }
         } else {
@@ -43,8 +43,8 @@ fs.writeFileSync("resolve/cross_dump.json", JSON.stringify(crossDump, null, 2));
 // Add space in 1000-level courses
 for (let i = 0; i < crossDump.length; i++) {
     if (crossDump[i].code[3] !== " ") {
-        crossDump[i].code = crossDump[i].code.slice(0, 3) 
-            + " " + crossDump[i].code.slice(3);
+        crossDump[i].code =
+            crossDump[i].code.slice(0, 3) + " " + crossDump[i].code.slice(3);
     }
 }
 
@@ -55,7 +55,10 @@ for (let i = 0; i < crossDump.length; i++) {
     let crosslistings = [];
     crosslistings.push(crossDump[i].code.split(" / ").slice(1));
 
-    while (crossDump[i + 1] && crossDump[i + 1].code.split(" / ")[0] === primary) {
+    while (
+        crossDump[i + 1] &&
+        crossDump[i + 1].code.split(" / ")[0] === primary
+    ) {
         const next = crossDump[i + 1].code;
         if (next.includes("/")) {
             crosslistings.push(next.split(" / ").slice(1));
@@ -66,14 +69,14 @@ for (let i = 0; i < crossDump.length; i++) {
     }
 
     if (crosslistings.length > 1) {
-        crosslistings = [...new Set(crosslistings.flat())]
+        crosslistings = [...new Set(crosslistings.flat())];
         crosslistings.sort();
         crossReduced.push({
             code: primary,
             prev_code: [],
             id: crossDump[i].id,
             term: crossDump[i].term,
-            cross: [...crosslistings],
+            cross: [...crosslistings]
         });
     } else {
         crossReduced.push({
@@ -81,7 +84,7 @@ for (let i = 0; i < crossDump.length; i++) {
             prev_code: [],
             id: crossDump[i].id,
             term: crossDump[i].term,
-            cross: [],
+            cross: []
         });
     }
 }
@@ -99,14 +102,14 @@ for (let i = 0; i < crossReduced.length - 1; i++) {
         if (crossReduced[i].term > crossReduced[i + 1].term) {
             crossReduced[i].prev_code.push({
                 code: crossReduced[i + 1].code,
-                term: crossReduced[i + 1].term,
+                term: crossReduced[i + 1].term
             });
             crossReduced[i].cross.push(...crossReduced[i + 1].cross);
             crossReduced.splice(i + 1, 1);
         } else if (crossReduced[i].term < crossReduced[i + 1].term) {
             crossReduced[i + 1].prev_code.push({
                 code: crossReduced[i].code,
-                term: crossReduced[i].term,
+                term: crossReduced[i].term
             });
             crossReduced[i + 1].cross.push(...crossReduced[i].cross);
             crossReduced.splice(i, 1);
@@ -118,7 +121,10 @@ for (let i = 0; i < crossReduced.length - 1; i++) {
 }
 
 crossReduced.sort((a, b) => a.code.localeCompare(b.code));
-fs.writeFileSync("resolve/cross_reduced.json", JSON.stringify(crossReduced, null, 2));
+fs.writeFileSync(
+    "resolve/cross_reduced.json",
+    JSON.stringify(crossReduced, null, 2)
+);
 
 //----------------------------------------------------------------------
 // Create Cross Table
@@ -128,8 +134,8 @@ const crossTable = {};
 for (let i = 0; i < crossReduced.length; i++) {
     const answer = {
         code: crossReduced[i].code,
-        id: crossReduced[i].id,
-    }
+        id: crossReduced[i].id
+    };
 
     crossTable[crossReduced[i].code] = answer;
     for (let j = 0; j < crossReduced[i].cross.length; j++) {
@@ -146,4 +152,7 @@ if (crosstableSet.size !== Object.keys(crossTable).length) {
     console.error("Duplicates found in cross table");
 }
 
-fs.writeFileSync("resolve/cross_table.json", JSON.stringify(crossTable, null, 2));
+fs.writeFileSync(
+    "resolve/cross_table.json",
+    JSON.stringify(crossTable, null, 2)
+);

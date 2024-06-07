@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+package-lock.json
+package.json
+yarn.lock
+*.config.*
+*.json
+.prettierrc
+*.yaml
+*.yml

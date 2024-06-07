@@ -1,4 +1,8 @@
-import { currentSchedule, rawCourseData, searchCourseData } from "$lib/stores/recal";
+import {
+    currentSchedule,
+    rawCourseData,
+    searchCourseData
+} from "$lib/stores/recal";
 import { schedules } from "$lib/changeme";
 import { initSchedule } from "$lib/stores/rpool";
 import type { CourseData } from "$lib/types/dbTypes";
@@ -7,13 +11,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Fetch the raw course data for a given term
- * @param supabase 
- * @param term 
- * @returns true if the data was fetched successfully, false if there 
+ * @param supabase
+ * @param term
+ * @returns true if the data was fetched successfully, false if there
  * was an error, and null if the data was already loaded
  */
-const fetchRawCourseData = async (supabase: SupabaseClient, term: number): 
-Promise<boolean | null> => {    
+const fetchRawCourseData = async (
+    supabase: SupabaseClient,
+    term: number
+): Promise<boolean | null> => {
     if (rawCourseData.check(term)) return null;
 
     // Fetch course data from Redis
@@ -24,13 +30,16 @@ Promise<boolean | null> => {
     // Calculate adjusted rating
     json.forEach((x: any) => {
         let adj_evals = (x.num_evals + 1) * 1.5;
-        x.adj_rating = x.rating !== null && x.num_evals !== null ?
-        Math.round(((x.rating * (adj_evals)) + 5)/((adj_evals) + 2) * 100)/100
-        : 0;
-    })
+        x.adj_rating =
+            x.rating !== null && x.num_evals !== null
+                ? Math.round(
+                      ((x.rating * adj_evals + 5) / (adj_evals + 2)) * 100
+                  ) / 100
+                : 0;
+    });
 
     // Update raw course data store
-    rawCourseData.update((x) => {
+    rawCourseData.update(x => {
         x[term as keyof RawCourseData] = json as CourseData[];
         return x;
     });
@@ -38,20 +47,22 @@ Promise<boolean | null> => {
     // Update search course data store
     searchCourseData.reset(term);
     return true;
-}
+};
 
 /**
  * Fetch the user's schedule id and titles for a given term
- * @param supabase 
- * @param term 
- * @returns true if the schedules were fetched successfully, false if 
+ * @param supabase
+ * @param term
+ * @returns true if the schedules were fetched successfully, false if
  * there was an error, and null if the schedules were already loaded
  */
-const fetchUserSchedules = async (supabase: SupabaseClient, term: number): 
-Promise<boolean | null> => {
+const fetchUserSchedules = async (
+    supabase: SupabaseClient,
+    term: number
+): Promise<boolean | null> => {
     // Check if schedules for the given term are already loaded
     let loaded = false;
-    schedules.subscribe((x) => {
+    schedules.subscribe(x => {
         if (x[term as keyof RawCourseData].length > 0) loaded = true;
     })();
     if (loaded) return null;
@@ -74,7 +85,9 @@ Promise<boolean | null> => {
         // Create default schedule
         const { data: data2, error } = await supabase
             .from("schedules")
-            .insert([{ user_id: user.data.user.id, term, title: "My Schedule" }])
+            .insert([
+                { user_id: user.data.user.id, term, title: "My Schedule" }
+            ])
             .select()
             .single();
 
@@ -82,10 +95,12 @@ Promise<boolean | null> => {
 
         // Update schedules store
         schedules.update(x => {
-            x[term as keyof RawCourseData] = [{
-                id: data2.id,
-                title: data2.title
-            }]
+            x[term as keyof RawCourseData] = [
+                {
+                    id: data2.id,
+                    title: data2.title
+                }
+            ];
             return x;
         });
 
@@ -93,11 +108,11 @@ Promise<boolean | null> => {
         return true;
     }
 
-    let ids = data.map(x => { 
+    let ids = data.map(x => {
         return {
             id: x.id,
             title: x.title
-        }
+        };
     });
 
     // Update schedules store
@@ -109,25 +124,25 @@ Promise<boolean | null> => {
     currentSchedule.set(ids[0].id);
 
     return true;
-}
+};
 
 /**
  * Populate the saved course pools for a given term
- * @param supabase 
- * @param scheduleIds 
- * @param term 
+ * @param supabase
+ * @param scheduleIds
+ * @param term
  */
-const populatePools = async (supabase: SupabaseClient, term: number): 
-Promise<void> => {
+const populatePools = async (
+    supabase: SupabaseClient,
+    term: number
+): Promise<void> => {
     // Get raw course data and schedule ids
     let scheduleIds: number[] = [];
     schedules.subscribe(x => {
         scheduleIds = x[term as keyof RawCourseData].map(y => y.id);
     })();
 
-    for (const id of scheduleIds) 
-        await initSchedule(supabase, id, term)
-}
-
+    for (const id of scheduleIds) await initSchedule(supabase, id, term);
+};
 
 export { fetchRawCourseData, fetchUserSchedules, populatePools };

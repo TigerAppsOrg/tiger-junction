@@ -8,33 +8,27 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "sst:deploy": "sst deploy",
-    "sst:dev": "sst dev"
+    "sst:dev": "sst dev",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^7.3.2",
-    "@storybook/addon-essentials": "^7.3.2",
-    "@storybook/addon-interactions": "^7.3.2",
-    "@storybook/addon-links": "^7.3.2",
-    "@storybook/addon-styling": "^1.3.6",
-    "@storybook/addon-svelte-csf": "^3.0.7",
-    "@storybook/blocks": "^7.3.2",
-    "@storybook/svelte": "^7.3.2",
-    "@storybook/sveltekit": "^7.3.2",
-    "@storybook/testing-library": "^0.2.0",
     "@sveltejs/adapter-auto": "^2.0.0",
     "@sveltejs/kit": "^1.20.4",
     "@types/jsdom": "^21.1.1",
     "autoprefixer": "^10.4.14",
     "aws-cdk-lib": "2.142.1",
     "constructs": "10.3.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
     "postcss": "^8.4.27",
+    "prettier": "^3.3.1",
+    "prettier-plugin-svelte": "^3.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sst": "^2.42.0",
-    "storybook": "^7.3.2",
     "supabase": "^1.100.1",
     "svelte": "^4.0.5",
     "svelte-check": "^3.4.3",
@@ -58,5 +52,8 @@
     "svelte-inview": "^4.0.1",
     "theme-change": "^2.5.0",
     "uninstall": "^0.0.0"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }

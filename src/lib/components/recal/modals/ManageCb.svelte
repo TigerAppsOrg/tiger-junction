@@ -1,9 +1,7 @@
 <script lang="ts">
-import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdModal from "$lib/components/elements/StdModal.svelte";
 
-export let showModal: boolean = false;
+    export let showModal: boolean = false;
 </script>
 
-<StdModal title="Manage Custom Blocks" stdClose={true} {showModal}>
-
-</StdModal>
+<StdModal title="Manage Custom Blocks" stdClose={true} {showModal}></StdModal>

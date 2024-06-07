@@ -46,8 +46,11 @@ export const isResult: Writable<boolean> = writable(false);
 // Search Results
 //----------------------------------------------------------------------
 
-const { set: setRes, update: updateRes, subscribe: subscribeRes }:
-Writable<CourseData[]> = writable([]);
+const {
+    set: setRes,
+    update: updateRes,
+    subscribe: subscribeRes
+}: Writable<CourseData[]> = writable([]);
 
 export const searchResults = {
     set: setRes,
@@ -59,12 +62,15 @@ export const searchResults = {
      * @param query input
      * @param term id of the term
      */
-    search: async (query: string, term: number, settings: SearchSettings, 
-    supabase: SupabaseClient) => {
+    search: async (
+        query: string,
+        term: number,
+        settings: SearchSettings,
+        supabase: SupabaseClient
+    ) => {
         // Current current search data
-        if (!searchCourseData.get(term)) 
-            searchCourseData.reset(term);
-        
+        if (!searchCourseData.get(term)) searchCourseData.reset(term);
+
         let data: CourseData[] = searchCourseData.get(term) as CourseData[];
 
         //--------------------------------------------------------------
@@ -75,8 +81,10 @@ export const searchResults = {
         if (settings.filters["Rating"].enabled) {
             data = data.filter(x => {
                 let rating: number = x.rating ? x.rating : 0;
-                return rating >= settings.filters["Rating"].min
-                    && rating <= settings.filters["Rating"].max;
+                return (
+                    rating >= settings.filters["Rating"].min &&
+                    rating <= settings.filters["Rating"].max
+                );
             });
         }
 
@@ -87,7 +95,8 @@ export const searchResults = {
 
                 // If no dists, check if "No Dist" is enabled
                 if (!x.dists || x.dists.length === 0) {
-                    if (settings.filters["Dists"].values["No Dist"]) return true;
+                    if (settings.filters["Dists"].values["No Dist"])
+                        return true;
                     else return false;
                 }
 
@@ -127,11 +136,10 @@ export const searchResults = {
             data = data.filter(x => x.status !== 2);
         }
 
-        // * Levels 
+        // * Levels
         if (settings.filters["Levels"].enabled) {
-            data = data.filter(x => 
-                settings.filters["Levels"]
-                .values[x.code.charAt(3)]
+            data = data.filter(
+                x => settings.filters["Levels"].values[x.code.charAt(3)]
             );
         }
 
@@ -147,7 +155,7 @@ export const searchResults = {
                 2: [],
                 3: [],
                 4: [],
-                5: [],
+                5: []
             };
             let curSched = get(currentSchedule);
             let saved = get(savedCourses)[curSched];
@@ -165,15 +173,24 @@ export const searchResults = {
 
                         // Continue if not confirmed
                         if (courseMeta.confirms.hasOwnProperty(nSec.category)) {
-                            // Legacy compatibility 
-                            if (typeof courseMeta.confirms[nSec.category] === "number") {
-                                if (parseInt(courseMeta.confirms[nSec.category]) !== nSec.id)
+                            // Legacy compatibility
+                            if (
+                                typeof courseMeta.confirms[nSec.category] ===
+                                "number"
+                            ) {
+                                if (
+                                    parseInt(
+                                        courseMeta.confirms[nSec.category]
+                                    ) !== nSec.id
+                                )
                                     continue;
-                            } else 
-                                if (courseMeta.confirms[nSec.category] !== nSec.title)
-                                    continue;
+                            } else if (
+                                courseMeta.confirms[nSec.category] !==
+                                nSec.title
+                            )
+                                continue;
                         } else continue;
-                            
+
                         // Add to conflict list if confirmed
                         let days = valueToDays(nSec.days);
                         o: for (let k = 0; k < days.length; k++) {
@@ -183,29 +200,40 @@ export const searchResults = {
                             for (let l = 0; l < conflictList[day].length; l++) {
                                 let start = conflictList[day][l][0];
                                 let end = conflictList[day][l][1];
-                                if (nSec.start_time < end && nSec.end_time > start)
+                                if (
+                                    nSec.start_time < end &&
+                                    nSec.end_time > start
+                                )
                                     break o;
                             }
 
                             // Add to conflict list
-                            conflictList[day].push([nSec.start_time, nSec.end_time]);
+                            conflictList[day].push([
+                                nSec.start_time,
+                                nSec.end_time
+                            ]);
                         } // ! End of days loop
                     } // ! End of courseSections loop
                 } // ! End of saved courses loop
 
                 // Sort conflict list
-                for (let day in conflictList) 
+                for (let day in conflictList)
                     conflictList[day] = conflictList[day].sort((a, b) => {
                         return a[0] - b[0];
                     });
 
                 // Check if any conflicts and filter
-                data = data.filter(x => !doesConflict(x, 
-                    conflictList, 
-                    settings.filters["No Conflicts"]
-                        .values["Only Available Sections"],
-                    settings.filters["Days"]));
-
+                data = data.filter(
+                    x =>
+                        !doesConflict(
+                            x,
+                            conflictList,
+                            settings.filters["No Conflicts"].values[
+                                "Only Available Sections"
+                            ],
+                            settings.filters["Days"]
+                        )
+                );
             } // ! End of if (saved && meta)
         } // ! End of "Does Not Conflict" filter
 
@@ -238,8 +266,8 @@ export const searchResults = {
                         2: "T",
                         3: "W",
                         4: "R",
-                        5: "F",
-                    }
+                        5: "F"
+                    };
                     const days = daysNum.map(x => dayMap[x]);
                     const category = section.category;
 
@@ -251,7 +279,8 @@ export const searchResults = {
                         }
                     }
                     if (isThisSectionOkay) catmap[category] = true;
-                    else if (!catmap.hasOwnProperty(category)) catmap[category] = false;
+                    else if (!catmap.hasOwnProperty(category))
+                        catmap[category] = false;
                 }
 
                 let isCourseOkay = true;
@@ -262,7 +291,7 @@ export const searchResults = {
                     }
                 }
                 return isCourseOkay;
-            })
+            });
         }
 
         //--------------------------------------------------------------
@@ -271,30 +300,30 @@ export const searchResults = {
 
         // * Default Sort (Alphabetical)
         data = data.sort((a, b) => {
-            return a.code > b.code ? 1 : -1
+            return a.code > b.code ? 1 : -1;
         });
 
         // * Rating
         if (settings.sortBy["Rating"].enabled) {
-
             data = data.sort((a, b) => {
                 let aRating: number = a.rating ? a.rating : 0;
                 let bRating: number = b.rating ? b.rating : 0;
 
-                return settings.sortBy["Rating"].value === 0 ?
-                    (bRating - aRating) : (aRating - bRating);
+                return settings.sortBy["Rating"].value === 0
+                    ? bRating - aRating
+                    : aRating - bRating;
             });
         }
 
         // * Weighted Rating
         if (settings.sortBy["Weighted Rating"].enabled) {
-
             data = data.sort((a, b) => {
                 let aRating: number = a.adj_rating ? a.adj_rating : 0;
                 let bRating: number = b.adj_rating ? b.adj_rating : 0;
 
-                return settings.sortBy["Weighted Rating"].value === 0 ?
-                    (bRating - aRating) : (aRating - bRating);
+                return settings.sortBy["Weighted Rating"].value === 0
+                    ? bRating - aRating
+                    : aRating - bRating;
             });
         }
 
@@ -304,25 +333,30 @@ export const searchResults = {
 
         query = normalizeText(query);
         if (query.length < 3 && !settings.filters["Show All"].enabled)
-             searchResults.set([]);
-
-        else if (query.length === 3 && !settings.filters["Show All"].enabled) 
-            searchResults.set(data.filter(x => {
-                return normalizeText(x.code).includes(query)
-            }));
-        
-        else searchResults.set(data.filter((x) => {
-            return normalizeText(x.title).includes(query) 
-                || normalizeText(x.code).includes(query);
-        }));
+            searchResults.set([]);
+        else if (query.length === 3 && !settings.filters["Show All"].enabled)
+            searchResults.set(
+                data.filter(x => {
+                    return normalizeText(x.code).includes(query);
+                })
+            );
+        else
+            searchResults.set(
+                data.filter(x => {
+                    return (
+                        normalizeText(x.title).includes(query) ||
+                        normalizeText(x.code).includes(query)
+                    );
+                })
+            );
 
         if (get(searchResults).length === 0) {
             isResult.set(false);
         } else {
             isResult.set(true);
         }
-    },
-}
+    }
+};
 
 //----------------------------------------------------------------------
 // Raw Course Data
@@ -332,8 +366,11 @@ search course data is data for all courses excluding those that
 are saved. This speeds up search results when there
 are many saved courses. */
 
-const { set: setRaw, update: updateRaw, subscribe: subscribeRaw }: 
-Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+const {
+    set: setRaw,
+    update: updateRaw,
+    subscribe: subscribeRaw
+}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const rawCourseData = {
     set: setRaw,
@@ -347,9 +384,9 @@ export const rawCourseData = {
      */
     get: (term: number): CourseData[] => {
         let data: CourseData[] = [];
-        rawCourseData.subscribe((x) => (
-            data = [...x[term as keyof RawCourseData]]
-        ))();
+        rawCourseData.subscribe(
+            x => (data = [...x[term as keyof RawCourseData]])
+        )();
         return data;
     },
 
@@ -359,9 +396,7 @@ export const rawCourseData = {
      */
     getAll: (): RawCourseData => {
         let data: RawCourseData = JSON.parse(JSON.stringify(BASE_OBJ));
-        rawCourseData.subscribe((x) => (
-            data = JSON.parse(JSON.stringify(x))
-        ))();
+        rawCourseData.subscribe(x => (data = JSON.parse(JSON.stringify(x))))();
         return data;
     },
 
@@ -371,20 +406,23 @@ export const rawCourseData = {
      * @returns true if the raw course data for the given term is loaded
      */
     check: (term: number): boolean => {
-        let data: boolean  = false;
-        rawCourseData.subscribe((x) => (
-            data = x[term as keyof RawCourseData].length > 0
-        ))();
+        let data: boolean = false;
+        rawCourseData.subscribe(
+            x => (data = x[term as keyof RawCourseData].length > 0)
+        )();
         return data;
     }
-}
+};
 
 //----------------------------------------------------------------------
 // Search Course Data
 //----------------------------------------------------------------------
 
-const { set: setSearch, update: updateSearch, subscribe: subscribeSearch }:
-Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+const {
+    set: setSearch,
+    update: updateSearch,
+    subscribe: subscribeSearch
+}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const searchCourseData = {
     set: setSearch,
@@ -393,14 +431,14 @@ export const searchCourseData = {
 
     /**
      * Get search course data for a given term
-     * @param term 
+     * @param term
      * @returns search course data for the given term
      */
     get: (term: number): CourseData[] => {
         let data: CourseData[] = [];
-        searchCourseData.subscribe((x) => (
-            data = x[term as keyof RawCourseData]
-        ))();
+        searchCourseData.subscribe(
+            x => (data = x[term as keyof RawCourseData])
+        )();
         return data;
     },
 
@@ -410,23 +448,22 @@ export const searchCourseData = {
      */
     getAll: (): RawCourseData => {
         let data: RawCourseData = JSON.parse(JSON.stringify(BASE_OBJ));
-        searchCourseData.subscribe((x) => (
-            data = x
-        ))();
+        searchCourseData.subscribe(x => (data = x))();
         return data;
     },
 
     /**
      * Remove course(s) from search course data
-     * @param term 
-     * @param course 
+     * @param term
+     * @param course
      */
     remove: (term: number, courses: CourseData[]): void => {
         for (let i = 0; i < courses.length; i++) {
             // Remove if in search course data
             searchCourseData.update(x => {
-                x[term as keyof RawCourseData] = x[term as keyof RawCourseData]
-                    .filter(y => (y.id !== courses[i].id));
+                x[term as keyof RawCourseData] = x[
+                    term as keyof RawCourseData
+                ].filter(y => y.id !== courses[i].id);
                 return x;
             });
         }
@@ -434,28 +471,27 @@ export const searchCourseData = {
 
     /**
      * Add course(s) to search course data
-     * @param term 
-     * @param course 
+     * @param term
+     * @param course
      */
     add: (term: number, courses: CourseData[]): void => {
         for (let i = 0; i < courses.length; i++) {
             searchCourseData.update(x => {
-
                 // Push if not already in search course data
                 if (!x[term as keyof RawCourseData].includes(courses[i])) {
                     x[term as keyof RawCourseData].push(courses[i]);
                 }
                 return x;
-            })
+            });
         }
     },
 
     /**
      * Reset search course data to raw course data for a given term
-     * @param term 
+     * @param term
      */
     reset: (term: number): void => {
-        searchCourseData.update((x) => {
+        searchCourseData.update(x => {
             x[term as keyof RawCourseData] = rawCourseData.get(term);
             return x;
         });
@@ -467,112 +503,112 @@ export const searchCourseData = {
     resetAll: () => {
         searchCourseData.set(rawCourseData.getAll());
     }
-}
+};
 
 //----------------------------------------------------------------------
 // Search Settings
 //----------------------------------------------------------------------
 
 type Filter = {
-    enabled: boolean,
-    [key: string]: any,
-}
+    enabled: boolean;
+    [key: string]: any;
+};
 
 type SortBy = {
-    enabled: boolean,
-    options: string[],
-    value: number,
-}
+    enabled: boolean;
+    options: string[];
+    value: number;
+};
 
 export type SearchSettings = {
-    filters: Record<string, Filter>,
-    sortBy: Record<string, SortBy>,
-    style: Record<string, boolean>,
-}
+    filters: Record<string, Filter>;
+    sortBy: Record<string, SortBy>;
+    style: Record<string, boolean>;
+};
 
 export const currentSortBy: Writable<string | null> = writable(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
-    "filters": {
+    filters: {
         "Show All": {
-            "enabled": false,
+            enabled: false
         },
-        "Rating": {
-            "enabled": false,
-            "min": 0,
-            "max": 5,
+        Rating: {
+            enabled: false,
+            min: 0,
+            max: 5
         },
-        "Dists": {
-            "enabled": false,
-            "values": {
-                "CD": true,
-                "EC": true,
-                "EM": true,
-                "HA": true,
-                "LA": true,
-                "QCR": true,
-                "SA": true,
-                "SEL": true,
-                "SEN": true,
-                "No Dist": true,
+        Dists: {
+            enabled: false,
+            values: {
+                CD: true,
+                EC: true,
+                EM: true,
+                HA: true,
+                LA: true,
+                QCR: true,
+                SA: true,
+                SEL: true,
+                SEN: true,
+                "No Dist": true
             }
         },
-        "Levels": {
-            "enabled": false,
-            "values": {
+        Levels: {
+            enabled: false,
+            values: {
                 "1": true,
                 "2": true,
                 "3": true,
                 "4": true,
-                "5": true,
+                "5": true
             }
         },
-        "Days": {
-            "enabled": false,
-            "values": {
-                "M": true,
-                "T": true,
-                "W": true,
-                "R": true,
-                "F": true,
+        Days: {
+            enabled: false,
+            values: {
+                M: true,
+                T: true,
+                W: true,
+                R: true,
+                F: true
             }
         },
-        "PDFable": {
-            "enabled": false,
+        PDFable: {
+            enabled: false
         },
         "PDF Only": {
-            "enabled": false,
+            enabled: false
         },
         "No Scheduled Final": {
-            "enabled": false,
+            enabled: false
         },
         "Open Only": {
-            "enabled": false,
+            enabled: false
         },
         "No Cancelled": {
-            "enabled": false,
+            enabled: false
         },
         "No Conflicts": {
-            "enabled": false,
-            "values": {
-                "Only Available Sections": false,
+            enabled: false,
+            values: {
+                "Only Available Sections": false
                 // "Include Custom Blocks": false,
             }
-        },
+        }
     },
-    "sortBy": {
-        "Rating": {
-            "enabled": false,
-            "options": ["High to Low", "Low to High"],
-            "value": 0,
+    sortBy: {
+        Rating: {
+            enabled: false,
+            options: ["High to Low", "Low to High"],
+            value: 0
         },
         "Weighted Rating": {
-            "enabled": false,
-            "options": ["High to Low", "Low to High"],
-            "value": 0,
-        },
+            enabled: false,
+            options: ["High to Low", "Low to High"],
+            value: 0
+        }
     },
-    "style": {
+    style: {
         // "Original Style": false,
         "Show Rating": true,
         "Show # of Comments": false,
@@ -583,9 +619,9 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
-        "Duck": false,
+        Duck: false
     }
-}
+};
 
 const loadSections = async (term: number, termSec: SectionMap) => {
     if (!get(sectionDone)[term as ActiveTerms]) {
@@ -595,8 +631,7 @@ const loadSections = async (term: number, termSec: SectionMap) => {
 
         // Blacklist of courses that are already loaded
         let blacklist: number[] = [];
-        for (let courseId in termSec) 
-            blacklist.push(parseInt(courseId));
+        for (let courseId in termSec) blacklist.push(parseInt(courseId));
 
         // Sort through sections and add to sectionData
         for (let i = 0; i < sections.length; i++) {
@@ -605,7 +640,7 @@ const loadSections = async (term: number, termSec: SectionMap) => {
 
             if (blacklist.includes(courseId)) continue;
 
-            // Add course to sectionData 
+            // Add course to sectionData
             if (!termSec[courseId]) {
                 termSec[courseId] = [];
             }
@@ -618,6 +653,8 @@ const loadSections = async (term: number, termSec: SectionMap) => {
             return x;
         });
     }
-}
+};
 
-export const searchSettings: Writable<SearchSettings> = writable(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)));
+export const searchSettings: Writable<SearchSettings> = writable(
+    JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
+);

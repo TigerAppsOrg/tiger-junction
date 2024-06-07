@@ -8,7 +8,7 @@ const getCurrentSchedule = (): number => {
         schedule = x;
     })();
     return schedule;
-}
+};
 
 // Get the current term
 const getCurrentTerm = (): number => {
@@ -17,6 +17,6 @@ const getCurrentTerm = (): number => {
         term = x;
     })();
     return term;
-}
+};
 
-export { getCurrentSchedule, getCurrentTerm }
+export { getCurrentSchedule, getCurrentTerm };

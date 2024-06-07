@@ -3,8 +3,8 @@ import { valueToDays } from "../convert";
 
 /**
  * Converts a value to an RRule
- * @param value 
- * @param until 
+ * @param value
+ * @param until
  * @returns RRule string
  */
 export const valueToRRule = (value: number, until: readonly number[]) => {
@@ -19,17 +19,18 @@ export const valueToRRule = (value: number, until: readonly number[]) => {
     }
     rrule = rrule.slice(0, -1);
 
-    rrule += ";INTERVAL=1;UNTIL=" 
-        + until[0] 
-        + until[1].toString().padStart(2, '0') 
-        + until[2].toString().padStart(2, '0') 
-        + "T000000Z";
+    rrule +=
+        ";INTERVAL=1;UNTIL=" +
+        until[0] +
+        until[1].toString().padStart(2, "0") +
+        until[2].toString().padStart(2, "0") +
+        "T000000Z";
     return rrule;
-}
+};
 
 /**
  * Converts an array of exclusions to a string
- * @param exclArr 
+ * @param exclArr
  * @returns string of exclusions
  */
 export const calculateExclusions = (exclArr: readonly number[][]): string => {
@@ -38,15 +39,16 @@ export const calculateExclusions = (exclArr: readonly number[][]): string => {
 
     for (const exclusion of exclArr) {
         for (let i = 0; i < exclusion[3]; i++) {
-            ret += exclusion[0] 
-                + (exclusion[1]).toString().padStart(2, '0') 
-                + (exclusion[2] + i).toString().padStart(2, '0') 
-                + "T000000Z,";
+            ret +=
+                exclusion[0] +
+                exclusion[1].toString().padStart(2, "0") +
+                (exclusion[2] + i).toString().padStart(2, "0") +
+                "T000000Z,";
         }
     }
 
     return ret.slice(0, -1);
-}
+};
 
 /**
  * Calculate the correct start date for a section
@@ -55,8 +57,11 @@ export const calculateExclusions = (exclArr: readonly number[][]): string => {
  * @param sectionDays section days value
  * @returns adjusted start date in array
  */
-export const calculateStart = (start: readonly number[], startDay: number, 
-sectionDays: number): number[] => {
+export const calculateStart = (
+    start: readonly number[],
+    startDay: number,
+    sectionDays: number
+): number[] => {
     // Deep copy start
     let startCopy = JSON.parse(JSON.stringify(start));
 
@@ -65,7 +70,7 @@ sectionDays: number): number[] => {
 
     dayArr.sort();
 
-    for (let i = 0; i < dayArr.length; i++) 
+    for (let i = 0; i < dayArr.length; i++)
         if (dayArr[i] > startDay) {
             let dayDay = startCopy[2] + (dayArr[i] - startDay);
             if (dayDay > 31) {
@@ -78,7 +83,7 @@ sectionDays: number): number[] => {
             }
             return [startCopy[0], startCopy[1], dayDay];
         }
-    
+
     let dayDay = startCopy[2] + (7 - startDay + dayArr[0]);
     if (dayDay > 31) {
         dayDay -= 31;
@@ -89,4 +94,4 @@ sectionDays: number): number[] => {
         }
     }
     return [startCopy[0], startCopy[1], dayDay];
-}
+};

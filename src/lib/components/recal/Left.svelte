@@ -1,10 +1,10 @@
 <script lang="ts">
-import Saved from "./elements/save/Saved.svelte";
-import SearchResults from "./elements/search/SearchResults.svelte";
-import SearchBar from "./elements/search/SearchBar.svelte";
-import type { SupabaseClient } from "@supabase/supabase-js";
+    import Saved from "./elements/save/Saved.svelte";
+    import SearchResults from "./elements/search/SearchResults.svelte";
+    import SearchBar from "./elements/search/SearchBar.svelte";
+    import type { SupabaseClient } from "@supabase/supabase-js";
 
-export let supabase: SupabaseClient;
+    export let supabase: SupabaseClient;
 </script>
 
 <div class="h-full max-h-full w-full flex flex-col">

@@ -11,10 +11,10 @@ const RATE = 0; // Number of milliseconds between requests
 
 /**
  * Pushes all evaluations for a given term to the database
- * @param supabase 
- * @param term 
+ * @param supabase
+ * @param term
  * @returns success message
- */ 
+ */
 const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
     return;
 
@@ -95,10 +95,10 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
 
     //         ];
 
-    //         for (let i = 0; i < categories.length; i++) 
+    //         for (let i = 0; i < categories.length; i++)
     //             if (returnDict.hasOwnProperty(categories[i]))
     //                 return returnDict[categories[i]];
-            
+
     //         return null;
     //     }
 
@@ -129,13 +129,13 @@ const populateEvaluations = async (supabase: SupabaseClient, term: number) => {
     //     promises.push(processNextEvaluation(i));
     // }
 
-    // // Wait for all requests to finish 
+    // // Wait for all requests to finish
     // await Promise.all(promises);
-    
+
     // // Return success message
     // const msg = `Found ${found} evaluations for term ${term} (${none} not found)`;
     // console.log(msg);
     // return msg;
-}
+};
 
-export { populateEvaluations }
+export { populateEvaluations };

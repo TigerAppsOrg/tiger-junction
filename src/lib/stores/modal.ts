@@ -2,39 +2,40 @@ import { writable, type Writable } from "svelte/store";
 
 let queue: string[] = [];
 let currentModal: string | undefined = undefined;
-const { subscribe, update, set }: Writable<string | undefined> = writable(undefined);
+const { subscribe, update, set }: Writable<string | undefined> =
+    writable(undefined);
 
 type ModalSettings = {
-    front?: boolean;    // Put the modal in front of the queue
-    force?: boolean;    // Force the modal to open
-    current?: boolean;  // Push the current modal to the queue
-    clear?: boolean;    // Clear the queue before opening the modal
-}
+    front?: boolean; // Put the modal in front of the queue
+    force?: boolean; // Force the modal to open
+    current?: boolean; // Push the current modal to the queue
+    clear?: boolean; // Clear the queue before opening the modal
+};
 
 const modalStore = {
     subscribe,
     set,
     update,
-    
+
     /**
      * Open a modal or add it to the queue (or follow optional settings)
      * @param name of the modal
-     * @param settings 
+     * @param settings
      */
     open: (name: string, settings?: ModalSettings) => {
         const { front, force, clear, current } = settings || {};
         if (clear) {
             queue = [];
             currentModal = undefined;
-        };
-        
+        }
+
         // Push the current modal to the queue
-        if (current && currentModal) queue.push(currentModal)
+        if (current && currentModal) queue.push(currentModal);
 
         // Add the current modal to the queue
         if (front) queue.push(name);
         else queue.unshift(name);
-        
+
         // Set the current modal
         if (force || !currentModal) setModal();
     },
@@ -54,16 +55,13 @@ const modalStore = {
      * Get the queue
      * @returns the current queue
      */
-    getQueue: () => queue,
-}
+    getQueue: () => queue
+};
 
 // Set the current modal to the last item in the queue
 const setModal = () => {
     currentModal = queue.pop();
     set(currentModal);
-}
-
-
-export {
-    modalStore
 };
+
+export { modalStore };

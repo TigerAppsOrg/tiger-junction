@@ -4,8 +4,8 @@ const args = process.argv.slice(2);
 const term = args[0];
 
 if (!term) {
-  console.error("No term specified");
-  process.exit(1);
+    console.error("No term specified");
+    process.exit(1);
 }
 
 let courselist = JSON.parse(fs.readFileSync("./" + term + ".json", "utf8"));
@@ -34,5 +34,7 @@ courselist = courselist.map(x => {
     return x;
 });
 
-fs.writeFileSync("./coursedata/sm/" + term + "_sm.json", JSON.stringify(courselist, null, 4));
-
+fs.writeFileSync(
+    "./coursedata/sm/" + term + "_sm.json",
+    JSON.stringify(courselist, null, 4)
+);

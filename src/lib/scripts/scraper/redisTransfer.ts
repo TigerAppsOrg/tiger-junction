@@ -4,7 +4,7 @@ import { createClient } from "redis";
 
 export const redisTransfer = async (supabase: SupabaseClient, term: number) => {
     // Transfer data from Supabase to Redis
-    const redisStart = Date.now(); 
+    const redisStart = Date.now();
     const { data: supaCourses, error: error2 } = await supabase
         .from("courses")
         .select("*")
@@ -25,7 +25,7 @@ export const redisTransfer = async (supabase: SupabaseClient, term: number) => {
         throw new Error(error3.message);
     }
 
-    supaSections.forEach((section) => {
+    supaSections.forEach(section => {
         delete section.courses;
     });
 
@@ -33,18 +33,24 @@ export const redisTransfer = async (supabase: SupabaseClient, term: number) => {
     const redisClient = createClient({
         password: REDIS_PASSWORD,
         socket: {
-        host: 'redis-10705.c12.us-east-1-4.ec2.cloud.redislabs.com',
-        port: 10705
+            host: "redis-10705.c12.us-east-1-4.ec2.cloud.redislabs.com",
+            port: 10705
         }
     });
 
     redisClient.on("error", err => console.log("Redis Client Error", err));
 
     await redisClient.connect();
-    await redisClient.json.set(`courses-${term}`, "$", supaCourses)
+    await redisClient.json.set(`courses-${term}`, "$", supaCourses);
     await redisClient.json.set(`sections-${term}`, "$", supaSections);
     await redisClient.disconnect();
 
     const redisEnd = Date.now();
-    console.log("Finished transferring data to Redis for term", term, "in", (redisEnd - redisStart) / 1000, "s");
-}
+    console.log(
+        "Finished transferring data to Redis for term",
+        term,
+        "in",
+        (redisEnd - redisStart) / 1000,
+        "s"
+    );
+};
