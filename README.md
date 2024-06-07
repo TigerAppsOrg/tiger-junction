@@ -33,7 +33,7 @@ Unlike most Princeton student applications, `TigerJunction` utilizes a JS backen
 
 **Backend:** Supabase (PostgreSQL and Deno), AWS (Lambda, S3, Cloudfront; through SST), Cloudflare (DNS, DoS Protection, R2, and Workers), Redis, NodeJS, Princeton StudentApp API
 
-**Dev Tools:** Git, GitHub, Storybook, Visual Studio Code
+**Dev Tools:** Git, GitHub, GitHub Actions, Prettier
 
 ## Acknowledgements
 This project is sponsored by [TigerApps](https://tigerapps.org/) (which is a Princeton USG initiative), and is inspired by 4 other TigerApps: [ReCal](https://recal.io/), [TigerPath](https://www.tigerpath.io/), [PrincetonCourses](https://www.princetoncourses.com/), [TigerMap](https://tigermap.tigerapps.org/). While it does not use any of the code from these projects, they guided decisions about UI, functionality, and overall project design. Additional thanks to the Princeton OIT for providing their API.
