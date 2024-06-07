@@ -11,6 +11,4 @@ vite.config.ts.timestamp-*
 .VSCODECounter
 .vercel
 /src/lib/scripts/scraper/localcache
-
-# sst
 .sst
