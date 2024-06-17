@@ -10,6 +10,10 @@ export const GET: RequestHandler = async ({ params }) => {
             uuid
     );
 
+    if (!data.ok) {
+        throw new Error("File not found");
+    }
+
     // Download file
     const buffer = await data.arrayBuffer();
     const file = new Uint8Array(buffer);
