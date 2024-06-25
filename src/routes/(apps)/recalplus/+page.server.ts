@@ -3,6 +3,7 @@ import { createClient } from "redis";
 import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
+import { redirect } from "@sveltejs/kit";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {
@@ -10,10 +11,7 @@ export const load = async ({ locals: { supabase } }) => {
         data: { user }
     } = await supabase.auth.getUser();
     if (!user) {
-        return {
-            status: 401,
-            body: { message: "Unauthorized" }
-        };
+        throw redirect(303, "/");
     }
     const userId = user.id;
 
@@ -45,8 +43,9 @@ export const load = async ({ locals: { supabase } }) => {
             .eq("term", CURRENT_TERM_ID)
             .order("id", { ascending: true })
     );
-    const [courses, sections, feedback, userSchedulesRaw] =
-        await Promise.all(supaPromises);
+    const [courses, sections, feedback, userSchedulesRaw] = (await Promise.all(
+        supaPromises
+    )) as any[];
 
     const doneFeedback = feedback?.data.doneFeedback;
     const userSchedules = userSchedulesRaw.data;
@@ -74,7 +73,9 @@ export const load = async ({ locals: { supabase } }) => {
                 .select()
                 .single()
         );
-        const [_, __, newScheduleRaw] = await Promise.all(cleaningPromises);
+        const [_, __, newScheduleRaw] = (await Promise.all(
+            cleaningPromises
+        )) as any[];
         const newSchedule = newScheduleRaw.data;
 
         return {
@@ -108,7 +109,9 @@ export const load = async ({ locals: { supabase } }) => {
         );
     }
 
-    const [_, __, ...assocResults] = await Promise.all(assocPromises);
+    const [_, __, ...assocResults] = (await Promise.all(
+        assocPromises
+    )) as any[];
     for (let i = 0; i < assocResults.length; i++) {
         associations[userSchedules[i].id] = assocResults[i].data;
     }
