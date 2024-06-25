@@ -3,19 +3,22 @@ import { createClient } from "redis";
 import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
+import { redirect } from "@sveltejs/kit";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {
+    const startTime = Date.now();
+    console.log("Start time:", startTime);
+
     const {
         data: { user }
     } = await supabase.auth.getUser();
     if (!user) {
-        return {
-            status: 401,
-            body: { message: "Unauthorized" }
-        };
+        throw redirect(303, "/");
     }
     const userId = user.id;
+
+    console.log("Auth check time:", Date.now() - startTime, "ms");
 
     const redisClient = createClient({
         password: REDIS_PASSWORD,
@@ -26,6 +29,8 @@ export const load = async ({ locals: { supabase } }) => {
     });
     redisClient.on("error", err => console.log("Redis Client Error", err));
     await redisClient.connect();
+
+    console.log("Redis load time:", Date.now() - startTime, "ms");
 
     const supaPromises = [];
     supaPromises.push(redisClient.json.get(`courses-${CURRENT_TERM_ID}`));
@@ -47,6 +52,8 @@ export const load = async ({ locals: { supabase } }) => {
     );
     const [courses, sections, feedback, userSchedulesRaw] =
         await Promise.all(supaPromises);
+
+    console.log("Supabase load time:", Date.now() - startTime, "ms");
 
     const doneFeedback = feedback?.data.doneFeedback;
     const userSchedules = userSchedulesRaw.data;
@@ -112,6 +119,8 @@ export const load = async ({ locals: { supabase } }) => {
     for (let i = 0; i < assocResults.length; i++) {
         associations[userSchedules[i].id] = assocResults[i].data;
     }
+
+    console.log("Recal+ load time:", Date.now() - startTime, "ms");
 
     return {
         status: 200,
