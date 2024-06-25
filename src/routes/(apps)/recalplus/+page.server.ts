@@ -7,9 +7,6 @@ import { redirect } from "@sveltejs/kit";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {
-    const startTime = Date.now();
-    console.log("Start time:", startTime);
-
     const {
         data: { user }
     } = await supabase.auth.getUser();
@@ -17,8 +14,6 @@ export const load = async ({ locals: { supabase } }) => {
         throw redirect(303, "/");
     }
     const userId = user.id;
-
-    console.log("Auth check time:", Date.now() - startTime, "ms");
 
     const redisClient = createClient({
         password: REDIS_PASSWORD,
@@ -29,8 +24,6 @@ export const load = async ({ locals: { supabase } }) => {
     });
     redisClient.on("error", err => console.log("Redis Client Error", err));
     await redisClient.connect();
-
-    console.log("Redis load time:", Date.now() - startTime, "ms");
 
     const supaPromises = [];
     supaPromises.push(redisClient.json.get(`courses-${CURRENT_TERM_ID}`));
@@ -50,10 +43,9 @@ export const load = async ({ locals: { supabase } }) => {
             .eq("term", CURRENT_TERM_ID)
             .order("id", { ascending: true })
     );
-    const [courses, sections, feedback, userSchedulesRaw] =
-        await Promise.all(supaPromises);
-
-    console.log("Supabase load time:", Date.now() - startTime, "ms");
+    const [courses, sections, feedback, userSchedulesRaw] = (await Promise.all(
+        supaPromises
+    )) as any[];
 
     const doneFeedback = feedback?.data.doneFeedback;
     const userSchedules = userSchedulesRaw.data;
@@ -81,7 +73,9 @@ export const load = async ({ locals: { supabase } }) => {
                 .select()
                 .single()
         );
-        const [_, __, newScheduleRaw] = await Promise.all(cleaningPromises);
+        const [_, __, newScheduleRaw] = (await Promise.all(
+            cleaningPromises
+        )) as any[];
         const newSchedule = newScheduleRaw.data;
 
         return {
@@ -115,12 +109,12 @@ export const load = async ({ locals: { supabase } }) => {
         );
     }
 
-    const [_, __, ...assocResults] = await Promise.all(assocPromises);
+    const [_, __, ...assocResults] = (await Promise.all(
+        assocPromises
+    )) as any[];
     for (let i = 0; i < assocResults.length; i++) {
         associations[userSchedules[i].id] = assocResults[i].data;
     }
-
-    console.log("Recal+ load time:", Date.now() - startTime, "ms");
 
     return {
         status: 200,
