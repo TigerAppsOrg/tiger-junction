@@ -4,11 +4,12 @@ import { createEvents, type DateArray, type EventAttributes } from "ics";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { CALENDAR_INFO } from "$lib/changeme.js";
 import { config } from "dotenv";
+import { Database } from "$lib/types/supabaseTypes";
 
 export async function handler() {
     config();
     // Environment variables are loaded into AWS Lambda manually
-    const supabase = createClient(
+    const supabase = createClient<Database>(
         process.env.PUBLIC_SUPABASE_URL as string,
         process.env.SERVICE_KEY as string,
         {

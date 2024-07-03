@@ -5,6 +5,7 @@ import { createEvents, type DateArray, type EventAttributes } from "ics";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { CALENDAR_INFO } from "$lib/changeme.js";
 import type { RequestEvent } from "./$types";
+import { Database } from "$lib/types/supabaseTypes";
 
 // Refresh all icals if they are associated with a schedule
 export async function GET(req: RequestEvent) {
@@ -16,7 +17,7 @@ export async function GET(req: RequestEvent) {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const supabase = createClient(PUBLIC_SUPABASE_URL, SERVICE_KEY, {
+    const supabase = createClient<Database>(PUBLIC_SUPABASE_URL, SERVICE_KEY, {
         auth: {
             autoRefreshToken: false,
             persistSession: false
