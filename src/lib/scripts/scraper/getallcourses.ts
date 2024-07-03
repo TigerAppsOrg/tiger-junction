@@ -1,4 +1,4 @@
-import { API_ACCESS_TOKEN, REDIS_PASSWORD } from "$env/static/private";
+import { API_ACCESS_TOKEN } from "$env/static/private";
 import { DEPARTMENTS, TERM_URL } from "$lib/constants";
 import type { CourseInsert } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";

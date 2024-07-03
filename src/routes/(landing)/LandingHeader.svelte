@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { handleLogin } from "$lib/supabase";
+    import { handleLogin } from "$lib/scripts/supabase";
     import type { SupabaseClient } from "@supabase/supabase-js";
 
     export let supabase: SupabaseClient;

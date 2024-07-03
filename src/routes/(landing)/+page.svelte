@@ -1,6 +1,6 @@
 <script lang="ts">
     import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
-    import { handleLogin } from "$lib/supabase.js";
+    import { handleLogin } from "$lib/scripts/supabase.js";
     import LandingFooter from "./LandingFooter.svelte";
     import LandingHeader from "./LandingHeader.svelte";
 
