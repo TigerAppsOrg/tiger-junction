@@ -63,7 +63,7 @@ export const updateEnrollments = async (supabase, term) => {
     //------------------------------------------------------------------
     // Individual Course Processing
     //------------------------------------------------------------------
-    const processCourse = async (index, token) => {
+    const processCourse = async (index, tok1en) => {
         // Check base case
         if (index >= courseHeap.length) return;
         globCount++;
