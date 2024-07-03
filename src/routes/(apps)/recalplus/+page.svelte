@@ -17,7 +17,6 @@
     import { onMount } from "svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { modalStore } from "$lib/stores/modal";
-    import { toastStore } from "$lib/stores/toast";
 
     export let data: {
         supabase: SupabaseClient;
@@ -31,8 +30,6 @@
     };
 
     onMount(async () => {
-        const startTime = new Date().getTime();
-
         if (!data.body.doneFeedback) {
             modalStore.open("feedbackpop", { clear: true });
         }
@@ -127,9 +124,6 @@
         let id = $schedules[CURRENT_TERM_ID][0].id;
         let courses = $savedCourses[id] ? [...$savedCourses[id]] : [];
         searchCourseData.remove(CURRENT_TERM_ID, courses);
-
-        const endTime = new Date().getTime();
-        console.log("Mount speed: ", endTime - startTime);
 
         $ready = true;
     });

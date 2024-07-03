@@ -50,9 +50,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^22.1.0",
     "redis": "^4.6.10",
-    "svelte-inview": "^4.0.1",
-    "theme-change": "^2.5.0",
-    "uninstall": "^0.0.0"
+    "svelte-inview": "^4.0.1"
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
