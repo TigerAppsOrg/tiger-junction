@@ -137,26 +137,26 @@
     class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto
  dark:bg-black max-h-screen overflow-clip">
     <div class="mx-2">
-        <Top supabase={data.supabase} />
+        <Top />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
     <div id="main" class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-80px)]">
         {#if $isMobile}
             {#if !$showCal}
                 <div class="flex-1 min-w-[200px]">
-                    <Left supabase={data.supabase} />
+                    <Left />
                 </div>
             {:else}
                 <div class="flex-1">
-                    <Calendar supabase={data.supabase} />
+                    <Calendar />
                 </div>
             {/if}
         {:else}
             <div class="w-1/5 min-w-[200px]">
-                <Left supabase={data.supabase} />
+                <Left />
             </div>
             <div class="flex-1 min-w-[400px] ml-2">
-                <Calendar supabase={data.supabase} />
+                <Calendar />
             </div>
         {/if}
     </div>

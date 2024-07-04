@@ -6,10 +6,12 @@
     import { calColors } from "$lib/stores/styles";
     import { rMeta } from "$lib/stores/rmeta";
     import { hovStyle, hovStyleRev } from "$lib/stores/recal";
+    import { getContext } from "svelte";
 
     export let params: CalBoxParam;
-    export let supabase: SupabaseClient;
     const { courseCode, section } = params;
+
+    const supabase = getContext("supabase") as SupabaseClient;
 
     let hovered: boolean = false;
 

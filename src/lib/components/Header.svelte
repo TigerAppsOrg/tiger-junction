@@ -7,7 +7,7 @@
     import { isMobile } from "$lib/stores/mobile";
     import { getContext } from "svelte";
 
-    let supabase = getContext("supabase") as SupabaseClient;
+    const supabase = getContext("supabase") as SupabaseClient;
 
     const handleLogout = async () => {
         await supabase.auth.signOut();

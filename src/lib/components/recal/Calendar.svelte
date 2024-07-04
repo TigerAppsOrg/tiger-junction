@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type { SupabaseClient } from "@supabase/supabase-js";
     import { savedCourses } from "$lib/stores/rpool";
     import { get } from "svelte/store";
     import {
@@ -18,8 +17,6 @@
     import { calColors, type CalColors } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import { linear } from "svelte/easing";
-
-    export let supabase: SupabaseClient;
 
     let toRender: CalBoxParam[] = [];
 
@@ -370,7 +367,7 @@
                     <!-- * CalBoxes-->
                     {#key toRender}
                         {#each toRender as params}
-                            <CalBox {params} {supabase} />
+                            <CalBox {params} />
                         {/each}
                     {/key}
                 </div>

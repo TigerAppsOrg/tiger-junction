@@ -1,10 +1,8 @@
 <script lang="ts">
-    import { research, searchResults, searchSettings } from "$lib/stores/recal";
-    import type { SupabaseClient } from "@supabase/supabase-js";
+    import { research, searchResults } from "$lib/stores/recal";
     import MinimalBase from "../cards/MinimalBase.svelte";
     import { darkTheme } from "$lib/stores/state";
 
-    export let supabase: SupabaseClient;
     $: resetKey = [$searchResults, $darkTheme, $research];
 </script>
 
@@ -22,11 +20,7 @@
             <div class="overflow-y-auto">
                 {#key resetKey}
                     {#each $searchResults as course}
-                        {#if $searchSettings.style["Original Style"]}
-                            <!-- <ClassicSearch {course} /> -->
-                        {:else}
-                            <MinimalBase {supabase} {course} />
-                        {/if}
+                        <MinimalBase {course} />
                     {/each}
                 {/key}
             </div>

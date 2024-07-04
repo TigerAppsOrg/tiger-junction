@@ -25,8 +25,9 @@
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { ACTIVE_TERMS } from "$lib/changeme";
     import confetti from "canvas-confetti";
+    import { getContext } from "svelte";
 
-    export let supabase: SupabaseClient;
+    const supabase = getContext("supabase") as SupabaseClient;
 
     // Change the current term
     const handleTermChange = async (term: number) => {

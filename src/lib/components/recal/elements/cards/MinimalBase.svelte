@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { CourseData } from "$lib/types/dbTypes";
     import plusIcon from "$lib/img/icons/addicon.svg";
-    // import pinIcon from "$lib/img/icons/pinicon.svg"
     import removeIcon from "$lib/img/icons/subtractionicon.svg";
     import { slide } from "svelte/transition";
     import {
@@ -23,10 +22,12 @@
     import { inview } from "svelte-inview";
     import CardLinkButton from "./CardLinkButton.svelte";
     import { CURRENT_TERM_ID } from "$lib/changeme";
+    import { getContext } from "svelte";
 
     export let course: CourseData;
     export let category: string = "search";
-    export let supabase: SupabaseClient;
+
+    const supabase = getContext("supabase") as SupabaseClient;
 
     // Course code with spaces before and after all slashes
     let code = course.code.replace(/\//g, " / ");
