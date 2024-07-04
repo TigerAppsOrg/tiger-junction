@@ -37,10 +37,6 @@ export default {
           gray: "hsl(0, 0%, 66%)",
           darkGray: "hsl(0, 0%, 56%)",
         },
-        deepblue: {
-          dark: "#6157FF",  // "#000428",
-          light: "#EE49FD", // "#004E92",
-        }
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],

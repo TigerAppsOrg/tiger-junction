@@ -4,11 +4,12 @@ import { createEvents, type DateArray, type EventAttributes } from "ics";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { CALENDAR_INFO } from "$lib/changeme.js";
 import { config } from "dotenv";
+import { Database } from "$lib/types/supabaseTypes";
 
 export async function handler() {
     config();
     // Environment variables are loaded into AWS Lambda manually
-    const supabase = createClient(
+    const supabase = createClient<Database>(
         process.env.PUBLIC_SUPABASE_URL as string,
         process.env.SERVICE_KEY as string,
         {
@@ -40,8 +41,13 @@ export async function handler() {
         .not("schedule_id", "is", null);
 
     if (error) {
-        console.log(error);
+        console.error(error);
         return new Response(JSON.stringify(error), { status: 500 });
+    }
+
+    if (!data) {
+        console.error("No data found.");
+        return new Response("No data found.", { status: 404 });
     }
 
     console.log(
@@ -57,9 +63,19 @@ export async function handler() {
     // Loop through each schedule
     for (let i = 0; i < data.length; i++) {
         const events: EventAttributes[] = [];
-        const term = data[i].schedules.term;
+        if (!data[i] || !data[i].schedules) {
+            continue;
+        }
+
+        const schedule = data[i].schedules;
+        if (!schedule) {
+            console.error("No schedule found for calendar " + data[i].id);
+            continue;
+        }
+
+        const term = schedule.term.toString();
         const calInfo = CALENDAR_INFO[term];
-        const courses = data[i].schedules.course_schedule_associations.map(
+        const courses = schedule.course_schedule_associations.map(
             (csa: { courses: any; confirms: any }) => {
                 return {
                     title: csa.courses.title,
@@ -139,7 +155,7 @@ export async function handler() {
 
         createEvents(events, async (error, value) => {
             if (error) {
-                console.log(error);
+                console.error(error);
                 return new Response(JSON.stringify(error), { status: 500 });
             }
 

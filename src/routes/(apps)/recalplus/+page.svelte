@@ -17,7 +17,6 @@
     import { onMount } from "svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { modalStore } from "$lib/stores/modal";
-    import { toastStore } from "$lib/stores/toast";
 
     export let data: {
         supabase: SupabaseClient;
@@ -31,8 +30,6 @@
     };
 
     onMount(async () => {
-        const startTime = new Date().getTime();
-
         if (!data.body.doneFeedback) {
             modalStore.open("feedbackpop", { clear: true });
         }
@@ -128,9 +125,6 @@
         let courses = $savedCourses[id] ? [...$savedCourses[id]] : [];
         searchCourseData.remove(CURRENT_TERM_ID, courses);
 
-        const endTime = new Date().getTime();
-        console.log("Mount speed: ", endTime - startTime);
-
         $ready = true;
     });
 </script>
@@ -143,26 +137,26 @@
     class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto
  dark:bg-black max-h-screen overflow-clip">
     <div class="mx-2">
-        <Top supabase={data.supabase} />
+        <Top />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
     <div id="main" class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-80px)]">
         {#if $isMobile}
             {#if !$showCal}
                 <div class="flex-1 min-w-[200px]">
-                    <Left supabase={data.supabase} />
+                    <Left />
                 </div>
             {:else}
                 <div class="flex-1">
-                    <Calendar supabase={data.supabase} />
+                    <Calendar />
                 </div>
             {/if}
         {:else}
             <div class="w-1/5 min-w-[200px]">
-                <Left supabase={data.supabase} />
+                <Left />
             </div>
             <div class="flex-1 min-w-[400px] ml-2">
-                <Calendar supabase={data.supabase} />
+                <Calendar />
             </div>
         {/if}
     </div>

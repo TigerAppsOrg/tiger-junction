@@ -16,8 +16,9 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { getContext } from "svelte";
 
-    export let supabase: SupabaseClient;
+    const supabase = getContext("supabase") as SupabaseClient;
 
     let inputBar: HTMLInputElement;
 

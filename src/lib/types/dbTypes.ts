@@ -3,7 +3,7 @@
 import type { SectionData } from "$lib/stores/rsections";
 import type { CalColors } from "$lib/stores/styles";
 
-type Listing = {
+export type Listing = {
     id: string;
     code: string;
     title: string;
@@ -12,7 +12,7 @@ type Listing = {
     pen_term: number | null;
 };
 
-type CourseInsert = {
+export type CourseInsert = {
     id?: number;
     listing_id: string;
     term: number;
@@ -25,27 +25,27 @@ type CourseInsert = {
     has_final?: boolean;
 };
 
-type Course = CourseInsert & {
+export type Course = CourseInsert & {
     id: number;
     rating: number | null;
 };
 
-type InstructorInsert = {
+export type InstructorInsert = {
     netid: string;
     name: string;
 };
 
-type CourseInstructorAssociation = {
+export type CourseInstructorAssociation = {
     course_id: number;
     instructor_id: string;
 };
 
-type DualId = {
+export type DualId = {
     listing_id: string;
     id: number;
 };
 
-type CourseData = {
+export type CourseData = {
     has_final: any;
     id: number;
     listing_id: string;
@@ -61,13 +61,13 @@ type CourseData = {
     instructors: string[] | null;
 };
 
-type CourseLinks = {
+export type CourseLinks = {
     registrar: string;
     tigersnatch: string;
     princetoncourses: string;
 };
 
-type CalBoxParam = {
+export type CalBoxParam = {
     courseCode: string;
     section: SectionData;
     color: keyof CalColors;
@@ -82,21 +82,8 @@ type CalBoxParam = {
     left: string;
 };
 
-type CalendarBox = {
+export type CalendarBox = {
     courseCode: string;
     section: SectionData;
     style: string;
-};
-
-export type {
-    Listing,
-    CourseInsert,
-    Course,
-    InstructorInsert,
-    CourseInstructorAssociation,
-    DualId,
-    CourseData,
-    CourseLinks,
-    CalBoxParam,
-    CalendarBox
 };

@@ -5,10 +5,15 @@ import {
 import { createSupabaseLoadClient } from "@supabase/auth-helpers-sveltekit";
 import type { Config } from "@sveltejs/kit";
 
+// This is unfortunately a Vite bug
+// https://github.com/withastro/astro/issues/8660 (for workaround)
+import * as _Database from "$lib/types/supabaseTypes"
+type Database = _Database.Database
+
 export const load = async ({ fetch, data, depends }) => {
     depends("supabase:auth");
 
-    const supabase = createSupabaseLoadClient({
+    const supabase = createSupabaseLoadClient<Database>({
         supabaseUrl: PUBLIC_SUPABASE_URL,
         supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
         event: { fetch },

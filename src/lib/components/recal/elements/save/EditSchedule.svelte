@@ -11,7 +11,7 @@
     import { getContext, onMount } from "svelte";
 
     export let showModal: boolean = false;
-    let supabase = getContext("supabase") as SupabaseClient;
+    const supabase = getContext("supabase") as SupabaseClient;
 
     let input: string = "";
 

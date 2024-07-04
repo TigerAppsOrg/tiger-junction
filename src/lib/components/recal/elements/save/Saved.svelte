@@ -1,19 +1,10 @@
 <script lang="ts">
-    import {
-        currentSchedule,
-        isResult,
-        ready,
-        recal,
-        searchSettings
-    } from "$lib/stores/recal";
-    import type { SupabaseClient } from "@supabase/supabase-js";
+    import { currentSchedule, isResult, ready, recal } from "$lib/stores/recal";
     import MinimalBase from "../cards/MinimalBase.svelte";
     import { savedCourses } from "$lib/stores/rpool";
     import { calColors } from "$lib/stores/styles";
     import Loader from "$lib/components/elements/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
-
-    export let supabase: SupabaseClient;
 
     $: saved = $savedCourses[$currentSchedule]
         ? $savedCourses[$currentSchedule].sort((a, b) =>
@@ -60,14 +51,7 @@
                     <div class="overflow-y-auto">
                         {#key saved && colorChange}
                             {#each saved as course}
-                                {#if $searchSettings.style["Original Style"]}
-                                    <!-- <ClassicSearch {course} /> -->
-                                {:else}
-                                    <MinimalBase
-                                        {supabase}
-                                        {course}
-                                        category="saved" />
-                                {/if}
+                                <MinimalBase {course} category="saved" />
                             {/each}
                         {/key}
                     </div>

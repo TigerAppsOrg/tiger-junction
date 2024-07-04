@@ -6,7 +6,7 @@
     import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     import { getContext } from "svelte";
 
-    let supabase = getContext("supabase") as SupabaseClient;
+    const supabase = getContext("supabase") as SupabaseClient;
     export let showModal: boolean = false;
 
     let feedback: string = "";
