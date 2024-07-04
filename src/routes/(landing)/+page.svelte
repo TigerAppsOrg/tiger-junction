@@ -159,7 +159,7 @@
             radial-gradient(74% 86% at 67% 38%, #4ecdc4ff 24%, #ff6b6b00 100%),
             linear-gradient(125deg, #ff6b6bcc 1%, #ffffffff 100%);
         background-size: 200% 200%;
-        animation: gradient 10s ease infinite;
+        animation: gradient 8s ease infinite;
     }
 
     @keyframes gradient {
@@ -175,7 +175,7 @@
     }
 
     .overlay {
-        background-color: rgba(255, 255, 255, 0.4);
+        background-color: rgba(255, 255, 255, 0.2);
     }
 
     .glassy {
