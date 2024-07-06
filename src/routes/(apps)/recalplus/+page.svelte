@@ -17,7 +17,7 @@
     import { onMount } from "svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { modalStore } from "$lib/stores/modal";
-    import { type CustomEvent, eventData } from "$lib/stores/events";
+    import { type CustomEvent, customEvents } from "$lib/stores/events";
 
     export let data: {
         supabase: SupabaseClient;
@@ -39,17 +39,7 @@
             modalStore.open("feedbackpop", { clear: true });
         }
 
-        eventData.set(data.body.events);
-        const idx = eventData.add(data.supabase, {
-            title: "Sample",
-            times: [
-                {
-                    start: "09",
-                    end: "10"
-                }
-            ]
-        });
-        console.log(eventData.find(idx));
+        customEvents.set(data.body.events);
 
         if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
             rawCourseData.update(x => {

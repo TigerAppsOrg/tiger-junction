@@ -1,11 +1,6 @@
-/**
- * @file Store for custom events and their association with schedules
- */
-
 import { goto } from "$app/navigation";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { redirect } from "@sveltejs/kit";
-import { writable } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
 
 export type CustomEventTime = {
     start: string;
@@ -18,39 +13,26 @@ export type CustomEvent = {
     times: CustomEventTime[];
 };
 
-export type CustomEventInsert = {
-    title: string;
-    times: CustomEventTime[];
-};
+export type CustomEventInsert = Omit<CustomEvent, "id">;
 
-function createEventStore(events: CustomEvent[]) {
-    const { subscribe, set, update } = writable(events);
+function createCustomEventsStore() {
+    const store: Writable<CustomEvent[]> = writable([]);
 
     return {
-        subscribe,
-        set,
-        update,
+        subscribe: store.subscribe,
+        set: store.set,
+        update: store.update,
 
-        /**
-         *
-         * @param id
-         * @returns
-         */
-        find: (id: number) => events.find(event => event.id === id),
+        find: (id: number) => {
+            const events = get(store);
+            return events.find(event => event.id === id);
+        },
 
-        /**
-         * Add an event to the store and database
-         * @param supabase Supabase client
-         * @param event Event to add
-         */
-        add: async (
-            supabase: SupabaseClient,
-            event: CustomEventInsert
-        ): Promise<number> => {
+        add: async (supabase: SupabaseClient, event: CustomEventInsert) => {
             const user = (await supabase.auth.getUser()).data.user;
             if (!user) {
                 goto("/");
-                return -1;
+                return;
             }
 
             const { data, error } = await supabase
@@ -61,36 +43,35 @@ function createEventStore(events: CustomEvent[]) {
                     user_id: user.id
                 })
                 .select("id");
+
             if (error) {
                 console.error("Error adding event to database:", error.message);
                 return -1;
             }
-            const newEvent = { ...event, id: data[0].id };
-            update(events => [...events, newEvent]);
+
+            const newEvent: CustomEvent = { ...event, id: data[0].id };
+            store.update(events => [...events, newEvent]);
             return newEvent.id;
         },
 
-        // eddd163b-7d7d-4269-acd8-3cc03b4cf79f
-
-        /**
-         * Remove an event from the store and database
-         * @param supabase Supabase client
-         * @param id Id of the event to remove
-         */
         remove: async (supabase: SupabaseClient, id: number) => {
+            const events = get(store);
             const eventIndex = events.findIndex(event => event.id === id);
             const event = events[eventIndex];
-            update(events => events.filter(event => event.id !== id));
+
+            store.update(events => events.filter(event => event.id !== id));
+
             const { error } = await supabase
                 .from("events")
                 .delete()
                 .match({ id });
+
             if (error) {
                 console.error(
                     "Error removing event from database:",
                     error.message
                 );
-                update(events => [
+                store.update(events => [
                     ...events.slice(0, eventIndex),
                     event,
                     ...events.slice(eventIndex)
@@ -99,17 +80,28 @@ function createEventStore(events: CustomEvent[]) {
         }
     };
 }
-export const eventData = createEventStore([]);
+
+export const customEvents = createCustomEventsStore();
 
 export type ScheduleEventMap = Record<number, CustomEvent[]>;
 
-function createScheduleEventStore(initMap: ScheduleEventMap) {
-    const { subscribe, set, update } = writable(initMap);
+function createScheduleEventStore() {
+    const store: Writable<ScheduleEventMap> = writable({});
 
     return {
-        subscribe,
-        set,
-        update,
+        subscribe: store.subscribe,
+        set: store.set,
+        update: store.update,
+
+        /**
+         * Get the events for a schedule
+         * @param scheduleId Id of the schedule to get events for
+         * @returns Events for the schedule
+         */
+        getSchedule: (scheduleId: number) => {
+            const schedule = get(store)[scheduleId];
+            return schedule || [];
+        },
 
         /**
          * Add an event to a schedule
@@ -164,7 +156,7 @@ function createScheduleEventStore(initMap: ScheduleEventMap) {
          * @param scheduleId Id of the schedule to remove
          */
         deleteSchedule: async (scheduleId: number) => {
-            update(map => {
+            store.update(map => {
                 delete map[scheduleId];
                 return map;
             });
@@ -172,4 +164,4 @@ function createScheduleEventStore(initMap: ScheduleEventMap) {
     };
 }
 
-export const scheduleEventMap = createScheduleEventStore({});
+export const scheduleEventMap = createScheduleEventStore();
