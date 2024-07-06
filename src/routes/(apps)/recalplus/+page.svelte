@@ -40,6 +40,16 @@
         }
 
         eventData.set(data.body.events);
+        const idx = eventData.add(data.supabase, {
+            title: "Sample",
+            times: [
+                {
+                    start: "09",
+                    end: "10"
+                }
+            ]
+        });
+        console.log(eventData.find(idx));
 
         if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
             rawCourseData.update(x => {
