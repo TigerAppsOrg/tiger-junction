@@ -20,7 +20,7 @@
         <div class="max-h-full mt-2">
             <div
                 class="text-base font-normal dark:text-zinc-100 ml-1
-    flex items-center justify-between">
+                    flex items-center justify-between">
                 <span>
                     {saved.length} Saved
                     {saved.length === 1 ? "Course" : "Courses"}
