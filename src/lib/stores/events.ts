@@ -57,6 +57,11 @@ function createCustomEventsStore() {
         remove: async (supabase: SupabaseClient, id: number) => {
             const events = get(store);
             const eventIndex = events.findIndex(event => event.id === id);
+            if (eventIndex === -1) {
+                console.error("Event not found");
+                return;
+            }
+
             const event = events[eventIndex];
 
             store.update(events => events.filter(event => event.id !== id));
@@ -100,7 +105,11 @@ function createScheduleEventStore() {
          */
         getSchedule: (scheduleId: number) => {
             const schedule = get(store)[scheduleId];
-            return schedule || [];
+            if (!schedule) {
+                console.error("Schedule not found");
+                return [];
+            }
+            return schedule;
         },
 
         /**
@@ -113,7 +122,46 @@ function createScheduleEventStore() {
             supabase: SupabaseClient,
             scheduleId: number,
             eventId: number
-        ) => {},
+        ) => {
+            const schedule = get(store)[scheduleId];
+            if (!schedule) {
+                console.error("Schedule not found");
+                return;
+            }
+
+            const event = customEvents.find(eventId);
+            if (!event) {
+                console.error("Event not found");
+                return;
+            }
+
+            if (schedule.find(event => event.id === eventId)) {
+                console.error("Event already in schedule");
+                return;
+            }
+
+            store.update(map => {
+                map[scheduleId] = [...map[scheduleId], event];
+                return map;
+            });
+
+            const { error } = await supabase
+                .from("event_schedule_associations")
+                .insert({
+                    event_id: eventId,
+                    schedule_id: scheduleId
+                });
+
+            if (error) {
+                console.error("Error adding event to schedule:", error.message);
+                store.update(map => {
+                    map[scheduleId] = map[scheduleId].filter(
+                        event => event.id !== eventId
+                    );
+                    return map;
+                });
+            }
+        },
 
         /**
          * Remove an event from a schedule
@@ -125,17 +173,90 @@ function createScheduleEventStore() {
             supabase: SupabaseClient,
             scheduleId: number,
             eventId: number
-        ) => {},
+        ) => {
+            const schedule = get(store)[scheduleId];
+            if (!schedule) {
+                console.error("Schedule not found");
+                return;
+            }
+
+            const event = customEvents.find(eventId);
+            if (!event) {
+                console.error("Event not found");
+                return;
+            }
+
+            const eventIndex = schedule.findIndex(
+                event => event.id === eventId
+            );
+            if (eventIndex === -1) {
+                console.error("Event not found in schedule");
+                return;
+            }
+
+            store.update(map => {
+                map[scheduleId] = [
+                    ...map[scheduleId].slice(0, eventIndex),
+                    ...map[scheduleId].slice(eventIndex + 1)
+                ];
+                return map;
+            });
+
+            const { error } = await supabase
+                .from("event_schedule_associations")
+                .delete()
+                .eq("event_id", eventId)
+                .eq("schedule_id", scheduleId);
+
+            if (error) {
+                console.error(
+                    "Error removing event from schedule:",
+                    error.message
+                );
+                store.update(map => {
+                    map[scheduleId] = [
+                        ...map[scheduleId].slice(0, eventIndex),
+                        event,
+                        ...map[scheduleId].slice(eventIndex)
+                    ];
+                    return map;
+                });
+            }
+        },
 
         /**
          * Clear all events from a schedule
          * @param supabase Supabase client
          * @param scheduleId Id of the schedule to clear
          */
-        clearSchedule: async (
-            supabase: SupabaseClient,
-            scheduleId: number
-        ) => {},
+        clearSchedule: async (supabase: SupabaseClient, scheduleId: number) => {
+            const schedule = get(store)[scheduleId];
+            if (!schedule) {
+                console.error("Schedule not found");
+                return;
+            }
+
+            store.update(map => {
+                map[scheduleId] = [];
+                return map;
+            });
+
+            const { error } = await supabase
+                .from("event_schedule_associations")
+                .delete()
+                .eq("schedule_id", scheduleId);
+
+            if (error) {
+                console.error(
+                    "Error clearing events from schedule:",
+                    error.message
+                );
+                store.update(map => {
+                    map[scheduleId] = schedule;
+                    return map;
+                });
+            }
+        },
 
         /**
          * Remove an event from all schedules
@@ -145,7 +266,53 @@ function createScheduleEventStore() {
         removeFromAllSchedules: async (
             supabase: SupabaseClient,
             eventId: number
-        ) => {},
+        ) => {
+            const schedules = get(store);
+            const event = customEvents.find(eventId);
+
+            if (!event) {
+                console.error("Event not found");
+                return;
+            }
+
+            for (const scheduleId in schedules) {
+                const schedule = schedules[scheduleId];
+                const eventIndex = schedule.findIndex(
+                    event => event.id === eventId
+                );
+
+                if (eventIndex === -1) continue;
+
+                store.update(map => {
+                    map[scheduleId] = [
+                        ...map[scheduleId].slice(0, eventIndex),
+                        ...map[scheduleId].slice(eventIndex + 1)
+                    ];
+                    return map;
+                });
+
+                const { error } = await supabase
+                    .from("event_schedule_associations")
+                    .delete()
+                    .eq("event_id", eventId)
+                    .eq("schedule_id", scheduleId);
+
+                if (error) {
+                    console.error(
+                        "Error removing event from schedule:",
+                        error.message
+                    );
+                    store.update(map => {
+                        map[scheduleId] = [
+                            ...map[scheduleId].slice(0, eventIndex),
+                            event,
+                            ...map[scheduleId].slice(eventIndex)
+                        ];
+                        return map;
+                    });
+                }
+            }
+        },
 
         /**
          * Remove a schedule from the store
@@ -156,6 +323,11 @@ function createScheduleEventStore() {
          * @param scheduleId Id of the schedule to remove
          */
         deleteSchedule: async (scheduleId: number) => {
+            if (!get(store)[scheduleId]) {
+                console.error("Schedule not found");
+                return;
+            }
+
             store.update(map => {
                 delete map[scheduleId];
                 return map;
