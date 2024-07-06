@@ -5,6 +5,7 @@
     import { toastStore } from "$lib/stores/toast";
     import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     import { getContext } from "svelte";
+    import { goto } from "$app/navigation";
 
     const supabase = getContext("supabase") as SupabaseClient;
     export let showModal: boolean = false;
@@ -13,16 +14,23 @@
     let isError: boolean = false;
 
     // Submit feedback to the database
-    const submitFeedback = () => {
+    const submitFeedback = async () => {
         if (feedback.trim() === "") {
             isError = true;
+            return;
+        }
+
+        const user = (await supabase.auth.getUser()).data.user;
+        if (!user) {
+            goto("/");
             return;
         }
 
         supabase
             .from("feedback")
             .insert({
-                feedback: feedback.trim()
+                feedback: feedback.trim(),
+                user_id: user.id
             })
             .then(() => {
                 showModal = false;
@@ -35,15 +43,15 @@
     <div slot="main">
         <div>
             <p class="mb-2">
-                We always love to hear any feedback about TigerJunction!
-                Anything at all is appreciated -- be it feature suggestions,
-                problems you face, or just your overall impressions. Thank you
+                We always love to hear any feedback about TigerJunction! Whether
+                positive or negative, please try to include details about what
+                you like or dislike so we can improve the platform. Thank you
                 for being an essential part of this project!
             </p>
             <p class="mb-2 italic">
-                All feedback is anonymous. If you would like a response, please
-                write your email in the message. If you would like monthly
-                updates, please join our email list <a
+                Responses are not anonymous so that we can follow up with you if
+                necessary. If you would like monthly updates, please join our
+                email list <a
                     href={EMAIL_LIST_FORM_LINK}
                     target="_blank"
                     class="underline hover:opacity-80">here</a
