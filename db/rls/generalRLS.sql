@@ -1,19 +1,5 @@
 -- General RLS
 
--- themes
-DROP POLICY IF EXISTS "View: auth is_public" ON public.themes;
-CREATE POLICY "View: auth is_public" ON public.themes
-  AS PERMISSIVE FOR SELECT
-  TO authenticated
-  USING (is_public = true);
-
-DROP POLICY IF EXISTS "Interact: user" ON public.themes;
-CREATE POLICY "Interact: user" ON public.themes
-  FOR ALL
-  TO authenticated
-  USING (auth.uid() = author_id)
-  WITH CHECK (auth.uid() = author_id);
-
 -- listings
 DROP POLICY IF EXISTS "View: auth" ON public.listings;
 CREATE POLICY "View: auth" ON public.listings
@@ -46,13 +32,6 @@ CREATE POLICY "View: auth" ON public.evaluations
   USING (true);
 
 
--- prereqs
-DROP POLICY IF EXISTS "View: auth" ON public.prereqs;
-CREATE POLICY "View: auth" ON public.prereqs
-  AS PERMISSIVE FOR SELECT
-  TO authenticated
-  USING (true);
-
 
 -- instructors
 DROP POLICY IF EXISTS "View: auth" ON public.instructors;
@@ -75,4 +54,3 @@ CREATE POLICY "Enable insert for authenticated users only" ON "public"."feedback
   TO authenticated
   WITH CHECK (true)
 
--- section_data (admin only)

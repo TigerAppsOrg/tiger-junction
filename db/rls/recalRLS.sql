@@ -1,35 +1,18 @@
 -- ReCal+ RLS
 
--- custom_blocks
-DROP POLICY IF EXISTS "View: auth is_public" ON public.custom_blocks;
-CREATE POLICY "View: auth is_public" ON public.custom_blocks
+-- events
+DROP POLICY IF EXISTS "View: auth is_public" ON public.events;
+CREATE POLICY "View: auth is_public" ON public.events
   AS PERMISSIVE FOR SELECT
   TO authenticated
   USING (is_public = true);
 
-DROP POLICY IF EXISTS "Interact: user" ON public.custom_blocks;
-CREATE POLICY "Interact: user" ON public.custom_blocks
+DROP POLICY IF EXISTS "Interact: user" ON public.events;
+CREATE POLICY "Interact: user" ON public.events
   FOR ALL
   TO authenticated
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
-
-
--- cb_times
-DROP POLICY IF EXISTS "Interact: user" ON public.cb_times;
-CREATE POLICY "Interact: user" ON public.cb_times
-  FOR ALL
-  TO authenticated
-  USING ((EXISTS ( SELECT 1
-    FROM custom_blocks
-    WHERE ((custom_blocks.id = cb_times.cb_id) 
-    AND (custom_blocks.user_id = auth.uid())))
-  ))
-  WITH CHECK ((EXISTS ( SELECT 1
-    FROM custom_blocks
-    WHERE ((custom_blocks.id = cb_times.cb_id) 
-    AND (custom_blocks.user_id = auth.uid())))
-  ));
 
 
 -- schedules
@@ -46,27 +29,27 @@ CREATE POLICY "Interact: user" ON public.schedules
   WITH CHECK (auth.uid() = user_id);
 
 
--- cb_schedule_associations
-DROP POLICY IF EXISTS "Interact: user" ON public.cb_schedule_associations;
-CREATE POLICY "Interact: user" ON public.cb_schedule_associations
+-- event_schedule_associations
+DROP POLICY IF EXISTS "Interact: user" ON public.event_schedule_associations;
+CREATE POLICY "Interact: user" ON public.event_schedule_associations
   FOR ALL
   TO authenticated
   USING ((EXISTS ( SELECT 1
         FROM schedules
-        WHERE ((schedules.id = cb_schedule_associations.schedule_id) 
+        WHERE ((schedules.id = event_schedule_associations.schedule_id) 
         AND (schedules.user_id = auth.uid())))
     ) AND EXISTS ( SELECT 1
         FROM custom_blocks
-        WHERE (( custom_blocks.id = cb_schedule_associations.custom_block_id)
+        WHERE (( custom_blocks.id = event_schedule_associations.custom_block_id)
         AND (custom_blocks.user_id = auth.uid()))
   ))
   WITH CHECK ((EXISTS ( SELECT 1
         FROM schedules
-        WHERE ((schedules.id = cb_schedule_associations.schedule_id) 
+        WHERE ((schedules.id = event_schedule_associations.schedule_id) 
         AND (schedules.user_id = auth.uid())))
     ) AND EXISTS ( SELECT 1
         FROM custom_blocks
-        WHERE (( custom_blocks.id = cb_schedule_associations.custom_block_id)
+        WHERE (( custom_blocks.id = event_schedule_associations.custom_block_id)
         AND (custom_blocks.user_id = auth.uid()))
   ));
 
