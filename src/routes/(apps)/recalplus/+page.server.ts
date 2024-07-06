@@ -4,6 +4,7 @@ import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
 import { redirect } from "@sveltejs/kit";
+import { CustomEvent } from "$lib/stores/events.js";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {
@@ -43,12 +44,20 @@ export const load = async ({ locals: { supabase } }) => {
             .eq("term", CURRENT_TERM_ID)
             .order("id", { ascending: true })
     );
-    const [courses, sections, feedback, userSchedulesRaw] = (await Promise.all(
-        supaPromises
-    )) as any[];
+    supaPromises.push(
+        supabase
+            .from("events")
+            .select("id, title, times")
+            .eq("user_id", userId)
+            .order("id", { ascending: true })
+    );
+    const [courses, sections, feedback, userSchedulesRaw, events] =
+        (await Promise.all(supaPromises)) as any[];
 
     const doneFeedback = feedback?.data.doneFeedback;
     const userSchedules = userSchedulesRaw.data;
+
+    const userEvents: CustomEvent[] = events.data;
 
     // Create default schedule if none exist
     if (userSchedules.length === 0) {
@@ -85,7 +94,9 @@ export const load = async ({ locals: { supabase } }) => {
                 sections: sections as SectionData[],
                 schedules: [newSchedule],
                 associations: { [newSchedule.id]: [] },
-                doneFeedback: doneFeedback
+                doneFeedback: doneFeedback as boolean,
+                events: userEvents as CustomEvent[],
+                eventAssociations: {} as Record<number, number[]>
             }
         };
     }
@@ -100,20 +111,48 @@ export const load = async ({ locals: { supabase } }) => {
             .update({ doneFeedback: true })
             .eq("id", userId)
     );
-    for (const schedule of userSchedules) {
-        assocPromises.push(
-            supabase
-                .from("course_schedule_associations")
-                .select("course_id, metadata")
-                .eq("schedule_id", schedule.id)
-        );
-    }
 
-    const [_, __, ...assocResults] = (await Promise.all(
+    assocPromises.push(
+        supabase
+            .from("event_schedule_associations")
+            .select("event_id, schedule_id")
+            .in(
+                "schedule_id",
+                userSchedules.map((s: { id: number }) => s.id)
+            )
+    );
+
+    assocPromises.push(
+        supabase
+            .from("course_schedule_associations")
+            .select("course_id, schedule_id, metadata")
+            .in(
+                "schedule_id",
+                userSchedules.map((s: { id: number }) => s.id)
+            )
+    );
+
+    const [_, __, eventAssocRaw, courseAssocRaw] = (await Promise.all(
         assocPromises
     )) as any[];
-    for (let i = 0; i < assocResults.length; i++) {
-        associations[userSchedules[i].id] = assocResults[i].data;
+
+    const eventAssociations: Record<number, number[]> = {};
+    for (const schedule of userSchedules) {
+        eventAssociations[schedule.id] = [];
+        if (eventAssocRaw.data) {
+            for (const assoc of eventAssocRaw.data) {
+                if (assoc.schedule_id === schedule.id) {
+                    eventAssociations[schedule.id].push(assoc.event_id);
+                }
+            }
+        }
+    }
+
+    for (const assoc of courseAssocRaw.data) {
+        if (!associations[assoc.schedule_id]) {
+            associations[assoc.schedule_id] = [];
+        }
+        associations[assoc.schedule_id].push(assoc);
     }
 
     return {
@@ -123,7 +162,9 @@ export const load = async ({ locals: { supabase } }) => {
             sections: sections as SectionData[],
             schedules: userSchedules,
             associations,
-            doneFeedback: doneFeedback
+            doneFeedback: doneFeedback,
+            events: userEvents as CustomEvent[],
+            eventAssociations
         }
     };
 };

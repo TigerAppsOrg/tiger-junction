@@ -1,18 +1,18 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { writable } from "svelte/store";
 
-export type EventTime = {
+export type CustomEventTime = {
     start: string;
     end: string;
 };
 
-export type Event = {
+export type CustomEvent = {
     id: number;
     title: string;
-    times: EventTime[];
+    times: CustomEventTime[];
 };
 
-function createEventStore(events: Event[]) {
+function createEventStore(events: CustomEvent[]) {
     const { subscribe, set, update } = writable(events);
 
     return {
@@ -24,7 +24,7 @@ function createEventStore(events: Event[]) {
          * Add an event to the store and database
          * @param event Event to add
          */
-        add: async (supabase: SupabaseClient, event: Event) => {
+        add: async (supabase: SupabaseClient, event: CustomEvent) => {
             update(events => [...events, event]);
             const { error } = await supabase.from("events").insert(event);
             if (error) {
@@ -59,3 +59,5 @@ function createEventStore(events: Event[]) {
         }
     };
 }
+
+export const eventData = createEventStore([]);
