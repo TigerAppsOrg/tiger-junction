@@ -113,17 +113,18 @@
 
     // Handle theme changes
     $: cssVarStyles = calculateCssVars("0", $calColors);
+    $: eventStyles = calculateCssVars("5", $calColors);
 </script>
 
 <div
     style={cssVarStyles}
     id="parent"
     class="h-20 px-1 overflow-clip text-zinc-900
-dark:text-zinc-100 text-sm">
+        dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div
             class="bg-zinc-100 dark:bg-zinc-800
-         flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
+            flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
             {#each Object.keys(ACTIVE_TERMS).map( x => parseInt(x) ) as activeTerm}
                 <button
                     class="card
@@ -140,14 +141,35 @@ dark:text-zinc-100 text-sm">
         </div>
 
         <div class="flex gap-2">
+            <button
+                style={eventStyles}
+                id="events"
+                class="h-6 w-20 rounded-sm active:scale-95 duration-150
+                flex items-center justify-center">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-5 w-5">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                </svg>
+
+                Events
+            </button>
             {#if $isMobile}
                 <button
                     on:click={() => ($showCal = !$showCal)}
-                    class="h-6 w-20 bg-zinc-100 rounded-sm
-                hover:text-zinc-600
-                dark:bg-zinc-800
-                 dark:text-zinc-100 hover:dark:text-zinc-300
-                flex items-center justify-center">
+                    class="h-6 w-20 rounded-sm flex items-center
+                    justify-center
+                    border-2 border-zinc-200 dark:border-zinc-700
+                    hover:bg-zinc-200 dark:hover:bg-zinc-700
+                    active:bg-zinc-300 dark:active:bg-zinc-600
+                    active:scale-95 duration-150">
                     {#if $showCal}
                         ← List
                     {:else}
@@ -161,7 +183,7 @@ dark:text-zinc-100 text-sm">
     <div class="w-auto overflow-x-auto overflow-y-hidden">
         <div
             class="bg-zinc-100 dark:bg-zinc-800 flex gap-2 w-fit
-    p-1 h-8 font-normal rounded-sm">
+            p-1 h-8 font-normal rounded-sm">
             {#key $retop}
                 {#await fetchUserSchedules(supabase, $currentTerm)}
                     <Loader />
@@ -259,6 +281,15 @@ dark:text-zinc-100 text-sm">
 </div>
 
 <style lang="postcss">
+    #events {
+        background-color: var(--bg);
+        color: var(--text);
+    }
+
+    #events:hover {
+        background-color: var(--bg-hover);
+    }
+
     .card {
         @apply px-3 text-sm rounded-sm;
     }
