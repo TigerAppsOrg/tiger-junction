@@ -1,5 +1,5 @@
 <script lang="ts">
-    import AppHeader from "$lib/components/AppHeader.svelte";
+    import AppHeader from "$lib/components/general/AppHeader.svelte";
     import ModalLib from "$lib/components/general/ModalLib.svelte";
     import { setContext } from "svelte";
 
