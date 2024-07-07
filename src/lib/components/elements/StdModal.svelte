@@ -20,7 +20,7 @@
             <div
                 class="flex gap-2 border-t-2 mt-2 pt-2
             border-zinc-200 dark:border-zinc-600">
-                <StdButton message="Close" onClick={() => modalStore.close()} />
+                <StdButton message="Close" onClick={() => modalStore.pop()} />
             </div>
         {:else}
             <slot name="buttons" />

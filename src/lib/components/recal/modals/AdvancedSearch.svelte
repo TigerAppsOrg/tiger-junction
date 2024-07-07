@@ -11,7 +11,7 @@
      * Save settings and close modal
      */
     const saveSettings = () => {
-        modalStore.close();
+        modalStore.pop();
     };
 
     let minInput: number = $searchSettings.filters["Rating"].min;

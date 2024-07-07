@@ -1,67 +1,54 @@
-import { writable, type Writable } from "svelte/store";
+/**
+ * @file Stack-based store for managing modals
+ * Pairs with the ModalLib.svelte component to render modals
+ */
 
-let queue: string[] = [];
-let currentModal: string | undefined = undefined;
-const { subscribe, update, set }: Writable<string | undefined> =
-    writable(undefined);
+import { writable } from "svelte/store";
 
-type ModalSettings = {
-    front?: boolean; // Put the modal in front of the queue
-    force?: boolean; // Force the modal to open
-    current?: boolean; // Push the current modal to the queue
-    clear?: boolean; // Clear the queue before opening the modal
-};
+function createModalStore() {
+    let stack: string[] = [];
+    const store = writable<string | undefined>(undefined);
 
-const modalStore = {
-    subscribe,
-    set,
-    update,
+    return {
+        subscribe: store.subscribe,
+        set: store.set,
+        update: store.update,
 
-    /**
-     * Open a modal or add it to the queue (or follow optional settings)
-     * @param name of the modal
-     * @param settings
-     */
-    open: (name: string, settings?: ModalSettings) => {
-        const { front, force, clear, current } = settings || {};
-        if (clear) {
-            queue = [];
-            currentModal = undefined;
-        }
+        /**
+         * Push a modal to the stack
+         * @param name of the modal
+         */
+        push: (name: string) => {
+            stack.push(name);
+            store.set(name);
+        },
 
-        // Push the current modal to the queue
-        if (current && currentModal) queue.push(currentModal);
+        /**
+         * Pop the current modal from the stack
+         */
+        pop: () => {
+            stack.pop();
+            if (stack.length === 0) {
+                store.set(undefined);
+            } else {
+                store.set(stack[stack.length - 1]);
+            }
+        },
 
-        // Add the current modal to the queue
-        if (front) queue.push(name);
-        else queue.unshift(name);
+        /**
+         * Clear the modal stack
+         */
+        clear: () => {
+            stack = [];
+            store.set(undefined);
+        },
 
-        // Set the current modal
-        if (force || !currentModal) setModal();
-    },
+        /**
+         * Get the modal stack
+         * @returns The modal stack
+         */
+        getStack: () => stack
+    };
+}
 
-    /**
-     * Close the current modal (and optionally clear the queue)
-     * @param clear Clear the queue before closing the modal
-     */
-    close: (clear?: boolean) => {
-        if (clear) queue = [];
-
-        // Set the current modal
-        setModal();
-    },
-
-    /**
-     * Get the queue
-     * @returns the current queue
-     */
-    getQueue: () => queue
-};
-
-// Set the current modal to the last item in the queue
-const setModal = () => {
-    currentModal = queue.pop();
-    set(currentModal);
-};
-
-export { modalStore };
+export const modalStore = createModalStore();

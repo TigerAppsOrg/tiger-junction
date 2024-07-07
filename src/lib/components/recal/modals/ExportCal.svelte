@@ -2,11 +2,7 @@
     import StdButton from "$lib/components/elements/StdButton.svelte";
     import StdModal from "$lib/components/elements/StdModal.svelte";
     import { CALENDAR_INFO } from "$lib/changeme";
-    import {
-        calculateExclusions,
-        calculateStart,
-        valueToRRule
-    } from "$lib/scripts/ReCal+/ical";
+    import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
     import { currentSchedule } from "$lib/stores/recal";
     import { currentTerm } from "$lib/changeme";
     import { rMeta } from "$lib/stores/rmeta";

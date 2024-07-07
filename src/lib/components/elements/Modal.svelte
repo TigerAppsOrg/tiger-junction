@@ -14,7 +14,7 @@
 <dialog
     class="{style} std-area"
     bind:this={dialog}
-    on:close={() => modalStore.close()}
+    on:close={() => modalStore.pop()}
     on:click|self={() => dialog.close()}>
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>

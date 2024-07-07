@@ -98,7 +98,7 @@
             on:click={() => {
                 if (!$ready)
                     toastStore.add("error", "Please wait for the data to load");
-                else modalStore.open("adv", { clear: true });
+                else modalStore.push("adv");
             }}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"

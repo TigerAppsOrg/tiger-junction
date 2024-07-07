@@ -4,4 +4,4 @@
     export let showModal: boolean = false;
 </script>
 
-<StdModal title="Edit Custom Block" stdClose={true} {showModal}></StdModal>
+<StdModal title="Edit Event" stdClose={true} {showModal}></StdModal>

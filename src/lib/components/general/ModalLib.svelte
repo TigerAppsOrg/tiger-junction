@@ -26,6 +26,8 @@
         feedback: Feedback,
         feedbackpop: FeedbackPop
     };
+
+    $: console.log($modalStore);
 </script>
 
 {#if $modalStore && $modalStore in modalComponents}

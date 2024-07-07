@@ -67,7 +67,7 @@ dark:border-zinc-700 border-zinc-200"
 
             <button
                 class="btn-circ"
-                on:click={() => modalStore.open("rcolors", { clear: true })}>
+                on:click={() => modalStore.push("rcolors")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -87,7 +87,7 @@ dark:border-zinc-700 border-zinc-200"
 
             <button
                 class="btn-circ"
-                on:click={() => modalStore.open("feedback", { clear: true })}>
+                on:click={() => modalStore.push("feedback")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

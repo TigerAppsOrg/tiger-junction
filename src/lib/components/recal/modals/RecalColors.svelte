@@ -25,7 +25,7 @@
             ) as CalColors;
 
         calColors.set(hslColors);
-        modalStore.close();
+        modalStore.pop();
     };
 
     /**
@@ -69,12 +69,7 @@
 
         <StdButton
             message="View Themes"
-            onClick={() =>
-                modalStore.open("rpalettes", {
-                    current: true,
-                    front: true,
-                    force: true
-                })}
+            onClick={() => modalStore.push("rpalettes")}
             scheme="2" />
     </div>
 
@@ -84,7 +79,7 @@
         slot="buttons">
         <StdButton
             message="Cancel"
-            onClick={() => modalStore.close()}
+            onClick={() => modalStore.pop()}
             scheme="-1" />
 
         <StdButton

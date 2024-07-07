@@ -12,7 +12,7 @@
         {eventCount === 1 ? "Event" : "Events"}
     </span>
     <button
-        on:click={() => modalStore.open("manageEvents", { clear: true })}
+        on:click={() => modalStore.push("manageEvents")}
         class="flex items-center gap-[1px] text-sm">
         <svg
             xmlns="http://www.w3.org/2000/svg"

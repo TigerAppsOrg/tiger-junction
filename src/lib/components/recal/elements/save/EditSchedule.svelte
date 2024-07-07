@@ -150,7 +150,7 @@
 
         // Clean Up and Close
         input = "";
-        modalStore.close();
+        modalStore.pop();
     };
 
     /**
@@ -188,7 +188,7 @@
         // Clean Up and Close
         scheduleEventMap.deleteSchedule($currentSchedule);
         input = "";
-        modalStore.close();
+        modalStore.pop();
     };
 
     /**
@@ -241,7 +241,7 @@
 
         // Clean Up and Close
         input = "";
-        modalStore.close();
+        modalStore.pop();
     };
 </script>
 
@@ -266,7 +266,7 @@
             border-zinc-200 dark:border-zinc-600">
                 <StdButton
                     message="Cancel"
-                    onClick={() => modalStore.close()}
+                    onClick={() => modalStore.pop()}
                     scheme="-1" />
 
                 <!-- Hidden Button for Enter Submission -->

@@ -26,8 +26,7 @@
                     {saved.length === 1 ? "Course" : "Courses"}
                 </span>
                 <button
-                    on:click={() =>
-                        modalStore.open("exportCal", { clear: true })}
+                    on:click={() => modalStore.push("exportCal")}
                     class="flex items-center gap-[1px] text-sm">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

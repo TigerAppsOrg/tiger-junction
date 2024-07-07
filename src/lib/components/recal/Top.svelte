@@ -70,7 +70,7 @@
             return;
         }
 
-        modalStore.open("addSchedule", { clear: true });
+        modalStore.push("addSchedule");
     };
 
     const invokeFun = () => {
@@ -142,7 +142,7 @@
 
         <div class="flex gap-2">
             <button
-                on:click={() => modalStore.open("manageEvents")}
+                on:click={() => modalStore.push("manageEvents")}
                 style={eventStyles}
                 id="events"
                 class="h-6 w-20 rounded-sm active:scale-95 duration-150
@@ -197,9 +197,7 @@
                                     class:selected={$currentSchedule ===
                                         schedule.id}
                                     on:click={() =>
-                                        modalStore.open("editSchedule", {
-                                            clear: true
-                                        })}>
+                                        modalStore.push("editSchedule")}>
                                     <span class="whitespace-nowrap"
                                         >{schedule.title}</span>
                                     <svg
@@ -246,8 +244,7 @@
                 {:catch error}
                     <button
                         class="card termchoice"
-                        on:click={() =>
-                            modalStore.open("addSchedule", { clear: true })}>
+                        on:click={() => modalStore.push("addSchedule")}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

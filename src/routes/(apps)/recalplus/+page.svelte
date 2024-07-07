@@ -16,7 +16,6 @@
     import type { CourseData } from "$lib/types/dbTypes.js";
     import { onMount } from "svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { modalStore } from "$lib/stores/modal";
     import {
         type CustomEvent,
         customEvents,
@@ -39,9 +38,9 @@
     onMount(async () => {
         console.log(data);
 
-        if (!data.body.doneFeedback) {
-            modalStore.open("feedbackpop", { clear: true });
-        }
+        // if (!data.body.doneFeedback) {
+        //     modalStore.push("feedbackpop");
+        // }
 
         customEvents.set(data.body.events);
         scheduleEventMap.init(data.body.eventAssociations);
