@@ -2,8 +2,10 @@
     import StdButton from "$lib/components/elements/StdButton.svelte";
     import StdModal from "$lib/components/elements/StdModal.svelte";
     import {
+        type CustomEvent,
         type CustomEventTime,
         customEvents,
+        deleteCandidateEvent,
         scheduleEventMap
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
@@ -15,6 +17,11 @@
             const date = new Date(time.start);
             return date.toLocaleString();
         });
+    };
+
+    const handleDelete = (candidate: CustomEvent) => {
+        deleteCandidateEvent.set(candidate);
+        modalStore.push("deleteEvent");
     };
 </script>
 
@@ -54,6 +61,7 @@
                                 </svg>
                             </button>
                             <button
+                                on:click={() => handleDelete(event)}
                                 class="action-button bg-red-500 hover:bg-red-700">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

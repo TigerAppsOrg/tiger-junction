@@ -326,21 +326,13 @@ function createScheduleEventStore() {
 
         /**
          * Remove an event from all schedules
-         * @param supabase Supabase client
+         * This only removes from the store, not the database
+         * When an event is removed, the associations cascade drop,
+         * so this function is for that case only
          * @param eventId Id of the event to remove from all schedules
-         * @returns True if successful, false otherwise
          */
-        removeFromAllSchedules: async (
-            supabase: SupabaseClient,
-            eventId: number
-        ): Promise<boolean> => {
+        removeFromAllSchedules: async (eventId: number) => {
             const schedules = get(store);
-            const event = customEvents.find(eventId);
-
-            if (!event) {
-                console.error("Event not found");
-                return false;
-            }
 
             for (const scheduleId in schedules) {
                 const schedule = schedules[scheduleId];
@@ -357,30 +349,7 @@ function createScheduleEventStore() {
                     ];
                     return map;
                 });
-
-                const { error } = await supabase
-                    .from("event_schedule_associations")
-                    .delete()
-                    .eq("event_id", eventId)
-                    .eq("schedule_id", scheduleId);
-
-                if (error) {
-                    console.error(
-                        "Error removing event from schedule:",
-                        error.message
-                    );
-                    store.update(map => {
-                        map[scheduleId] = [
-                            ...map[scheduleId].slice(0, eventIndex),
-                            event,
-                            ...map[scheduleId].slice(eventIndex)
-                        ];
-                        return map;
-                    });
-                    return false;
-                }
             }
-            return true;
         },
 
         /**
@@ -406,3 +375,5 @@ function createScheduleEventStore() {
 }
 
 export const scheduleEventMap = createScheduleEventStore();
+
+export const deleteCandidateEvent = writable<CustomEvent | null>(null);
