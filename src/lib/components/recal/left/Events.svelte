@@ -3,6 +3,7 @@
     import {
         type CustomEvent,
         customEvents,
+        editEvent,
         scheduleEventMap
     } from "$lib/stores/events";
     import { currentSchedule } from "$lib/stores/recal";
@@ -17,7 +18,7 @@
     );
 
     let showAll: boolean = true;
-    $: cssVarStyles = calculateCssVars("5", $calColors);
+    $: cssVarStyles = calculateCssVars("6", $calColors);
 </script>
 
 <div style={cssVarStyles}>
@@ -72,10 +73,26 @@
             transition:slide={{ duration: 200, axis: "y" }}
             class="overflow-hidden">
             <button
-                id="manageButton"
-                class="w-full text-sm py-1 mt-1 active:scale-95 duration-150 mb-2"
-                on:click={() => modalStore.push("manageEvents")}>
-                Manage Events
+                id="addButton"
+                class="w-full text-sm py-1 mt-1 active:scale-95 duration-150
+                mb-2 flex items-center gap-2 justify-center rounded-md"
+                on:click={() => {
+                    editEvent.set(null);
+                    modalStore.push("editEvent");
+                }}>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="icon">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span> Add Event </span>
             </button>
 
             <div class="mb-2">
@@ -124,12 +141,12 @@
         @apply w-5 h-5;
     }
 
-    #manageButton {
+    #addButton {
         background-color: var(--bg);
         color: var(--text);
     }
 
-    #manageButton:hover {
+    #addButton:hover {
         background-color: var(--bg-hover);
     }
 </style>
