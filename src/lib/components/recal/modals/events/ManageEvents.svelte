@@ -7,8 +7,7 @@
         type CustomEventTime,
         customEvents,
         deleteCandidateEvent,
-        editEvent,
-        scheduleEventMap
+        editEvent
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
 
