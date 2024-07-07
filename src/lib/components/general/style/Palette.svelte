@@ -35,13 +35,24 @@
 
         calColors.set(hslColors);
     };
+
+    // E is always first, -1 is always last
+    $: sortedColors = Object.entries(colors)
+        .sort(([a], [b]) => {
+            if (a === "E") return -1;
+            if (b === "E") return 1;
+            if (a === "-1") return 1;
+            if (b === "-1") return -1;
+            return parseInt(a) - parseInt(b);
+        })
+        .map(([_, value]) => value);
 </script>
 
 <!-- Display 7 main colors on top in columns, and then the preview color underneath -->
 <button class="border" on:click={handleClick}>
     <div class="flex flex-col">
         <div class="flex flex-col">
-            {#each Object.values(colors) as color}
+            {#each sortedColors as color}
                 <div class="w-36 h-4" style="background-color: {color}"></div>
             {/each}
         </div>
