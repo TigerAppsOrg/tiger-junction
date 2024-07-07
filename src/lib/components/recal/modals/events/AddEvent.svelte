@@ -6,7 +6,7 @@
     import { SupabaseClient } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
     import {
-        daysToValue,
+        dayArrToValue,
         MAX_TIME,
         MAX_TIME_VALUE,
         militaryToValue,
@@ -14,6 +14,8 @@
         MIN_TIME_VALUE
     } from "$lib/scripts/convert";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { goto } from "$app/navigation";
+    import { customEvents } from "$lib/stores/events";
 
     const supabase: SupabaseClient = getContext("supabase");
     export let showModal: boolean = false;
@@ -31,13 +33,13 @@
     };
     let times: TempTime[] = [];
     let timeBlockError = "";
-    let refreshErrors = true;
+    let refreshErrors = 0;
 
     // Save the event in the store and db and close the modal
     const saveEvent = async () => {
+        // Validate input
         let isValidationError = false;
 
-        // Validate input
         if (title.length === 0) {
             titleError = "Title is required";
             isValidationError = true;
@@ -46,14 +48,45 @@
             isValidationError = true;
         }
 
+        const setTimeBlockError = () => {
+            timeBlockError = "Invalid time block";
+            isValidationError = true;
+        };
+        for (let i = 0; i < times.length; i++) {
+            if (!validateTimes(i)) setTimeBlockError();
+            if (times[i].days.length === 0) {
+                times[i].errors.push("Must select at least one day");
+                setTimeBlockError();
+            }
+            if (times[i].start === null || times[i].end === null) {
+                times[i].errors.push("Start and end times are required");
+                setTimeBlockError();
+            }
+        }
+
         if (isValidationError) {
+            refreshErrors++;
             return;
         }
 
-        // Get User
-        const user = (await supabase.auth.getUser()).data.user;
+        const normalizedTimes = times.map(time => {
+            return {
+                start: militaryToValue(time.start as string),
+                end: militaryToValue(time.end as string),
+                days: dayArrToValue(time.days)
+            };
+        });
 
         // Upload to database
+        const newId = await customEvents.add(supabase, {
+            title: title.trim(),
+            times: normalizedTimes
+        });
+
+        if (newId === -1) {
+            titleError = "Server Error: please refresh and try again.";
+            return;
+        }
 
         // Clean up and close
         title = "";
@@ -61,7 +94,7 @@
         toastStore.add("success", "Event created successfully");
     };
 
-    const validateTimes = (index: number) => {
+    const validateTimes = (index: number): boolean => {
         const time = times[index];
         time.errors = [];
 
@@ -86,7 +119,8 @@
                 time.errors.push("Start time must be before end time.");
         }
 
-        refreshErrors = !refreshErrors;
+        refreshErrors++;
+        return time.errors.length === 0;
     };
 
     onMount(() => {
@@ -118,6 +152,7 @@
                     </div>
                     <input
                         bind:value={title}
+                        on:input={() => (titleError = "")}
                         type="text"
                         placeholder="Title"
                         name="title"

@@ -12,6 +12,7 @@
     import { toastStore } from "$lib/stores/toast";
     import StdButton from "$lib/components/ui/StdButton.svelte";
     import { getContext } from "svelte";
+    import { goto } from "$app/navigation";
 
     export let showModal: boolean = false;
     const supabase = getContext("supabase") as SupabaseClient;
@@ -32,7 +33,7 @@
         // Get User
         const user = (await supabase.auth.getUser()).data.user;
         if (!user) {
-            console.log("User not logged in");
+            goto("/");
             return;
         }
 

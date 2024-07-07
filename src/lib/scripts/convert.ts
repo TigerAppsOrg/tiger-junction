@@ -181,6 +181,16 @@ const daysToValue = (section: WeekDays) => {
     return days;
 };
 
+export const dayArrToValue = (dayArr: string[]) => {
+    let days = 0;
+    if (dayArr.includes("M")) days += 1;
+    if (dayArr.includes("T")) days += 2;
+    if (dayArr.includes("W")) days += 4;
+    if (dayArr.includes("R")) days += 8;
+    if (dayArr.includes("F")) days += 16;
+    return days;
+};
+
 /**
  * Converts a value to a section's days
  * @param value between 0 and 31
@@ -292,6 +302,7 @@ const rgbToHSL = (hex: string) => {
 
 //----------------------------------------------------------------------
 
+// TODO Refactor
 export {
     timeToValue,
     militaryToValue,
