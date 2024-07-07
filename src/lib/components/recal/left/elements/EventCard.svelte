@@ -10,6 +10,7 @@
 
     export let customEvent: CustomEvent;
     export let isSelected: boolean = false;
+    export let noBorder: boolean = false;
 
     $: cssVarStyles = calculateCssVars("5", $calColors);
 </script>
@@ -17,7 +18,8 @@
 <div
     style={cssVarStyles}
     id="main"
-    class="flex items-center justify-between border-b border-zinc-300 h-10
+    class="flex items-center justify-between border-zinc-300 h-10 duration-100
+    {noBorder ? '' : 'border-b-2'}
     {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
 ">
     <div class="w-[75%]">
@@ -81,7 +83,7 @@
     }
 
     button {
-        @apply text-zinc-400 dark:text-zinc-100 h-full
+        @apply text-zinc-500 dark:text-zinc-100 h-full
         hover:text-white dark:hover:text-white
         flex items-center justify-center duration-100;
     }
@@ -89,5 +91,9 @@
     .selected {
         background-color: var(--bg);
         color: var(--text);
+    }
+
+    .selected:hover {
+        background-color: var(--bg-hover);
     }
 </style>

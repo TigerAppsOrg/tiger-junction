@@ -77,15 +77,21 @@
                 on:click={() => modalStore.push("manageEvents")}>
                 Manage Events
             </button>
-            <div>
-                {#each scheduleEvents as event (event.id)}
-                    <EventCard customEvent={event} />
+            <div class="rounded-sm">
+                {#each scheduleEvents as event, i}
+                    <EventCard
+                        customEvent={event}
+                        noBorder={i === scheduleEvents.length - 1}
+                        isSelected={true} />
                 {/each}
             </div>
 
-            <div>
-                {#each notInSchedule as event (event.id)}
-                    <EventCard customEvent={event} />
+            <div class="border-2 rounded-sm">
+                {#each notInSchedule as event, i}
+                    <EventCard
+                        customEvent={event}
+                        noBorder={i === notInSchedule.length - 1}
+                        isSelected={false} />
                 {/each}
             </div>
         </div>

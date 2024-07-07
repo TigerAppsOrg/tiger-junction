@@ -19,8 +19,10 @@
     max-h-[49vh]">
             <div class="overflow-y-auto">
                 {#key resetKey}
-                    {#each $searchResults as course}
-                        <CourseCard {course} />
+                    {#each $searchResults as course, i}
+                        <CourseCard
+                            {course}
+                            noBorder={i === $searchResults.length - 1} />
                     {/each}
                 {/key}
             </div>
