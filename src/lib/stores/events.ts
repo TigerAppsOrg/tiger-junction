@@ -1,4 +1,5 @@
 import { goto } from "$app/navigation";
+import { schedules } from "$lib/changeme";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { get, writable, type Writable } from "svelte/store";
 
@@ -23,16 +24,30 @@ function createCustomEventsStore() {
         set: store.set,
         update: store.update,
 
-        find: (id: number) => {
+        /**
+         * Find an event by its id
+         * @param id Id of the event to find
+         * @returns The event with the given id, or undefined if not found
+         */
+        find: (id: number): CustomEvent | undefined => {
             const events = get(store);
             return events.find(event => event.id === id);
         },
 
-        add: async (supabase: SupabaseClient, event: CustomEventInsert) => {
+        /**
+         * Add an event to the store and database
+         * @param supabase Supabase client
+         * @param event Event to add
+         * @returns Id of the added event, or -1 on error
+         */
+        add: async (
+            supabase: SupabaseClient,
+            event: CustomEventInsert
+        ): Promise<number> => {
             const user = (await supabase.auth.getUser()).data.user;
             if (!user) {
                 goto("/");
-                return;
+                return -1;
             }
 
             const { data, error } = await supabase
@@ -54,6 +69,11 @@ function createCustomEventsStore() {
             return newEvent.id;
         },
 
+        /**
+         * Remove an event from the store and database
+         * @param supabase Supabase client
+         * @param id Id of the event to remove
+         */
         remove: async (supabase: SupabaseClient, id: number) => {
             const events = get(store);
             const eventIndex = events.findIndex(event => event.id === id);
@@ -99,6 +119,22 @@ function createScheduleEventStore() {
         update: store.update,
 
         /**
+         * Initialize the store with the given inserts
+         * @param inserts Inserts to initialize the store with
+         */
+        init: (inserts: Record<number, number[]>) => {
+            const map: ScheduleEventMap = {};
+            for (const scheduleId in inserts) {
+                if (!map[scheduleId]) map[scheduleId] = [];
+                for (const eventId of inserts[scheduleId]) {
+                    const event = customEvents.find(eventId);
+                    if (event) map[scheduleId].push(event);
+                }
+            }
+            store.set(map);
+        },
+
+        /**
          * Get the events for a schedule
          * @param scheduleId Id of the schedule to get events for
          * @returns Events for the schedule
@@ -123,11 +159,19 @@ function createScheduleEventStore() {
             scheduleId: number,
             eventId: number
         ) => {
-            const schedule = get(store)[scheduleId];
-            if (!schedule) {
-                console.error("Schedule not found");
+            if (!schedules.includes(scheduleId)) {
+                console.error("Schedule does not exist");
                 return;
             }
+
+            const allSchedules = get(store);
+            if (!allSchedules[scheduleId]) {
+                store.update(map => {
+                    map[scheduleId] = [];
+                    return map;
+                });
+            }
+            const schedule = allSchedules[scheduleId];
 
             const event = customEvents.find(eventId);
             if (!event) {

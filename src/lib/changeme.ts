@@ -1,5 +1,5 @@
 // Change this file when adding a new term
-import { writable, type Writable } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
 import type { CourseData } from "./types/dbTypes";
 import type { RawSectionData } from "./stores/rsections";
 
@@ -122,6 +122,7 @@ export const sectionDone = writable({
 
 //----------------------------------------------------------------------
 // ! DO NOT EDIT BELOW THIS LINE
+// TODO Refactor this and put it in a separate file
 //----------------------------------------------------------------------
 
 export type RawCourseData = Record<ActiveTerms, CourseData[]>;
@@ -163,12 +164,37 @@ export const SECTION_OBJ: RawSectionData = Object.keys(TERM_MAP)
     .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0))
     .reduce((o, key) => Object.assign(o, { [key]: {} }), {}) as RawSectionData;
 
-export const schedules: Writable<
-    Record<
-        number,
-        {
-            id: number;
-            title: string;
-        }[]
-    >
-> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+function createScheduleStore() {
+    const store: Writable<RawCourseData> = writable(
+        JSON.parse(JSON.stringify(BASE_OBJ))
+    );
+
+    return {
+        set: store.set,
+        update: store.update,
+        subscribe: store.subscribe,
+
+        /**
+         * Check if a schedule is in any term
+         * @param scheduleId Id of the schedule to check
+         * @returns The term the schedule is in, or null if it is not in any term
+         */
+        includes: (scheduleId: number): number | null => {
+            const schedules = get(store);
+            for (let i = 0; i < Object.keys(schedules).length; i++) {
+                const term = Object.keys(schedules)[
+                    i
+                ] as unknown as ActiveTerms;
+                const scheduleList = schedules[term];
+                for (let j = 0; j < scheduleList.length; j++) {
+                    if (scheduleList[j].id == scheduleId) {
+                        return term;
+                    }
+                }
+            }
+            return null;
+        }
+    };
+}
+
+export const schedules = createScheduleStore();
