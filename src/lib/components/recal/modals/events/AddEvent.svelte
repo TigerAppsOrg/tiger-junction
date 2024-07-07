@@ -5,7 +5,14 @@
     import { toastStore } from "$lib/stores/toast";
     import { SupabaseClient } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
-    import { daysToValue, timeToValue } from "$lib/scripts/convert";
+    import {
+        daysToValue,
+        MAX_TIME,
+        MAX_TIME_VALUE,
+        militaryToValue,
+        MIN_TIME,
+        MIN_TIME_VALUE
+    } from "$lib/scripts/convert";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
 
     const supabase: SupabaseClient = getContext("supabase");
@@ -20,9 +27,11 @@
         start: string | null;
         end: string | null;
         days: string[];
+        errors: string[];
     };
     let times: TempTime[] = [];
     let timeBlockError = "";
+    let refreshErrors = true;
 
     // Save the event in the store and db and close the modal
     const saveEvent = async () => {
@@ -53,7 +62,31 @@
     };
 
     const validateTimes = (index: number) => {
-        console.log(times[index]);
+        const time = times[index];
+        time.errors = [];
+
+        if (time.start !== null) {
+            const startValue = militaryToValue(time.start);
+            if (startValue < MIN_TIME_VALUE)
+                time.errors.push(`Start time must be before ${MIN_TIME}.`);
+            if (startValue > MAX_TIME_VALUE)
+                time.errors.push(`Start time must be after ${MAX_TIME}.`);
+        }
+
+        if (time.end !== null) {
+            const endValue = militaryToValue(time.end);
+            if (endValue < MIN_TIME_VALUE)
+                time.errors.push(`End time must be before ${MIN_TIME}.`);
+            if (endValue > MAX_TIME_VALUE)
+                time.errors.push(`End time must be after ${MAX_TIME}.`);
+        }
+
+        if (time.start !== null && time.end !== null) {
+            if (time.start >= time.end)
+                time.errors.push("Start time must be before end time.");
+        }
+
+        refreshErrors = !refreshErrors;
     };
 
     onMount(() => {
@@ -62,7 +95,8 @@
             {
                 start: null,
                 end: null,
-                days: []
+                days: [],
+                errors: []
             }
         ];
     });
@@ -72,7 +106,7 @@
 
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl" style={cssVarStyles}>
-        <h1 class="text-xl font-bold mb-2">Create New Custom Event</h1>
+        <h1 class="text-xl font-bold mb-2">New Custom Event</h1>
         <form on:submit|preventDefault>
             <div class="flex flex-col gap-2">
                 <div class="settings-area">
@@ -91,11 +125,14 @@
                 </div>
                 <div class="settings-area">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-lg font-bold mb-2">Time Blocks</h2>
+                        <h2 class="text-lg font-bold">Time Blocks</h2>
                         {#if timeBlockError !== ""}
                             <p class="text-red-500">{timeBlockError}</p>
                         {/if}
                     </div>
+                    <p class="mb-2">
+                        Times must be in the range of {MIN_TIME} to {MAX_TIME}.
+                    </p>
                     {#each times as time, i}
                         <div
                             class="bg-zinc-100 dark:bg-zinc-800
@@ -114,7 +151,7 @@
                                         );
                                     }
                                 }}
-                                class="absolute bottom-2 right-2 text-zinc-700
+                                class="absolute top-2 right-2 text-zinc-700
                                 hover:text-zinc-800 dark:text-zinc-200
                                 hover:dark:text-zinc-100">
                                 <svg
@@ -132,14 +169,14 @@
                             </button>
 
                             <!-- Time Select -->
-                            <div class="flex flex-col gap-2 mb-4">
+                            <div class="flex gap-6 mb-4">
                                 <div class="flex items-center gap-2">
                                     <h2 class="font-bold">Start Time:</h2>
                                     <input
                                         type="time"
                                         bind:value={time.start}
                                         on:change={() => validateTimes(i)}
-                                        class="flex-1 p-2 h-10 rounded-md" />
+                                        class="p-2 h-10 w-32 rounded-sm" />
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <h2 class="font-bold">End Time:</h2>
@@ -147,30 +184,47 @@
                                         type="time"
                                         bind:value={time.end}
                                         on:change={() => validateTimes(i)}
-                                        class="flex-1 p-2 h-10 rounded-md" />
+                                        class="p-2 h-10 w-32 rounded-sm mr-6" />
                                 </div>
                             </div>
 
                             <!-- Day Select -->
-                            <div class="flex items-center gap-2">
-                                <h2 class="font-bold">Days:</h2>
-                                {#each DAYS as day}
-                                    <button
-                                        on:click={() => {
-                                            if (time.days.includes(day)) {
-                                                time.days = time.days.filter(
-                                                    d => d !== day
-                                                );
-                                            } else {
-                                                time.days = [...time.days, day];
-                                            }
-                                        }}
-                                        class:checked={time.days.includes(day)}
-                                        type="button"
-                                        class="day-toggle">
-                                        {day}
-                                    </button>
-                                {/each}
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="font-bold">Days:</h2>
+                                    {#each DAYS as day}
+                                        <button
+                                            on:click={() => {
+                                                if (time.days.includes(day)) {
+                                                    time.days =
+                                                        time.days.filter(
+                                                            d => d !== day
+                                                        );
+                                                } else {
+                                                    time.days = [
+                                                        ...time.days,
+                                                        day
+                                                    ];
+                                                }
+                                            }}
+                                            class:checked={time.days.includes(
+                                                day
+                                            )}
+                                            type="button"
+                                            class="day-toggle">
+                                            {day}
+                                        </button>
+                                    {/each}
+                                </div>
+                                <div>
+                                    {#key refreshErrors}
+                                        {#each time.errors as error}
+                                            <p class="text-red-500">
+                                                {error}
+                                            </p>
+                                        {/each}
+                                    {/key}
+                                </div>
                             </div>
                         </div>
                     {/each}
@@ -189,7 +243,8 @@
                                 {
                                     start: null,
                                     end: null,
-                                    days: []
+                                    days: [],
+                                    errors: []
                                 }
                             ];
                         }}

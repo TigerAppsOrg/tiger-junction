@@ -12,10 +12,15 @@ const TIME_CONVERSION: Record<string, number> = {
     NULL_TIME: -42
 };
 
+export const MIN_TIME_VALUE = 0;
+export const MIN_TIME = "08:00AM";
+export const MAX_TIME_VALUE = 90;
+export const MAX_TIME = "11:00PM";
+
 /**
  * Converts an am/pm time string to a value
  * @param time in format 'HH:MM AM/PM'
- * @returns value between X and Y
+ * @returns value between 0 and 90
  */
 const timeToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
@@ -42,7 +47,7 @@ const timeToValue = (time: string) => {
 /**
  * Converts a military time string to a value
  * @param time in format 'HH:MM' (24 hour/military time)
- * @returns value between X and Y
+ * @returns value between 0 and 90
  */
 const militaryToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
@@ -61,7 +66,7 @@ const militaryToValue = (time: string) => {
 
 /**
  * Converts a value to a military time string
- * @param value between X and Y
+ * @param value between 0 and 90
  * @returns time string in format 'HH:MM' (24 hour/military time)
  */
 const valueToMilitary = (value: number) => {
