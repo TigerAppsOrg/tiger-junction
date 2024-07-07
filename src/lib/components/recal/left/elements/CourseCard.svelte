@@ -174,7 +174,7 @@
     <div
         id="topcard"
         class="flex justify-between items-stretch duration-75
-    {$hovStyleRev === course.id ? 'tchover' : ''}">
+        {$hovStyleRev === course.id ? 'tchover' : ''}">
         <button
             class="text-xs font-light text-left w-[75%] p-1"
             on:click={() => (flipped = !flipped)}>

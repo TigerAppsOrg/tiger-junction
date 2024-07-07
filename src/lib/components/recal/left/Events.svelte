@@ -1,32 +1,108 @@
 <script lang="ts">
     import { modalStore } from "$lib/stores/modal";
+    import {
+        type CustomEvent,
+        customEvents,
+        scheduleEventMap
+    } from "$lib/stores/events";
+    import { currentSchedule } from "$lib/stores/recal";
+    import EventCard from "./elements/EventCard.svelte";
+    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { slide } from "svelte/transition";
 
-    let eventCount = 0;
+    let scheduleEvents: CustomEvent[] = [];
+    $: scheduleEvents = $scheduleEventMap[$currentSchedule] || [];
+    $: notInSchedule = $customEvents.filter(
+        event => !scheduleEvents.some(e => e.id === event.id)
+    );
+
+    let showAll: boolean = true;
+    $: cssVarStyles = calculateCssVars("5", $calColors);
 </script>
 
-<div
-    class="text-base font-normal dark:text-zinc-100 ml-1
-            flex items-center justify-between mt-2">
-    <span>
-        {eventCount} Custom
-        {eventCount === 1 ? "Event" : "Events"}
-    </span>
-    <button
-        on:click={() => modalStore.push("manageEvents")}
-        class="flex items-center gap-[1px] text-sm">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5">
-            <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
+<div style={cssVarStyles}>
+    <div
+        class="text-base font-normal dark:text-zinc-100 ml-1
+                flex items-center justify-between mt-2">
+        <span>
+            {scheduleEvents.length} Custom
+            {scheduleEvents.length === 1 ? "Event" : "Events"}
+        </span>
+        <button
+            on:click={() => (showAll = !showAll)}
+            class="flex items-center gap-[1px] text-sm">
+            {#if showAll}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="icon">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m4.5 18.75 7.5-7.5 7.5 7.5" />
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+                </svg>
 
-        <p class="calbut">Add</p>
-    </button>
+                <p>Hide</p>
+            {:else}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="icon">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
+                </svg>
+                <p>Show</p>
+            {/if}
+        </button>
+    </div>
+    {#if showAll}
+        <div
+            transition:slide={{ duration: 200, axis: "y" }}
+            class="overflow-hidden">
+            <button
+                id="manageButton"
+                class="w-full text-sm py-1 mt-1 active:scale-95 duration-150"
+                on:click={() => modalStore.push("manageEvents")}>
+                Manage Events
+            </button>
+            <div>
+                {#each scheduleEvents as event (event.id)}
+                    <EventCard customEvent={event} />
+                {/each}
+            </div>
+
+            <div>
+                {#each notInSchedule as event (event.id)}
+                    <EventCard customEvent={event} />
+                {/each}
+            </div>
+        </div>
+    {/if}
 </div>
+
+<style lang="postcss">
+    .icon {
+        @apply w-5 h-5;
+    }
+
+    #manageButton {
+        background-color: var(--bg);
+        color: var(--text);
+    }
+
+    #manageButton:hover {
+        background-color: var(--bg-hover);
+    }
+</style>
