@@ -15,7 +15,7 @@ export type CalColors = {
     "4": string;
     "5": string;
     "6": string;
-    E: string; // Event Color
+    "E": string; // Event Color
 };
 
 export const DEFAULT_RCARD_COLORS: CalColors = {
@@ -27,7 +27,7 @@ export const DEFAULT_RCARD_COLORS: CalColors = {
     4: "hsl(1, 100%, 69%)",
     5: "hsl(330, 100%, 80%)",
     6: "hsl(305, 33%, 70%)",
-    E: "hsl(210, 35%, 91%)"
+    "E": "hsl(210, 35%, 91%)"
 };
 
 /**
@@ -132,9 +132,9 @@ export const calculateCssVars = (
             : darkenHSL(cc[scheme], -60);
 
     return Object.entries({
-        bg: cc[scheme],
+        "bg": cc[scheme],
         "bg-hover": darkenHSL(cc[scheme], 10),
-        text: textColor
+        "text": textColor
     })
         .map(([key, value]) => `--${key}:${value}`)
         .join(";");

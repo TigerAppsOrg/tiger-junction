@@ -13,7 +13,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#e7dcce",
         "5": "#d1e7e4",
         "6": "#dcd5e2",
-        E: "#e6e8f0"
+        "E": "#e6e8f0"
     },
     Bright: {
         "-1": "#a8a8a8",
@@ -24,7 +24,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#ff6461",
         "5": "#ff99cc",
         "6": "#cc99c8",
-        E: "#e0e8f0"
+        "E": "#e0e8f0"
     },
     Crayon: {
         "-1": "#e6e6e6",
@@ -35,7 +35,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#9bf6ff",
         "5": "#a0c4ff",
         "6": "#bdb2ff",
-        E: "#fff0f0"
+        "E": "#fff0f0"
     },
     Grass: {
         "-1": "#e6e6e6",
@@ -46,7 +46,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#c3dca7",
         "5": "#b9d798",
         "6": "#afd189",
-        E: "#f0f8e6"
+        "E": "#f0f8e6"
     },
     Ice: {
         "-1": "#e6e6e6",
@@ -57,7 +57,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#c1d3fe",
         "5": "#b6ccfe",
         "6": "#abc4ff",
-        E: "#f0f8ff"
+        "E": "#f0f8ff"
     },
     Minty: {
         "-1": "#e6e6e6",
@@ -68,7 +68,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#9dcced",
         "5": "#a4bff6",
         "6": "#aab2ff",
-        E: "#e6fff0"
+        "E": "#e6fff0"
     },
     Pink: {
         "-1": "#e6e6e6",
@@ -79,7 +79,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#febdce",
         "5": "#feb1c6",
         "6": "#fea5be",
-        E: "#fff0f5"
+        "E": "#fff0f5"
     },
     Sweet: {
         "-1": "#e6e6e6",
@@ -90,7 +90,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#d8ceee",
         "5": "#d1cef4",
         "6": "#cacff9",
-        E: "#fdf0ff"
+        "E": "#fdf0ff"
     },
     Pearl: {
         "-1": "#e6e6e6",
@@ -101,7 +101,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#dadfe5",
         "5": "#d7e9eb",
         "6": "#d3f3f1",
-        E: "#fff5f0"
+        "E": "#fff5f0"
     },
     Royal: {
         "-1": "#e6e6e6",
@@ -112,7 +112,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#d9acdd",
         "5": "#e8b7e2",
         "6": "#f7c2e6",
-        E: "#f8f0ff"
+        "E": "#f8f0ff"
     },
     Forest: {
         "-1": "#A8A8A8",
@@ -123,7 +123,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#A7AFAC",
         "5": "#E4DED3",
         "6": "#D3D0C8",
-        E: "#f0f5e6"
+        "E": "#f0f5e6"
     },
     Slate: {
         "-1": "#A8A8A8",
@@ -134,7 +134,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#cad4d8",
         "5": "#95a8b0",
         "6": "#8399a2",
-        E: "#f0f5f7"
+        "E": "#f0f5f7"
     },
     Midnight: {
         "-1": "#A8A8A8",
@@ -145,7 +145,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#444773",
         "5": "#4b4474",
         "6": "#524175",
-        E: "#1a3246"
+        "E": "#1a3246"
     },
     Cobalt: {
         "-1": "#A8A8A8",
@@ -156,7 +156,7 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#15106b",
         "5": "#0b1473",
         "6": "#00187a",
-        E: "#2a0033"
+        "E": "#2a0033"
     },
     Shadow: {
         "-1": "#A8A8A8",
@@ -167,6 +167,6 @@ export const colorPalettes: Record<string, CalColors> = {
         "4": "#172a32",
         "5": "#13232c",
         "6": "#0e1c26",
-        E: "#1c2f34"
+        "E": "#1c2f34"
     }
 };

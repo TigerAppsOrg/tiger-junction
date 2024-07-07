@@ -533,27 +533,27 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show All": {
             enabled: false
         },
-        Rating: {
+        "Rating": {
             enabled: false,
             min: 0,
             max: 5
         },
-        Dists: {
+        "Dists": {
             enabled: false,
             values: {
-                CD: true,
-                EC: true,
-                EM: true,
-                HA: true,
-                LA: true,
-                QCR: true,
-                SA: true,
-                SEL: true,
-                SEN: true,
+                "CD": true,
+                "EC": true,
+                "EM": true,
+                "HA": true,
+                "LA": true,
+                "QCR": true,
+                "SA": true,
+                "SEL": true,
+                "SEN": true,
                 "No Dist": true
             }
         },
-        Levels: {
+        "Levels": {
             enabled: false,
             values: {
                 "1": true,
@@ -563,7 +563,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
                 "5": true
             }
         },
-        Days: {
+        "Days": {
             enabled: false,
             values: {
                 M: true,
@@ -573,7 +573,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
                 F: true
             }
         },
-        PDFable: {
+        "PDFable": {
             enabled: false
         },
         "PDF Only": {
@@ -596,7 +596,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     sortBy: {
-        Rating: {
+        "Rating": {
             enabled: false,
             options: ["High to Low", "Low to High"],
             value: 0
@@ -617,7 +617,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
-        Duck: false
+        "Duck": false
     }
 };
 
