@@ -8,8 +8,9 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { get, writable, type Writable } from "svelte/store";
 
 export type CustomEventTime = {
-    start: string;
-    end: string;
+    start: number;
+    end: number;
+    days: number;
 };
 
 export type CustomEvent = {
