@@ -592,7 +592,6 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false,
             values: {
                 "Only Available Sections": false
-                // "Include Custom Blocks": false,
             }
         }
     },
@@ -609,7 +608,6 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     style: {
-        // "Original Style": false,
         "Show Rating": true,
         "Show # of Comments": false,
         "Show Weighted Rating": false,
