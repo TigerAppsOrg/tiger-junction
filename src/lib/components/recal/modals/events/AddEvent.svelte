@@ -52,6 +52,10 @@
         toastStore.add("success", "Event created successfully");
     };
 
+    const validateTimes = (index: number) => {
+        console.log(times[index]);
+    };
+
     onMount(() => {
         // Reset times
         times = [
@@ -110,7 +114,7 @@
                                         );
                                     }
                                 }}
-                                class="absolute top-2 right-2 text-zinc-700
+                                class="absolute bottom-2 right-2 text-zinc-700
                                 hover:text-zinc-800 dark:text-zinc-200
                                 hover:dark:text-zinc-100">
                                 <svg
@@ -126,15 +130,30 @@
                                         d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
                             </button>
-                            <!-- Start Time -->
-                            <div></div>
 
-                            <!-- End Time -->
-                            <div></div>
+                            <!-- Time Select -->
+                            <div class="flex flex-col gap-2 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="font-bold">Start Time:</h2>
+                                    <input
+                                        type="time"
+                                        bind:value={time.start}
+                                        on:change={() => validateTimes(i)}
+                                        class="flex-1 p-2 h-10 rounded-md" />
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <h2 class="font-bold">End Time:</h2>
+                                    <input
+                                        type="time"
+                                        bind:value={time.end}
+                                        on:change={() => validateTimes(i)}
+                                        class="flex-1 p-2 h-10 rounded-md" />
+                                </div>
+                            </div>
 
                             <!-- Day Select -->
                             <div class="flex items-center gap-2">
-                                <h2 class="text-lg mr-2">Days:</h2>
+                                <h2 class="font-bold">Days:</h2>
                                 {#each DAYS as day}
                                     <button
                                         on:click={() => {
