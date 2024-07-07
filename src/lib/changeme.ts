@@ -125,7 +125,7 @@ export const sectionDone = writable({
 // TODO Refactor this and put it in a separate file
 //----------------------------------------------------------------------
 
-export type RawCourseData = Record<ActiveTerms, CourseData[]>;
+export type RawCourseData = Record<number, CourseData[]>;
 
 // Last 3 terms
 export const ACTIVE_TERMS: Record<
@@ -182,9 +182,7 @@ function createScheduleStore() {
         includes: (scheduleId: number): number | null => {
             const schedules = get(store);
             for (let i = 0; i < Object.keys(schedules).length; i++) {
-                const term = Object.keys(schedules)[
-                    i
-                ] as unknown as ActiveTerms;
+                const term = parseInt(Object.keys(schedules)[i]);
                 const scheduleList = schedules[term];
                 for (let j = 0; j < scheduleList.length; j++) {
                     if (scheduleList[j].id == scheduleId) {
