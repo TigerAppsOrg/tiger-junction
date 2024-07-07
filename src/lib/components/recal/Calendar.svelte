@@ -17,6 +17,8 @@
     import { calColors, type CalColors } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import { linear } from "svelte/easing";
+    import EventBox from "./calendar/EventBox.svelte";
+    import { type CustomEvent, scheduleEventMap } from "$lib/stores/events";
 
     let toRender: CalBoxParam[] = [];
 
@@ -309,6 +311,9 @@
             calbox.top = `${top}%`;
         }
     };
+
+    let scheduleEvents: CustomEvent[] = [];
+    $: scheduleEvents = $scheduleEventMap[$currentSchedule] || [];
 </script>
 
 <!--!------------------------------------------------------------------>
@@ -368,6 +373,13 @@
                     {#key toRender}
                         {#each toRender as params}
                             <CalBox {params} />
+                        {/each}
+                    {/key}
+
+                    <!-- * EventBoxes -->
+                    {#key toRender}
+                        {#each scheduleEvents as customEvent}
+                            <EventBox {customEvent} />
                         {/each}
                     {/key}
                 </div>
