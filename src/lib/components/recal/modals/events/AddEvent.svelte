@@ -26,12 +26,18 @@
 
     // Save the event in the store and db and close the modal
     const saveEvent = async () => {
+        let isValidationError = false;
+
         // Validate input
         if (title.length === 0) {
             titleError = "Title is required";
-            return;
+            isValidationError = true;
         } else if (title.length > 100) {
             titleError = "Title must be less than 100 characters";
+            isValidationError = true;
+        }
+
+        if (isValidationError) {
             return;
         }
 
