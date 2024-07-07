@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Modal from "$lib/components/elements/Modal.svelte";
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+    import Modal from "$lib/components/ui/Modal.svelte";
+    import StdButton from "$lib/components/ui/StdButton.svelte";
     import { modalStore } from "$lib/stores/modal";
     import { currentSchedule, searchCourseData } from "$lib/stores/recal";
     import { currentTerm, schedules } from "$lib/changeme";

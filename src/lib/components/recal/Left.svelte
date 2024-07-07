@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Saved from "./elements/save/Saved.svelte";
-    import SearchResults from "./elements/search/SearchResults.svelte";
-    import SearchBar from "./elements/search/SearchBar.svelte";
-    import Events from "./Events.svelte";
+    import Saved from "./left/Saved.svelte";
+    import SearchResults from "./left/SearchResults.svelte";
+    import SearchBar from "./left/SearchBar.svelte";
+    import Events from "./left/Events.svelte";
 </script>
 
 <div class="h-full max-h-full w-full flex flex-col">

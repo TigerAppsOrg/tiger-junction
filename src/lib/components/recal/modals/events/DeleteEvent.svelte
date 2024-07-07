@@ -1,5 +1,5 @@
 <script lang="ts">
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+    import StdButton from "$lib/components/ui/StdButton.svelte";
     import { modalStore } from "$lib/stores/modal";
     import {
         customEvents,
@@ -9,7 +9,7 @@
     import { getContext, onMount } from "svelte";
     import { toastStore } from "$lib/stores/toast";
     import { SupabaseClient } from "@supabase/supabase-js";
-    import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdModal from "$lib/components/ui/StdModal.svelte";
 
     export let showModal: boolean = false;
 

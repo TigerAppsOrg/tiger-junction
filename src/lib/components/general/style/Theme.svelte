@@ -4,8 +4,8 @@
     import { modalStore } from "$lib/stores/modal";
     import { DEFAULT_RCARD_COLORS } from "$lib/stores/styles";
     import { onMount } from "svelte";
-    import StdModal from "$lib/components/elements/StdModal.svelte";
-    import StdButton from "$lib/components/elements/StdButton.svelte";
+    import StdModal from "$lib/components/ui/StdModal.svelte";
+    import StdButton from "$lib/components/ui/StdButton.svelte";
 
     export let showModal: boolean = false;
 
@@ -69,7 +69,7 @@
 
         <StdButton
             message="View Themes"
-            onClick={() => modalStore.push("rpalettes")}
+            onClick={() => modalStore.push("palettes")}
             scheme="2" />
     </div>
 

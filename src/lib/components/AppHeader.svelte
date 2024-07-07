@@ -65,9 +65,7 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
-            <button
-                class="btn-circ"
-                on:click={() => modalStore.push("rcolors")}>
+            <button class="btn-circ" on:click={() => modalStore.push("theme")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

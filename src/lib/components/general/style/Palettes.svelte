@@ -1,7 +1,7 @@
 <script lang="ts">
-    import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdModal from "$lib/components/ui/StdModal.svelte";
     import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
-    import Palette from "../elements/cards/Palette.svelte";
+    import Palette from "./Palette.svelte";
 
     export let showModal: boolean = false;
 </script>

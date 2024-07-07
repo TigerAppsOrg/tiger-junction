@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Header from "$lib/components/Header.svelte";
+    import AppHeader from "$lib/components/AppHeader.svelte";
     import ModalLib from "$lib/components/general/ModalLib.svelte";
     import { setContext } from "svelte";
 
@@ -9,6 +9,6 @@
 
 <ModalLib />
 <div class="h-screen w-screen flex flex-col bg-zinc-50 dark:bg-black">
-    <Header />
+    <AppHeader />
     <slot />
 </div>

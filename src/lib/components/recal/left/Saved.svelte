@@ -1,9 +1,9 @@
 <script lang="ts">
     import { currentSchedule, isResult, ready, recal } from "$lib/stores/recal";
-    import MinimalBase from "../cards/MinimalBase.svelte";
+    import CourseCard from "./elements/CourseCard.svelte";
     import { savedCourses } from "$lib/stores/rpool";
     import { calColors } from "$lib/stores/styles";
-    import Loader from "$lib/components/elements/Loader.svelte";
+    import Loader from "$lib/components/ui/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
 
     $: saved = $savedCourses[$currentSchedule]
@@ -50,7 +50,7 @@
                     <div class="overflow-y-auto">
                         {#key saved && colorChange}
                             {#each saved as course}
-                                <MinimalBase {course} category="saved" />
+                                <CourseCard {course} category="saved" />
                             {/each}
                         {/key}
                     </div>

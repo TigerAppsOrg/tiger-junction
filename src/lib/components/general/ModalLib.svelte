@@ -3,16 +3,16 @@
 
     // Recal Modals
     import AdvancedSearch from "../recal/modals/AdvancedSearch.svelte";
-    import ExportCal from "../recal/modals/ExportCal.svelte";
-    import AddSchedule from "../recal/elements/save/AddSchedule.svelte";
-    import EditSchedule from "../recal/elements/save/EditSchedule.svelte";
+    import ExportCal from "../recal/modals/schedule/ExportCal.svelte";
+    import AddSchedule from "../recal/modals/schedule/AddSchedule.svelte";
+    import EditSchedule from "../recal/modals/schedule/EditSchedule.svelte";
     import RecalStats from "../recal/modals/RecalStats.svelte";
     import Feedback from "./Feedback.svelte";
-    import FeedbackPop from "../feedbackpopup/FeedbackPop.svelte";
+    import FeedbackPop from "./FeedbackPop.svelte";
 
     // Style Modals
-    import RecalColors from "../recal/modals/RecalColors.svelte";
-    import RecalPalettes from "../recal/modals/RecalPalettes.svelte";
+    import Theme from "./style/Theme.svelte";
+    import Palettes from "./style/Palettes.svelte";
 
     // Event Modals
     import AddEvent from "../recal/modals/events/AddEvent.svelte";
@@ -29,8 +29,8 @@
         rstats: RecalStats,
         feedback: Feedback,
         feedbackpop: FeedbackPop,
-        rcolors: RecalColors,
-        rpalettes: RecalPalettes,
+        theme: Theme,
+        palettes: Palettes,
         manageEvents: ManageEvents,
         addEvent: AddEvent,
         editEvent: EditEvent,

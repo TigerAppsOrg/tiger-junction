@@ -12,7 +12,7 @@
     import { sectionData } from "$lib/stores/rsections";
     import type { CalBoxParam } from "$lib/types/dbTypes";
     import { rMeta } from "$lib/stores/rmeta";
-    import CalBox from "./elements/save/CalBox.svelte";
+    import CalBox from "./calendar/CalBox.svelte";
     import { valueToDays } from "$lib/scripts/convert";
     import { calColors, type CalColors } from "$lib/stores/styles";
     import { slide } from "svelte/transition";

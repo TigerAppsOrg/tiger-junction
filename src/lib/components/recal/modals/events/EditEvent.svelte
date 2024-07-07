@@ -1,6 +1,6 @@
 <script lang="ts">
-    import StdButton from "$lib/components/elements/StdButton.svelte";
-    import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdButton from "$lib/components/ui/StdButton.svelte";
+    import StdModal from "$lib/components/ui/StdModal.svelte";
     import { editEvent } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
     import { toastStore } from "$lib/stores/toast";

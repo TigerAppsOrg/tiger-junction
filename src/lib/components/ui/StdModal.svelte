@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Modal from "$lib/components/elements/Modal.svelte";
+    import Modal from "$lib/components/ui/Modal.svelte";
     import { modalStore } from "$lib/stores/modal";
     import StdButton from "./StdButton.svelte";
 
