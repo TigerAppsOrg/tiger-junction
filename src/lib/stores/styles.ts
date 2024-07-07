@@ -1,4 +1,5 @@
-import { darkenHSL } from "$lib/scripts/convert";
+import { darkenHSL, rgbToHSL } from "$lib/scripts/convert";
+import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
 import { get, writable, type Writable } from "svelte/store";
 
 //----------------------------------------------------------------------
@@ -14,6 +15,7 @@ export type CalColors = {
     "4": string;
     "5": string;
     "6": string;
+    E: string; // Event Color
 };
 
 export const DEFAULT_RCARD_COLORS: CalColors = {
@@ -24,7 +26,77 @@ export const DEFAULT_RCARD_COLORS: CalColors = {
     3: "hsl(60, 86%, 86%)",
     4: "hsl(353, 73%, 78%)",
     5: "hsl(303, 74%, 86%)",
-    6: "hsl(272, 62%, 80%)"
+    6: "hsl(272, 62%, 80%)",
+    E: "hsla(258, 100%, 84%)"
+};
+
+/**
+ * Initializes the color scheme for the calendar, pulling from local storage if available
+ * Since "E" was added later, this function also checks for the presence of "E" in the stored colors
+ * If "E" is not present, it will attempt to find a matching color scheme and add "E" to it
+ * If no matching color scheme is found, it will default to gray
+ * @returns the color scheme for the calendar
+ */
+const initializeCalColors = (): CalColors => {
+    if (typeof window === "undefined") return DEFAULT_RCARD_COLORS;
+
+    const storedColors = localStorage.getItem("calColors");
+    if (!storedColors) {
+        localStorage.setItem("calColors", JSON.stringify(DEFAULT_RCARD_COLORS));
+        return DEFAULT_RCARD_COLORS;
+    }
+
+    const parsedColors = JSON.parse(storedColors);
+    const OLD_SET: (keyof Omit<CalColors, "E">)[] = [
+        "-1",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+    ];
+    for (const key of OLD_SET) {
+        if (!(key in parsedColors)) {
+            localStorage.setItem(
+                "calColors",
+                JSON.stringify(DEFAULT_RCARD_COLORS)
+            );
+            return DEFAULT_RCARD_COLORS;
+        }
+    }
+
+    if (!("E" in parsedColors)) {
+        for (let key in colorPalettes) {
+            const palette = colorPalettes[key];
+            const hslPalette = Object.entries(palette)
+                .map(([key, value]) => [key, rgbToHSL(value)])
+                .reduce(
+                    (acc, [key, value]) => ({ ...acc, [key]: value }),
+                    {}
+                ) as CalColors;
+
+            let matching = true;
+            for (const key of OLD_SET) {
+                if (hslPalette[key] !== parsedColors[key]) {
+                    matching = false;
+                    break;
+                }
+            }
+            if (matching) {
+                parsedColors.E = hslPalette.E;
+                localStorage.setItem("calColors", JSON.stringify(parsedColors));
+                return parsedColors;
+            }
+        }
+        const DEFAULT_E = "hsla(0, 0%, 80%)";
+        parsedColors.E = DEFAULT_E;
+        localStorage.setItem("calColors", JSON.stringify(parsedColors));
+        return parsedColors;
+    } else {
+        return parsedColors;
+    }
 };
 
 // HSL colors
@@ -32,11 +104,7 @@ const {
     subscribe: ccSubscribe,
     update: ccUpdate,
     set: ccSet
-}: Writable<CalColors> = writable(
-    typeof window !== "undefined" && localStorage.getItem("calColors") !== null
-        ? JSON.parse(localStorage.getItem("calColors") as string)
-        : DEFAULT_RCARD_COLORS
-);
+}: Writable<CalColors> = writable(initializeCalColors());
 
 export const calColors = {
     subscribe: ccSubscribe,

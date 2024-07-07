@@ -17,7 +17,7 @@
     export let isSelected: boolean = false;
     export let noBorder: boolean = false;
 
-    $: cssVarStyles = calculateCssVars("5", $calColors);
+    $: cssVarStyles = calculateCssVars("E", $calColors);
 </script>
 
 <div
