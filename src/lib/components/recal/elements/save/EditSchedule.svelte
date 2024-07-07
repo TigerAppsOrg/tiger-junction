@@ -9,6 +9,7 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
+    import { scheduleEventMap } from "$lib/stores/events";
 
     export let showModal: boolean = false;
     const supabase = getContext("supabase") as SupabaseClient;
@@ -181,11 +182,11 @@
 
                 // Update current schedule
                 currentSchedule.set($schedules[$currentTerm][0].id);
-
                 toastStore.add("success", "Schedule successfully deleted!");
             });
 
         // Clean Up and Close
+        scheduleEventMap.deleteSchedule($currentSchedule);
         input = "";
         modalStore.close();
     };

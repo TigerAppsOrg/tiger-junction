@@ -1,3 +1,7 @@
+/**
+ * @file Stores for custom events and their associations with schedules
+ */
+
 import { goto } from "$app/navigation";
 import { schedules } from "$lib/changeme";
 import { SupabaseClient } from "@supabase/supabase-js";
@@ -380,14 +384,14 @@ function createScheduleEventStore() {
         },
 
         /**
-         * Remove a schedule from the store
-         * Warning: This does not remove the schedule from the database
-         * It is only to garbage collect from this store once
-         * the schedule is deleted. Should be called after the schedule
-         * is removed from the database.
+         * Remove a schedule and its data from the store and database
+         * This only removes from the store, not the database
+         * When a schedule is removed, the associations cascade drop,
+         * so this function is for that case only
          * @param scheduleId Id of the schedule to remove
+         * @returns True if successful, false otherwise
          */
-        deleteSchedule: async (scheduleId: number) => {
+        deleteSchedule: (scheduleId: number) => {
             if (!get(store)[scheduleId]) {
                 console.error("Schedule not found");
                 return;
