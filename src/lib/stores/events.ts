@@ -75,6 +75,55 @@ function createCustomEventsStore() {
         },
 
         /**
+         * Update an event in the store and database
+         * @param supabase Supabase client
+         * @param id Id of the event to update
+         * @param newData New data for the event
+         */
+        edit: async (
+            supabase: SupabaseClient,
+            id: number,
+            newData: CustomEventInsert
+        ): Promise<boolean> => {
+            const events = get(store);
+            const eventIndex = events.findIndex(event => event.id === id);
+            if (eventIndex === -1) {
+                console.error("Event not found");
+                return false;
+            }
+
+            const event = events[eventIndex];
+
+            store.update(events => [
+                ...events.slice(0, eventIndex),
+                { ...event, ...newData },
+                ...events.slice(eventIndex + 1)
+            ]);
+
+            const { error } = await supabase
+                .from("events")
+                .update({
+                    title: newData.title,
+                    times: newData.times
+                })
+                .match({ id });
+
+            if (error) {
+                console.error(
+                    "Error updating event in database:",
+                    error.message
+                );
+                store.update(events => [
+                    ...events.slice(0, eventIndex),
+                    event,
+                    ...events.slice(eventIndex + 1)
+                ]);
+                return false;
+            }
+            return true;
+        },
+
+        /**
          * Remove an event from the store and database
          * @param supabase Supabase client
          * @param id Id of the event to remove

@@ -39,34 +39,7 @@
 
     // Save the event in the store and db and close the modal
     const createEvent = async () => {
-        // Validate input
-        let isValidationError = false;
-
-        if (title.length === 0) {
-            titleError = "Title is required";
-            isValidationError = true;
-        } else if (title.length > 100) {
-            titleError = "Title must be less than 100 characters";
-            isValidationError = true;
-        }
-
-        const setTimeBlockError = () => {
-            timeBlockError = "Invalid time block";
-            isValidationError = true;
-        };
-        for (let i = 0; i < times.length; i++) {
-            if (!validateTimes(i)) setTimeBlockError();
-            if (times[i].days.length === 0) {
-                times[i].errors.push("Must select at least one day");
-                setTimeBlockError();
-            }
-            if (times[i].start === null || times[i].end === null) {
-                times[i].errors.push("Start and end times are required");
-                setTimeBlockError();
-            }
-        }
-
-        if (isValidationError) {
+        if (!validateSubmission()) {
             refreshErrors++;
             return;
         }
@@ -90,21 +63,70 @@
             return;
         }
 
-        // Clean up and close
-        title = "";
-        times = [
-            {
-                start: null,
-                end: null,
-                days: [],
-                errors: []
-            }
-        ];
+        cleanUp();
         modalStore.pop();
         toastStore.add("success", "Event created successfully");
     };
 
-    const saveEvent = async () => {};
+    const saveEvent = async () => {
+        if (!validateSubmission()) {
+            refreshErrors++;
+            return;
+        }
+
+        if (!$editEvent) {
+            titleError = "Server Error: please refresh and try again.";
+            return;
+        }
+
+        const normalizedTimes = times.map(time => {
+            return {
+                start: militaryToValue(time.start as string),
+                end: militaryToValue(time.end as string),
+                days: dayArrToValue(time.days)
+            };
+        });
+
+        const status = await customEvents.edit(supabase, $editEvent.id, {
+            title: title.trim(),
+            times: normalizedTimes
+        });
+
+        if (!status) {
+            titleError = "Server Error: please refresh and try again.";
+            return;
+        }
+
+        cleanUp();
+        modalStore.pop();
+        toastStore.add("success", "Event updated successfully");
+    };
+
+    const validateSubmission = (): boolean => {
+        let isValid = true;
+
+        if (title.length === 0) {
+            titleError = "Title is required";
+            isValid = false;
+        } else if (title.length > 100) {
+            titleError = "Title must be less than 100 characters";
+            isValid = false;
+        }
+
+        for (let i = 0; i < times.length; i++) {
+            if (!validateTimes(i)) isValid = false;
+            if (times[i].days.length === 0) {
+                times[i].errors.push("Must select at least one day");
+                isValid = false;
+            }
+            if (times[i].start === null || times[i].end === null) {
+                times[i].errors.push("Start and end times are required");
+                isValid = false;
+            }
+        }
+
+        return isValid;
+    };
 
     const validateTimes = (index: number): boolean => {
         const time = times[index];
@@ -133,6 +155,18 @@
 
         refreshErrors++;
         return time.errors.length === 0;
+    };
+
+    const cleanUp = () => {
+        title = "";
+        times = [
+            {
+                start: null,
+                end: null,
+                days: [],
+                errors: []
+            }
+        ];
     };
 
     onMount(() => {
