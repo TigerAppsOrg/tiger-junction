@@ -17,7 +17,7 @@
 
 {#key saved && $recal}
     {#if saved && $ready}
-        <div class="max-h-full mt-2">
+        <div class="max-h-full mt-4">
             <div
                 class="text-base font-normal dark:text-zinc-100 ml-1
                     flex items-center justify-between">

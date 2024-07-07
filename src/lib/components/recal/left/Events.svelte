@@ -23,7 +23,7 @@
 <div style={cssVarStyles}>
     <div
         class="text-base font-normal dark:text-zinc-100 ml-1
-                flex items-center justify-between mt-2">
+                flex items-center justify-between mt-4">
         <span>
             {scheduleEvents.length} Custom
             {scheduleEvents.length === 1 ? "Event" : "Events"}
@@ -77,22 +77,43 @@
                 on:click={() => modalStore.push("manageEvents")}>
                 Manage Events
             </button>
-            <div class="rounded-sm">
-                {#each scheduleEvents as event, i}
-                    <EventCard
-                        customEvent={event}
-                        noBorder={i === scheduleEvents.length - 1}
-                        isSelected={true} />
-                {/each}
+
+            <div class="mb-2">
+                {#if scheduleEvents.length === 0}
+                    <p class="text-sm">No events added yet.</p>
+                {:else}
+                    <h2 class="text-sm">
+                        {scheduleEvents.length} Added
+                        {scheduleEvents.length === 1 ? "Event" : "Events"}
+                    </h2>
+                    <div class="rounded-sm">
+                        {#each scheduleEvents as event, i}
+                            <EventCard
+                                customEvent={event}
+                                noBorder={i === scheduleEvents.length - 1}
+                                isSelected={true} />
+                        {/each}
+                    </div>
+                {/if}
             </div>
 
-            <div class="border-2 rounded-sm">
-                {#each notInSchedule as event, i}
-                    <EventCard
-                        customEvent={event}
-                        noBorder={i === notInSchedule.length - 1}
-                        isSelected={false} />
-                {/each}
+            <div>
+                {#if notInSchedule.length === 0}
+                    <p class="text-sm">No events available.</p>
+                {:else}
+                    <h2 class="text-sm">
+                        {notInSchedule.length} Available
+                        {notInSchedule.length === 1 ? "Event" : "Events"}
+                    </h2>
+                    <div class="border-2 rounded-sm">
+                        {#each notInSchedule as event, i}
+                            <EventCard
+                                customEvent={event}
+                                noBorder={i === notInSchedule.length - 1}
+                                isSelected={false} />
+                        {/each}
+                    </div>
+                {/if}
             </div>
         </div>
     {/if}
