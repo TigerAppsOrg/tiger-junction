@@ -223,6 +223,17 @@ const valueToDays = (value: number) => {
     return days;
 };
 
+export const valueToDaysStr = (value: number): string => {
+    let days = valueToDays(value);
+    let dayStr = "";
+    if (days.includes(1)) dayStr += "M";
+    if (days.includes(2)) dayStr += "T";
+    if (days.includes(3)) dayStr += "W";
+    if (days.includes(4)) dayStr += "R";
+    if (days.includes(5)) dayStr += "F";
+    return dayStr;
+};
+
 //----------------------------------------------------------------------
 // Text Functions
 //----------------------------------------------------------------------

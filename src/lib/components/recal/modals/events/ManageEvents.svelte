@@ -1,6 +1,7 @@
 <script lang="ts">
     import StdButton from "$lib/components/ui/StdButton.svelte";
     import StdModal from "$lib/components/ui/StdModal.svelte";
+    import { valuesToTimeLabel, valueToDaysStr } from "$lib/scripts/convert";
     import {
         type CustomEvent,
         type CustomEventTime,
@@ -14,10 +15,15 @@
     export let showModal: boolean = false;
 
     const formatTimes = (times: CustomEventTime[]) => {
-        return times.map(time => {
-            const date = new Date(time.start);
-            return date.toLocaleString();
-        });
+        return times
+            .map(time => {
+                return (
+                    valueToDaysStr(time.days) +
+                    " " +
+                    valuesToTimeLabel(time.start, time.end)
+                );
+            })
+            .join("; ");
     };
 
     const handleEdit = (candidate: CustomEvent) => {
@@ -47,7 +53,7 @@
                 {#each $customEvents as event}
                     <div class="bg-zinc-100 dark:bg-zinc-800 rounded-md p-4">
                         <h3 class="text-lg font-semibold">{event.title}</h3>
-                        <p class="text-sm mb-2">
+                        <p class="text-sm mb-2 italic">
                             {formatTimes(event.times)}
                         </p>
                         <div class="flex space-x-2">
@@ -101,7 +107,7 @@
 
 <style lang="postcss">
     .action-button {
-        @apply px-2 py-1 rounded-md active:scale-95 duration-150 text-white
+        @apply px-2 rounded-md active:scale-95 duration-150 text-white
         flex items-center gap-1;
     }
 
