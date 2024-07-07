@@ -198,7 +198,7 @@
     }
 
     .day-toggle {
-        @apply w-8 h-8 rounded-full p-1 duration-100 text-sm 
+        @apply w-8 h-8 rounded-full p-1 duration-100 text-sm select-none
         border-2 border-zinc-600/30 dark:border-zinc-200/30;
     }
 
