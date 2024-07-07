@@ -6,6 +6,7 @@
         type CustomEventTime,
         customEvents,
         deleteCandidateEvent,
+        editEvent,
         scheduleEventMap
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
@@ -17,6 +18,11 @@
             const date = new Date(time.start);
             return date.toLocaleString();
         });
+    };
+
+    const handleEdit = (candidate: CustomEvent) => {
+        editEvent.set(candidate);
+        modalStore.push("editEvent");
     };
 
     const handleDelete = (candidate: CustomEvent) => {
@@ -46,6 +52,7 @@
                         </p>
                         <div class="flex space-x-2">
                             <button
+                                on:click={() => handleEdit(event)}
                                 class="action-button bg-blue-500 hover:bg-blue-700">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

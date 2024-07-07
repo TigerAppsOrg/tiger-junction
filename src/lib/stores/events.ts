@@ -375,5 +375,5 @@ function createScheduleEventStore() {
 }
 
 export const scheduleEventMap = createScheduleEventStore();
-
+export const editEvent = writable<CustomEvent | null>(null);
 export const deleteCandidateEvent = writable<CustomEvent | null>(null);

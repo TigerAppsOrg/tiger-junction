@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Modal from "$lib/components/elements/Modal.svelte";
     import StdButton from "$lib/components/elements/StdButton.svelte";
     import { modalStore } from "$lib/stores/modal";
     import {
@@ -10,6 +9,7 @@
     import { getContext, onMount } from "svelte";
     import { toastStore } from "$lib/stores/toast";
     import { SupabaseClient } from "@supabase/supabase-js";
+    import StdModal from "$lib/components/elements/StdModal.svelte";
 
     export let showModal: boolean = false;
 
@@ -51,34 +51,31 @@
     };
 </script>
 
-<Modal {showModal}>
-    <div class="p-6 w-[80vw] max-w-4xl">
-        <h1 class="text-xl font-bold mb-2">Delete Custom Event</h1>
-
-        <div>
-            <p>
-                Are you sure you want to delete custom event <span
-                    class="font-bold">
-                    {event.title}</span
-                >? This action cannot be undone.
-            </p>
-        </div>
-
-        <div
-            class="flex gap-2 border-t-2 mt-2 pt-2
-            border-zinc-200 dark:border-zinc-600">
-            <StdButton
-                scheme="-1"
-                message="Cancel"
-                onClick={() => {
-                    modalStore.pop();
-                    deleteCandidateEvent.set(null);
-                }} />
-            <StdButton
-                scheme="4"
-                message="Delete"
-                onClick={handleDelete}
-                submit={true} />
-        </div>
+<StdModal title="Delete Custom Event" stdClose={false} {showModal}>
+    <div slot="main">
+        <p>
+            Are you sure you want to delete custom event <span
+                class="font-bold">
+                {event.title}</span
+            >? This action cannot be undone.
+        </p>
     </div>
-</Modal>
+
+    <div
+        slot="buttons"
+        class="flex gap-2 border-t-2 mt-2 pt-2
+            border-zinc-200 dark:border-zinc-600">
+        <StdButton
+            scheme="-1"
+            message="Cancel"
+            onClick={() => {
+                modalStore.pop();
+                deleteCandidateEvent.set(null);
+            }} />
+        <StdButton
+            scheme="4"
+            message="Delete"
+            onClick={handleDelete}
+            submit={true} />
+    </div>
+</StdModal>
