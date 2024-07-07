@@ -73,7 +73,7 @@
             class="overflow-hidden">
             <button
                 id="manageButton"
-                class="w-full text-sm py-1 mt-1 active:scale-95 duration-150"
+                class="w-full text-sm py-1 mt-1 active:scale-95 duration-150 mb-2"
                 on:click={() => modalStore.push("manageEvents")}>
                 Manage Events
             </button>
