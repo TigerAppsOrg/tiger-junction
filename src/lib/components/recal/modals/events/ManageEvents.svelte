@@ -16,11 +16,9 @@
     const formatTimes = (times: CustomEventTime[]) => {
         return times
             .map(time => {
-                return (
-                    valueToDaysStr(time.days) +
-                    " " +
-                    valuesToTimeLabel(time.start, time.end)
-                );
+                let dayStr = valueToDaysStr(time.days);
+                if (dayStr === "MTWRF") dayStr = "Everyday";
+                return dayStr + " " + valuesToTimeLabel(time.start, time.end);
             })
             .join("; ");
     };
