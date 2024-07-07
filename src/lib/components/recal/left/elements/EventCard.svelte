@@ -9,7 +9,7 @@
     const supabase: SupabaseClient = getContext("supabase");
 
     export let customEvent: CustomEvent;
-    export let isSelected: boolean = true;
+    export let isSelected: boolean = false;
 
     $: cssVarStyles = calculateCssVars("5", $calColors);
 </script>
@@ -21,7 +21,9 @@
     {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
 ">
     <div class="w-[75%]">
-        {customEvent.title}
+        <p id="title" class="text-sm">
+            {customEvent.title}
+        </p>
     </div>
 
     {#if isSelected}
@@ -40,7 +42,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-5 h-5">
+                class="icon">
                 <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -63,7 +65,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-5 h-5">
+                class="icon">
                 <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -74,14 +76,18 @@
 </div>
 
 <style lang="postcss">
+    .icon {
+        @apply w-4 h-4;
+    }
+
     button {
-        @apply text-zinc-300 dark:text-zinc-100 h-full
-        hover:text-white dark:hover:text-white;
+        @apply text-zinc-400 dark:text-zinc-100 h-full
+        hover:text-white dark:hover:text-white
+        flex items-center justify-center duration-100;
     }
 
     .selected {
         background-color: var(--bg);
         color: var(--text);
-        border-left: 4px solid var(--border);
     }
 </style>
