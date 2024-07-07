@@ -15,7 +15,6 @@
     import Palettes from "./style/Palettes.svelte";
 
     // Event Modals
-    import AddEvent from "../recal/modals/events/AddEvent.svelte";
     import ManageEvents from "../recal/modals/events/ManageEvents.svelte";
     import EditEvent from "../recal/modals/events/EditEvent.svelte";
     import DeleteEvent from "../recal/modals/events/DeleteEvent.svelte";
@@ -32,7 +31,6 @@
         theme: Theme,
         palettes: Palettes,
         manageEvents: ManageEvents,
-        addEvent: AddEvent,
         editEvent: EditEvent,
         deleteEvent: DeleteEvent
     };

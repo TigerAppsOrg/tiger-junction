@@ -99,7 +99,10 @@
         <StdButton
             className="mt-4"
             message="Create New Event"
-            onClick={() => modalStore.push("addEvent")}
+            onClick={() => {
+                editEvent.set(null);
+                modalStore.push("editEvent");
+            }}
             scheme="2" />
     </div>
 </StdModal>

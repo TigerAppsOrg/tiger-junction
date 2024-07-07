@@ -234,6 +234,18 @@ export const valueToDaysStr = (value: number): string => {
     return dayStr;
 };
 
+// TODO This file needs to be heavily refactored
+export const valueToDayArr = (value: number): string[] => {
+    let days = valueToDays(value);
+    let dayArr = [];
+    if (days.includes(1)) dayArr.push("M");
+    if (days.includes(2)) dayArr.push("T");
+    if (days.includes(3)) dayArr.push("W");
+    if (days.includes(4)) dayArr.push("R");
+    if (days.includes(5)) dayArr.push("F");
+    return dayArr;
+};
+
 //----------------------------------------------------------------------
 // Text Functions
 //----------------------------------------------------------------------
