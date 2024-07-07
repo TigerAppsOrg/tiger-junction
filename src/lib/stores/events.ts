@@ -73,13 +73,17 @@ function createCustomEventsStore() {
          * Remove an event from the store and database
          * @param supabase Supabase client
          * @param id Id of the event to remove
+         * @returns True if successful, false otherwise
          */
-        remove: async (supabase: SupabaseClient, id: number) => {
+        remove: async (
+            supabase: SupabaseClient,
+            id: number
+        ): Promise<boolean> => {
             const events = get(store);
             const eventIndex = events.findIndex(event => event.id === id);
             if (eventIndex === -1) {
                 console.error("Event not found");
-                return;
+                return false;
             }
 
             const event = events[eventIndex];
@@ -101,7 +105,9 @@ function createCustomEventsStore() {
                     event,
                     ...events.slice(eventIndex)
                 ]);
+                return false;
             }
+            return true;
         }
     };
 }
@@ -153,15 +159,16 @@ function createScheduleEventStore() {
          * @param supabase Supabase client
          * @param scheduleId Id of the schedule to add the event to
          * @param eventId Id of the event to add
+         * @returns True if successful, false otherwise
          */
         addToSchedule: async (
             supabase: SupabaseClient,
             scheduleId: number,
             eventId: number
-        ) => {
+        ): Promise<boolean> => {
             if (!schedules.includes(scheduleId)) {
                 console.error("Schedule does not exist");
-                return;
+                return false;
             }
 
             const allSchedules = get(store);
@@ -176,12 +183,12 @@ function createScheduleEventStore() {
             const event = customEvents.find(eventId);
             if (!event) {
                 console.error("Event not found");
-                return;
+                return false;
             }
 
             if (schedule.find(event => event.id === eventId)) {
                 console.error("Event already in schedule");
-                return;
+                return false;
             }
 
             store.update(map => {
@@ -204,7 +211,9 @@ function createScheduleEventStore() {
                     );
                     return map;
                 });
+                return false;
             }
+            return true;
         },
 
         /**
@@ -212,22 +221,23 @@ function createScheduleEventStore() {
          * @param supabase Supabase client
          * @param scheduleId Id of the schedule to remove the event from
          * @param eventId Id of the event to remove
+         * @returns True if successful, false otherwise
          */
         removeFromSchedule: async (
             supabase: SupabaseClient,
             scheduleId: number,
             eventId: number
-        ) => {
+        ): Promise<boolean> => {
             const schedule = get(store)[scheduleId];
             if (!schedule) {
                 console.error("Schedule not found");
-                return;
+                return false;
             }
 
             const event = customEvents.find(eventId);
             if (!event) {
                 console.error("Event not found");
-                return;
+                return false;
             }
 
             const eventIndex = schedule.findIndex(
@@ -235,7 +245,7 @@ function createScheduleEventStore() {
             );
             if (eventIndex === -1) {
                 console.error("Event not found in schedule");
-                return;
+                return false;
             }
 
             store.update(map => {
@@ -265,19 +275,25 @@ function createScheduleEventStore() {
                     ];
                     return map;
                 });
+                return false;
             }
+            return true;
         },
 
         /**
          * Clear all events from a schedule
          * @param supabase Supabase client
          * @param scheduleId Id of the schedule to clear
+         * @returns True if successful, false otherwise
          */
-        clearSchedule: async (supabase: SupabaseClient, scheduleId: number) => {
+        clearSchedule: async (
+            supabase: SupabaseClient,
+            scheduleId: number
+        ): Promise<boolean> => {
             const schedule = get(store)[scheduleId];
             if (!schedule) {
                 console.error("Schedule not found");
-                return;
+                return false;
             }
 
             store.update(map => {
@@ -299,24 +315,27 @@ function createScheduleEventStore() {
                     map[scheduleId] = schedule;
                     return map;
                 });
+                return false;
             }
+            return true;
         },
 
         /**
          * Remove an event from all schedules
          * @param supabase Supabase client
          * @param eventId Id of the event to remove from all schedules
+         * @returns True if successful, false otherwise
          */
         removeFromAllSchedules: async (
             supabase: SupabaseClient,
             eventId: number
-        ) => {
+        ): Promise<boolean> => {
             const schedules = get(store);
             const event = customEvents.find(eventId);
 
             if (!event) {
                 console.error("Event not found");
-                return;
+                return false;
             }
 
             for (const scheduleId in schedules) {
@@ -354,8 +373,10 @@ function createScheduleEventStore() {
                         ];
                         return map;
                     });
+                    return false;
                 }
             }
+            return true;
         },
 
         /**
