@@ -14,6 +14,7 @@
     const DAYS = ["M", "T", "W", "R", "F"];
 
     let title: string = "";
+    let titleError = "";
 
     type TempTime = {
         start: string | null;
@@ -21,15 +22,16 @@
         days: string[];
     };
     let times: TempTime[] = [];
+    let timeBlockError = "";
 
     // Save the event in the store and db and close the modal
     const saveEvent = async () => {
         // Validate input
         if (title.length === 0) {
-            toastStore.add("error", "Please enter a title");
+            titleError = "Title is required";
             return;
         } else if (title.length > 100) {
-            toastStore.add("error", "Title must be less than 100 characters");
+            titleError = "Title must be less than 100 characters";
             return;
         }
 
@@ -41,6 +43,7 @@
         // Clean up and close
         title = "";
         modalStore.pop();
+        toastStore.add("success", "Event created successfully");
     };
 
     onMount(() => {
@@ -63,7 +66,12 @@
         <form on:submit|preventDefault>
             <div class="flex flex-col gap-2">
                 <div class="settings-area">
-                    <h2 class="text-lg font-bold mb-2">Title</h2>
+                    <div class="flex items-cente justify-between">
+                        <h2 class="text-lg font-bold mb-2">Title</h2>
+                        {#if titleError !== ""}
+                            <p class="text-red-500">{titleError}</p>
+                        {/if}
+                    </div>
                     <input
                         bind:value={title}
                         type="text"
@@ -72,7 +80,12 @@
                         class="flex-1 p-2 h-10 w-full std-area rounded-md" />
                 </div>
                 <div class="settings-area">
-                    <h2 class="text-lg font-bold mb-2">Time Blocks</h2>
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-bold mb-2">Time Blocks</h2>
+                        {#if timeBlockError !== ""}
+                            <p class="text-red-500">{timeBlockError}</p>
+                        {/if}
+                    </div>
                     {#each times as time, i}
                         <div
                             class="bg-zinc-100 dark:bg-zinc-800
@@ -82,18 +95,10 @@
                                 on:click={() => {
                                     // If only one time block, reset it
                                     if (times.length === 1) {
-                                        toastStore.add(
-                                            "warning",
-                                            "Custom event must have at least one time block"
-                                        );
-                                        times = [
-                                            {
-                                                start: null,
-                                                end: null,
-                                                days: []
-                                            }
-                                        ];
+                                        timeBlockError =
+                                            "Must have at least one time block";
                                     } else {
+                                        timeBlockError = "";
                                         times = times.filter(
                                             (_, index) => index !== i
                                         );
@@ -148,6 +153,12 @@
                         className="w-full mt-2"
                         message="Add Time Block"
                         onClick={() => {
+                            if (times.length === 10) {
+                                timeBlockError = "Maximum of 10 time blocks";
+                                return;
+                            }
+                            timeBlockError = "";
+
                             times = [
                                 ...times,
                                 {
