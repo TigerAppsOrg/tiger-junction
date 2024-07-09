@@ -66,24 +66,3 @@ export type CourseLinks = {
     tigersnatch: string;
     princetoncourses: string;
 };
-
-export type CalBoxParam = {
-    courseCode: string;
-    section: SectionData;
-    color: keyof CalColors;
-    confirmed: boolean;
-    day: number;
-    slot: number;
-    maxSlot: number;
-    colSpan: number;
-    height: string;
-    width: string;
-    top: string;
-    left: string;
-};
-
-export type CalendarBox = {
-    courseCode: string;
-    section: SectionData;
-    style: string;
-};

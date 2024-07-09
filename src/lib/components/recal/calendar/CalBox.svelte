@@ -1,15 +1,40 @@
 <script lang="ts">
     import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
     import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
-    import type { CalBoxParam } from "$lib/types/dbTypes";
+    import { type BoxParam, isCourseBox } from "$lib/types/calTypes";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors } from "$lib/stores/styles";
     import { rMeta } from "$lib/stores/rmeta";
     import { hovStyle, hovStyleRev } from "$lib/stores/recal";
     import { getContext } from "svelte";
 
-    export let params: CalBoxParam;
-    const { courseCode, section } = params;
+    export let params: BoxParam;
+
+    let courseCode: string;
+    let border: string;
+    let alpha: string;
+    let stripes: string;
+
+    if (isCourseBox(params)) {
+        courseCode = params.courseCode;
+        border = params.confirmed
+            ? darkenHSL($calColors[params.color], 40)
+            : darkenHSL($calColors[params.color], 20);
+        alpha = params.confirmed ? "1" : "0.7";
+        stripes = params.confirmed
+            ? ""
+            : `repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.05) 10px);`;
+    } else {
+        courseCode = "";
+        border = darkenHSL($calColors[params.color], 40);
+        alpha = "1";
+        stripes = "";
+    }
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -17,22 +42,13 @@
 
     let styles = {
         bg: $calColors[params.color],
-        border: params.confirmed
-            ? darkenHSL($calColors[params.color], 40)
-            : darkenHSL($calColors[params.color], 20),
+        border,
         text:
             parseInt($calColors[params.color].split(",")[2].split("%")[0]) > 50
                 ? darkenHSL($calColors[params.color], 60)
                 : darkenHSL($calColors[params.color], -60),
-        alpha: params.confirmed ? "1" : "0.7",
-        stripes: params.confirmed
-            ? ""
-            : `repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(0, 0, 0, 0.05) 5px,
-        rgba(0, 0, 0, 0.05) 10px);`,
+        alpha,
+        stripes,
         top: `${params.top}`,
         left: `${params.left}`,
         height: `${params.height}`,
@@ -55,6 +71,8 @@
 
     // Toggle section choice and modify db and ui
     const handleClick = () => {
+        if (!isCourseBox(params)) return;
+
         // Modify meta store
         let oldConfirms = {};
         rMeta.update(x => {
@@ -66,7 +84,7 @@
             if (a.hasOwnProperty(params.section.category)) {
                 delete a[params.section.category];
             } else {
-                a[params.section.category] = section.title;
+                a[params.section.category] = params.section.title;
             }
             return x;
         });
@@ -106,14 +124,15 @@
 <!-- Height is on scale from 0 to 90 -->
 <button
     id="box"
-    class="absolute text-left flex p-[1px] cursor-pointer
-rounded-sm duration-75
-{hovered || ($hovStyle && $hovStyle.id) === section.course_id ? 'hovered' : ''}"
+    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75
+    {hovered || ($hovStyle && $hovStyle.id) === params.section.course_id
+        ? 'hovered'
+        : ''}"
     style={cssVarStyles}
     on:click={handleClick}
     on:mouseenter={() => {
         hovered = true;
-        $hovStyleRev = section.course_id;
+        $hovStyleRev = params.section.course_id;
     }}
     on:mouseleave={() => {
         hovered = false;
@@ -121,24 +140,27 @@ rounded-sm duration-75
     }}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
         <div class="font-light text-2xs leading-3 pb-[1px]">
-            {valuesToTimeLabel(section.start_time, section.end_time)}
+            {valuesToTimeLabel(
+                params.section.start_time,
+                params.section.end_time
+            )}
         </div>
         <div class="font-normal">
             {courseCode}
-            {section.title}
+            {params.section.title}
         </div>
 
-        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && section.room}
+        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && params.section.room}
             <div class="font-light text-2xs leading-3 pt-[1px]">
-                {section.room}
+                {params.section.room}
             </div>
         {/if}
 
         {#if $searchSettings.style["Always Show Enrollments"] || hovered}
             <div class="font-light text-2xs leading-3 pt-[1px]">
-                Enrollment: {section.tot}/{section.cap === 999
+                Enrollment: {params.section.tot}/{params.section.cap === 999
                     ? "∞"
-                    : section.cap}
+                    : params.section.cap}
             </div>
         {/if}
     </div>
