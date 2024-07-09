@@ -202,13 +202,18 @@ function createScheduleEventStore() {
          * @returns Events for the schedule
          */
         getSchedule: (scheduleId: number): CustomEvent[] => {
+            if (scheduleId === undefined) {
+                console.error(
+                    "Undefined schedule id while getting schedule events"
+                );
+                return [];
+            }
             const schedule = get(store)[scheduleId];
             if (!schedule) {
-                console.error(
-                    "Schedule not found while getting schedule events:",
-                    scheduleId,
-                    get(store)
-                );
+                store.update(map => {
+                    map[scheduleId] = [];
+                    return map;
+                });
                 return [];
             }
             const resolvedEvents = schedule
