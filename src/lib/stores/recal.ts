@@ -9,6 +9,7 @@ import { savedCourses } from "./rpool";
 import { rMeta } from "./rmeta";
 import { doesConflict } from "$lib/scripts/ReCal+/conflict";
 import type { ActiveTerms } from "$lib/changeme";
+import { scheduleEventMap } from "./events";
 
 //----------------------------------------------------------------------
 // Forcers
@@ -150,6 +151,7 @@ export const searchResults = {
             const curSched = get(currentSchedule);
             const saved = get(savedCourses)[curSched];
             const meta = get(rMeta)[curSched];
+            const events = scheduleEventMap.getSchedule(curSched);
 
             if (saved && meta) {
                 for (let i = 0; i < saved.length; i++) {
@@ -205,26 +207,56 @@ export const searchResults = {
                         } // ! End of days loop
                     } // ! End of courseSections loop
                 } // ! End of saved courses loop
+            }
 
-                // Sort conflict list
-                for (const day in conflictList)
-                    conflictList[day] = conflictList[day].sort((a, b) => {
-                        return a[0] - b[0];
-                    });
+            // TODO This has a lot of duplicate code, perhaps refactor?
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    const event = events[i];
+                    for (let j = 0; j < event.times.length; j++) {
+                        const timeBlock = event.times[j];
+                        const days = valueToDays(timeBlock.days);
 
-                // Check if any conflicts and filter
-                data = data.filter(
-                    x =>
-                        !doesConflict(
-                            x,
-                            conflictList,
-                            settings.filters["No Conflicts"].values[
-                                "Only Available Sections"
-                            ],
-                            settings.filters["Days"]
-                        )
-                );
-            } // ! End of if (saved && meta)
+                        o: for (let k = 0; k < days.length; k++) {
+                            const day = days[k];
+
+                            for (let l = 0; l < conflictList[day].length; l++) {
+                                const start = conflictList[day][l][0];
+                                const end = conflictList[day][l][1];
+                                if (
+                                    timeBlock.start < end &&
+                                    timeBlock.end > start
+                                )
+                                    break o;
+                            }
+
+                            conflictList[day].push([
+                                timeBlock.start,
+                                timeBlock.end
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Sort conflict list
+            for (const day in conflictList)
+                conflictList[day] = conflictList[day].sort((a, b) => {
+                    return a[0] - b[0];
+                });
+
+            // Check if any conflicts and filter
+            data = data.filter(
+                x =>
+                    !doesConflict(
+                        x,
+                        conflictList,
+                        settings.filters["No Conflicts"].values[
+                            "Only Available Sections"
+                        ],
+                        settings.filters["Days"]
+                    )
+            );
         } // ! End of "Does Not Conflict" filter
 
         // * Days
