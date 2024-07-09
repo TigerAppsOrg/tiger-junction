@@ -3,12 +3,13 @@
     import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
     import {
         type BoxParam,
-        isCourseBox
-    } from "$lib/components/recal/calendar/calTypes";
+        isCourseBox,
+        hovStyle,
+        hovStyleRev
+    } from "$lib/components/recal/calendar/calendar";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors } from "$lib/stores/styles";
     import { rMeta } from "$lib/stores/rmeta";
-    import { hovStyle, hovStyleRev } from "$lib/stores/recal";
     import { getContext } from "svelte";
 
     const supabase = getContext("supabase") as SupabaseClient;

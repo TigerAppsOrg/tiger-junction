@@ -5,11 +5,10 @@
     import { slide } from "svelte/transition";
     import {
         currentSchedule,
-        hovStyle,
         hoveredCourse,
-        searchSettings,
-        hovStyleRev
+        searchSettings
     } from "$lib/stores/recal";
+    import { hovStyle, hovStyleRev } from "../../calendar/calendar";
     import { currentTerm } from "$lib/changeme";
     import { getLinks } from "$lib/scripts/ReCal+/getLinks";
     import * as cf from "$lib/scripts/ReCal+/cardFunctions";
