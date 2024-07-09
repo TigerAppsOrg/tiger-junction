@@ -28,7 +28,7 @@ export const recal: Writable<boolean> = writable(false);
 export const research: Writable<boolean> = writable(false);
 
 //----------------------------------------------------------------------
-// Current Term/Schedule
+// State
 //----------------------------------------------------------------------
 
 // Current schedule id
@@ -75,7 +75,7 @@ export const searchResults = {
         // * Rating
         if (settings.filters["Rating"].enabled) {
             data = data.filter(x => {
-                let rating: number = x.rating ? x.rating : 0;
+                const rating: number = x.rating ? x.rating : 0;
                 return (
                     rating >= settings.filters["Rating"].min &&
                     rating <= settings.filters["Rating"].max
@@ -96,7 +96,7 @@ export const searchResults = {
                 }
 
                 // Check if any dist is enabled
-                for (let dist of x.dists) {
+                for (const dist of x.dists) {
                     if (settings.filters["Dists"].values[dist]) {
                         enabled = true;
                         break;
@@ -141,30 +141,31 @@ export const searchResults = {
         // * Does Not Conflict
         if (settings.filters["No Conflicts"].enabled) {
             // Fetch all sections for all courses in term
-            let termSec = get(sectionData)[term];
+            const termSec = get(sectionData)[term];
             await loadSections(term, termSec);
 
             // Get confirmed sections and format into array
-            let conflictList: Record<number, [number, number][]> = {
+            const conflictList: Record<number, [number, number][]> = {
                 1: [],
                 2: [],
                 3: [],
                 4: [],
                 5: []
             };
-            let curSched = get(currentSchedule);
-            let saved = get(savedCourses)[curSched];
-            let meta = get(rMeta)[curSched];
+
+            const curSched = get(currentSchedule);
+            const saved = get(savedCourses)[curSched];
+            const meta = get(rMeta)[curSched];
 
             if (saved && meta) {
                 for (let i = 0; i < saved.length; i++) {
-                    let courseSections = termSec[saved[i].id];
-                    let courseMeta = meta[saved[i].id];
+                    const courseSections = termSec[saved[i].id];
+                    const courseMeta = meta[saved[i].id];
 
                     if (!courseMeta || !courseSections) continue;
 
                     for (let j = 0; j < courseSections.length; j++) {
-                        let nSec = courseSections[j];
+                        const nSec = courseSections[j];
 
                         // Continue if not confirmed
                         if (courseMeta.confirms.hasOwnProperty(nSec.category)) {
@@ -187,14 +188,14 @@ export const searchResults = {
                         } else continue;
 
                         // Add to conflict list if confirmed
-                        let days = valueToDays(nSec.days);
+                        const days = valueToDays(nSec.days);
                         o: for (let k = 0; k < days.length; k++) {
-                            let day = days[k];
+                            const day = days[k];
 
                             // Check if time conflicts
                             for (let l = 0; l < conflictList[day].length; l++) {
-                                let start = conflictList[day][l][0];
-                                let end = conflictList[day][l][1];
+                                const start = conflictList[day][l][0];
+                                const end = conflictList[day][l][1];
                                 if (
                                     nSec.start_time < end &&
                                     nSec.end_time > start
@@ -212,7 +213,7 @@ export const searchResults = {
                 } // ! End of saved courses loop
 
                 // Sort conflict list
-                for (let day in conflictList)
+                for (const day in conflictList)
                     conflictList[day] = conflictList[day].sort((a, b) => {
                         return a[0] - b[0];
                     });
@@ -234,7 +235,7 @@ export const searchResults = {
 
         // * Days
         if (settings.filters["Days"].enabled) {
-            let termSec = get(sectionData)[term];
+            const termSec = get(sectionData)[term];
             await loadSections(term, termSec);
 
             data = data.filter(x => {
@@ -279,7 +280,7 @@ export const searchResults = {
                 }
 
                 let isCourseOkay = true;
-                for (let category in catmap) {
+                for (const category in catmap) {
                     if (!catmap[category]) {
                         isCourseOkay = false;
                         break;
@@ -301,8 +302,8 @@ export const searchResults = {
         // * Rating
         if (settings.sortBy["Rating"].enabled) {
             data = data.sort((a, b) => {
-                let aRating: number = a.rating ? a.rating : 0;
-                let bRating: number = b.rating ? b.rating : 0;
+                const aRating: number = a.rating ? a.rating : 0;
+                const bRating: number = b.rating ? b.rating : 0;
 
                 return settings.sortBy["Rating"].value === 0
                     ? bRating - aRating
@@ -313,8 +314,8 @@ export const searchResults = {
         // * Weighted Rating
         if (settings.sortBy["Weighted Rating"].enabled) {
             data = data.sort((a, b) => {
-                let aRating: number = a.adj_rating ? a.adj_rating : 0;
-                let bRating: number = b.adj_rating ? b.adj_rating : 0;
+                const aRating: number = a.adj_rating ? a.adj_rating : 0;
+                const bRating: number = b.adj_rating ? b.adj_rating : 0;
 
                 return settings.sortBy["Weighted Rating"].value === 0
                     ? bRating - aRating
@@ -623,13 +624,13 @@ const loadSections = async (term: number, termSec: SectionMap) => {
         const sections = await secs.json();
 
         // Blacklist of courses that are already loaded
-        let blacklist: number[] = [];
-        for (let courseId in termSec) blacklist.push(parseInt(courseId));
+        const blacklist: number[] = [];
+        for (const courseId in termSec) blacklist.push(parseInt(courseId));
 
         // Sort through sections and add to sectionData
         for (let i = 0; i < sections.length; i++) {
-            let sec = sections[i];
-            let courseId = sec.course_id;
+            const sec = sections[i];
+            const courseId = sec.course_id;
 
             if (blacklist.includes(courseId)) continue;
 
