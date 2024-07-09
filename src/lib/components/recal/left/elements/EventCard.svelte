@@ -9,7 +9,7 @@
     import { currentSchedule } from "$lib/stores/recal";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { modalStore } from "$lib/stores/modal";
-    import { hovEventStyle, hovEventStyleRev } from "../../calendar/calendar";
+    import { eventHover, eventHoverRev } from "../../calendar/calendar";
 
     const supabase: SupabaseClient = getContext("supabase");
 
@@ -18,11 +18,11 @@
     export let noBorder: boolean = false;
 
     const handleHover = () => {
-        hovEventStyle.set(customEvent.id);
+        eventHover.set(customEvent.id);
     };
 
     const handleLeave = () => {
-        hovEventStyle.set(null);
+        eventHover.set(null);
     };
 
     $: cssVarStyles = calculateCssVars("E", $calColors);
@@ -35,7 +35,7 @@
     class="flex items-center justify-between border-zinc-300 h-10 duration-100
     {noBorder ? '' : 'border-b-2'}
     {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
-    class:tchover={$hovEventStyleRev === customEvent.id}
+    class:tchover={$eventHoverRev === customEvent.id}
     on:mouseenter={handleHover}
     on:focus={handleHover}
     on:blur={handleLeave}

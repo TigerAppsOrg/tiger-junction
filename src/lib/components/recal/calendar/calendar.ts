@@ -39,13 +39,13 @@ export function isCourseBox(param: BoxParam): param is CourseBoxParam {
 }
 
 // Card hovered --> highlights calendar
-export const hovStyle: Writable<number | null> = writable(null);
+export const courseHover: Writable<number | null> = writable(null);
 
 // CalBox hovered --> highlights card
-export const hovStyleRev: Writable<number | null> = writable(null);
+export const courseHoverRev: Writable<number | null> = writable(null);
 
 // Event card hovered --> highlights calendar
-export const hovEventStyle: Writable<number | null> = writable(null);
+export const eventHover: Writable<number | null> = writable(null);
 
 // CalBox hovered --> highlights event card
-export const hovEventStyleRev: Writable<number | null> = writable(null);
+export const eventHoverRev: Writable<number | null> = writable(null);

@@ -8,7 +8,7 @@
         hoveredCourse,
         searchSettings
     } from "$lib/stores/recal";
-    import { hovStyle, hovStyleRev } from "../../calendar/calendar";
+    import { courseHover, courseHoverRev } from "../../calendar/calendar";
     import { currentTerm } from "$lib/changeme";
     import { getLinks } from "$lib/scripts/ReCal+/getLinks";
     import * as cf from "$lib/scripts/ReCal+/cardFunctions";
@@ -144,14 +144,14 @@
     const handleHover = async () => {
         await sectionData.add(supabase, $currentTerm, course.id);
 
-        $hovStyle = course.id;
+        $courseHover = course.id;
         if (category === "search") {
             $hoveredCourse = course;
         }
     };
 
     const handleLeave = () => {
-        $hovStyle = null;
+        $courseHover = null;
         if (category === "search") {
             $hoveredCourse = null;
         }
@@ -174,7 +174,7 @@
     <div
         id="topcard"
         class="flex justify-between items-stretch duration-75
-        {$hovStyleRev === course.id ? 'tchover' : ''}">
+        {$courseHoverRev === course.id ? 'tchover' : ''}">
         <button
             class="text-xs font-light text-left w-[75%] p-1"
             on:click={() => (flipped = !flipped)}>

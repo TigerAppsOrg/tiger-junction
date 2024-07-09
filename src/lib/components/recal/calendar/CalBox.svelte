@@ -4,10 +4,10 @@
     import {
         type BoxParam,
         isCourseBox,
-        hovStyle,
-        hovStyleRev,
-        hovEventStyle,
-        hovEventStyleRev
+        courseHover,
+        courseHoverRev,
+        eventHover,
+        eventHoverRev
     } from "$lib/components/recal/calendar/calendar";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors } from "$lib/stores/styles";
@@ -130,13 +130,11 @@
         if (hovered) return true;
         if (isCourseBox(params)) {
             return (
-                $hovStyle === params.section.course_id ||
-                $hovStyleRev === params.section.course_id
+                $courseHover === params.section.course_id ||
+                $courseHoverRev === params.section.course_id
             );
         } else {
-            return (
-                $hovEventStyle === params.id || $hovEventStyleRev === params.id
-            );
+            return $eventHover === params.id || $eventHoverRev === params.id;
         }
     };
 </script>
@@ -151,17 +149,17 @@
     on:mouseenter={() => {
         hovered = true;
         if (isCourseBox(params)) {
-            $hovStyleRev = params.section.course_id;
+            $courseHoverRev = params.section.course_id;
         } else {
-            $hovEventStyleRev = params.id;
+            $eventHoverRev = params.id;
         }
     }}
     on:mouseleave={() => {
         hovered = false;
         if (isCourseBox(params)) {
-            $hovStyleRev = null;
+            $courseHoverRev = null;
         } else {
-            $hovEventStyleRev = null;
+            $eventHoverRev = null;
         }
     }}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
