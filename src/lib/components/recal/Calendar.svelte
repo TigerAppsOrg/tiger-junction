@@ -53,7 +53,8 @@
         $hoveredCourse,
         $ready,
         $recal,
-        $calColors
+        $calColors,
+        $scheduleEventMap[$currentSchedule]
     );
 
     /**
@@ -174,7 +175,6 @@
 
         // Event handling
         const events = $scheduleEventMap[$currentSchedule];
-        console.log(events);
 
         for (const event of events) {
             for (const time of event.times) {

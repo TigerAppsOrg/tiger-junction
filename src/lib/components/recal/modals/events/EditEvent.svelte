@@ -18,6 +18,7 @@
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { customEvents } from "$lib/stores/events";
     import { editEvent } from "$lib/stores/events";
+    import { recal } from "$lib/stores/recal";
 
     const supabase: SupabaseClient = getContext("supabase");
     export let showModal: boolean = false;
