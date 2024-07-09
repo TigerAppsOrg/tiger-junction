@@ -138,17 +138,17 @@
         if (time.start !== null) {
             const startValue = militaryToValue(time.start);
             if (startValue < MIN_TIME_VALUE)
-                time.errors.push(`Start time must be before ${MIN_TIME}.`);
+                time.errors.push(`Start time must be after ${MIN_TIME}.`);
             if (startValue > MAX_TIME_VALUE)
-                time.errors.push(`Start time must be after ${MAX_TIME}.`);
+                time.errors.push(`Start time must be before ${MAX_TIME}.`);
         }
 
         if (time.end !== null) {
             const endValue = militaryToValue(time.end);
             if (endValue < MIN_TIME_VALUE)
-                time.errors.push(`End time must be before ${MIN_TIME}.`);
+                time.errors.push(`End time must be after ${MIN_TIME}.`);
             if (endValue > MAX_TIME_VALUE)
-                time.errors.push(`End time must be after ${MAX_TIME}.`);
+                time.errors.push(`End time must be before ${MAX_TIME}.`);
         }
 
         if (time.start !== null && time.end !== null) {
