@@ -98,6 +98,8 @@
             return;
         }
 
+        $recal = !$recal;
+
         cleanUp();
         modalStore.pop();
         toastStore.add("success", "Event updated successfully");

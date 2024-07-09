@@ -14,7 +14,7 @@
 
     let scheduleEvents: CustomEvent[] = [];
     $: scheduleEvents =
-        $scheduleEventMap && $currentSchedule
+        $scheduleEventMap && $currentSchedule && $customEvents
             ? scheduleEventMap.getSchedule($currentSchedule)
             : [];
 
