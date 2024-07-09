@@ -126,7 +126,7 @@
 
                 <div>
                     {#if notInSchedule.length === 0}
-                        <p class="text-sm">No events available.</p>
+                        <p class="text-sm mb-1">No events available.</p>
                     {:else}
                         <h2 class="text-sm">
                             {notInSchedule.length} Available
