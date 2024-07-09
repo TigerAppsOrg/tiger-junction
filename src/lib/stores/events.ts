@@ -4,6 +4,7 @@
 
 import { goto } from "$app/navigation";
 import { schedules } from "$lib/changeme";
+import { hoveredEvent } from "$lib/components/recal/calendar/calendar";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { get, writable, type Writable } from "svelte/store";
 
@@ -275,6 +276,8 @@ function createScheduleEventStore() {
                 });
                 return false;
             }
+
+            hoveredEvent.set(null);
             return true;
         },
 

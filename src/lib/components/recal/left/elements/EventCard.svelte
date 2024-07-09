@@ -9,7 +9,11 @@
     import { currentSchedule } from "$lib/stores/recal";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { modalStore } from "$lib/stores/modal";
-    import { eventHover, eventHoverRev } from "../../calendar/calendar";
+    import {
+        eventHover,
+        eventHoverRev,
+        hoveredEvent
+    } from "../../calendar/calendar";
 
     const supabase: SupabaseClient = getContext("supabase");
 
@@ -19,10 +23,12 @@
 
     const handleHover = () => {
         eventHover.set(customEvent.id);
+        hoveredEvent.set(customEvent);
     };
 
     const handleLeave = () => {
         eventHover.set(null);
+        hoveredEvent.set(null);
     };
 
     $: cssVarStyles = calculateCssVars("E", $calColors);

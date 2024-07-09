@@ -11,6 +11,7 @@
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
+    import { hoveredEvent } from "../calendar/calendar";
 
     let scheduleEvents: CustomEvent[] = [];
     $: scheduleEvents =
@@ -27,6 +28,8 @@
 
     let showAll: boolean = false;
     $: cssVarStyles = calculateCssVars("6", $calColors);
+
+    $: console.log($hoveredEvent);
 </script>
 
 {#if $ready}

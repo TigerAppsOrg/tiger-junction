@@ -20,7 +20,7 @@
     import { calColors, type CalColors } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import { linear } from "svelte/easing";
-    import { type CustomEvent, scheduleEventMap } from "$lib/stores/events";
+    import { scheduleEventMap } from "$lib/stores/events";
 
     let toRender: BoxParam[] = [];
 
@@ -50,6 +50,7 @@
         $currentTerm,
         $savedCourses[$currentSchedule],
         $hoveredCourse,
+        $hoveredEvent,
         $ready,
         $recal,
         $calColors,
@@ -85,7 +86,7 @@
         const itemsToRender: BoxParam[] = [];
 
         const saved = $savedCourses[$currentSchedule];
-        const hovered = $hoveredCourse;
+        const hoveredCourse = $hoveredCourse;
         const sections = $sectionData[$currentTerm];
         const meta = $rMeta[$currentSchedule];
 
@@ -145,8 +146,8 @@
             }
         }
 
-        if (hovered) {
-            const hoveredSections = sections[hovered.id];
+        if (hoveredCourse) {
+            const hoveredSections = sections[hoveredCourse.id];
             for (let i = 0; i < hoveredSections.length; i++) {
                 const section = hoveredSections[i];
                 const days = valueToDays(section.days);
@@ -155,7 +156,7 @@
                     const day = days[j];
                     itemsToRender.push({
                         type: "course",
-                        courseCode: hovered.code.split("/")[0],
+                        courseCode: hoveredCourse.code.split("/")[0],
                         section: section,
                         color: "-1",
                         confirmed: false,
@@ -194,6 +195,33 @@
                         id: event.id,
                         section: {
                             title: event.title,
+                            start_time: time.start,
+                            end_time: time.end
+                        }
+                    });
+                }
+            }
+        }
+
+        if ($hoveredEvent && !events.includes($hoveredEvent)) {
+            for (const time of $hoveredEvent.times) {
+                const days = valueToDays(time.days);
+                for (let i = 0; i < days.length; i++) {
+                    const day = days[i];
+                    itemsToRender.push({
+                        type: "event",
+                        color: "-1",
+                        day: day,
+                        slot: 0,
+                        maxSlot: 0,
+                        colSpan: 1,
+                        top: "",
+                        left: "",
+                        width: "",
+                        height: "",
+                        id: $hoveredEvent.id,
+                        section: {
+                            title: $hoveredEvent.title,
                             start_time: time.start,
                             end_time: time.end
                         }

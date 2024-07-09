@@ -6,6 +6,7 @@ import { type SectionData } from "$lib/stores/rsections";
 import { type CalColors } from "$lib/stores/styles";
 import { type CourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
+import { type CustomEvent } from "$lib/stores/events";
 
 //----------------------------------------------------------------------
 // Types
@@ -67,4 +68,4 @@ export const eventHoverRev: Writable<number | null> = writable(null);
 export const hoveredCourse: Writable<CourseData | null> = writable(null);
 
 // Hovered event
-export const hoveredEvent: Writable<EventBoxParam | null> = writable(null);
+export const hoveredEvent: Writable<CustomEvent | null> = writable(null);
