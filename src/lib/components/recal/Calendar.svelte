@@ -14,7 +14,7 @@
         CourseBoxParam,
         EventBoxParam,
         BoxParam
-    } from "$lib/types/calTypes";
+    } from "$lib/components/recal/calendar/calTypes";
     import { rMeta } from "$lib/stores/rmeta";
     import CalBox from "./calendar/CalBox.svelte";
     import { valueToDays } from "$lib/scripts/convert";

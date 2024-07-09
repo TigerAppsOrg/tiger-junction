@@ -1,12 +1,17 @@
 <script lang="ts">
     import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
     import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
-    import { type BoxParam, isCourseBox } from "$lib/types/calTypes";
+    import {
+        type BoxParam,
+        isCourseBox
+    } from "$lib/components/recal/calendar/calTypes";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors } from "$lib/stores/styles";
     import { rMeta } from "$lib/stores/rmeta";
     import { hovStyle, hovStyleRev } from "$lib/stores/recal";
     import { getContext } from "svelte";
+
+    const supabase = getContext("supabase") as SupabaseClient;
 
     export let params: BoxParam;
 
@@ -35,8 +40,6 @@
         alpha = "1";
         stripes = "";
     }
-
-    const supabase = getContext("supabase") as SupabaseClient;
 
     let hovered: boolean = false;
 

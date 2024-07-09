@@ -34,7 +34,3 @@ export type BoxParam = CourseBoxParam | EventBoxParam;
 export function isCourseBox(param: BoxParam): param is CourseBoxParam {
     return param.type === "course";
 }
-
-export function isEventBox(param: BoxParam): param is EventBoxParam {
-    return param.type === "event";
-}
