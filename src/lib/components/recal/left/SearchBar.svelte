@@ -6,7 +6,6 @@
         searchCourseData,
         currentSchedule,
         isResult,
-        hoveredCourse,
         research,
         ready
     } from "$lib/stores/recal";
@@ -17,6 +16,7 @@
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { getContext } from "svelte";
+    import { hoveredCourse } from "../calendar/calendar";
 
     const supabase = getContext("supabase") as SupabaseClient;
 

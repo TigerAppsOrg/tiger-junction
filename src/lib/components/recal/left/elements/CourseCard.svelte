@@ -3,12 +3,12 @@
     import plusIcon from "$lib/img/icons/addicon.svg";
     import removeIcon from "$lib/img/icons/subtractionicon.svg";
     import { slide } from "svelte/transition";
+    import { currentSchedule, searchSettings } from "$lib/stores/recal";
     import {
-        currentSchedule,
-        hoveredCourse,
-        searchSettings
-    } from "$lib/stores/recal";
-    import { courseHover, courseHoverRev } from "../../calendar/calendar";
+        courseHover,
+        courseHoverRev,
+        hoveredCourse
+    } from "../../calendar/calendar";
     import { currentTerm } from "$lib/changeme";
     import { getLinks } from "$lib/scripts/ReCal+/getLinks";
     import * as cf from "$lib/scripts/ReCal+/cardFunctions";

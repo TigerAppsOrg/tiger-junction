@@ -1,7 +1,15 @@
+/**
+ * @file Calendar-related types and stores
+ */
+
 import { type SectionData } from "$lib/stores/rsections";
 import { type CalColors } from "$lib/stores/styles";
 import { type CourseData } from "$lib/types/dbTypes";
 import { writable, type Writable } from "svelte/store";
+
+//----------------------------------------------------------------------
+// Types
+//----------------------------------------------------------------------
 
 type BaseBoxParam = {
     color: keyof CalColors;
@@ -34,9 +42,14 @@ export type EventBoxParam = BaseBoxParam & {
 
 export type BoxParam = CourseBoxParam | EventBoxParam;
 
+// Type Guard for BoxParam
 export function isCourseBox(param: BoxParam): param is CourseBoxParam {
     return param.type === "course";
 }
+
+//----------------------------------------------------------------------
+// Stores
+//----------------------------------------------------------------------
 
 // Card hovered --> highlights calendar
 export const courseHover: Writable<number | null> = writable(null);
@@ -49,3 +62,9 @@ export const eventHover: Writable<number | null> = writable(null);
 
 // CalBox hovered --> highlights event card
 export const eventHoverRev: Writable<number | null> = writable(null);
+
+// Hovered course
+export const hoveredCourse: Writable<CourseData | null> = writable(null);
+
+// Hovered event
+export const hoveredEvent: Writable<EventBoxParam | null> = writable(null);

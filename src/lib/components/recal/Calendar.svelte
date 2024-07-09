@@ -3,17 +3,16 @@
     import { get } from "svelte/store";
     import {
         currentSchedule,
-        hoveredCourse,
         ready,
         recal,
         searchSettings
     } from "$lib/stores/recal";
     import { currentTerm } from "$lib/changeme";
     import { sectionData } from "$lib/stores/rsections";
-    import type {
-        CourseBoxParam,
-        EventBoxParam,
-        BoxParam
+    import {
+        type BoxParam,
+        hoveredCourse,
+        hoveredEvent
     } from "$lib/components/recal/calendar/calendar";
     import { rMeta } from "$lib/stores/rmeta";
     import CalBox from "./calendar/CalBox.svelte";
