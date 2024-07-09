@@ -129,10 +129,14 @@
     $: isHovered = () => {
         if (hovered) return true;
         if (isCourseBox(params)) {
-            if ($hovStyle === null) return false;
-            return $hovStyle.id === params.section.course_id;
+            return (
+                $hovStyle === params.section.course_id ||
+                $hovStyleRev === params.section.course_id
+            );
         } else {
-            return $hovEventStyle === params.id;
+            return (
+                $hovEventStyle === params.id || $hovEventStyleRev === params.id
+            );
         }
     };
 </script>

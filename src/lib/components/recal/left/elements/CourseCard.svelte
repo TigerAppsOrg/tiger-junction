@@ -144,7 +144,7 @@
     const handleHover = async () => {
         await sectionData.add(supabase, $currentTerm, course.id);
 
-        $hovStyle = course;
+        $hovStyle = course.id;
         if (category === "search") {
             $hoveredCourse = course;
         }
