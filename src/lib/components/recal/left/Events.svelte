@@ -26,14 +26,14 @@
         event => !scheduleEvents.some(e => e.id === event.id)
     );
 
-    let showAll: boolean = false;
+    let showAll: boolean = true;
     $: cssVarStyles = calculateCssVars("6", $calColors);
 </script>
 
 {#if $ready}
-    <div style={cssVarStyles}>
+    <div style={cssVarStyles} class="dark:text-zinc-100">
         <div
-            class="text-base font-normal dark:text-zinc-100 ml-1
+            class="text-base font-normal ml-1
                 flex items-center justify-between mt-4">
             <span>
                 {scheduleEvents.length} Custom

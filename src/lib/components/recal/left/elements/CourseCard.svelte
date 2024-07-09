@@ -30,13 +30,13 @@
     const supabase = getContext("supabase") as SupabaseClient;
 
     // Course code with spaces before and after all slashes
-    let code = course.code.replace(/\//g, " / ");
-    let title = course.title;
+    const code = course.code.replace(/\//g, " / ");
+    const title = course.title;
 
     const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
     // Determine color of card
-    let styles = {
+    const styles = {
         color: "",
         text: "",
         hoverColor: "",
@@ -103,7 +103,7 @@
 
         // Dynamic color (saved courses)
     } else {
-        let meta = $rMeta[$currentSchedule][course.id];
+        const meta = $rMeta[$currentSchedule][course.id];
         styles.color = $calColors[meta.color as unknown as keyof CalColors];
         fillStyles();
         styles.trans = "solid";

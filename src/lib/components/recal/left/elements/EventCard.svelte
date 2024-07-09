@@ -14,6 +14,7 @@
         eventHoverRev,
         hoveredEvent
     } from "../../calendar/calendar";
+    import { darkenHSL } from "$lib/scripts/convert";
 
     const supabase: SupabaseClient = getContext("supabase");
 
@@ -31,7 +32,8 @@
         hoveredEvent.set(null);
     };
 
-    $: cssVarStyles = calculateCssVars("E", $calColors);
+    $: baseStyles = calculateCssVars("E", $calColors);
+    $: cssVarStyles = `${baseStyles};--border:${darkenHSL($calColors["E"], 40)}`;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -40,14 +42,14 @@
     id="main"
     class="flex items-center justify-between border-zinc-300 h-10 duration-100
     {noBorder ? '' : 'border-b-2'}
-    {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
+    {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'}"
     class:tchover={$eventHoverRev === customEvent.id}
     on:mouseenter={handleHover}
     on:focus={handleHover}
     on:blur={handleLeave}
     on:mouseleave={handleLeave}>
     <div class="w-[60%]">
-        <p id="title" class="text-sm">
+        <p id="title" class="text-sm p-1">
             {customEvent.title}
         </p>
     </div>
@@ -128,7 +130,7 @@
     }
 
     button {
-        @apply text-zinc-500 dark:text-zinc-100 h-full
+        @apply text-zinc-500 h-full
         hover:text-white dark:hover:text-white flex-1
         flex items-center justify-center duration-100;
     }
@@ -136,6 +138,7 @@
     .selected {
         background-color: var(--bg);
         color: var(--text);
+        border-left: 4px solid var(--border);
     }
 
     .selected:hover {
