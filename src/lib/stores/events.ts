@@ -205,7 +205,8 @@ function createScheduleEventStore() {
             if (!schedule) {
                 console.error(
                     "Schedule not found while getting schedule events:",
-                    scheduleId
+                    scheduleId,
+                    get(store)
                 );
                 return [];
             }

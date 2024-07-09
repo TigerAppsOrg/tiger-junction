@@ -14,7 +14,10 @@
 
     let scheduleEvents: CustomEvent[] = [];
     $: scheduleEvents =
-        $scheduleEventMap && $currentSchedule && $customEvents
+        $scheduleEventMap &&
+        $currentSchedule &&
+        $customEvents &&
+        Object.keys($scheduleEventMap).length > 0
             ? scheduleEventMap.getSchedule($currentSchedule)
             : [];
 
@@ -22,7 +25,7 @@
         event => !scheduleEvents.some(e => e.id === event.id)
     );
 
-    let showAll: boolean = true;
+    let showAll: boolean = false;
     $: cssVarStyles = calculateCssVars("6", $calColors);
 </script>
 
