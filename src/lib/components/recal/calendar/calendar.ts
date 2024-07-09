@@ -28,7 +28,9 @@ export type EventBoxParam = BaseBoxParam & {
         start_time: number;
         end_time: number;
         days: number;
+        title: string;
     };
+    id: number;
 };
 
 export type BoxParam = CourseBoxParam | EventBoxParam;
@@ -42,3 +44,9 @@ export const hovStyle: Writable<CourseData | null> = writable(null);
 
 // CalBox hovered --> highlights card
 export const hovStyleRev: Writable<number | null> = writable(null);
+
+// Event card hovered --> highlights calendar
+export const hovEventStyle: Writable<number | null> = writable(null);
+
+// CalBox hovered --> highlights event card
+export const hovEventStyleRev: Writable<number | null> = writable(null);

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { getContext } from "svelte";
     import { SupabaseClient } from "@supabase/supabase-js";
-
     import {
         editEvent,
         scheduleEventMap,
@@ -10,6 +9,7 @@
     import { currentSchedule } from "$lib/stores/recal";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { modalStore } from "$lib/stores/modal";
+    import { hovEventStyle, hovEventStyleRev } from "../../calendar/calendar";
 
     const supabase: SupabaseClient = getContext("supabase");
 
@@ -17,16 +17,29 @@
     export let isSelected: boolean = false;
     export let noBorder: boolean = false;
 
+    const handleHover = () => {
+        hovEventStyle.set(customEvent.id);
+    };
+
+    const handleLeave = () => {
+        hovEventStyle.set(null);
+    };
+
     $: cssVarStyles = calculateCssVars("E", $calColors);
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
     style={cssVarStyles}
     id="main"
     class="flex items-center justify-between border-zinc-300 h-10 duration-100
     {noBorder ? '' : 'border-b-2'}
-    {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}
-">
+    {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-700'}"
+    class:tchover={$hovEventStyleRev === customEvent.id}
+    on:mouseenter={handleHover}
+    on:focus={handleHover}
+    on:blur={handleLeave}
+    on:mouseleave={handleLeave}>
     <div class="w-[60%]">
         <p id="title" class="text-sm">
             {customEvent.title}
@@ -120,6 +133,10 @@
     }
 
     .selected:hover {
+        background-color: var(--bg-hover);
+    }
+
+    .tchover {
         background-color: var(--bg-hover);
     }
 </style>

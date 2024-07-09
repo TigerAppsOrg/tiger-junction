@@ -5,7 +5,9 @@
         type BoxParam,
         isCourseBox,
         hovStyle,
-        hovStyleRev
+        hovStyleRev,
+        hovEventStyle,
+        hovEventStyleRev
     } from "$lib/components/recal/calendar/calendar";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { calColors } from "$lib/stores/styles";
@@ -123,20 +125,32 @@
                 }
             });
     };
+
+    $: isHovered = () => {
+        if (hovered) return true;
+        if (isCourseBox(params)) {
+            if ($hovStyle === null) return false;
+            return $hovStyle.id === params.section.course_id;
+        } else {
+            return $hovEventStyle === params.id;
+        }
+    };
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
 <button
     id="box"
-    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75
-    {hovered || ($hovStyle && $hovStyle.id) === params.section.course_id
-        ? 'hovered'
-        : ''}"
+    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75"
+    class:hovered={isHovered()}
     style={cssVarStyles}
     on:click={handleClick}
     on:mouseenter={() => {
         hovered = true;
-        $hovStyleRev = params.section.course_id;
+        if (isCourseBox(params)) {
+            $hovStyleRev = params.section.course_id;
+        } else {
+            $hovEventStyleRev = params.id;
+        }
     }}
     on:mouseleave={() => {
         hovered = false;
@@ -154,13 +168,13 @@
             {params.section.title}
         </div>
 
-        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && params.section.room}
+        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && isCourseBox(params) && params.section.room}
             <div class="font-light text-2xs leading-3 pt-[1px]">
                 {params.section.room}
             </div>
         {/if}
 
-        {#if $searchSettings.style["Always Show Enrollments"] || hovered}
+        {#if ($searchSettings.style["Always Show Enrollments"] || hovered) && isCourseBox(params)}
             <div class="font-light text-2xs leading-3 pt-[1px]">
                 Enrollment: {params.section.tot}/{params.section.cap === 999
                     ? "∞"
