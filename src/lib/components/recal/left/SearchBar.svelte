@@ -40,12 +40,7 @@
 
     const triggerSearch = () => {
         if (!inputBar || inputBar.value === undefined) return;
-        searchResults.search(
-            inputBar.value,
-            $currentTerm,
-            $searchSettings,
-            supabase
-        );
+        searchResults.search(inputBar.value, $currentTerm, $searchSettings);
 
         // Handle isResult flag
         if ($searchResults.length > 0) isResult.set(true);
