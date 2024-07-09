@@ -16,6 +16,9 @@
     export let showModal: boolean = false;
     const supabase = getContext("supabase") as SupabaseClient;
 
+    const SUPABASE_BUCKET_URL =
+        "https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/";
+
     let link: string = "";
 
     /**
@@ -186,15 +189,14 @@
     <div class="flex flex-col space-y-2 md:space-y-4" slot="main">
         {#if !link}
             <p>
-                Clicking "Create New Export" will create a new iCal file with
-                all your confirmed courses, which you can add to your calendar
-                app of choice by downloading the file or copying the link. If
-                you use the link, your calendar will automatically update
-                approximately every 24 hours. To update your calendar export
-                immediately, simply export again.
+                This will create a new iCal file with all your confirmed
+                courses, which you can add to your calendar app by downloading
+                the resultant file or copying the link. If you use the link,
+                your calendar will automatically update approximately every 24
+                hours. To update your export immediately, simply export again.
                 <span class="underline">
                     Warning: creating a new export will overwrite any existing
-                    ReCal+ calendar exports.
+                    exports. Custom events will not be exported.
                 </span>
             </p>
         {:else}
@@ -209,7 +211,7 @@
                 class="flex flex-col md:flex-row items-center justify-between gap-2">
                 <p
                     class="text-black dark:text-zinc-100 btn flex-1 text-center break-all text-sm">
-                    https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/{link}
+                    {SUPABASE_BUCKET_URL}{link}
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-2">
@@ -218,7 +220,7 @@
                         scheme="2"
                         onClick={() => {
                             navigator.clipboard.writeText(
-                                `https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/${link}`
+                                `${SUPABASE_BUCKET_URL}${link}`
                             );
                             toastStore.add(
                                 "success",
@@ -231,7 +233,7 @@
                         scheme="1"
                         onClick={() => {
                             let a = document.createElement("a");
-                            a.href = `https://capvnrguyrvudlllydxa.supabase.co/storage/v1/object/public/calendars/${link}`;
+                            a.href = `${SUPABASE_BUCKET_URL}${link}`;
                             a.download = "ReCal+.ics";
                             a.click();
                         }} />
