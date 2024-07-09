@@ -27,7 +27,6 @@ export type EventBoxParam = BaseBoxParam & {
     section: {
         start_time: number;
         end_time: number;
-        days: number;
         title: string;
     };
     id: number;

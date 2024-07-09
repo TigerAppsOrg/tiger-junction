@@ -81,15 +81,14 @@
     };
 
     const renderCalBoxes = () => {
-        let courseRenders: CourseBoxParam[] = [];
+        // Course handling
+        const itemsToRender: BoxParam[] = [];
 
-        // Steps 1-4
         const saved = $savedCourses[$currentSchedule];
         const hovered = $hoveredCourse;
         const sections = $sectionData[$currentTerm];
         const meta = $rMeta[$currentSchedule];
 
-        // Steps 5-7
         if (!saved) return;
         for (let i = 0; i < saved.length; i++) {
             const course = saved[i];
@@ -127,7 +126,7 @@
 
                 for (let k = 0; k < days.length; k++) {
                     const day = days[k];
-                    courseRenders.push({
+                    itemsToRender.push({
                         type: "course",
                         courseCode: course.code.split("/")[0],
                         section: section,
@@ -154,7 +153,7 @@
 
                 for (let j = 0; j < days.length; j++) {
                     const day = days[j];
-                    courseRenders.push({
+                    itemsToRender.push({
                         type: "course",
                         courseCode: hovered.code.split("/")[0],
                         section: section,
@@ -173,16 +172,46 @@
             }
         }
 
-        // Steps 8-12
+        // Event handling
+        const events = $scheduleEventMap[$currentSchedule];
+        console.log(events);
+
+        for (const event of events) {
+            for (const time of event.times) {
+                const days = valueToDays(time.days);
+                for (let i = 0; i < days.length; i++) {
+                    const day = days[i];
+                    itemsToRender.push({
+                        type: "event",
+                        color: "E",
+                        day: day,
+                        slot: 0,
+                        maxSlot: 0,
+                        colSpan: 1,
+                        top: "",
+                        left: "",
+                        width: "",
+                        height: "",
+                        id: event.id,
+                        section: {
+                            title: event.title,
+                            start_time: time.start,
+                            end_time: time.end
+                        }
+                    });
+                }
+            }
+        }
+
         // Sort by start time
-        courseRenders.sort(
+        itemsToRender.sort(
             (a, b) => a.section.start_time - b.section.start_time
         );
 
-        findOverlaps(courseRenders);
-        calculateDimensions(courseRenders);
+        findOverlaps(itemsToRender);
+        calculateDimensions(itemsToRender);
 
-        toRender = courseRenders;
+        toRender = itemsToRender;
     };
 
     // Credits to Gabe Sidler on StackOverflow for the algorithm
@@ -348,7 +377,6 @@
                 <div
                     class="flex-1 grid grid-cols-5 h-full relative
                 overflow-x-clip">
-                    <!-- * Grid Lines -->
                     {#each { length: 75 } as _}
                         <div
                             class="outline outline-[0.5px] outline-zinc-200
@@ -356,7 +384,6 @@
                         </div>
                     {/each}
 
-                    <!-- * CalBoxes-->
                     {#key toRender}
                         {#each toRender as params}
                             <CalBox {params} />
@@ -367,6 +394,3 @@
         </div>
     </div>
 </div>
-
-<style lang="postcsss">
-</style>
