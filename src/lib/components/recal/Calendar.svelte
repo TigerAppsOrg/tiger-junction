@@ -86,7 +86,6 @@
         const itemsToRender: BoxParam[] = [];
 
         const saved = $savedCourses[$currentSchedule];
-        const hoveredCourse = $hoveredCourse;
         const sections = $sectionData[$currentTerm];
         const meta = $rMeta[$currentSchedule];
 
@@ -146,8 +145,8 @@
             }
         }
 
-        if (hoveredCourse) {
-            const hoveredSections = sections[hoveredCourse.id];
+        if ($hoveredCourse) {
+            const hoveredSections = sections[$hoveredCourse.id];
             for (let i = 0; i < hoveredSections.length; i++) {
                 const section = hoveredSections[i];
                 const days = valueToDays(section.days);
@@ -156,7 +155,7 @@
                     const day = days[j];
                     itemsToRender.push({
                         type: "course",
-                        courseCode: hoveredCourse.code.split("/")[0],
+                        courseCode: $hoveredCourse.code.split("/")[0],
                         section: section,
                         color: "-1",
                         confirmed: false,

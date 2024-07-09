@@ -28,8 +28,6 @@
 
     let showAll: boolean = false;
     $: cssVarStyles = calculateCssVars("6", $calColors);
-
-    $: console.log($hoveredEvent);
 </script>
 
 {#if $ready}
