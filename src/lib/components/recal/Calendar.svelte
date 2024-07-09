@@ -85,6 +85,16 @@
         // Course handling
         const itemsToRender: BoxParam[] = [];
 
+        const DEFAULT_DIMENSIONS = {
+            slot: 0,
+            maxSlot: 0,
+            colSpan: 1,
+            top: "",
+            left: "",
+            width: "",
+            height: ""
+        };
+
         const saved = $savedCourses[$currentSchedule];
         const sections = $sectionData[$currentTerm];
         const meta = $rMeta[$currentSchedule];
@@ -133,13 +143,7 @@
                         color: courseMeta.color.toString() as keyof CalColors,
                         confirmed: confirmed,
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: ""
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
@@ -160,13 +164,7 @@
                         color: "-1",
                         confirmed: false,
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: ""
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
@@ -184,19 +182,13 @@
                         type: "event",
                         color: "E",
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: "",
                         id: event.id,
                         section: {
                             title: event.title,
                             start_time: time.start,
                             end_time: time.end
-                        }
+                        },
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
@@ -211,19 +203,13 @@
                         type: "event",
                         color: "-1",
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: "",
                         id: $hoveredEvent.id,
                         section: {
                             title: $hoveredEvent.title,
                             start_time: time.start,
                             end_time: time.end
-                        }
+                        },
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
