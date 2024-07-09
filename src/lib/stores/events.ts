@@ -258,6 +258,7 @@ function createScheduleEventStore() {
                 map[scheduleId] = [...map[scheduleId], event.id];
                 return map;
             });
+            hoveredEvent.set(null);
 
             const { error } = await supabase
                 .from("event_schedule_associations")
@@ -276,8 +277,6 @@ function createScheduleEventStore() {
                 });
                 return false;
             }
-
-            hoveredEvent.set(null);
             return true;
         },
 
@@ -320,6 +319,7 @@ function createScheduleEventStore() {
                 ];
                 return map;
             });
+            hoveredEvent.set(null);
 
             const { error } = await supabase
                 .from("event_schedule_associations")
