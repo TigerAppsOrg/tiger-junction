@@ -154,7 +154,11 @@
     }}
     on:mouseleave={() => {
         hovered = false;
-        $hovStyleRev = null;
+        if (isCourseBox(params)) {
+            $hovStyleRev = null;
+        } else {
+            $hovEventStyleRev = null;
+        }
     }}>
     <div class="text-xs z-40 -space-y-1 relative overflow-clip">
         <div class="font-light text-2xs leading-3 pb-[1px]">
