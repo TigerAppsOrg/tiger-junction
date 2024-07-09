@@ -237,6 +237,7 @@
                             rounded-md p-4 relative mt-2">
                             <!-- Delete Button -->
                             <button
+                                type="button"
                                 on:click={() => {
                                     // If only one time block, reset it
                                     if (times.length === 1) {
