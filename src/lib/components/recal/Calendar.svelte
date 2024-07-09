@@ -174,7 +174,7 @@
         }
 
         // Event handling
-        const events = $scheduleEventMap[$currentSchedule];
+        const events = scheduleEventMap.getSchedule($currentSchedule);
 
         for (const event of events) {
             for (const time of event.times) {

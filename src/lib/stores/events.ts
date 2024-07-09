@@ -168,7 +168,7 @@ function createCustomEventsStore() {
 
 export const customEvents = createCustomEventsStore();
 
-export type ScheduleEventMap = Record<number, CustomEvent[]>;
+export type ScheduleEventMap = Record<number, number[]>;
 
 function createScheduleEventStore() {
     const store: Writable<ScheduleEventMap> = writable({});
@@ -188,10 +188,11 @@ function createScheduleEventStore() {
                 if (!map[scheduleId]) map[scheduleId] = [];
                 for (const eventId of inserts[scheduleId]) {
                     const event = customEvents.find(eventId);
-                    if (event) map[scheduleId].push(event);
+                    if (event) map[scheduleId].push(event.id);
                 }
             }
             store.set(map);
+            console.log("Initialized schedule event map:", map);
         },
 
         /**
@@ -199,13 +200,19 @@ function createScheduleEventStore() {
          * @param scheduleId Id of the schedule to get events for
          * @returns Events for the schedule
          */
-        getSchedule: (scheduleId: number) => {
+        getSchedule: (scheduleId: number): CustomEvent[] => {
             const schedule = get(store)[scheduleId];
             if (!schedule) {
-                console.error("Schedule not found");
+                console.error(
+                    "Schedule not found while getting schedule events:",
+                    scheduleId
+                );
                 return [];
             }
-            return schedule;
+            const resolvedEvents = schedule
+                .map(eventId => customEvents.find(eventId))
+                .filter(event => event) as CustomEvent[];
+            return resolvedEvents || [];
         },
 
         /**
@@ -240,13 +247,13 @@ function createScheduleEventStore() {
                 return false;
             }
 
-            if (schedule.find(event => event.id === eventId)) {
+            if (schedule.find(event => event === eventId)) {
                 console.error("Event already in schedule");
                 return false;
             }
 
             store.update(map => {
-                map[scheduleId] = [...map[scheduleId], event];
+                map[scheduleId] = [...map[scheduleId], event.id];
                 return map;
             });
 
@@ -261,7 +268,7 @@ function createScheduleEventStore() {
                 console.error("Error adding event to schedule:", error.message);
                 store.update(map => {
                     map[scheduleId] = map[scheduleId].filter(
-                        event => event.id !== eventId
+                        event => event !== eventId
                     );
                     return map;
                 });
@@ -284,7 +291,9 @@ function createScheduleEventStore() {
         ): Promise<boolean> => {
             const schedule = get(store)[scheduleId];
             if (!schedule) {
-                console.error("Schedule not found");
+                console.error(
+                    "Schedule not found while removing from schedule"
+                );
                 return false;
             }
 
@@ -294,9 +303,7 @@ function createScheduleEventStore() {
                 return false;
             }
 
-            const eventIndex = schedule.findIndex(
-                event => event.id === eventId
-            );
+            const eventIndex = schedule.findIndex(event => event === eventId);
             if (eventIndex === -1) {
                 console.error("Event not found in schedule");
                 return false;
@@ -324,7 +331,7 @@ function createScheduleEventStore() {
                 store.update(map => {
                     map[scheduleId] = [
                         ...map[scheduleId].slice(0, eventIndex),
-                        event,
+                        event.id,
                         ...map[scheduleId].slice(eventIndex)
                     ];
                     return map;
@@ -346,7 +353,7 @@ function createScheduleEventStore() {
         ): Promise<boolean> => {
             const schedule = get(store)[scheduleId];
             if (!schedule) {
-                console.error("Schedule not found");
+                console.error("Schedule not found while clearing");
                 return false;
             }
 
@@ -387,7 +394,7 @@ function createScheduleEventStore() {
             for (const scheduleId in schedules) {
                 const schedule = schedules[scheduleId];
                 const eventIndex = schedule.findIndex(
-                    event => event.id === eventId
+                    event => event === eventId
                 );
 
                 if (eventIndex === -1) continue;
@@ -412,7 +419,7 @@ function createScheduleEventStore() {
          */
         deleteSchedule: (scheduleId: number) => {
             if (!get(store)[scheduleId]) {
-                console.error("Schedule not found");
+                console.error("Schedule not found while deleting");
                 return;
             }
 

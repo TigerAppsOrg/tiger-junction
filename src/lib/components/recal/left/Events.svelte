@@ -13,7 +13,9 @@
     import Loader from "$lib/components/ui/Loader.svelte";
 
     let scheduleEvents: CustomEvent[] = [];
-    $: scheduleEvents = $scheduleEventMap[$currentSchedule] || [];
+    $: scheduleEvents = $currentSchedule
+        ? scheduleEventMap.getSchedule($currentSchedule)
+        : [];
     $: notInSchedule = $customEvents.filter(
         event => !scheduleEvents.some(e => e.id === event.id)
     );
