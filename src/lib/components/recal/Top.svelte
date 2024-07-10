@@ -24,6 +24,7 @@
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";
     import Loader from "../ui/Loader.svelte";
+    import { scheduleEventMap } from "$lib/stores/events";
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -33,7 +34,12 @@
         currentTerm.set(term);
         await fetchRawCourseData(supabase, term);
         await fetchUserSchedules(supabase, term);
-        await populatePools(supabase, term);
+
+        const secondaryPromises: Promise<unknown>[] = [
+            populatePools(supabase, term),
+            scheduleEventMap.loadTerm(supabase, term)
+        ];
+        await Promise.all(secondaryPromises);
 
         if ($schedules[term].length > 0 && term === $currentTerm) {
             currentSchedule.set($schedules[term][0].id);

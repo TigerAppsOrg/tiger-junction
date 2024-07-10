@@ -197,6 +197,53 @@ function createScheduleEventStore() {
         },
 
         /**
+         * Load the events for a term into the store from the database
+         * @param supabase Supabase client
+         * @param term New term to load
+         * @returns True if successful, false otherwise
+         */
+        loadTerm: async (
+            supabase: SupabaseClient,
+            term: number
+        ): Promise<boolean> => {
+            const termSchedules = get(schedules)[term];
+            if (!termSchedules) {
+                console.error("Term schedules not found while loading term");
+                return false;
+            }
+
+            const currentEvents = get(store);
+            for (const schedule of termSchedules) {
+                // If already loaded, skip
+                if (currentEvents[schedule.id]) return true;
+                store.update(map => {
+                    map[schedule.id] = [];
+                    return map;
+                });
+            }
+
+            const { data, error } = await supabase
+                .from("event_schedule_associations")
+                .select("event_id, schedule_id")
+                .in(
+                    "schedule_id",
+                    termSchedules.map(s => s.id)
+                );
+            if (error) {
+                console.error("Error refreshing schedule event map:", error);
+                return false;
+            }
+            for (const event of data) {
+                store.update(map => {
+                    if (!map[event.schedule_id]) map[event.schedule_id] = [];
+                    map[event.schedule_id].push(event.event_id);
+                    return map;
+                });
+            }
+            return true;
+        },
+
+        /**
          * Get the events for a schedule
          * @param scheduleId Id of the schedule to get events for
          * @returns Events for the schedule
@@ -210,10 +257,6 @@ function createScheduleEventStore() {
             }
             const schedule = get(store)[scheduleId];
             if (!schedule) {
-                store.update(map => {
-                    map[scheduleId] = [];
-                    return map;
-                });
                 return [];
             }
             const resolvedEvents = schedule
