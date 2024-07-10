@@ -33,8 +33,8 @@
         showModal = false;
     };
 
-    $: declineStyle = calculateCssVars("-1", $calColors);
-    $: submitStyle = calculateCssVars("0", $calColors);
+    $: declineStyle = calculateCssVars("-1");
+    $: submitStyle = calculateCssVars("0");
 </script>
 
 <StdModal title="TigerJunction needs feedback!" stdClose={false} {showModal}>

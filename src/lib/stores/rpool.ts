@@ -57,7 +57,7 @@ export const addCourseMetadata = async (
     scheduleId: number
 ): Promise<boolean> => {
     // Create default metadata
-    let meta: any = {
+    const meta: any = {
         complete: false,
         color: undefined,
         sections: [],
@@ -67,26 +67,27 @@ export const addCourseMetadata = async (
     // * Handle color
     // Get other saved course colors
     let otherIds: number[] = [];
-    let otherColors: number[] = [];
+    const otherColors: number[] = [];
     savedCourses.subscribe(x => {
         otherIds = x[scheduleId].map(y => y.id);
     })();
     scheduleCourseMeta.subscribe(x => {
-        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
+        if (!Object.prototype.hasOwnProperty.call(x, scheduleId))
+            x[scheduleId] = {};
         for (let i = 0; i < otherIds.length; i++) {
             otherColors.push(x[scheduleId][otherIds[i]].color);
         }
     })();
 
-    let colorMap: Record<number, number> = {};
+    const colorMap: Record<number, number> = {};
     for (const o of otherColors) {
-        if (colorMap.hasOwnProperty(o)) colorMap[o] += 1;
+        if (Object.prototype.hasOwnProperty.call(colorMap, o)) colorMap[o] += 1;
         else colorMap[o] = 1;
     }
 
     // Find the first unused color
     for (let i = 0; i < 7; i++) {
-        if (!colorMap.hasOwnProperty(i)) {
+        if (!Object.prototype.hasOwnProperty.call(colorMap, i)) {
             meta.color = i;
             break;
         }
@@ -110,14 +111,18 @@ export const addCourseMetadata = async (
 
     // Sections are already loaded
     if (sections.length > 0) {
-        let categories = sections.map(x => x.category);
-        let uniqueCategories = [...new Set(categories)];
+        const categories = sections.map(x => x.category);
+        const uniqueCategories = [...new Set(categories)];
         meta.sections = uniqueCategories.sort();
 
         // Sections are not loaded
     } else {
         // Load section data
-        let res = await sectionData.add(supabase, getCurrentTerm(), course.id);
+        const res = await sectionData.add(
+            supabase,
+            getCurrentTerm(),
+            course.id
+        );
 
         if (!res) return false;
 
@@ -129,16 +134,16 @@ export const addCourseMetadata = async (
         })();
 
         // Add categories
-        let categories = sections.map(x => x.category);
-        let uniqueCategories = [...new Set(categories)];
+        const categories = sections.map(x => x.category);
+        const uniqueCategories = [...new Set(categories)];
         meta.sections = uniqueCategories.sort();
     }
 
     // Auto-Add if only one section in a category and check if complete
     meta.complete = true;
     for (let i = 0; i < meta.sections.length; i++) {
-        let category = meta.sections[i];
-        let categorySections = sections.filter(x => x.category === category);
+        const category = meta.sections[i];
+        const categorySections = sections.filter(x => x.category === category);
         if (categorySections.length === 1) {
             meta.confirms[category] = categorySections[0].title;
         } else {
@@ -148,7 +153,8 @@ export const addCourseMetadata = async (
 
     // * Update scheduleCourseMeta
     scheduleCourseMeta.update(x => {
-        if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
+        if (!Object.prototype.hasOwnProperty.call(x, scheduleId))
+            x[scheduleId] = {};
         x[scheduleId][course.id] = meta as ScheduleCourseMetadata;
         return x;
     });
@@ -164,7 +170,8 @@ export const addCourseMetadata = async (
 const getCurrentPool = (pool: CoursePool, scheduleId: number): CourseData[] => {
     let data: CourseData[] = [];
     pool.subscribe(x => {
-        if (x.hasOwnProperty(scheduleId)) data = x[scheduleId];
+        if (Object.prototype.hasOwnProperty.call(x, scheduleId))
+            data = x[scheduleId];
         else data = [];
     })();
     return data;
@@ -183,7 +190,7 @@ export const initSchedule = async (
 ) => {
     let loaded = false;
     savedCourses.update(x => {
-        if (x.hasOwnProperty(scheduleId)) loaded = true;
+        if (Object.prototype.hasOwnProperty.call(x, scheduleId)) loaded = true;
         else x[scheduleId] = [];
 
         return x;
@@ -193,7 +200,7 @@ export const initSchedule = async (
     const rawCourses = rawCourseData.get(term);
 
     // Fetch course-schedule-associations
-    let { data, error } = await supabase
+    const { data, error } = await supabase
         .from("course_schedule_associations")
         .select("course_id, metadata")
         .eq("schedule_id", scheduleId);
@@ -207,14 +214,15 @@ export const initSchedule = async (
     searchCourseData.reset(term);
 
     for (let i = 0; i < data.length; i++) {
-        let x = data[i];
+        const x = data[i];
 
         // Find Course
-        let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
+        const cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
         // Add metadata
         scheduleCourseMeta.update(y => {
-            if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
+            if (!Object.prototype.hasOwnProperty.call(y, scheduleId))
+                y[scheduleId] = {};
             y[scheduleId][cur.id] = x.metadata;
             return y;
         });
@@ -223,7 +231,7 @@ export const initSchedule = async (
         await sectionData.add(supabase, term, cur.id);
 
         // Update pool
-        let pool = savedCourses;
+        const pool = savedCourses;
         pool.update(x => {
             x[scheduleId] = [...x[scheduleId], cur];
             return x;
@@ -248,10 +256,10 @@ const addCourse = async (
     SCD?: boolean
 ): Promise<boolean> => {
     // Get current pool courses
-    let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
+    const currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     // Add metadata
-    let meta: ScheduleCourseMetadata | {} = {};
+    let meta: ScheduleCourseMetadata | object = {};
     if (pool === savedCourses) {
         addCourseMetadata(supabase, course, scheduleId);
         scheduleCourseMeta.subscribe(x => {
@@ -307,7 +315,7 @@ const removeCourse = async (
     SCD?: boolean
 ): Promise<boolean> => {
     // Get current pool courses
-    let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
+    const currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     if (currentPool.length === 0) return false;
 
@@ -352,7 +360,7 @@ const clearPool = async (
     scheduleId: number
 ): Promise<boolean> => {
     // Get current pool courses
-    let currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
+    const currentPool: CourseData[] = getCurrentPool(savedCourses, scheduleId);
 
     // Update store
     pool.update(x => {

@@ -9,7 +9,7 @@ export const GET: RequestHandler = async req => {
     } = await req.locals.supabase.auth.getUser();
     if (!user) throw new Error("User not logged in");
 
-    let term = req.params.term as string;
+    const term = req.params.term as string;
 
     // Fetch course data from Redis
     const redisClient = createClient({

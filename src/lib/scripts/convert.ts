@@ -25,11 +25,11 @@ export const MAX_TIME = "11:00PM";
 const timeToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
 
-    let dig = time
+    const dig = time
         .split(" ")[0]
         .split(":")
         .map(x => parseInt(x));
-    let pm = time.split(" ")[1] === "PM" || time.split(" ")[1] === "pm";
+    const pm = time.split(" ")[1] === "PM" || time.split(" ")[1] === "pm";
 
     if (dig[0] === 12) dig[0] = 0;
 
@@ -52,10 +52,10 @@ const timeToValue = (time: string) => {
 const militaryToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
 
-    let hour = parseInt(time.slice(0, 2));
-    let minute = parseInt(time.slice(3, 5));
+    const hour = parseInt(time.slice(0, 2));
+    const minute = parseInt(time.slice(3, 5));
 
-    let val =
+    const val =
         hour * TIME_CONVERSION.HOUR_FACTOR +
         minute * TIME_CONVERSION.MINUTE_FACTOR -
         TIME_CONVERSION.ZERO_ADJUST;
@@ -143,8 +143,8 @@ const testTimeToValue = () => {
 
     let success = true;
     console.log("Running timeToValue() tests...");
-    for (let time of Object.keys(TEST_CASES) as TEST_TIMES[]) {
-        let val = timeToValue(time);
+    for (const time of Object.keys(TEST_CASES) as TEST_TIMES[]) {
+        const val = timeToValue(time);
         if (val !== TEST_CASES[time]) {
             console.log(
                 `timeToValue(${time}) = ${val} (expected ${TEST_CASES[time]})`
@@ -197,7 +197,7 @@ export const dayArrToValue = (dayArr: string[]) => {
  * @returns days in number array
  */
 const valueToDays = (value: number) => {
-    let days = [];
+    const days = [];
 
     if (value >= 16) {
         days.push(5);
@@ -224,7 +224,7 @@ const valueToDays = (value: number) => {
 };
 
 export const valueToDaysStr = (value: number): string => {
-    let days = valueToDays(value);
+    const days = valueToDays(value);
     let dayStr = "";
     if (days.includes(1)) dayStr += "M";
     if (days.includes(2)) dayStr += "T";
@@ -236,8 +236,8 @@ export const valueToDaysStr = (value: number): string => {
 
 // TODO This file needs to be heavily refactored
 export const valueToDayArr = (value: number): string[] => {
-    let days = valueToDays(value);
-    let dayArr = [];
+    const days = valueToDays(value);
+    const dayArr = [];
     if (days.includes(1)) dayArr.push("M");
     if (days.includes(2)) dayArr.push("T");
     if (days.includes(3)) dayArr.push("W");
@@ -270,6 +270,7 @@ const normalizeText = (text: string) => {
  * @returns darkened HSL color
  */
 const darkenHSL = (hsl: string, amount: number) => {
+    // eslint-disable-next-line prefer-const
     let [h, s, l] = hsl.split(",").map(x => parseInt(x.replace(/\D/g, "")));
     l = Math.max(0, l - amount);
     return `hsl(${h}, ${s}%, ${l}%)`;
@@ -281,6 +282,7 @@ const darkenHSL = (hsl: string, amount: number) => {
  * @returns RGB color
  */
 const hslToRGB = (hsl: string) => {
+    // eslint-disable-next-line prefer-const
     let [h, s, l] = hsl.split(",").map(x => parseInt(x.replace(/\D/g, "")));
 
     l /= 100;
@@ -315,11 +317,11 @@ const rgbToHSL = (hex: string) => {
               : 4 + (r - g) / s
         : 0;
 
-    let hVal = Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h);
-    let sVal = Math.round(
+    const hVal = Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h);
+    const sVal = Math.round(
         100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0)
     );
-    let lVal = Math.round((100 * (2 * l - s)) / 2);
+    const lVal = Math.round((100 * (2 * l - s)) / 2);
     return `hsl(${hVal}, ${sVal}%, ${lVal}%)`;
 };
 

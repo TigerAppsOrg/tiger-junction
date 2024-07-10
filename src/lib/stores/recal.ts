@@ -163,7 +163,12 @@ export const searchResults = {
                         const nSec = courseSections[j];
 
                         // Continue if not confirmed
-                        if (courseMeta.confirms.hasOwnProperty(nSec.category)) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                courseMeta.confirms,
+                                nSec.category
+                            )
+                        ) {
                             // Legacy compatibility
                             if (
                                 typeof courseMeta.confirms[nSec.category] ===
@@ -300,7 +305,9 @@ export const searchResults = {
                         }
                     }
                     if (isThisSectionOkay) catmap[category] = true;
-                    else if (!catmap.hasOwnProperty(category))
+                    else if (
+                        !Object.prototype.hasOwnProperty.call(catmap, category)
+                    )
                         catmap[category] = false;
                 }
 

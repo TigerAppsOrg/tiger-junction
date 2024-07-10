@@ -32,7 +32,7 @@
         hoveredEvent.set(null);
     };
 
-    $: baseStyles = calculateCssVars("E", $calColors);
+    $: baseStyles = calculateCssVars("E");
     $: cssVarStyles = `${baseStyles};--border:${darkenHSL($calColors["E"], 40)}`;
 </script>
 

@@ -55,7 +55,7 @@
                 sectionData.add(supabase, $currentTerm, $searchResults[i].id);
     };
 
-    $: cssVarStyles = calculateCssVars("2", $calColors);
+    $: cssVarStyles = calculateCssVars("2");
 </script>
 
 <div class="flex flex-col gap-1" style={cssVarStyles}>

@@ -7,7 +7,7 @@ export const load = async ({ locals }) => {
     } = await locals.supabase.auth.getUser();
     if (!user) throw redirect(303, "/");
 
-    let { data, error } = await locals.supabase
+    const { data, error } = await locals.supabase
         .from("private_profiles")
         .select("is_admin")
         .eq("id", user.id);

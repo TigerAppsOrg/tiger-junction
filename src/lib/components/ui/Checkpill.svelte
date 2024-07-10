@@ -4,7 +4,7 @@
     export let name: string = "";
     export let category: string;
 
-    $: cssVarStyles = calculateCssVars("0", $calColors);
+    $: cssVarStyles = calculateCssVars("0");
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -18,14 +18,10 @@
             category === "filters"
                 ? ($searchSettings.filters[name].enabled =
                       !$searchSettings.filters[name].enabled)
-                : category === "options"
-                  ? ($searchSettings.options[name] =
-                        !$searchSettings.options[name])
-                  : category === "style"
-                    ? ($searchSettings.style[name] =
-                          !$searchSettings.style[name])
-                    : ($searchSettings.filters[category].values[name] =
-                          !$searchSettings.filters[category].values[name]);
+                : category === "style"
+                  ? ($searchSettings.style[name] = !$searchSettings.style[name])
+                  : ($searchSettings.filters[category].values[name] =
+                        !$searchSettings.filters[category].values[name]);
         }
     }}>
     {#if category === "filters"}
@@ -34,12 +30,6 @@
             {name}
             id={name}
             bind:checked={$searchSettings.filters[name].enabled} />
-    {:else if category === "options"}
-        <input
-            type="checkbox"
-            {name}
-            id={name}
-            bind:checked={$searchSettings.options[name]} />
     {:else if category === "style"}
         <input
             type="checkbox"

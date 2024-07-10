@@ -188,7 +188,7 @@ export const actions: Actions = {
 
         // Run tests
         console.log("Testing...");
-        for (let test of testList) runT(test);
+        for (const test of testList) runT(test);
 
         const returnMessage = `Testing complete. 
                                 ${successes} successes,

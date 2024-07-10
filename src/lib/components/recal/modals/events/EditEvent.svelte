@@ -196,7 +196,7 @@
         }
     });
 
-    $: cssVarStyles = calculateCssVars("2", $calColors);
+    $: cssVarStyles = calculateCssVars("2");
 </script>
 
 <Modal {showModal}>

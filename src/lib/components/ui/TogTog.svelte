@@ -28,7 +28,7 @@
         }
     };
 
-    $: cssVarStyles = calculateCssVars("0", $calColors);
+    $: cssVarStyles = calculateCssVars("0");
 </script>
 
 <button

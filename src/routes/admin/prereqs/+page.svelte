@@ -16,7 +16,6 @@
 
     let initialized = false;
     let loading = false;
-    let locked = false;
     let courselist: Course[] = [];
     let term = 1244;
 

@@ -53,15 +53,6 @@
         searchCourseData.remove($currentTerm, courses);
     };
 
-    // Logout the user
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (!error) {
-            toastStore.add("success", "Logged out successfully");
-            goto("/");
-        }
-    };
-
     // Add a new schedule if user has less than 10 schedules
     const handleAddSchedule = () => {
         // Check if user has more than 10 schedules (max)
@@ -112,8 +103,8 @@
     };
 
     // Handle theme changes
-    $: cssVarStyles = calculateCssVars("0", $calColors);
-    $: eventStyles = calculateCssVars("6", $calColors);
+    $: cssVarStyles = calculateCssVars("0");
+    $: eventStyles = calculateCssVars("6");
 </script>
 
 <div
@@ -262,7 +253,7 @@
                             </svg>
                         </button>
                     {/key}
-                {:catch error}
+                {:catch}
                     <button
                         class="card termchoice"
                         on:click={() => modalStore.push("addSchedule")}>

@@ -16,7 +16,7 @@
     export let className = "";
 
     // Handle theme changes
-    $: cssVarStyles = calculateCssVars(scheme, $calColors);
+    $: cssVarStyles = calculateCssVars(scheme);
 </script>
 
 <button

@@ -57,7 +57,7 @@ export async function handler() {
             (Date.now() - startTime) / 1000 +
             "s"
     );
-    const upsertPromises: Promise<any>[] = [];
+    const upsertPromises: Promise<unknown>[] = [];
 
     startTime = Date.now();
     // Loop through each schedule

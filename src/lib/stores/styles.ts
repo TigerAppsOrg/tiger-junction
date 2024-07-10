@@ -68,7 +68,7 @@ const initializeCalColors = (): CalColors => {
     }
 
     if (!("E" in parsedColors)) {
-        for (let key in colorPalettes) {
+        for (const key in colorPalettes) {
             const palette = colorPalettes[key];
             const hslPalette = Object.entries(palette)
                 .map(([key, value]) => [key, rgbToHSL(value)])
@@ -120,13 +120,10 @@ export const calColors = {
  * @param scheme index of the color in the palette
  * @returns CSS variables for the color scheme
  */
-export const calculateCssVars = (
-    scheme: keyof CalColors,
-    ...params: any
-): string => {
+export const calculateCssVars = (scheme: keyof CalColors): string => {
     const cc = get(calColors);
 
-    let textColor =
+    const textColor =
         parseInt(cc[scheme].split(",")[2].split("%")[0]) > 50
             ? darkenHSL(cc[scheme], 60)
             : darkenHSL(cc[scheme], -60);

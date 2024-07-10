@@ -27,7 +27,7 @@
         event => !scheduleEvents.some(e => e.id === event.id)
     );
 
-    $: cssVarStyles = calculateCssVars("6", $calColors);
+    $: cssVarStyles = calculateCssVars("6");
 </script>
 
 {#if $ready}
