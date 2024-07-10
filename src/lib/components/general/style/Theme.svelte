@@ -60,7 +60,9 @@
                         <div class="text-sm font-light">
                             {color === "-1"
                                 ? "Preview"
-                                : `Color ${parseInt(color) + 1}`}
+                                : color === "E"
+                                  ? "Events"
+                                  : `Color ${parseInt(color) + 1}`}
                         </div>
                     </div>
                 {/each}
