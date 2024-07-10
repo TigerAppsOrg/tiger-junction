@@ -16,10 +16,10 @@ const FAILURE_MESSAGE = "Failed to populate listings for term ";
  * @returns success or failure message
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
-    let resultMessage: Record<number, any> = {};
-    for (let term in Object.keys(TERM_MAP)) {
-        let termId = parseInt(term);
-        let result = await populateListings(supabase, termId);
+    const resultMessage: Record<number, any> = {};
+    for (const term in Object.keys(TERM_MAP)) {
+        const termId = parseInt(term);
+        const result = await populateListings(supabase, termId);
         resultMessage[termId] = result;
     }
     return resultMessage;
@@ -45,7 +45,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Format course data
     const data = await res.json();
     const courses = data.classes.class;
-    let formatted: Listing[] = courses.map((x: any) => {
+    const formatted: Listing[] = courses.map((x: any) => {
         return {
             id: x.course_id,
             code: x.subject + x.catnum,
@@ -74,7 +74,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
     // Limit entries
     // formatted = formatted.slice(0, 30);
 
-    let { data: currentListings, error: listFetchError } = await supabase
+    const { data: currentListings, error: listFetchError } = await supabase
         .from("listings")
         .select("id, title, aka, ult_term, pen_term");
 
@@ -92,7 +92,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
         console.log(i);
         // Insert listing if it doesn't exist
         if (!currentListings || currentListings.length === 0) {
-            let { error } = await supabase
+            const { error } = await supabase
                 .from("listings")
                 .insert(formatted[i]);
 
@@ -108,12 +108,12 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             // Update or continue if it does exist
         } else {
             // let current = currentListings[0];
-            let index = currentListings.findIndex(
+            const index = currentListings.findIndex(
                 x => x.id === formatted[i].id
             );
 
             if (index === -1) {
-                let { error } = await supabase
+                const { error } = await supabase
                     .from("listings")
                     .insert(formatted[i]);
 
@@ -132,7 +132,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
             const newIndex = termCodes.indexOf(String(term));
             const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
             const penIndex = termCodes.indexOf(currentListings[index].pen_term);
-            let newTitle: string = formatted[i].title;
+            const newTitle: string = formatted[i].title;
 
             const checkAka = () => {
                 if (
@@ -176,7 +176,7 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
                 }
             }
 
-            let { error } = await supabase
+            const { error } = await supabase
                 .from("listings")
                 .update(formatted[i])
                 .eq("id", formatted[i].id);

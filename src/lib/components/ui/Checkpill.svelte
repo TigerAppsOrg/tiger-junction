@@ -1,6 +1,6 @@
 <script lang="ts">
     import { searchSettings } from "$lib/stores/recal";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     export let name: string = "";
     export let category: string;
 

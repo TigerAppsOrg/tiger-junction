@@ -66,7 +66,7 @@
     const triggerRender = (
         currentSchedule: number,
         currentTerm: number,
-        ...args: any[]
+        ...args: unknown[]
     ) => {
         if (prevSchedule === -1) prevSchedule = currentSchedule;
         if (prevTerm === -1) prevTerm = currentTerm;

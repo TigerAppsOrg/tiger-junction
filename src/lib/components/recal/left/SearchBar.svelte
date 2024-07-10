@@ -12,7 +12,7 @@
         searchSettings
     } from "$lib/stores/recal";
     import { sectionData } from "$lib/stores/rsections";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
@@ -34,7 +34,7 @@
         $research,
         $scheduleCourseMeta
     );
-    const autoTrig = (...params: any[]) => {
+    const autoTrig = (...params: unknown[]) => {
         triggerSearch();
     };
 

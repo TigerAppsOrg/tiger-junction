@@ -2,11 +2,11 @@
  * @file Calendar-related types and stores
  */
 
-import { type SectionData } from "$lib/stores/rsections";
-import { type CalColors } from "$lib/stores/styles";
-import { type CourseData } from "$lib/types/dbTypes";
+import type { UserCustomEvent } from "$lib/stores/events";
+import type { SectionData } from "$lib/stores/rsections";
+import type { CalColors } from "$lib/stores/styles";
+import type { CourseData } from "$lib/types/dbTypes";
 import { writable } from "svelte/store";
-import { type CustomEvent } from "$lib/stores/events";
 
 //----------------------------------------------------------------------
 // Types
@@ -68,4 +68,4 @@ export const eventHoverRev = writable<number | null>(null);
 export const hoveredCourse = writable<CourseData | null>(null);
 
 // Hovered event
-export const hoveredEvent = writable<CustomEvent | null>(null);
+export const hoveredEvent = writable<UserCustomEvent | null>(null);

@@ -2,7 +2,7 @@
     import StdModal from "$lib/components/ui/StdModal.svelte";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     import { getContext } from "svelte";
 
     export let showModal: boolean = false;

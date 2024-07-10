@@ -20,7 +20,7 @@
     import DeleteEvent from "../recal/modals/events/DeleteEvent.svelte";
 
     // Register modal components here
-    const modalComponents: Record<string, any> = {
+    const modalComponents: Record<string, unknown> = {
         adv: AdvancedSearch,
         exportCal: ExportCal,
         addSchedule: AddSchedule,

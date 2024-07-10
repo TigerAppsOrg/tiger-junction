@@ -84,7 +84,7 @@ export const getAllCourses = async (
 
         // Find the index in the subjects array that matches the subject
         // (when querying for a subject, the crosslists are also included)
-        let correctIndex = subjectData.subjects.findIndex(
+        const correctIndex = subjectData.subjects.findIndex(
             (x: any) => x.code === subject
         );
         if (correctIndex === -1) {
@@ -242,7 +242,7 @@ export const getAllCourses = async (
             let courseId: number;
 
             if (exisCourse.length > 0) {
-                let { error } = await supabase
+                const { error } = await supabase
                     .from("courses")
                     .update(course)
                     .eq("id", exisCourse[0].id);
@@ -259,7 +259,7 @@ export const getAllCourses = async (
 
                 courseId = exisCourse[0].id;
             } else {
-                let { data, error } = await supabase
+                const { data, error } = await supabase
                     .from("courses")
                     .insert(course)
                     .select("id");
@@ -310,7 +310,7 @@ export const getAllCourses = async (
             );
 
             // Check for duplicate sections and prune them from supabase
-            let duplicateSections: number[] = [];
+            const duplicateSections: number[] = [];
             for (let k = 0; k < exisSectionNums.length; k++) {
                 const num = exisSectionNums[k];
                 if (duplicateSections.includes(num)) continue;
@@ -366,7 +366,7 @@ export const getAllCourses = async (
 
             // Update sections
             for (let k = 0; k < sections.length; k++) {
-                let section = sections[k];
+                const section = sections[k];
 
                 for (let l = 0; l < section.schedule.meetings.length; l++) {
                     const meeting = section.schedule.meetings[l];
@@ -403,7 +403,7 @@ export const getAllCourses = async (
                     );
 
                     if (exisSection[l] !== undefined) {
-                        let { error } = await supabase
+                        const { error } = await supabase
                             .from("sections")
                             .update(sectionData)
                             .eq("id", exisSection[l].id);

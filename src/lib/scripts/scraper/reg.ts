@@ -14,7 +14,7 @@ const getCourseDualIds = async (
     term: number
 ): Promise<DualId[]> => {
     // Fetch all courses for the given term from the database
-    let { data, error } = await supabase
+    const { data, error } = await supabase
         .from("courses")
         .select("listing_id, id")
         .eq("term", term);

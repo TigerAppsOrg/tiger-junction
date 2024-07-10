@@ -5,7 +5,7 @@
 import { goto } from "$app/navigation";
 import { schedules } from "$lib/changeme";
 import { hoveredEvent } from "$lib/scripts/ReCal+/calendar";
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { get, writable } from "svelte/store";
 
 export type CustomEventTime = {
@@ -14,16 +14,16 @@ export type CustomEventTime = {
     days: number;
 };
 
-export type CustomEvent = {
+export type UserCustomEvent = {
     id: number;
     title: string;
     times: CustomEventTime[];
 };
 
-export type CustomEventInsert = Omit<CustomEvent, "id">;
+export type CustomEventInsert = Omit<UserCustomEvent, "id">;
 
 function createCustomEventsStore() {
-    const store = writable<CustomEvent[]>([]);
+    const store = writable<UserCustomEvent[]>([]);
 
     return {
         subscribe: store.subscribe,
@@ -35,7 +35,7 @@ function createCustomEventsStore() {
          * @param id Id of the event to find
          * @returns The event with the given id, or undefined if not found
          */
-        find: (id: number): CustomEvent | undefined => {
+        find: (id: number): UserCustomEvent | undefined => {
             const events = get(store);
             return events.find(event => event.id === id);
         },
@@ -70,7 +70,7 @@ function createCustomEventsStore() {
                 return -1;
             }
 
-            const newEvent: CustomEvent = { ...event, id: data[0].id };
+            const newEvent: UserCustomEvent = { ...event, id: data[0].id };
             store.update(events => [...events, newEvent]);
             return newEvent.id;
         },
@@ -201,7 +201,7 @@ function createScheduleEventStore() {
          * @param scheduleId Id of the schedule to get events for
          * @returns Events for the schedule
          */
-        getSchedule: (scheduleId: number): CustomEvent[] => {
+        getSchedule: (scheduleId: number): UserCustomEvent[] => {
             if (scheduleId === undefined) {
                 console.error(
                     "Undefined schedule id while getting schedule events"
@@ -218,7 +218,7 @@ function createScheduleEventStore() {
             }
             const resolvedEvents = schedule
                 .map(eventId => customEvents.find(eventId))
-                .filter(event => event) as CustomEvent[];
+                .filter(event => event) as UserCustomEvent[];
             return resolvedEvents || [];
         },
 
@@ -441,5 +441,5 @@ function createScheduleEventStore() {
 }
 
 export const scheduleEventMap = createScheduleEventStore();
-export const editEvent = writable<CustomEvent | null>(null);
-export const deleteCandidateEvent = writable<CustomEvent | null>(null);
+export const editEvent = writable<UserCustomEvent | null>(null);
+export const deleteCandidateEvent = writable<UserCustomEvent | null>(null);

@@ -4,7 +4,7 @@
     import Left from "$lib/components/recal/Left.svelte";
     import Top from "$lib/components/recal/Top.svelte";
     import {
-        type CustomEvent,
+        type UserCustomEvent,
         customEvents,
         scheduleEventMap
     } from "$lib/stores/events";
@@ -29,7 +29,7 @@
             schedules: any[];
             associations: any[];
             doneFeedback: boolean;
-            events: CustomEvent[];
+            events: UserCustomEvent[];
             eventAssociations: Record<number, number[]>;
         };
     };

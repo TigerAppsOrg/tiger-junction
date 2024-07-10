@@ -3,7 +3,7 @@
     import {
         editEvent,
         scheduleEventMap,
-        type CustomEvent
+        type UserCustomEvent
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
     import { currentSchedule } from "$lib/stores/recal";
@@ -18,7 +18,7 @@
 
     const supabase: SupabaseClient = getContext("supabase");
 
-    export let customEvent: CustomEvent;
+    export let customEvent: UserCustomEvent;
     export let isSelected: boolean = false;
     export let noBorder: boolean = false;
 

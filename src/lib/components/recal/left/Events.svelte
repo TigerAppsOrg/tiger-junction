@@ -1,20 +1,20 @@
 <script lang="ts">
     import { modalStore } from "$lib/stores/modal";
     import {
-        type CustomEvent,
+        type UserCustomEvent,
         customEvents,
         editEvent,
         scheduleEventMap
     } from "$lib/stores/events";
     import { currentSchedule, ready } from "$lib/stores/recal";
     import EventCard from "./elements/EventCard.svelte";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
 
     let showAll: boolean = false;
 
-    let scheduleEvents: CustomEvent[] = [];
+    let scheduleEvents: UserCustomEvent[] = [];
     $: scheduleEvents =
         $scheduleEventMap &&
         $currentSchedule &&

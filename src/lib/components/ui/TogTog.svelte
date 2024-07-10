@@ -1,6 +1,6 @@
 <script lang="ts">
     import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     export let name: string = "";
 
     const handleToggle = () => {

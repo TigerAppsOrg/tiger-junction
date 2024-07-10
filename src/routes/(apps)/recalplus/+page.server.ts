@@ -4,7 +4,7 @@ import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
 import { redirect } from "@sveltejs/kit";
-import { CustomEvent } from "$lib/stores/events.js";
+import { UserCustomEvent } from "$lib/stores/events.js";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {
@@ -57,7 +57,7 @@ export const load = async ({ locals: { supabase } }) => {
     const doneFeedback = feedback?.data.doneFeedback;
     const userSchedules = userSchedulesRaw.data;
 
-    const userEvents: CustomEvent[] = events.data;
+    const userEvents: UserCustomEvent[] = events.data;
 
     // Create default schedule if none exist
     if (userSchedules.length === 0) {
@@ -95,7 +95,7 @@ export const load = async ({ locals: { supabase } }) => {
                 schedules: [newSchedule],
                 associations: { [newSchedule.id]: [] },
                 doneFeedback: doneFeedback as boolean,
-                events: userEvents as CustomEvent[],
+                events: userEvents as UserCustomEvent[],
                 eventAssociations: {} as Record<number, number[]>
             }
         };
@@ -163,7 +163,7 @@ export const load = async ({ locals: { supabase } }) => {
             schedules: userSchedules,
             associations,
             doneFeedback: doneFeedback,
-            events: userEvents as CustomEvent[],
+            events: userEvents as UserCustomEvent[],
             eventAssociations
         }
     };

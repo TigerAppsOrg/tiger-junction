@@ -3,7 +3,7 @@
     import StdModal from "$lib/components/ui/StdModal.svelte";
     import { valuesToTimeLabel, valueToDaysStr } from "$lib/scripts/convert";
     import {
-        type CustomEvent,
+        type UserCustomEvent,
         type CustomEventTime,
         customEvents,
         deleteCandidateEvent,
@@ -23,12 +23,12 @@
             .join("; ");
     };
 
-    const handleEdit = (candidate: CustomEvent) => {
+    const handleEdit = (candidate: UserCustomEvent) => {
         editEvent.set(candidate);
         modalStore.push("editEvent");
     };
 
-    const handleDelete = (candidate: CustomEvent) => {
+    const handleDelete = (candidate: UserCustomEvent) => {
         deleteCandidateEvent.set(candidate);
         modalStore.push("deleteEvent");
     };

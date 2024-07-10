@@ -15,7 +15,7 @@
         valueToDayArr,
         valueToMilitary
     } from "$lib/scripts/convert";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calculateCssVars } from "$lib/stores/styles";
     import { customEvents } from "$lib/stores/events";
     import { editEvent } from "$lib/stores/events";
     import { recal } from "$lib/stores/recal";
