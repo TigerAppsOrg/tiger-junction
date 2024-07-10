@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export type Toast = {
     id: number;
@@ -6,7 +6,7 @@ export type Toast = {
     type: "success" | "error" | "warning" | "info";
 };
 
-const { subscribe, update, set }: Writable<Toast[]> = writable([]);
+const { subscribe, update, set } = writable<Toast[]>([]);
 
 export const toastStore = {
     subscribe,

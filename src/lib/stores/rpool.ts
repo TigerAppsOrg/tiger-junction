@@ -1,13 +1,17 @@
 // Stores for Saved (Course Pools for ReCal+)
 
+import { getCurrentTerm } from "$lib/scripts/ReCal+/getters";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Invalidator, Subscriber, Unsubscriber } from "svelte/motion";
-import { writable, type Writable } from "svelte/store";
-import { rawCourseData, searchCourseData } from "./recal";
-import { getCurrentTerm } from "$lib/scripts/ReCal+/getters";
+import { writable } from "svelte/store";
+import {
+    rawCourseData,
+    scheduleCourseMeta,
+    searchCourseData,
+    type ScheduleCourseMetadata
+} from "./recal";
 import { sectionData, type SectionData } from "./rsections";
-import { rMeta, type RMetadata } from "./rmeta";
 
 // Course pool type
 type CoursePool = {
@@ -67,7 +71,7 @@ export const addCourseMetadata = async (
     savedCourses.subscribe(x => {
         otherIds = x[scheduleId].map(y => y.id);
     })();
-    rMeta.subscribe(x => {
+    scheduleCourseMeta.subscribe(x => {
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
         for (let i = 0; i < otherIds.length; i++) {
             otherColors.push(x[scheduleId][otherIds[i]].color);
@@ -142,10 +146,10 @@ export const addCourseMetadata = async (
         }
     }
 
-    // * Update rMeta
-    rMeta.update(x => {
+    // * Update scheduleCourseMeta
+    scheduleCourseMeta.update(x => {
         if (!x.hasOwnProperty(scheduleId)) x[scheduleId] = {};
-        x[scheduleId][course.id] = meta as RMetadata;
+        x[scheduleId][course.id] = meta as ScheduleCourseMetadata;
         return x;
     });
 
@@ -209,7 +213,7 @@ export const initSchedule = async (
         let cur = rawCourses.find(y => y.id === x.course_id) as CourseData;
 
         // Add metadata
-        rMeta.update(y => {
+        scheduleCourseMeta.update(y => {
             if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
             y[scheduleId][cur.id] = x.metadata;
             return y;
@@ -247,10 +251,10 @@ const addCourse = async (
     let currentPool: CourseData[] = getCurrentPool(pool, scheduleId);
 
     // Add metadata
-    let meta: RMetadata | {} = {};
+    let meta: ScheduleCourseMetadata | {} = {};
     if (pool === savedCourses) {
         addCourseMetadata(supabase, course, scheduleId);
-        rMeta.subscribe(x => {
+        scheduleCourseMeta.subscribe(x => {
             meta = x[scheduleId][course.id];
         })();
     }
@@ -385,7 +389,7 @@ const {
     set: setSave,
     update: updateSave,
     subscribe: subscribeSave
-}: Writable<Record<number, CourseData[]>> = writable({});
+} = writable<Record<number, CourseData[]>>({});
 
 export const savedCourses: CoursePool = {
     set: setSave,

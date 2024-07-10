@@ -5,7 +5,7 @@
 import { type SectionData } from "$lib/stores/rsections";
 import { type CalColors } from "$lib/stores/styles";
 import { type CourseData } from "$lib/types/dbTypes";
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 import { type CustomEvent } from "$lib/stores/events";
 
 //----------------------------------------------------------------------
@@ -53,19 +53,19 @@ export function isCourseBox(param: BoxParam): param is CourseBoxParam {
 //----------------------------------------------------------------------
 
 // Card hovered --> highlights calendar
-export const courseHover: Writable<number | null> = writable(null);
+export const courseHover = writable<number | null>(null);
 
 // CalBox hovered --> highlights card
-export const courseHoverRev: Writable<number | null> = writable(null);
+export const courseHoverRev = writable<number | null>(null);
 
 // Event card hovered --> highlights calendar
-export const eventHover: Writable<number | null> = writable(null);
+export const eventHover = writable<number | null>(null);
 
 // CalBox hovered --> highlights event card
-export const eventHoverRev: Writable<number | null> = writable(null);
+export const eventHoverRev = writable<number | null>(null);
 
 // Hovered course
-export const hoveredCourse: Writable<CourseData | null> = writable(null);
+export const hoveredCourse = writable<CourseData | null>(null);
 
 // Hovered event
-export const hoveredEvent: Writable<CustomEvent | null> = writable(null);
+export const hoveredEvent = writable<CustomEvent | null>(null);

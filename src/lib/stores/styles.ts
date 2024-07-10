@@ -1,6 +1,6 @@
 import { darkenHSL, rgbToHSL } from "$lib/scripts/convert";
 import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
-import { get, writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 //----------------------------------------------------------------------
 // ReCal+
@@ -104,7 +104,7 @@ const {
     subscribe: ccSubscribe,
     update: ccUpdate,
     set: ccSet
-}: Writable<CalColors> = writable(initializeCalColors());
+} = writable<CalColors>(initializeCalColors());
 
 export const calColors = {
     subscribe: ccSubscribe,

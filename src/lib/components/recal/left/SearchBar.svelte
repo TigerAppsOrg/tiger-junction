@@ -1,20 +1,20 @@
 <script lang="ts">
+    import { currentTerm } from "$lib/changeme";
     import { modalStore } from "$lib/stores/modal";
     import {
-        searchSettings,
-        searchResults,
-        searchCourseData,
         currentSchedule,
         isResult,
+        ready,
         research,
-        ready
+        scheduleCourseMeta,
+        searchCourseData,
+        searchResults,
+        searchSettings
     } from "$lib/stores/recal";
-    import { currentTerm } from "$lib/changeme";
-    import { rMeta } from "$lib/stores/rmeta";
     import { sectionData } from "$lib/stores/rsections";
+    import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { getContext } from "svelte";
     import { hoveredCourse } from "../calendar/calendar";
 
@@ -32,7 +32,7 @@
         $currentTerm,
         $currentSchedule,
         $research,
-        $rMeta
+        $scheduleCourseMeta
     );
     const autoTrig = (...params: any[]) => {
         triggerSearch();

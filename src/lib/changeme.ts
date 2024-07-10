@@ -1,5 +1,5 @@
 // Change this file when adding a new term
-import { get, writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import type { CourseData } from "./types/dbTypes";
 import type { RawSectionData } from "./stores/rsections";
 
@@ -142,7 +142,7 @@ export const CURRENT_TERM_ID: keyof RawCourseData = parseInt(
     Object.keys(TERM_MAP)[Object.keys(TERM_MAP).length - 1]
 ) as keyof RawCourseData;
 
-export const currentTerm: Writable<number> = writable(CURRENT_TERM_ID);
+export const currentTerm = writable<number>(CURRENT_TERM_ID);
 
 // Types
 type Calendar_Info = {
@@ -165,9 +165,7 @@ export const SECTION_OBJ: RawSectionData = Object.keys(TERM_MAP)
     .reduce((o, key) => Object.assign(o, { [key]: {} }), {}) as RawSectionData;
 
 function createScheduleStore() {
-    const store: Writable<RawCourseData> = writable(
-        JSON.parse(JSON.stringify(BASE_OBJ))
-    );
+    const store = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
 
     return {
         set: store.set,

@@ -1,26 +1,26 @@
 <script lang="ts">
-    import { savedCourses } from "$lib/stores/rpool";
-    import { get } from "svelte/store";
-    import {
-        currentSchedule,
-        ready,
-        recal,
-        searchSettings
-    } from "$lib/stores/recal";
     import { currentTerm } from "$lib/changeme";
-    import { sectionData } from "$lib/stores/rsections";
     import {
         type BoxParam,
         hoveredCourse,
         hoveredEvent
     } from "$lib/components/recal/calendar/calendar";
-    import { rMeta } from "$lib/stores/rmeta";
-    import CalBox from "./calendar/CalBox.svelte";
     import { valueToDays } from "$lib/scripts/convert";
-    import { calColors, type CalColors } from "$lib/stores/styles";
-    import { slide } from "svelte/transition";
-    import { linear } from "svelte/easing";
     import { scheduleEventMap } from "$lib/stores/events";
+    import {
+        currentSchedule,
+        ready,
+        recal,
+        scheduleCourseMeta,
+        searchSettings
+    } from "$lib/stores/recal";
+    import { savedCourses } from "$lib/stores/rpool";
+    import { sectionData } from "$lib/stores/rsections";
+    import { calColors, type CalColors } from "$lib/stores/styles";
+    import { linear } from "svelte/easing";
+    import { get } from "svelte/store";
+    import { slide } from "svelte/transition";
+    import CalBox from "./calendar/CalBox.svelte";
 
     let toRender: BoxParam[] = [];
 
@@ -97,7 +97,7 @@
 
         const saved = $savedCourses[$currentSchedule];
         const sections = $sectionData[$currentTerm];
-        const meta = $rMeta[$currentSchedule];
+        const meta = $scheduleCourseMeta[$currentSchedule];
 
         if (!saved) return;
         for (let i = 0; i < saved.length; i++) {

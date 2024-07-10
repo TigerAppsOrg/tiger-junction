@@ -1,26 +1,25 @@
 <script lang="ts">
+    import { CURRENT_TERM_ID, schedules } from "$lib/changeme.js";
     import Calendar from "$lib/components/recal/Calendar.svelte";
     import Left from "$lib/components/recal/Left.svelte";
     import Top from "$lib/components/recal/Top.svelte";
-    import { CURRENT_TERM_ID } from "$lib/changeme.js";
-    import { isMobile, showCal } from "$lib/stores/mobile";
-    import {
-        rawCourseData,
-        ready,
-        searchCourseData
-    } from "$lib/stores/recal.js";
-    import { schedules } from "$lib/changeme.js";
-    import { rMeta } from "$lib/stores/rmeta.js";
-    import { savedCourses } from "$lib/stores/rpool.js";
-    import { sectionData, type SectionData } from "$lib/stores/rsections.js";
-    import type { CourseData } from "$lib/types/dbTypes.js";
-    import { onMount } from "svelte";
-    import type { SupabaseClient } from "@supabase/supabase-js";
     import {
         type CustomEvent,
         customEvents,
         scheduleEventMap
     } from "$lib/stores/events";
+    import { isMobile, showCal } from "$lib/stores/mobile";
+    import {
+        rawCourseData,
+        ready,
+        scheduleCourseMeta,
+        searchCourseData
+    } from "$lib/stores/recal.js";
+    import { savedCourses } from "$lib/stores/rpool.js";
+    import { sectionData, type SectionData } from "$lib/stores/rsections.js";
+    import type { CourseData } from "$lib/types/dbTypes.js";
+    import type { SupabaseClient } from "@supabase/supabase-js";
+    import { onMount } from "svelte";
 
     export let data: {
         supabase: SupabaseClient;
@@ -113,7 +112,7 @@
                 ) as CourseData;
 
                 // Add metadata
-                rMeta.update(y => {
+                scheduleCourseMeta.update(y => {
                     if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
                     y[scheduleId][cur.id] = x.metadata;
                     return y;

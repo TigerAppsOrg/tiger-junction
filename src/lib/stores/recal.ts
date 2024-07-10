@@ -2,11 +2,10 @@
 import { normalizeText, valueToDays } from "$lib/scripts/convert";
 import type { CourseData } from "$lib/types/dbTypes";
 import { BASE_OBJ, type RawCourseData } from "$lib/changeme";
-import { get, writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { sectionData, type SectionMap } from "./rsections";
 import { sectionDone } from "$lib/changeme";
 import { savedCourses } from "./rpool";
-import { rMeta } from "./rmeta";
 import { doesConflict } from "$lib/scripts/ReCal+/conflict";
 import type { ActiveTerms } from "$lib/changeme";
 import { scheduleEventMap } from "./events";
@@ -16,26 +15,26 @@ import { scheduleEventMap } from "./events";
 //----------------------------------------------------------------------
 
 // Ready for calendar render
-export const ready: Writable<boolean> = writable(false);
+export const ready = writable<boolean>(false);
 
 // Force rerendering of top area
-export const retop: Writable<boolean> = writable(false);
+export const retop = writable<boolean>(false);
 
 // Force rerendering of calendar
-export const recal: Writable<boolean> = writable(false);
+export const recal = writable<boolean>(false);
 
 // Force rerendering of search results
-export const research: Writable<boolean> = writable(false);
+export const research = writable<boolean>(false);
 
 //----------------------------------------------------------------------
 // State
 //----------------------------------------------------------------------
 
 // Current schedule id
-export const currentSchedule: Writable<number> = writable();
+export const currentSchedule = writable<number>();
 
 // Whether there are any search results
-export const isResult: Writable<boolean> = writable(false);
+export const isResult = writable<boolean>(false);
 
 //----------------------------------------------------------------------
 // Search Results
@@ -45,7 +44,7 @@ const {
     set: setRes,
     update: updateRes,
     subscribe: subscribeRes
-}: Writable<CourseData[]> = writable([]);
+} = writable<CourseData[]>([]);
 
 export const searchResults = {
     set: setRes,
@@ -150,7 +149,7 @@ export const searchResults = {
 
             const curSched = get(currentSchedule);
             const saved = get(savedCourses)[curSched];
-            const meta = get(rMeta)[curSched];
+            const meta = get(scheduleCourseMeta)[curSched];
             const events = scheduleEventMap.getSchedule(curSched);
 
             if (saved && meta) {
@@ -392,7 +391,7 @@ const {
     set: setRaw,
     update: updateRaw,
     subscribe: subscribeRaw
-}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+} = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const rawCourseData = {
     set: setRaw,
@@ -444,7 +443,7 @@ const {
     set: setSearch,
     update: updateSearch,
     subscribe: subscribeSearch
-}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+} = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const searchCourseData = {
     set: setSearch,
@@ -548,7 +547,7 @@ export type SearchSettings = {
     style: Record<string, boolean>;
 };
 
-export const currentSortBy: Writable<string | null> = writable(null);
+export const currentSortBy = writable<string | null>(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
     filters: {
@@ -675,6 +674,18 @@ const loadSections = async (term: number, termSec: SectionMap) => {
     }
 };
 
-export const searchSettings: Writable<SearchSettings> = writable(
+export const searchSettings = writable<SearchSettings>(
     JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
 );
+
+export type ScheduleCourseMetadata = {
+    complete: boolean;
+    color: number;
+    sections: string[];
+    confirms: Record<string, string>;
+};
+
+// Map from schedule_id -> course_id -> metadata
+export const scheduleCourseMeta = writable<
+    Record<number, Record<number, ScheduleCourseMetadata>>
+>({});

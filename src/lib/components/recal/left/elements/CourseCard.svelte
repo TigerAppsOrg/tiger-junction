@@ -1,27 +1,29 @@
 <script lang="ts">
-    import type { CourseData } from "$lib/types/dbTypes";
+    import { CURRENT_TERM_ID, currentTerm } from "$lib/changeme";
     import plusIcon from "$lib/img/icons/addicon.svg";
     import removeIcon from "$lib/img/icons/subtractionicon.svg";
+    import { darkenHSL } from "$lib/scripts/convert";
+    import * as cf from "$lib/scripts/ReCal+/cardFunctions";
+    import { getLinks } from "$lib/scripts/ReCal+/getLinks";
+    import {
+        currentSchedule,
+        scheduleCourseMeta,
+        searchSettings
+    } from "$lib/stores/recal";
+    import { sectionData } from "$lib/stores/rsections";
+    import { darkTheme } from "$lib/stores/state";
+    import { calColors, type CalColors } from "$lib/stores/styles";
+    import type { CourseData } from "$lib/types/dbTypes";
+    import type { SupabaseClient } from "@supabase/supabase-js";
+    import { getContext } from "svelte";
+    import { inview } from "svelte-inview";
     import { slide } from "svelte/transition";
-    import { currentSchedule, searchSettings } from "$lib/stores/recal";
     import {
         courseHover,
         courseHoverRev,
         hoveredCourse
     } from "../../calendar/calendar";
-    import { currentTerm } from "$lib/changeme";
-    import { getLinks } from "$lib/scripts/ReCal+/getLinks";
-    import * as cf from "$lib/scripts/ReCal+/cardFunctions";
-    import type { SupabaseClient } from "@supabase/supabase-js";
-    import { sectionData } from "$lib/stores/rsections";
-    import { calColors, type CalColors } from "$lib/stores/styles";
-    import { rMeta } from "$lib/stores/rmeta";
-    import { darkenHSL } from "$lib/scripts/convert";
-    import { darkTheme } from "$lib/stores/state";
-    import { inview } from "svelte-inview";
     import CardLinkButton from "./CardLinkButton.svelte";
-    import { CURRENT_TERM_ID } from "$lib/changeme";
-    import { getContext } from "svelte";
 
     export let course: CourseData;
     export let category: string = "search";
@@ -103,7 +105,7 @@
 
         // Dynamic color (saved courses)
     } else {
-        const meta = $rMeta[$currentSchedule][course.id];
+        const meta = $scheduleCourseMeta[$currentSchedule][course.id];
         styles.color = $calColors[meta.color as unknown as keyof CalColors];
         fillStyles();
         styles.trans = "solid";

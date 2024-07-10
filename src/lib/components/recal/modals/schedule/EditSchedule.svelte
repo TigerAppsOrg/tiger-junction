@@ -1,15 +1,18 @@
 <script lang="ts">
+    import { currentTerm, schedules } from "$lib/changeme";
     import Modal from "$lib/components/ui/Modal.svelte";
     import StdButton from "$lib/components/ui/StdButton.svelte";
+    import { scheduleEventMap } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
-    import { currentSchedule, searchCourseData } from "$lib/stores/recal";
-    import { currentTerm, schedules } from "$lib/changeme";
-    import { rMeta } from "$lib/stores/rmeta";
+    import {
+        currentSchedule,
+        scheduleCourseMeta,
+        searchCourseData
+    } from "$lib/stores/recal";
     import { savedCourses } from "$lib/stores/rpool";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
-    import { scheduleEventMap } from "$lib/stores/events";
 
     export let showModal: boolean = false;
     const supabase = getContext("supabase") as SupabaseClient;
@@ -71,7 +74,7 @@
 
                 // Update course schedule associations
                 let saved = $savedCourses[$currentSchedule];
-                let meta = $rMeta[$currentSchedule];
+                let meta = $scheduleCourseMeta[$currentSchedule];
 
                 let newId = res.data[0].id.toString();
 
@@ -99,7 +102,7 @@
                 }
 
                 // Deep copy
-                rMeta.update(x => {
+                scheduleCourseMeta.update(x => {
                     x[newId] = JSON.parse(JSON.stringify(meta));
                     return x;
                 });
@@ -123,7 +126,7 @@
                                 delete x[newId];
                                 return x;
                             });
-                            rMeta.update(x => {
+                            scheduleCourseMeta.update(x => {
                                 delete x[newId];
                                 return x;
                             });

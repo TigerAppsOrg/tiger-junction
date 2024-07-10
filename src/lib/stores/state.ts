@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export const currentPage = writable("home");
 
@@ -6,7 +6,7 @@ const {
     subscribe,
     update,
     set: setDark
-}: Writable<boolean> = writable(
+} = writable<boolean>(
     typeof window !== "undefined" && localStorage.getItem("darkMode") === "true"
 );
 

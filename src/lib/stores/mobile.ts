@@ -1,5 +1,5 @@
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 
-export const isMobile: Writable<boolean> = writable(false);
+export const isMobile = writable<boolean>(false);
 
-export const showCal: Writable<boolean> = writable(true);
+export const showCal = writable<boolean>(true);

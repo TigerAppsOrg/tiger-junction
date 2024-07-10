@@ -1,11 +1,9 @@
 <script lang="ts">
+    import { CALENDAR_INFO, currentTerm } from "$lib/changeme";
     import StdButton from "$lib/components/ui/StdButton.svelte";
     import StdModal from "$lib/components/ui/StdModal.svelte";
-    import { CALENDAR_INFO } from "$lib/changeme";
     import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
-    import { currentSchedule } from "$lib/stores/recal";
-    import { currentTerm } from "$lib/changeme";
-    import { rMeta } from "$lib/stores/rmeta";
+    import { currentSchedule, scheduleCourseMeta } from "$lib/stores/recal";
     import { savedCourses } from "$lib/stores/rpool";
     import { sectionData } from "$lib/stores/rsections";
     import { toastStore } from "$lib/stores/toast";
@@ -30,7 +28,7 @@
 
         let saved = $savedCourses[$currentSchedule];
         let sections = $sectionData[$currentTerm];
-        let meta = $rMeta[$currentSchedule];
+        let meta = $scheduleCourseMeta[$currentSchedule];
 
         outer: for (let i = 0; i < saved.length; i++) {
             let course = saved[i];

@@ -1,17 +1,21 @@
 <script lang="ts">
-    import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
-    import { currentSchedule, recal, searchSettings } from "$lib/stores/recal";
     import {
         type BoxParam,
-        isCourseBox,
         courseHover,
         courseHoverRev,
         eventHover,
-        eventHoverRev
+        eventHoverRev,
+        isCourseBox
     } from "$lib/components/recal/calendar/calendar";
-    import type { SupabaseClient } from "@supabase/supabase-js";
+    import { darkenHSL, valuesToTimeLabel } from "$lib/scripts/convert";
+    import {
+        currentSchedule,
+        recal,
+        scheduleCourseMeta,
+        searchSettings
+    } from "$lib/stores/recal";
     import { calColors } from "$lib/stores/styles";
-    import { rMeta } from "$lib/stores/rmeta";
+    import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
 
     const supabase = getContext("supabase") as SupabaseClient;
@@ -81,7 +85,7 @@
 
         // Modify meta store
         let oldConfirms = {};
-        rMeta.update(x => {
+        scheduleCourseMeta.update(x => {
             oldConfirms =
                 x[$currentSchedule][params.section.course_id].confirms;
 
@@ -95,7 +99,8 @@
             return x;
         });
 
-        let secMeta = $rMeta[$currentSchedule][params.section.course_id];
+        let secMeta =
+            $scheduleCourseMeta[$currentSchedule][params.section.course_id];
 
         // Check for completeness (addedkeys == requiredkeys)
         let addedKeys = Object.keys(secMeta.confirms);
@@ -108,7 +113,10 @@
         supabase
             .from("course_schedule_associations")
             .update({
-                metadata: $rMeta[$currentSchedule][params.section.course_id]
+                metadata:
+                    $scheduleCourseMeta[$currentSchedule][
+                        params.section.course_id
+                    ]
             })
             .eq("course_id", params.section.course_id)
             .eq("schedule_id", $currentSchedule)
@@ -116,7 +124,7 @@
                 // Revert if error
                 if (res.error) {
                     console.log(res.error);
-                    rMeta.update(x => {
+                    scheduleCourseMeta.update(x => {
                         x[$currentSchedule][params.section.course_id].confirms =
                             oldConfirms;
                         return x;

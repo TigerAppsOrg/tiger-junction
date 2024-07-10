@@ -6,7 +6,7 @@ import { goto } from "$app/navigation";
 import { schedules } from "$lib/changeme";
 import { hoveredEvent } from "$lib/components/recal/calendar/calendar";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { get, writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 export type CustomEventTime = {
     start: number;
@@ -23,7 +23,7 @@ export type CustomEvent = {
 export type CustomEventInsert = Omit<CustomEvent, "id">;
 
 function createCustomEventsStore() {
-    const store: Writable<CustomEvent[]> = writable([]);
+    const store = writable<CustomEvent[]>([]);
 
     return {
         subscribe: store.subscribe,
@@ -172,7 +172,7 @@ export const customEvents = createCustomEventsStore();
 export type ScheduleEventMap = Record<number, number[]>;
 
 function createScheduleEventStore() {
-    const store: Writable<ScheduleEventMap> = writable({});
+    const store = writable<ScheduleEventMap>({});
 
     return {
         subscribe: store.subscribe,
