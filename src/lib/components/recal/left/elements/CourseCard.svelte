@@ -11,8 +11,7 @@
         searchSettings
     } from "$lib/stores/recal";
     import { sectionData } from "$lib/stores/rsections";
-    import { darkTheme } from "$lib/stores/state";
-    import { calColors, type CalColors } from "$lib/stores/styles";
+    import { darkTheme, calColors, type CalColors } from "$lib/stores/styles";
     import type { CourseData } from "$lib/types/dbTypes";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { rgbToHSL } from "$lib/scripts/convert";
-    import { darkTheme } from "$lib/stores/state";
-    import { calColors, type CalColors } from "$lib/stores/styles";
+    import { darkTheme, calColors, type CalColors } from "$lib/stores/styles";
 
     // 8 Colors in rgb format
     export let colors: CalColors = {

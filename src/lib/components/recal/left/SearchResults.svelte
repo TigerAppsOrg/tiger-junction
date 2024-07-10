@@ -1,7 +1,7 @@
 <script lang="ts">
     import { research, searchResults } from "$lib/stores/recal";
+    import { darkTheme } from "$lib/stores/styles";
     import CourseCard from "./elements/CourseCard.svelte";
-    import { darkTheme } from "$lib/stores/state";
 
     $: resetKey = [$searchResults, $darkTheme, $research];
 </script>

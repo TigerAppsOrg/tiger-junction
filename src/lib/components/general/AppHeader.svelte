@@ -1,8 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { modalStore } from "$lib/stores/modal";
-    import { darkTheme } from "$lib/stores/state";
-    import { getStyles, isMobile } from "$lib/stores/styles";
+    import { darkTheme, getStyles, isMobile } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
 

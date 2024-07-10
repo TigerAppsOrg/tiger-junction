@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { darkTheme } from "$lib/stores/state";
+    import { darkTheme } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import logo from "$lib/img/tjlogonew.png";
     export let supabase: SupabaseClient;
