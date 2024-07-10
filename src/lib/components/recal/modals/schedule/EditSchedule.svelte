@@ -11,7 +11,10 @@
     } from "$lib/stores/recal";
     import { savedCourses } from "$lib/stores/rpool";
     import { toastStore } from "$lib/stores/toast";
-    import type { SupabaseClient } from "@supabase/supabase-js";
+    import type {
+        PostgrestSingleResponse,
+        SupabaseClient
+    } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
 
     export let showModal: boolean = false;
@@ -92,9 +95,21 @@
             return x;
         });
 
+        // Update custom events
+        const eventStatus = await scheduleEventMap.duplicateSchedule(
+            supabase,
+            $currentSchedule,
+            scheduleData[0].id
+        );
+        if (!eventStatus) {
+            console.error("Error duplicating custom events");
+        }
+
         if (assocUploads.length === 0) {
             currentSchedule.set(parseInt(newId));
             toastStore.add("success", "Schedule successfully duplicated!");
+            input = "";
+            modalStore.pop();
             return;
         }
 
@@ -105,7 +120,7 @@
         });
 
         // Upload to database
-        const { data: csaData, error: csaError } = await supabase
+        const { error: csaError } = await supabase
             .from("course_schedule_associations")
             .insert(assocUploads)
             .select("schedule_id, course_id, metadata");

@@ -488,6 +488,57 @@ function createScheduleEventStore() {
                 delete map[scheduleId];
                 return map;
             });
+        },
+
+        /**
+         * Duplicate a schedule's events to another schedule
+         * Note: this completely overwrites the target schedule's events
+         * @param supabase Supabase client
+         * @param sourceId Id of the schedule to copy from
+         * @param targetId Id of the schedule to copy to
+         */
+        duplicateSchedule: async (
+            supabase: SupabaseClient,
+            sourceId: number,
+            targetId: number
+        ): Promise<boolean> => {
+            const sourceEvents = get(store)[sourceId];
+            if (sourceEvents === null) {
+                console.error("Source schedule not found while duplicating");
+                return false;
+            }
+
+            // Source schedule is empty, clear target schedule
+            if (sourceEvents.length === 0) {
+                store.update(map => {
+                    map[targetId] = [];
+                    return map;
+                });
+                return true;
+            }
+
+            store.update(map => {
+                map[targetId] = sourceEvents;
+                return map;
+            });
+
+            const { error } = await supabase
+                .from("event_schedule_associations")
+                .insert(
+                    sourceEvents.map(eventId => ({
+                        event_id: eventId,
+                        schedule_id: targetId
+                    }))
+                );
+
+            if (error) {
+                console.error("Error duplicating schedule:", error.message);
+                store.update(map => {
+                    delete map[targetId];
+                    return map;
+                });
+            }
+            return !error;
         }
     };
 }
