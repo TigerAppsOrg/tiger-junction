@@ -164,8 +164,15 @@ export const SECTION_OBJ: RawSectionData = Object.keys(TERM_MAP)
     .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0))
     .reduce((o, key) => Object.assign(o, { [key]: {} }), {}) as RawSectionData;
 
+type ScheduleEntry = {
+    id: number;
+    title: string;
+};
+
 function createScheduleStore() {
-    const store = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
+    const store = writable<Record<number, ScheduleEntry[]>>(
+        JSON.parse(JSON.stringify(BASE_OBJ))
+    );
 
     return {
         set: store.set,

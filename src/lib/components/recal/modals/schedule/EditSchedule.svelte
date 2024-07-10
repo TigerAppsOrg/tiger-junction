@@ -52,104 +52,91 @@
         }
 
         // Upload to database
-        supabase
+        const { data: scheduleData, error: scheduleError } = await supabase
             .from("schedules")
             .insert({
                 title: newTitle,
                 term: $currentTerm,
                 user_id: user.id
             })
-            .select("id, title")
-            .then(res => {
-                if (res.error) {
-                    console.log(res.error);
-                    return;
-                }
+            .select("id, title");
 
-                // Update schedule store
-                schedules.update(x => {
-                    x[$currentTerm] = [...x[$currentTerm], res.data[0]];
-                    return x;
-                });
+        if (scheduleError) {
+            console.error("Error duplicating schedule:", scheduleError);
+            return;
+        }
 
-                // Update course schedule associations
-                let saved = $savedCourses[$currentSchedule];
-                let meta = $scheduleCourseMeta[$currentSchedule];
+        // Update schedule store
+        schedules.update(x => {
+            x[$currentTerm] = [...x[$currentTerm], scheduleData[0]];
+            return x;
+        });
 
-                let newId = res.data[0].id.toString();
+        // Update course schedule associations
+        let saved = $savedCourses[$currentSchedule];
+        let meta = $scheduleCourseMeta[$currentSchedule];
 
-                let assocUploads = [];
-                for (let i = 0; i < saved.length; i++)
-                    assocUploads.push({
-                        schedule_id: newId,
-                        course_id: saved[i].id,
-                        metadata: meta[saved[i].id]
-                    });
+        let newId = scheduleData[0].id.toString();
 
-                // Update stores
-                savedCourses.update(x => {
-                    x[newId] = saved;
-                    return x;
-                });
-
-                if (assocUploads.length === 0) {
-                    currentSchedule.set(parseInt(newId));
-                    toastStore.add(
-                        "success",
-                        "Schedule successfully duplicated!"
-                    );
-                    return;
-                }
-
-                // Deep copy
-                scheduleCourseMeta.update(x => {
-                    x[newId] = JSON.parse(JSON.stringify(meta));
-                    return x;
-                });
-
-                // Upload to database
-                supabase
-                    .from("course_schedule_associations")
-                    .insert(assocUploads)
-                    .select("schedule_id, course_id, metadata")
-                    .then(res2 => {
-                        // Revert if error
-                        if (res2.error) {
-                            console.log(res2.error);
-                            schedules.update(x => {
-                                x[$currentTerm] = x[$currentTerm].filter(
-                                    x => x.id !== newId
-                                );
-                                return x;
-                            });
-                            savedCourses.update(x => {
-                                delete x[newId];
-                                return x;
-                            });
-                            scheduleCourseMeta.update(x => {
-                                delete x[newId];
-                                return x;
-                            });
-
-                            toastStore.add(
-                                "error",
-                                "Error: please refresh and try again."
-                            );
-                            return;
-                        }
-
-                        // Update current schedule
-                        currentSchedule.set(res.data[0].id);
-                        searchCourseData.reset($currentTerm);
-                        let courses = [...$savedCourses[res.data[0].id]];
-                        searchCourseData.remove($currentTerm, courses);
-
-                        toastStore.add(
-                            "success",
-                            "Schedule successfully duplicated!"
-                        );
-                    });
+        let assocUploads = [];
+        for (let i = 0; i < saved.length; i++)
+            assocUploads.push({
+                schedule_id: newId,
+                course_id: saved[i].id,
+                metadata: meta[saved[i].id]
             });
+
+        // Update stores
+        savedCourses.update(x => {
+            x[newId] = saved;
+            return x;
+        });
+
+        if (assocUploads.length === 0) {
+            currentSchedule.set(parseInt(newId));
+            toastStore.add("success", "Schedule successfully duplicated!");
+            return;
+        }
+
+        // Deep copy
+        scheduleCourseMeta.update(x => {
+            x[newId] = JSON.parse(JSON.stringify(meta));
+            return x;
+        });
+
+        // Upload to database
+        const { data: csaData, error: csaError } = await supabase
+            .from("course_schedule_associations")
+            .insert(assocUploads)
+            .select("schedule_id, course_id, metadata");
+
+        // Revert if error
+        if (csaError) {
+            console.error("Error duplicating course associations:", csaError);
+            schedules.update(x => {
+                x[$currentTerm] = x[$currentTerm].filter(x => x.id !== newId);
+                return x;
+            });
+            savedCourses.update(x => {
+                delete x[newId];
+                return x;
+            });
+            scheduleCourseMeta.update(x => {
+                delete x[newId];
+                return x;
+            });
+
+            toastStore.add("error", "Error: please refresh and try again.");
+            return;
+        }
+
+        // Update current schedule
+        currentSchedule.set(scheduleData[0].id);
+        searchCourseData.reset($currentTerm);
+        let courses = [...$savedCourses[scheduleData[0].id]];
+        searchCourseData.remove($currentTerm, courses);
+
+        toastStore.add("success", "Schedule successfully duplicated!");
 
         // Clean Up and Close
         input = "";
