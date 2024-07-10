@@ -34,6 +34,8 @@ export const showCal = writable<boolean>(true);
 // ReCal+
 //----------------------------------------------------------------------
 
+export const isEventOpen = writable<boolean>(false);
+
 export type CalColors = {
     "-1": string;
     "0": string;

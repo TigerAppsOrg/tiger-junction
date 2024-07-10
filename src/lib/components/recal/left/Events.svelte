@@ -8,12 +8,10 @@
     } from "$lib/stores/events";
     import { currentSchedule, ready } from "$lib/stores/recal";
     import EventCard from "./elements/EventCard.svelte";
-    import { getStyles } from "$lib/stores/styles";
+    import { getStyles, isEventOpen } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { toastStore } from "$lib/stores/toast";
-
-    let showAll: boolean = false;
 
     let scheduleEvents: UserCustomEvent[] = [];
     $: scheduleEvents =
@@ -32,7 +30,7 @@
 </script>
 
 {#if $ready}
-    <div style={cssVarStyles} class="dark:text-zinc-100">
+    <div style={cssVarStyles} class="dark:text-zinc-100 overflow-y-auto h-full">
         <div
             class="text-base font-normal ml-1
                 flex items-center justify-between mt-4">
@@ -41,9 +39,9 @@
                 {scheduleEvents.length === 1 ? "Event" : "Events"}
             </span>
             <button
-                on:click={() => (showAll = !showAll)}
+                on:click={() => ($isEventOpen = !$isEventOpen)}
                 class="flex items-center gap-[1px] text-sm">
-                {#if showAll}
+                {#if $isEventOpen}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -79,7 +77,7 @@
                 {/if}
             </button>
         </div>
-        {#if showAll}
+        {#if $isEventOpen}
             <div
                 transition:slide={{ duration: 200, axis: "y" }}
                 class="overflow-hidden">
@@ -122,7 +120,7 @@
                             {scheduleEvents.length === 1 ? "Event" : "Events"}
                         </h2>
                         <div class="rounded-sm">
-                            {#each scheduleEvents as event, i}
+                            {#each scheduleEvents as event}
                                 <EventCard
                                     customEvent={event}
                                     isSelected={true} />
@@ -140,7 +138,7 @@
                             {notInSchedule.length === 1 ? "Event" : "Events"}
                         </h2>
                         <div class="border-2 rounded-sm">
-                            {#each notInSchedule as event, i}
+                            {#each notInSchedule as event}
                                 <EventCard
                                     customEvent={event}
                                     isSelected={false} />
