@@ -163,6 +163,15 @@ function createCustomEventsStore() {
                 return false;
             }
             return true;
+        },
+
+        /**
+         * Check if the event store is at max capacity (100 events)
+         * @returns True if the event store is at max capacity, false otherwise
+         */
+        isAtMax: () => {
+            const events = get(store);
+            return events.length >= 100;
         }
     };
 }

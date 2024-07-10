@@ -40,6 +40,11 @@
 
     // Save the event in the store and db and close the modal
     const createEvent = async () => {
+        if (customEvents.isAtMax()) {
+            titleError = "Maximum number of custom events reached";
+            return;
+        }
+
         if (!validateSubmission()) {
             refreshErrors++;
             return;

@@ -11,6 +11,7 @@
     import { getStyles } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
+    import { toastStore } from "$lib/stores/toast";
 
     let showAll: boolean = false;
 
@@ -87,6 +88,13 @@
                     class="w-full text-sm py-1 mt-1 active:scale-95 duration-150
                 mb-2 flex items-center gap-2 justify-center rounded-md"
                     on:click={() => {
+                        if (customEvents.isAtMax()) {
+                            toastStore.add(
+                                "error",
+                                "You have reached the maximum number of custom events (100)."
+                            );
+                            return;
+                        }
                         editEvent.set(null);
                         modalStore.push("editEvent");
                     }}>

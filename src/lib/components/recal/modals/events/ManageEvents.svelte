@@ -10,6 +10,7 @@
         editEvent
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
+    import { toastStore } from "$lib/stores/toast";
 
     export let showModal: boolean = false;
 
@@ -98,6 +99,13 @@
             className="mt-4"
             message="Create New Event"
             onClick={() => {
+                if (customEvents.isAtMax()) {
+                    toastStore.add(
+                        "error",
+                        "You have reached the maximum number of custom events (100)."
+                    );
+                    return;
+                }
                 editEvent.set(null);
                 modalStore.push("editEvent");
             }}
