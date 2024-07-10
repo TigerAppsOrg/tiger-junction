@@ -20,9 +20,7 @@
             <div class="overflow-y-auto">
                 {#key resetKey}
                     {#each $searchResults as course, i}
-                        <CourseCard
-                            {course}
-                            noBorder={i === $searchResults.length - 1} />
+                        <CourseCard {course} />
                     {/each}
                 {/key}
             </div>

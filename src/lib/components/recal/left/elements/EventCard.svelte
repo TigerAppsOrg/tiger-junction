@@ -20,7 +20,6 @@
 
     export let customEvent: UserCustomEvent;
     export let isSelected: boolean = false;
-    export let noBorder: boolean = false;
 
     const handleHover = () => {
         eventHover.set(customEvent.id);
@@ -40,8 +39,7 @@
 <div
     style={cssVarStyles}
     id="main"
-    class="flex items-center justify-between border-zinc-300 h-10 duration-100
-    {noBorder ? '' : 'border-b-2'}
+    class="flex items-center justify-between border-zinc-300 h-10 duration-100 border-b-2
     {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'}"
     class:tchover={$eventHoverRev === customEvent.id}
     on:mouseenter={handleHover}

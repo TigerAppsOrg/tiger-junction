@@ -26,7 +26,6 @@
 
     export let course: CourseData;
     export let category: string = "search";
-    export let noBorder: boolean = false;
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -163,7 +162,7 @@
 <div
     id="card"
     transition:slide={{ duration: 150, axis: "y" }}
-    class="duration-100 {!flipped && !noBorder && 'border-b-[1px]'}
+    class="duration-100 border-b-[1px]
     {category === 'saved' && 'dark:border-black'}"
     style={cssVarStyles}
     on:mouseenter={handleHover}

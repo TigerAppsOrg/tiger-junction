@@ -117,7 +117,6 @@
                             {#each scheduleEvents as event, i}
                                 <EventCard
                                     customEvent={event}
-                                    noBorder={i === scheduleEvents.length - 1}
                                     isSelected={true} />
                             {/each}
                         </div>
@@ -136,7 +135,6 @@
                             {#each notInSchedule as event, i}
                                 <EventCard
                                     customEvent={event}
-                                    noBorder={i === notInSchedule.length - 1}
                                     isSelected={false} />
                             {/each}
                         </div>
