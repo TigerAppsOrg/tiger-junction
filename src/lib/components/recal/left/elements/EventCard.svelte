@@ -47,7 +47,7 @@
     on:blur={handleLeave}
     on:mouseleave={handleLeave}>
     <div class="w-[60%]">
-        <p id="title" class="text-sm p-1">
+        <p id="title" class="text-sm p-1 overflow-clip">
             {customEvent.title}
         </p>
     </div>
