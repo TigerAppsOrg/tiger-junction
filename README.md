@@ -14,21 +14,17 @@
 
 Based heavily on [ReCal](https://recal.io/), `ReCal+` allows easy schedule planning with a visual calendar, powerful advanced search and filtering, built-in course ratings, and iCal exporting.
 
-### Student Developer API (Coming Soon)
-
-GraphQL and REST APIs for Princeton student developers. Data sources include course details, prerequisites, program requirements (majors, minors, certificates), and TigerJunction specific data. Once released, information about obtaining an API Key will be avaliable.
-
 ## Tech Stack
 
 Unlike most Princeton student applications, `TigerJunction` utilizes a JS backend (with SvelteKit) and is hosted primarily with serverless cloud providers. There are many reasons for this: cost minimization, being developed separately from COS333 (Princeton's project-based software engineering course), and preferring JS over Python for web development.
 
 **Languages:** JavaScript, TypeScript, SQL, HTML, CSS
 
-**Libraries/Frameworks:** Svelte, SvelteKit, TailwindCSS, MeltUI, Vite
+**Libraries/Frameworks:** Svelte, SvelteKit, TailwindCSS, Vite
 
-**Backend:** Supabase (PostgreSQL and Deno), AWS (Lambda, S3, Cloudfront; through SST), Cloudflare (DNS, DoS Protection, R2, and Workers), Redis, NodeJS, Princeton StudentApp API
+**Backend:** Supabase PostgreSQL, AWS (Lambda, S3, Cloudfront; through SST), Cloudflare (DNS, DoS Protection), Redis, NodeJS, Princeton StudentApp API
 
-**Dev Tools:** Git, GitHub, GitHub Actions, Prettier
+**Dev Tools:** Git, GitHub Actions, Prettier, ESLint
 
 ## Acknowledgements
 
