@@ -16,7 +16,7 @@
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
-    import { hoveredCourse } from "../calendar/calendar";
+    import { hoveredCourse } from "../../../scripts/ReCal+/calendar";
 
     const supabase = getContext("supabase") as SupabaseClient;
 

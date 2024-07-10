@@ -1,20 +1,20 @@
 <script lang="ts">
-    import { getContext } from "svelte";
-    import { SupabaseClient } from "@supabase/supabase-js";
+    import { darkenHSL } from "$lib/scripts/convert";
     import {
         editEvent,
         scheduleEventMap,
         type CustomEvent
     } from "$lib/stores/events";
+    import { modalStore } from "$lib/stores/modal";
     import { currentSchedule } from "$lib/stores/recal";
     import { calColors, calculateCssVars } from "$lib/stores/styles";
-    import { modalStore } from "$lib/stores/modal";
+    import { SupabaseClient } from "@supabase/supabase-js";
+    import { getContext } from "svelte";
     import {
         eventHover,
         eventHoverRev,
         hoveredEvent
-    } from "../../calendar/calendar";
-    import { darkenHSL } from "$lib/scripts/convert";
+    } from "../../../../scripts/ReCal+/calendar";
 
     const supabase: SupabaseClient = getContext("supabase");
 

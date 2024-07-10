@@ -6,7 +6,7 @@ import { getCurrentSchedule } from "./getters";
 import { get } from "svelte/store";
 import { sectionData } from "$lib/stores/rsections";
 import { toastStore } from "$lib/stores/toast";
-import { hoveredCourse } from "$lib/components/recal/calendar/calendar";
+import { hoveredCourse } from "$lib/scripts/ReCal+/calendar";
 
 //----------------------------------------------------------------------
 // From Search

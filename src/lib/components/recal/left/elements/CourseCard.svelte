@@ -22,7 +22,7 @@
         courseHover,
         courseHoverRev,
         hoveredCourse
-    } from "../../calendar/calendar";
+    } from "../../../../scripts/ReCal+/calendar";
     import CardLinkButton from "./CardLinkButton.svelte";
 
     export let course: CourseData;

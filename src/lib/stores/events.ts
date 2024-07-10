@@ -4,7 +4,7 @@
 
 import { goto } from "$app/navigation";
 import { schedules } from "$lib/changeme";
-import { hoveredEvent } from "$lib/components/recal/calendar/calendar";
+import { hoveredEvent } from "$lib/scripts/ReCal+/calendar";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { get, writable } from "svelte/store";
 

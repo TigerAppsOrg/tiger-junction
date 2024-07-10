@@ -4,7 +4,7 @@
         type BoxParam,
         hoveredCourse,
         hoveredEvent
-    } from "$lib/components/recal/calendar/calendar";
+    } from "$lib/scripts/ReCal+/calendar";
     import { valueToDays } from "$lib/scripts/convert";
     import { scheduleEventMap } from "$lib/stores/events";
     import {
