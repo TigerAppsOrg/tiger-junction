@@ -12,7 +12,7 @@
         searchSettings
     } from "$lib/stores/recal";
     import { sectionData } from "$lib/stores/rsections";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
@@ -55,7 +55,7 @@
                 sectionData.add(supabase, $currentTerm, $searchResults[i].id);
     };
 
-    $: cssVarStyles = calculateCssVars("2");
+    $: cssVarStyles = getStyles("2");
 </script>
 
 <div class="flex flex-col gap-1" style={cssVarStyles}>

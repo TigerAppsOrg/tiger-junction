@@ -7,7 +7,7 @@
     } from "$lib/stores/events";
     import { modalStore } from "$lib/stores/modal";
     import { currentSchedule } from "$lib/stores/recal";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
+    import { calColors, getStyles } from "$lib/stores/styles";
     import { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
     import {
@@ -32,7 +32,7 @@
         hoveredEvent.set(null);
     };
 
-    $: baseStyles = calculateCssVars("E");
+    $: baseStyles = getStyles("E");
     $: cssVarStyles = `${baseStyles};--border:${darkenHSL($calColors["E"], 40)}`;
 </script>
 

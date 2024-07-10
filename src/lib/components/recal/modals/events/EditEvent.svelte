@@ -15,7 +15,7 @@
         valueToDayArr,
         valueToMilitary
     } from "$lib/scripts/convert";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     import { customEvents } from "$lib/stores/events";
     import { editEvent } from "$lib/stores/events";
     import { recal } from "$lib/stores/recal";
@@ -196,7 +196,7 @@
         }
     });
 
-    $: cssVarStyles = calculateCssVars("2");
+    $: cssVarStyles = getStyles("2");
 </script>
 
 <Modal {showModal}>

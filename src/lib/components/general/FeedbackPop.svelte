@@ -2,7 +2,7 @@
     import StdModal from "$lib/components/ui/StdModal.svelte";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     import { getContext } from "svelte";
 
     export let showModal: boolean = false;
@@ -33,8 +33,8 @@
         showModal = false;
     };
 
-    $: declineStyle = calculateCssVars("-1");
-    $: submitStyle = calculateCssVars("0");
+    $: declineStyle = getStyles("-1");
+    $: submitStyle = getStyles("0");
 </script>
 
 <StdModal title="TigerJunction needs feedback!" stdClose={false} {showModal}>

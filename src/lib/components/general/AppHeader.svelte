@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { darkTheme } from "$lib/stores/state";
     import { modalStore } from "$lib/stores/modal";
@@ -14,7 +14,7 @@
         goto("/");
     };
 
-    $: cssVarStyles = calculateCssVars("0");
+    $: cssVarStyles = getStyles("0");
 </script>
 
 <nav

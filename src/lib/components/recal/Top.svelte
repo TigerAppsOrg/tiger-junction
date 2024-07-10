@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { currentTerm, schedules } from "$lib/changeme";
+    import duck from "$lib/img/duck.gif";
     import {
         fetchRawCourseData,
         fetchUserSchedules,
@@ -11,20 +13,18 @@
         searchCourseData,
         searchSettings
     } from "$lib/stores/recal";
-    import { currentTerm, schedules } from "$lib/changeme";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import duck from "$lib/img/duck.gif";
 
-    import { modalStore } from "$lib/stores/modal";
-    import Loader from "../ui/Loader.svelte";
-    import { savedCourses } from "$lib/stores/rpool";
-    import { isMobile, showCal } from "$lib/stores/mobile";
-    import { toastStore } from "$lib/stores/toast";
-    import { SCHEDULE_CAP } from "$lib/constants";
-    import { calculateCssVars } from "$lib/stores/styles";
     import { ACTIVE_TERMS } from "$lib/changeme";
+    import { SCHEDULE_CAP } from "$lib/constants";
+    import { isMobile, showCal } from "$lib/stores/mobile";
+    import { modalStore } from "$lib/stores/modal";
+    import { savedCourses } from "$lib/stores/rpool";
+    import { getStyles } from "$lib/stores/styles";
+    import { toastStore } from "$lib/stores/toast";
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";
+    import Loader from "../ui/Loader.svelte";
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -63,13 +63,14 @@
         modalStore.push("addSchedule");
     };
 
+    // Confetti animation
     const invokeFun = () => {
-        var count = 200;
-        var defaults = {
+        const count = 200;
+        const defaults = {
             origin: { y: 0.7 }
         };
 
-        function fire(particleRatio: number, opts: any) {
+        function fire(particleRatio: number, opts: object) {
             confetti({
                 ...defaults,
                 ...opts,
@@ -102,8 +103,8 @@
     };
 
     // Handle theme changes
-    $: cssVarStyles = calculateCssVars("0");
-    $: eventStyles = calculateCssVars("6");
+    $: cssVarStyles = getStyles("0");
+    $: eventStyles = getStyles("6");
 </script>
 
 <div

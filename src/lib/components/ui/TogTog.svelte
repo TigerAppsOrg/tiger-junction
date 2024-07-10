@@ -1,6 +1,6 @@
 <script lang="ts">
     import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     export let name: string = "";
 
     const handleToggle = () => {
@@ -28,7 +28,7 @@
         }
     };
 
-    $: cssVarStyles = calculateCssVars("0");
+    $: cssVarStyles = getStyles("0");
 </script>
 
 <button

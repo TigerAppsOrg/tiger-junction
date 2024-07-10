@@ -120,7 +120,7 @@ export const calColors = {
  * @param scheme index of the color in the palette
  * @returns CSS variables for the color scheme
  */
-export const calculateCssVars = (scheme: keyof CalColors): string => {
+export const getStyles = (scheme: keyof CalColors): string => {
     const cc = get(calColors);
 
     const textColor =

@@ -3,11 +3,7 @@
 -->
 
 <script lang="ts">
-    import {
-        calColors,
-        calculateCssVars,
-        type CalColors
-    } from "$lib/stores/styles";
+    import { calColors, getStyles, type CalColors } from "$lib/stores/styles";
 
     export let scheme: keyof CalColors = "0";
     export let message = "DEFAULT MESSAGE";
@@ -16,7 +12,7 @@
     export let className = "";
 
     // Handle theme changes
-    $: cssVarStyles = calculateCssVars(scheme);
+    $: cssVarStyles = getStyles(scheme);
 </script>
 
 <button

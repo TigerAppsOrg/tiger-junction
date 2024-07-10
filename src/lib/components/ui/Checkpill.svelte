@@ -1,10 +1,10 @@
 <script lang="ts">
     import { searchSettings } from "$lib/stores/recal";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     export let name: string = "";
     export let category: string;
 
-    $: cssVarStyles = calculateCssVars("0");
+    $: cssVarStyles = getStyles("0");
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

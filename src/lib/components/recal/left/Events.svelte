@@ -8,7 +8,7 @@
     } from "$lib/stores/events";
     import { currentSchedule, ready } from "$lib/stores/recal";
     import EventCard from "./elements/EventCard.svelte";
-    import { calculateCssVars } from "$lib/stores/styles";
+    import { getStyles } from "$lib/stores/styles";
     import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
 
@@ -27,7 +27,7 @@
         event => !scheduleEvents.some(e => e.id === event.id)
     );
 
-    $: cssVarStyles = calculateCssVars("6");
+    $: cssVarStyles = getStyles("6");
 </script>
 
 {#if $ready}

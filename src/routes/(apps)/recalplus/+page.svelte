@@ -4,9 +4,9 @@
     import Left from "$lib/components/recal/Left.svelte";
     import Top from "$lib/components/recal/Top.svelte";
     import {
-        type UserCustomEvent,
         customEvents,
-        scheduleEventMap
+        scheduleEventMap,
+        type UserCustomEvent
     } from "$lib/stores/events";
     import { isMobile, showCal } from "$lib/stores/mobile";
     import {
