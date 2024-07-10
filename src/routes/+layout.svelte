@@ -2,8 +2,7 @@
     import "../app.pcss";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
-    import { darkTheme } from "$lib/stores/state";
-    import { isMobile } from "$lib/stores/mobile";
+    import { darkTheme, isMobile } from "$lib/stores/styles";
     import ToastLib from "$lib/components/general/ToastLib.svelte";
 
     export let data;

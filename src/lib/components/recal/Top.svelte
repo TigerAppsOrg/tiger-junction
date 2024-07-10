@@ -17,10 +17,9 @@
 
     import { ACTIVE_TERMS } from "$lib/changeme";
     import { SCHEDULE_CAP } from "$lib/constants";
-    import { isMobile, showCal } from "$lib/stores/mobile";
     import { modalStore } from "$lib/stores/modal";
     import { savedCourses } from "$lib/stores/rpool";
-    import { getStyles } from "$lib/stores/styles";
+    import { getStyles, isMobile, showCal } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";

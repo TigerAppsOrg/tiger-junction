@@ -8,7 +8,7 @@
         scheduleEventMap,
         type UserCustomEvent
     } from "$lib/stores/events";
-    import { isMobile, showCal } from "$lib/stores/mobile";
+    import { isMobile, showCal } from "$lib/stores/styles";
     import {
         rawCourseData,
         ready,

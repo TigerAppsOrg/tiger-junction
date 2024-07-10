@@ -3,6 +3,34 @@ import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
 import { get, writable } from "svelte/store";
 
 //----------------------------------------------------------------------
+// General
+//----------------------------------------------------------------------
+
+function createDarkTheme() {
+    const store = writable<boolean>(
+        typeof window !== "undefined" &&
+            localStorage.getItem("darkMode") === "true"
+    );
+
+    return {
+        subscribe: store.subscribe,
+        update: store.update,
+        set: (value: boolean) => {
+            store.set(value);
+            localStorage.setItem("darkMode", value.toString());
+        }
+    };
+}
+
+export const darkTheme = createDarkTheme();
+
+// Whether the user is on a mobile device (TODO - change to more responsive design)
+export const isMobile = writable<boolean>(false);
+
+// Whether to show the calendar on the mobile
+export const showCal = writable<boolean>(true);
+
+//----------------------------------------------------------------------
 // ReCal+
 //----------------------------------------------------------------------
 
