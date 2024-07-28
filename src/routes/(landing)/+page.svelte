@@ -114,9 +114,6 @@
                         alt="TailwindCSS"
                         class="logo" />
                 </a>
-                <a href="https://melt-ui.com/" target="_blank">
-                    <img src="/home/melt.png" alt="MeltUI" class="logo" />
-                </a>
                 <a href="https://sst.dev/" target="_blank">
                     <img src="/home/sst.svg" alt="SST" class="logo" />
                 </a>
