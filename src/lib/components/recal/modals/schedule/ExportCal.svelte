@@ -19,10 +19,15 @@
 
     let link: string = "";
 
+    let isLoading = false;
+
     /**
      * Create an ical file and upload it to supabase storage.
      */
     const createIcal = async () => {
+        if (isLoading) return;
+        isLoading = true;
+
         // Create event for each course
         let events: EventAttributes[] = [];
 
@@ -180,68 +185,77 @@
 
             link = data.path;
         });
+
+        isLoading = false;
     };
 </script>
 
 <StdModal title="Export Schedule" stdClose={true} {showModal}>
     <div class="flex flex-col space-y-2 md:space-y-4" slot="main">
-        {#if !link}
-            <p>
-                This will create a new iCal file with all your confirmed
-                courses, which you can add to your calendar app by downloading
-                the resultant file or copying the link. If you use the link,
-                your calendar will automatically update approximately every 24
-                hours. To update your export immediately, simply export again.
-                <span class="underline">
-                    Warning: creating a new export will overwrite any existing
-                    exports. Custom events will not be exported.
-                </span>
-            </p>
-        {:else}
-            <p>
-                Your calendar export is ready! You can download the file or copy
-                the link below.
-            </p>
-        {/if}
-
-        {#if link}
-            <div
-                class="flex flex-col md:flex-row items-center justify-between gap-2">
-                <p
-                    class="text-black dark:text-zinc-100 btn flex-1 text-center break-all text-sm">
-                    {SUPABASE_BUCKET_URL}{link}
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-2">
-                    <StdButton
-                        message="Copy Link"
-                        scheme="2"
-                        onClick={() => {
-                            navigator.clipboard.writeText(
-                                `${SUPABASE_BUCKET_URL}${link}`
-                            );
-                            toastStore.add(
-                                "success",
-                                "Copied link to clipboard!"
-                            );
-                        }} />
-
-                    <StdButton
-                        message="Download File"
-                        scheme="1"
-                        onClick={() => {
-                            let a = document.createElement("a");
-                            a.href = `${SUPABASE_BUCKET_URL}${link}`;
-                            a.download = "ReCal+.ics";
-                            a.click();
-                        }} />
-                </div>
+        {#if isLoading}
+            <div>
+                <p>Loading calendar export... This may take a few seconds.</p>
             </div>
         {:else}
-            <StdButton
-                message="Create New Export"
-                scheme="2"
-                onClick={createIcal} />
+            {#if !link}
+                <p>
+                    This will create a new iCal file with all your confirmed
+                    courses, which you can add to your calendar app by
+                    downloading the resultant file or copying the link. If you
+                    use the link, your calendar will automatically update
+                    approximately every 24 hours. To update your export
+                    immediately, simply export again.
+                    <span class="underline">
+                        Warning: creating a new export will overwrite any
+                        existing exports. Custom events will not be exported.
+                    </span>
+                </p>
+            {:else}
+                <p>
+                    Your calendar export is ready! You can download the file or
+                    copy the link below.
+                </p>
+            {/if}
+
+            {#if link}
+                <div
+                    class="flex flex-col md:flex-row items-center justify-between gap-2">
+                    <p
+                        class="text-black dark:text-zinc-100 btn flex-1 text-center break-all text-sm">
+                        {SUPABASE_BUCKET_URL}{link}
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <StdButton
+                            message="Copy Link"
+                            scheme="2"
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    `${SUPABASE_BUCKET_URL}${link}`
+                                );
+                                toastStore.add(
+                                    "success",
+                                    "Copied link to clipboard!"
+                                );
+                            }} />
+
+                        <StdButton
+                            message="Download File"
+                            scheme="1"
+                            onClick={() => {
+                                let a = document.createElement("a");
+                                a.href = `${SUPABASE_BUCKET_URL}${link}`;
+                                a.download = "ReCal+.ics";
+                                a.click();
+                            }} />
+                    </div>
+                </div>
+            {:else}
+                <StdButton
+                    message="Create New Export"
+                    scheme="2"
+                    onClick={createIcal} />
+            {/if}
         {/if}
     </div>
 </StdModal>
