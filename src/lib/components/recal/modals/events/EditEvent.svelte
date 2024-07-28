@@ -380,9 +380,17 @@
 </Modal>
 
 <style lang="postcss">
+    input {
+        @apply bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200;
+    }
+
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        @apply dark:invert;
+    }
+
     .settings-area {
         @apply p-4 border-t-2
-    border-slate-600/30 dark:border-slate-200/30;
+        border-slate-600/30 dark:border-slate-200/30;
     }
 
     .day-toggle {
