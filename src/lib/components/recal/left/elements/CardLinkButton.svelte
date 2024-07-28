@@ -20,7 +20,7 @@
         <div class="flex items-center">
             {title}
         </div>
-        <div class="invert-[0.5] dark:invert-[0.7]">
+        <div>
             <slot></slot>
         </div>
     </div>
