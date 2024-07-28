@@ -1,7 +1,5 @@
 <script lang="ts">
     import { CURRENT_TERM_ID, currentTerm } from "$lib/changeme";
-    import plusIcon from "$lib/img/icons/addicon.svg";
-    import removeIcon from "$lib/img/icons/subtractionicon.svg";
     import { darkenHSL } from "$lib/scripts/convert";
     import * as cf from "$lib/scripts/ReCal+/cardFunctions";
     import { getLinks } from "$lib/scripts/ReCal+/getLinks";
@@ -344,33 +342,13 @@
         @apply border-b-[2px] dark:border-zinc-800;
     }
 
-    /* !-- Refactor --! */
-
     .add-button:hover {
         @apply bg-green-500 dark:bg-green-700;
-    }
-
-    .add-button:hover img {
-        @apply invert;
-    }
-
-    .pin-button:hover {
-        @apply bg-blue-500 dark:bg-blue-700;
-    }
-
-    .pin-button:hover img {
-        @apply invert;
     }
 
     .remove-button:hover {
         @apply bg-red-500 dark:bg-red-700;
     }
-
-    .remove-button:hover img {
-        @apply invert;
-    }
-
-    /* !-- --! */
 
     .cardlink {
         @apply w-1/3 m-0 px-0;
