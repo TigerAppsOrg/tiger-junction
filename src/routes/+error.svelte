@@ -28,8 +28,4 @@
         @apply rounded-md px-4 py-2 shadow-md hover:shadow-lg
     bg-std-green text-black hover:bg-std-darkGreen duration-150;
     }
-
-    .btn:active {
-        @apply transform scale-95;
-    }
 </style>

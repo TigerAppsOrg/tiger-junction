@@ -12,19 +12,24 @@ const TIME_CONVERSION: Record<string, number> = {
     NULL_TIME: -42
 };
 
+export const MIN_TIME_VALUE = 0;
+export const MIN_TIME = "08:00AM";
+export const MAX_TIME_VALUE = 90;
+export const MAX_TIME = "11:00PM";
+
 /**
  * Converts an am/pm time string to a value
  * @param time in format 'HH:MM AM/PM'
- * @returns value between X and Y
+ * @returns value between 0 and 90
  */
 const timeToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
 
-    let dig = time
+    const dig = time
         .split(" ")[0]
         .split(":")
         .map(x => parseInt(x));
-    let pm = time.split(" ")[1] === "PM" || time.split(" ")[1] === "pm";
+    const pm = time.split(" ")[1] === "PM" || time.split(" ")[1] === "pm";
 
     if (dig[0] === 12) dig[0] = 0;
 
@@ -42,15 +47,15 @@ const timeToValue = (time: string) => {
 /**
  * Converts a military time string to a value
  * @param time in format 'HH:MM' (24 hour/military time)
- * @returns value between X and Y
+ * @returns value between 0 and 90
  */
 const militaryToValue = (time: string) => {
     if (time === undefined) return TIME_CONVERSION.NULL_TIME;
 
-    let hour = parseInt(time.slice(0, 2));
-    let minute = parseInt(time.slice(3, 5));
+    const hour = parseInt(time.slice(0, 2));
+    const minute = parseInt(time.slice(3, 5));
 
-    let val =
+    const val =
         hour * TIME_CONVERSION.HOUR_FACTOR +
         minute * TIME_CONVERSION.MINUTE_FACTOR -
         TIME_CONVERSION.ZERO_ADJUST;
@@ -61,7 +66,7 @@ const militaryToValue = (time: string) => {
 
 /**
  * Converts a value to a military time string
- * @param value between X and Y
+ * @param value between 0 and 90
  * @returns time string in format 'HH:MM' (24 hour/military time)
  */
 const valueToMilitary = (value: number) => {
@@ -138,8 +143,8 @@ const testTimeToValue = () => {
 
     let success = true;
     console.log("Running timeToValue() tests...");
-    for (let time of Object.keys(TEST_CASES) as TEST_TIMES[]) {
-        let val = timeToValue(time);
+    for (const time of Object.keys(TEST_CASES) as TEST_TIMES[]) {
+        const val = timeToValue(time);
         if (val !== TEST_CASES[time]) {
             console.log(
                 `timeToValue(${time}) = ${val} (expected ${TEST_CASES[time]})`
@@ -176,13 +181,23 @@ const daysToValue = (section: WeekDays) => {
     return days;
 };
 
+export const dayArrToValue = (dayArr: string[]) => {
+    let days = 0;
+    if (dayArr.includes("M")) days += 1;
+    if (dayArr.includes("T")) days += 2;
+    if (dayArr.includes("W")) days += 4;
+    if (dayArr.includes("R")) days += 8;
+    if (dayArr.includes("F")) days += 16;
+    return days;
+};
+
 /**
  * Converts a value to a section's days
  * @param value between 0 and 31
  * @returns days in number array
  */
 const valueToDays = (value: number) => {
-    let days = [];
+    const days = [];
 
     if (value >= 16) {
         days.push(5);
@@ -206,6 +221,29 @@ const valueToDays = (value: number) => {
     }
 
     return days;
+};
+
+export const valueToDaysStr = (value: number): string => {
+    const days = valueToDays(value);
+    let dayStr = "";
+    if (days.includes(1)) dayStr += "M";
+    if (days.includes(2)) dayStr += "T";
+    if (days.includes(3)) dayStr += "W";
+    if (days.includes(4)) dayStr += "R";
+    if (days.includes(5)) dayStr += "F";
+    return dayStr;
+};
+
+// TODO This file needs to be heavily refactored
+export const valueToDayArr = (value: number): string[] => {
+    const days = valueToDays(value);
+    const dayArr = [];
+    if (days.includes(1)) dayArr.push("M");
+    if (days.includes(2)) dayArr.push("T");
+    if (days.includes(3)) dayArr.push("W");
+    if (days.includes(4)) dayArr.push("R");
+    if (days.includes(5)) dayArr.push("F");
+    return dayArr;
 };
 
 //----------------------------------------------------------------------
@@ -232,6 +270,7 @@ const normalizeText = (text: string) => {
  * @returns darkened HSL color
  */
 const darkenHSL = (hsl: string, amount: number) => {
+    // eslint-disable-next-line prefer-const
     let [h, s, l] = hsl.split(",").map(x => parseInt(x.replace(/\D/g, "")));
     l = Math.max(0, l - amount);
     return `hsl(${h}, ${s}%, ${l}%)`;
@@ -243,6 +282,7 @@ const darkenHSL = (hsl: string, amount: number) => {
  * @returns RGB color
  */
 const hslToRGB = (hsl: string) => {
+    // eslint-disable-next-line prefer-const
     let [h, s, l] = hsl.split(",").map(x => parseInt(x.replace(/\D/g, "")));
 
     l /= 100;
@@ -277,16 +317,17 @@ const rgbToHSL = (hex: string) => {
               : 4 + (r - g) / s
         : 0;
 
-    let hVal = Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h);
-    let sVal = Math.round(
+    const hVal = Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h);
+    const sVal = Math.round(
         100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0)
     );
-    let lVal = Math.round((100 * (2 * l - s)) / 2);
+    const lVal = Math.round((100 * (2 * l - s)) / 2);
     return `hsl(${hVal}, ${sVal}%, ${lVal}%)`;
 };
 
 //----------------------------------------------------------------------
 
+// TODO Refactor
 export {
     timeToValue,
     militaryToValue,

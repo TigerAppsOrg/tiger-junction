@@ -2,8 +2,8 @@ import { getToken } from "$lib/scripts/scraper/getToken";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async ({ url }) => {
-    let term = url.searchParams.get("term");
-    let course = url.searchParams.get("id");
+    const term = url.searchParams.get("term");
+    const course = url.searchParams.get("id");
 
     if (!term || !course) {
         return new Response("Invalid term or course", { status: 400 });

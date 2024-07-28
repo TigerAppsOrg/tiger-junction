@@ -1,8 +1,8 @@
 <script lang="ts">
-    import Checkpill from "$lib/components/elements/Checkpill.svelte";
-    import Modal from "$lib/components/elements/Modal.svelte";
-    import StdButton from "$lib/components/elements/StdButton.svelte";
-    import TogTog from "$lib/components/elements/TogTog.svelte";
+    import Checkpill from "$lib/components/ui/Checkpill.svelte";
+    import Modal from "$lib/components/ui/Modal.svelte";
+    import StdButton from "$lib/components/ui/StdButton.svelte";
+    import TogTog from "$lib/components/ui/TogTog.svelte";
     import { modalStore } from "$lib/stores/modal";
     import { DEFAULT_SETTINGS, searchSettings } from "$lib/stores/recal";
 
@@ -11,7 +11,7 @@
      * Save settings and close modal
      */
     const saveSettings = () => {
-        modalStore.close();
+        modalStore.pop();
     };
 
     let minInput: number = $searchSettings.filters["Rating"].min;
@@ -71,8 +71,8 @@
                 <div class="mt-4">
                     {#if $searchSettings.filters["Rating"].enabled}
                         <div
-                            class="border-slate-600/30 mx-8 p-2
-                    dark:border-slate-200/30 border-t-2 mt-2">
+                            class="border-zinc-600/30 mx-8 p-2
+                    dark:border-zinc-200/30 border-t-2 mt-2">
                             <div class="mb-2 flex items-center gap-4">
                                 <h3 class="text-lg font-semibold">Rating</h3>
                                 <p class="italic">
@@ -118,8 +118,8 @@
                     {#each Object.keys($searchSettings.filters) as filter}
                         {#if $searchSettings.filters[filter].enabled && $searchSettings.filters[filter].hasOwnProperty("values")}
                             <div
-                                class="border-slate-600/30 mx-8 p-2
-                        dark:border-slate-200/30 border-t-2 mt-2">
+                                class="border-zinc-600/30 mx-8 p-2
+                        dark:border-zinc-200/30 border-t-2 mt-2">
                                 <div>
                                     {#if filter === "No Conflicts"}
                                         <h3 class="text-lg font-semibold">
@@ -217,6 +217,6 @@
 <style lang="postcss">
     .settings-area {
         @apply p-4 border-t-2
-    border-slate-600/30 dark:border-slate-200/30;
+    border-zinc-600/30 dark:border-zinc-200/30;
     }
 </style>

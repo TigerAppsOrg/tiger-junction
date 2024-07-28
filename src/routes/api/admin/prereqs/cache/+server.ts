@@ -5,7 +5,10 @@ import path from "path";
 
 export const GET: RequestHandler = async ({ url }) => {
     const term = url.searchParams.get("term");
-    if (!term || !TERM_MAP.hasOwnProperty(parseInt(term))) {
+    if (
+        !term ||
+        !Object.prototype.hasOwnProperty.call(TERM_MAP, parseInt(term))
+    ) {
         return new Response("Invalid term", { status: 400 });
     }
 

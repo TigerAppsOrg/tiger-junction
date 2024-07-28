@@ -2,7 +2,7 @@ import {
     PUBLIC_SUPABASE_URL,
     PUBLIC_SUPABASE_ANON_KEY
 } from "$env/static/public";
-import { Database } from "$lib/types/supabaseTypes";
+import { type Database } from "$lib/types/supabaseTypes";
 import { createSupabaseServerClient } from "@supabase/auth-helpers-sveltekit";
 import type { Handle } from "@sveltejs/kit";
 

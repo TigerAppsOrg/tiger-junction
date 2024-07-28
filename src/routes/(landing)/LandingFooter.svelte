@@ -1,6 +1,6 @@
 <div class="glass w-full py-2 space-y-1">
     <div
-        class="text-center text-gray-500 text-sm
+        class="text-center text-zinc-500 text-sm
     flex items-center justify-center gap-4">
         <div>© 2024 TigerJunction</div>
         <a
@@ -18,7 +18,7 @@
 
 <style lang="postcss">
     .link {
-        @apply text-center text-gray-500 text-sm hover:text-gray-700;
+        @apply text-center text-zinc-500 text-sm hover:text-zinc-700;
     }
 
     .glass {

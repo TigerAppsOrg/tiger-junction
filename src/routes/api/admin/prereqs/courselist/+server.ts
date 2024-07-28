@@ -4,8 +4,11 @@ import { getToken } from "$lib/scripts/scraper/getToken";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async req => {
-    let term = req.url.searchParams.get("term");
-    if (!term || !TERM_MAP.hasOwnProperty(parseInt(term))) {
+    const term = req.url.searchParams.get("term");
+    if (
+        !term ||
+        !Object.prototype.hasOwnProperty.call(TERM_MAP, parseInt(term))
+    ) {
         return new Response("Invalid term", { status: 400 });
     }
 

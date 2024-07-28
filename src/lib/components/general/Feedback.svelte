@@ -1,7 +1,7 @@
 <script lang="ts">
-    import StdModal from "$lib/components/elements/StdModal.svelte";
+    import StdModal from "$lib/components/ui/StdModal.svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import StdButton from "../elements/StdButton.svelte";
+    import StdButton from "../ui/StdButton.svelte";
     import { toastStore } from "$lib/stores/toast";
     import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     import { getContext } from "svelte";

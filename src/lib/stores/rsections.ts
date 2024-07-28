@@ -2,7 +2,7 @@
 
 import { SECTION_OBJ } from "$lib/changeme";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { writable, type Writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 // term -> SectionMap
 export type RawSectionData = {
@@ -29,7 +29,7 @@ export type SectionData = {
     status: number;
 };
 
-const { set, update, subscribe }: Writable<RawSectionData> = writable(
+const { set, update, subscribe } = writable<RawSectionData>(
     JSON.parse(JSON.stringify(SECTION_OBJ))
 );
 

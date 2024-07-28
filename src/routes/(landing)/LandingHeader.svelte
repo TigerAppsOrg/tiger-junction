@@ -34,8 +34,8 @@
                 <button
                     on:click={() => handleLogin(supabase)}
                     class="inline-block text-sm px-4 py-2 leading-none border rounded
-             text-black border-black hover:text-gray-600
-            hover:border-gray-600">
+             text-black border-black hover:text-zinc-600
+            hover:border-zinc-600">
                     Login
                 </button>
             </div>
@@ -45,6 +45,6 @@
 
 <style lang="postcss">
     /* .link {
-        @apply inline-block mt-0 text-black hover:text-gray-600 mr-4;
+        @apply inline-block mt-0 text-black hover:text-zinc-600 mr-4;
     } */
 </style>

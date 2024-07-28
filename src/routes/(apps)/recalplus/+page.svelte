@@ -1,22 +1,25 @@
 <script lang="ts">
+    import { CURRENT_TERM_ID, schedules } from "$lib/changeme.js";
     import Calendar from "$lib/components/recal/Calendar.svelte";
     import Left from "$lib/components/recal/Left.svelte";
     import Top from "$lib/components/recal/Top.svelte";
-    import { CURRENT_TERM_ID } from "$lib/changeme.js";
-    import { isMobile, showCal } from "$lib/stores/mobile";
+    import {
+        customEvents,
+        scheduleEventMap,
+        type UserCustomEvent
+    } from "$lib/stores/events";
+    import { isMobile, showCal } from "$lib/stores/styles";
     import {
         rawCourseData,
         ready,
+        scheduleCourseMeta,
         searchCourseData
     } from "$lib/stores/recal.js";
-    import { schedules } from "$lib/changeme.js";
-    import { rMeta } from "$lib/stores/rmeta.js";
     import { savedCourses } from "$lib/stores/rpool.js";
     import { sectionData, type SectionData } from "$lib/stores/rsections.js";
     import type { CourseData } from "$lib/types/dbTypes.js";
-    import { onMount } from "svelte";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { modalStore } from "$lib/stores/modal";
+    import { onMount } from "svelte";
 
     export let data: {
         supabase: SupabaseClient;
@@ -26,13 +29,20 @@
             schedules: any[];
             associations: any[];
             doneFeedback: boolean;
+            events: UserCustomEvent[];
+            eventAssociations: Record<number, number[]>;
         };
     };
 
     onMount(async () => {
-        if (!data.body.doneFeedback) {
-            modalStore.open("feedbackpop", { clear: true });
-        }
+        console.log(data);
+
+        // if (!data.body.doneFeedback) {
+        //     modalStore.push("feedbackpop");
+        // }
+
+        customEvents.set(data.body.events);
+        scheduleEventMap.init(data.body.eventAssociations);
 
         if ($rawCourseData[CURRENT_TERM_ID].length === 0) {
             rawCourseData.update(x => {
@@ -102,7 +112,7 @@
                 ) as CourseData;
 
                 // Add metadata
-                rMeta.update(y => {
+                scheduleCourseMeta.update(y => {
                     if (!y.hasOwnProperty(scheduleId)) y[scheduleId] = {};
                     y[scheduleId][cur.id] = x.metadata;
                     return y;
@@ -140,7 +150,9 @@
         <Top />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
-    <div id="main" class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-80px)]">
+    <div
+        id="main"
+        class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-140px)] overflow-hidden">
         {#if $isMobile}
             {#if !$showCal}
                 <div class="flex-1 min-w-[200px]">

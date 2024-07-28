@@ -2,45 +2,39 @@
 import { normalizeText, valueToDays } from "$lib/scripts/convert";
 import type { CourseData } from "$lib/types/dbTypes";
 import { BASE_OBJ, type RawCourseData } from "$lib/changeme";
-import { get, writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { sectionData, type SectionMap } from "./rsections";
 import { sectionDone } from "$lib/changeme";
 import { savedCourses } from "./rpool";
-import { rMeta } from "./rmeta";
 import { doesConflict } from "$lib/scripts/ReCal+/conflict";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ActiveTerms } from "$lib/changeme";
+import { scheduleEventMap } from "./events";
 
 //----------------------------------------------------------------------
 // Forcers
 //----------------------------------------------------------------------
 
 // Ready for calendar render
-export const ready: Writable<boolean> = writable(false);
+export const ready = writable<boolean>(false);
 
 // Force rerendering of top area
-export const retop: Writable<boolean> = writable(false);
+export const retop = writable<boolean>(false);
 
 // Force rerendering of calendar
-export const recal: Writable<boolean> = writable(false);
+export const recal = writable<boolean>(false);
 
 // Force rerendering of search results
-export const research: Writable<boolean> = writable(false);
+export const research = writable<boolean>(false);
 
 //----------------------------------------------------------------------
-// Current Term/Schedule
+// State
 //----------------------------------------------------------------------
-
-// Hovered course
-export const hoveredCourse: Writable<CourseData | null> = writable(null);
-
-export const hovStyle: Writable<CourseData | null> = writable(null);
-export const hovStyleRev: Writable<number | null> = writable(null);
 
 // Current schedule id
-export const currentSchedule: Writable<number> = writable();
+export const currentSchedule = writable<number>();
 
-export const isResult: Writable<boolean> = writable(false);
+// Whether there are any search results
+export const isResult = writable<boolean>(false);
 
 //----------------------------------------------------------------------
 // Search Results
@@ -50,7 +44,7 @@ const {
     set: setRes,
     update: updateRes,
     subscribe: subscribeRes
-}: Writable<CourseData[]> = writable([]);
+} = writable<CourseData[]>([]);
 
 export const searchResults = {
     set: setRes,
@@ -62,12 +56,7 @@ export const searchResults = {
      * @param query input
      * @param term id of the term
      */
-    search: async (
-        query: string,
-        term: number,
-        settings: SearchSettings,
-        supabase: SupabaseClient
-    ) => {
+    search: async (query: string, term: number, settings: SearchSettings) => {
         // Current current search data
         if (!searchCourseData.get(term)) searchCourseData.reset(term);
 
@@ -80,7 +69,7 @@ export const searchResults = {
         // * Rating
         if (settings.filters["Rating"].enabled) {
             data = data.filter(x => {
-                let rating: number = x.rating ? x.rating : 0;
+                const rating: number = x.rating ? x.rating : 0;
                 return (
                     rating >= settings.filters["Rating"].min &&
                     rating <= settings.filters["Rating"].max
@@ -101,7 +90,7 @@ export const searchResults = {
                 }
 
                 // Check if any dist is enabled
-                for (let dist of x.dists) {
+                for (const dist of x.dists) {
                     if (settings.filters["Dists"].values[dist]) {
                         enabled = true;
                         break;
@@ -146,33 +135,40 @@ export const searchResults = {
         // * Does Not Conflict
         if (settings.filters["No Conflicts"].enabled) {
             // Fetch all sections for all courses in term
-            let termSec = get(sectionData)[term];
+            const termSec = get(sectionData)[term];
             await loadSections(term, termSec);
 
             // Get confirmed sections and format into array
-            let conflictList: Record<number, [number, number][]> = {
+            const conflictList: Record<number, [number, number][]> = {
                 1: [],
                 2: [],
                 3: [],
                 4: [],
                 5: []
             };
-            let curSched = get(currentSchedule);
-            let saved = get(savedCourses)[curSched];
-            let meta = get(rMeta)[curSched];
+
+            const curSched = get(currentSchedule);
+            const saved = get(savedCourses)[curSched];
+            const meta = get(scheduleCourseMeta)[curSched];
+            const events = scheduleEventMap.getSchedule(curSched);
 
             if (saved && meta) {
                 for (let i = 0; i < saved.length; i++) {
-                    let courseSections = termSec[saved[i].id];
-                    let courseMeta = meta[saved[i].id];
+                    const courseSections = termSec[saved[i].id];
+                    const courseMeta = meta[saved[i].id];
 
                     if (!courseMeta || !courseSections) continue;
 
                     for (let j = 0; j < courseSections.length; j++) {
-                        let nSec = courseSections[j];
+                        const nSec = courseSections[j];
 
                         // Continue if not confirmed
-                        if (courseMeta.confirms.hasOwnProperty(nSec.category)) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                courseMeta.confirms,
+                                nSec.category
+                            )
+                        ) {
                             // Legacy compatibility
                             if (
                                 typeof courseMeta.confirms[nSec.category] ===
@@ -192,14 +188,14 @@ export const searchResults = {
                         } else continue;
 
                         // Add to conflict list if confirmed
-                        let days = valueToDays(nSec.days);
+                        const days = valueToDays(nSec.days);
                         o: for (let k = 0; k < days.length; k++) {
-                            let day = days[k];
+                            const day = days[k];
 
                             // Check if time conflicts
                             for (let l = 0; l < conflictList[day].length; l++) {
-                                let start = conflictList[day][l][0];
-                                let end = conflictList[day][l][1];
+                                const start = conflictList[day][l][0];
+                                const end = conflictList[day][l][1];
                                 if (
                                     nSec.start_time < end &&
                                     nSec.end_time > start
@@ -215,31 +211,61 @@ export const searchResults = {
                         } // ! End of days loop
                     } // ! End of courseSections loop
                 } // ! End of saved courses loop
+            }
 
-                // Sort conflict list
-                for (let day in conflictList)
-                    conflictList[day] = conflictList[day].sort((a, b) => {
-                        return a[0] - b[0];
-                    });
+            // TODO This has a lot of duplicate code, perhaps refactor?
+            if (events.length > 0) {
+                for (let i = 0; i < events.length; i++) {
+                    const event = events[i];
+                    for (let j = 0; j < event.times.length; j++) {
+                        const timeBlock = event.times[j];
+                        const days = valueToDays(timeBlock.days);
 
-                // Check if any conflicts and filter
-                data = data.filter(
-                    x =>
-                        !doesConflict(
-                            x,
-                            conflictList,
-                            settings.filters["No Conflicts"].values[
-                                "Only Available Sections"
-                            ],
-                            settings.filters["Days"]
-                        )
-                );
-            } // ! End of if (saved && meta)
+                        o: for (let k = 0; k < days.length; k++) {
+                            const day = days[k];
+
+                            for (let l = 0; l < conflictList[day].length; l++) {
+                                const start = conflictList[day][l][0];
+                                const end = conflictList[day][l][1];
+                                if (
+                                    timeBlock.start < end &&
+                                    timeBlock.end > start
+                                )
+                                    break o;
+                            }
+
+                            conflictList[day].push([
+                                timeBlock.start,
+                                timeBlock.end
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Sort conflict list
+            for (const day in conflictList)
+                conflictList[day] = conflictList[day].sort((a, b) => {
+                    return a[0] - b[0];
+                });
+
+            // Check if any conflicts and filter
+            data = data.filter(
+                x =>
+                    !doesConflict(
+                        x,
+                        conflictList,
+                        settings.filters["No Conflicts"].values[
+                            "Only Available Sections"
+                        ],
+                        settings.filters["Days"]
+                    )
+            );
         } // ! End of "Does Not Conflict" filter
 
         // * Days
         if (settings.filters["Days"].enabled) {
-            let termSec = get(sectionData)[term];
+            const termSec = get(sectionData)[term];
             await loadSections(term, termSec);
 
             data = data.filter(x => {
@@ -279,12 +305,14 @@ export const searchResults = {
                         }
                     }
                     if (isThisSectionOkay) catmap[category] = true;
-                    else if (!catmap.hasOwnProperty(category))
+                    else if (
+                        !Object.prototype.hasOwnProperty.call(catmap, category)
+                    )
                         catmap[category] = false;
                 }
 
                 let isCourseOkay = true;
-                for (let category in catmap) {
+                for (const category in catmap) {
                     if (!catmap[category]) {
                         isCourseOkay = false;
                         break;
@@ -306,8 +334,8 @@ export const searchResults = {
         // * Rating
         if (settings.sortBy["Rating"].enabled) {
             data = data.sort((a, b) => {
-                let aRating: number = a.rating ? a.rating : 0;
-                let bRating: number = b.rating ? b.rating : 0;
+                const aRating: number = a.rating ? a.rating : 0;
+                const bRating: number = b.rating ? b.rating : 0;
 
                 return settings.sortBy["Rating"].value === 0
                     ? bRating - aRating
@@ -318,8 +346,8 @@ export const searchResults = {
         // * Weighted Rating
         if (settings.sortBy["Weighted Rating"].enabled) {
             data = data.sort((a, b) => {
-                let aRating: number = a.adj_rating ? a.adj_rating : 0;
-                let bRating: number = b.adj_rating ? b.adj_rating : 0;
+                const aRating: number = a.adj_rating ? a.adj_rating : 0;
+                const bRating: number = b.adj_rating ? b.adj_rating : 0;
 
                 return settings.sortBy["Weighted Rating"].value === 0
                     ? bRating - aRating
@@ -370,7 +398,7 @@ const {
     set: setRaw,
     update: updateRaw,
     subscribe: subscribeRaw
-}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+} = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const rawCourseData = {
     set: setRaw,
@@ -422,7 +450,7 @@ const {
     set: setSearch,
     update: updateSearch,
     subscribe: subscribeSearch
-}: Writable<RawCourseData> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+} = writable<RawCourseData>(JSON.parse(JSON.stringify(BASE_OBJ)));
 
 export const searchCourseData = {
     set: setSearch,
@@ -526,34 +554,34 @@ export type SearchSettings = {
     style: Record<string, boolean>;
 };
 
-export const currentSortBy: Writable<string | null> = writable(null);
+export const currentSortBy = writable<string | null>(null);
 
 export const DEFAULT_SETTINGS: SearchSettings = {
     filters: {
         "Show All": {
             enabled: false
         },
-        Rating: {
+        "Rating": {
             enabled: false,
             min: 0,
             max: 5
         },
-        Dists: {
+        "Dists": {
             enabled: false,
             values: {
-                CD: true,
-                EC: true,
-                EM: true,
-                HA: true,
-                LA: true,
-                QCR: true,
-                SA: true,
-                SEL: true,
-                SEN: true,
+                "CD": true,
+                "EC": true,
+                "EM": true,
+                "HA": true,
+                "LA": true,
+                "QCR": true,
+                "SA": true,
+                "SEL": true,
+                "SEN": true,
                 "No Dist": true
             }
         },
-        Levels: {
+        "Levels": {
             enabled: false,
             values: {
                 "1": true,
@@ -563,7 +591,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
                 "5": true
             }
         },
-        Days: {
+        "Days": {
             enabled: false,
             values: {
                 M: true,
@@ -573,7 +601,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
                 F: true
             }
         },
-        PDFable: {
+        "PDFable": {
             enabled: false
         },
         "PDF Only": {
@@ -592,12 +620,11 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false,
             values: {
                 "Only Available Sections": false
-                // "Include Custom Blocks": false,
             }
         }
     },
     sortBy: {
-        Rating: {
+        "Rating": {
             enabled: false,
             options: ["High to Low", "Low to High"],
             value: 0
@@ -609,7 +636,6 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     style: {
-        // "Original Style": false,
         "Show Rating": true,
         "Show # of Comments": false,
         "Show Weighted Rating": false,
@@ -619,7 +645,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Instructor(s)": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
-        Duck: false
+        "Duck": false
     }
 };
 
@@ -630,13 +656,13 @@ const loadSections = async (term: number, termSec: SectionMap) => {
         const sections = await secs.json();
 
         // Blacklist of courses that are already loaded
-        let blacklist: number[] = [];
-        for (let courseId in termSec) blacklist.push(parseInt(courseId));
+        const blacklist: number[] = [];
+        for (const courseId in termSec) blacklist.push(parseInt(courseId));
 
         // Sort through sections and add to sectionData
         for (let i = 0; i < sections.length; i++) {
-            let sec = sections[i];
-            let courseId = sec.course_id;
+            const sec = sections[i];
+            const courseId = sec.course_id;
 
             if (blacklist.includes(courseId)) continue;
 
@@ -655,6 +681,18 @@ const loadSections = async (term: number, termSec: SectionMap) => {
     }
 };
 
-export const searchSettings: Writable<SearchSettings> = writable(
+export const searchSettings = writable<SearchSettings>(
     JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
 );
+
+export type ScheduleCourseMetadata = {
+    complete: boolean;
+    color: number;
+    sections: string[];
+    confirms: Record<string, string>;
+};
+
+// Map from schedule_id -> course_id -> metadata
+export const scheduleCourseMeta = writable<
+    Record<number, Record<number, ScheduleCourseMetadata>>
+>({});

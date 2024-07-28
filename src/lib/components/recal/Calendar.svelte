@@ -1,24 +1,28 @@
 <script lang="ts">
-    import { savedCourses } from "$lib/stores/rpool";
-    import { get } from "svelte/store";
+    import { currentTerm } from "$lib/changeme";
+    import {
+        type BoxParam,
+        hoveredCourse,
+        hoveredEvent
+    } from "$lib/scripts/ReCal+/calendar";
+    import { valueToDays } from "$lib/scripts/convert";
+    import { scheduleEventMap } from "$lib/stores/events";
     import {
         currentSchedule,
-        hoveredCourse,
         ready,
         recal,
+        scheduleCourseMeta,
         searchSettings
     } from "$lib/stores/recal";
-    import { currentTerm } from "$lib/changeme";
+    import { savedCourses } from "$lib/stores/rpool";
     import { sectionData } from "$lib/stores/rsections";
-    import type { CalBoxParam } from "$lib/types/dbTypes";
-    import { rMeta } from "$lib/stores/rmeta";
-    import CalBox from "./elements/save/CalBox.svelte";
-    import { valueToDays } from "$lib/scripts/convert";
     import { calColors, type CalColors } from "$lib/stores/styles";
-    import { slide } from "svelte/transition";
     import { linear } from "svelte/easing";
+    import { get } from "svelte/store";
+    import { slide } from "svelte/transition";
+    import CalBox from "./calendar/CalBox.svelte";
 
-    let toRender: CalBoxParam[] = [];
+    let toRender: BoxParam[] = [];
 
     let prevSchedule: number = -1;
     let prevTerm: number = -1;
@@ -46,9 +50,11 @@
         $currentTerm,
         $savedCourses[$currentSchedule],
         $hoveredCourse,
+        $hoveredEvent,
         $ready,
         $recal,
-        $calColors
+        $calColors,
+        $scheduleEventMap[$currentSchedule]
     );
 
     /**
@@ -60,7 +66,7 @@
     const triggerRender = (
         currentSchedule: number,
         currentTerm: number,
-        ...args: any[]
+        ...args: unknown[]
     ) => {
         if (prevSchedule === -1) prevSchedule = currentSchedule;
         if (prevTerm === -1) prevTerm = currentTerm;
@@ -75,42 +81,35 @@
         renderCalBoxes();
     };
 
-    /*
-    Procedure for rendering:
-    1. Get saved courses from savedCourses
-    2. Get hovered course from hoveredCourse (if exists)
-    3. Get section data from sectionData
-    4. Get meta data from rMeta
-    5. For each course, get the sections
-    6. For each section, get the days
-    7. For each day, create a CalBoxParam with an empty slotIndex
-    8. Sort by start time
-    9. For each CalBoxParam, find overlaps
-    10. For each CalBoxParam, assign slotIndex
-    11. Determine styles for each CalBoxParam
-    12. Render CalBoxParam
-*/
     const renderCalBoxes = () => {
-        let courseRenders: CalBoxParam[] = [];
+        // Course handling
+        const itemsToRender: BoxParam[] = [];
 
-        // Steps 1-4
-        let saved = $savedCourses[$currentSchedule];
-        let hovered = $hoveredCourse;
-        let sections = $sectionData[$currentTerm];
-        let meta = $rMeta[$currentSchedule];
+        const DEFAULT_DIMENSIONS = {
+            slot: 0,
+            maxSlot: 0,
+            colSpan: 1,
+            top: "",
+            left: "",
+            width: "",
+            height: ""
+        };
 
-        // Steps 5-7
+        const saved = $savedCourses[$currentSchedule];
+        const sections = $sectionData[$currentTerm];
+        const meta = $scheduleCourseMeta[$currentSchedule];
+
         if (!saved) return;
         for (let i = 0; i < saved.length; i++) {
-            let course = saved[i];
-            let courseSections = sections[course.id];
-            let courseMeta = meta[course.id];
+            const course = saved[i];
+            const courseSections = sections[course.id];
+            const courseMeta = meta[course.id];
 
             if (!courseSections || !courseMeta) continue;
 
             for (let j = 0; j < courseSections.length; j++) {
-                let section = courseSections[j];
-                let days = valueToDays(section.days);
+                const section = courseSections[j];
+                const days = valueToDays(section.days);
 
                 let confirmed = false;
                 if (courseMeta.confirms.hasOwnProperty(section.category)) {
@@ -136,72 +135,106 @@
                 }
 
                 for (let k = 0; k < days.length; k++) {
-                    let day = days[k];
-                    courseRenders.push({
+                    const day = days[k];
+                    itemsToRender.push({
+                        type: "course",
                         courseCode: course.code.split("/")[0],
                         section: section,
                         color: courseMeta.color.toString() as keyof CalColors,
                         confirmed: confirmed,
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: ""
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
         }
 
-        if (hovered) {
-            let hoveredSections = sections[hovered.id];
+        if ($hoveredCourse) {
+            const hoveredSections = sections[$hoveredCourse.id];
             for (let i = 0; i < hoveredSections.length; i++) {
-                let section = hoveredSections[i];
-                let days = valueToDays(section.days);
+                const section = hoveredSections[i];
+                const days = valueToDays(section.days);
 
                 for (let j = 0; j < days.length; j++) {
-                    let day = days[j];
-                    courseRenders.push({
-                        courseCode: hovered.code.split("/")[0],
+                    const day = days[j];
+                    itemsToRender.push({
+                        type: "course",
+                        courseCode: $hoveredCourse.code.split("/")[0],
                         section: section,
                         color: "-1",
                         confirmed: false,
                         day: day,
-                        slot: 0,
-                        maxSlot: 0,
-                        colSpan: 1,
-                        top: "",
-                        left: "",
-                        width: "",
-                        height: ""
+                        ...DEFAULT_DIMENSIONS
                     });
                 }
             }
         }
 
-        // Steps 8-12
+        // Event handling
+        const events = scheduleEventMap.getSchedule($currentSchedule);
+
+        for (const event of events) {
+            for (const time of event.times) {
+                const days = valueToDays(time.days);
+                for (let i = 0; i < days.length; i++) {
+                    const day = days[i];
+                    itemsToRender.push({
+                        type: "event",
+                        color: "E",
+                        day: day,
+                        id: event.id,
+                        section: {
+                            title: event.title,
+                            start_time: time.start,
+                            end_time: time.end
+                        },
+                        ...DEFAULT_DIMENSIONS
+                    });
+                }
+            }
+        }
+
+        if ($hoveredEvent && !events.includes($hoveredEvent)) {
+            for (const time of $hoveredEvent.times) {
+                const days = valueToDays(time.days);
+                for (let i = 0; i < days.length; i++) {
+                    const day = days[i];
+                    itemsToRender.push({
+                        type: "event",
+                        color: "-1",
+                        day: day,
+                        id: $hoveredEvent.id,
+                        section: {
+                            title: $hoveredEvent.title,
+                            start_time: time.start,
+                            end_time: time.end
+                        },
+                        ...DEFAULT_DIMENSIONS
+                    });
+                }
+            }
+        }
+
         // Sort by start time
-        courseRenders.sort(
+        itemsToRender.sort(
             (a, b) => a.section.start_time - b.section.start_time
         );
 
-        findOverlaps(courseRenders);
-        calculateDimensions(courseRenders);
+        findOverlaps(itemsToRender);
+        calculateDimensions(itemsToRender);
 
-        toRender = courseRenders;
+        toRender = itemsToRender;
     };
 
     // Credits to Gabe Sidler on StackOverflow for the algorithm
     // Find overlaps and assign width and left
-    const findOverlaps = (calboxes: CalBoxParam[]) => {
-        let sortedCalboxes = calboxes.slice();
+    const findOverlaps = (calboxes: BoxParam[]) => {
+        const sortedCalboxes = calboxes.slice();
 
         // Split into days
-        let days: CalBoxParam[][] = [[], [], [], [], []];
+        const days: BoxParam[][] = [[], [], [], [], []];
         for (let i = 0; i < sortedCalboxes.length; i++) {
-            let calbox = sortedCalboxes[i];
+            const calbox = sortedCalboxes[i];
             days[calbox.day - 1].push(calbox);
         }
 
@@ -218,7 +251,7 @@
         }
 
         for (let i = 0; i < days.length; i++) {
-            let columns: CalBoxParam[][] = [];
+            let columns: BoxParam[][] = [];
             let lastEventEnding: number | null = null;
 
             days[i].forEach(box => {
@@ -233,7 +266,7 @@
 
                 let placed = false;
                 for (let i = 0; i < columns.length; i++) {
-                    let col = columns[i];
+                    const col = columns[i];
                     if (!conflicts(box, col[col.length - 1])) {
                         col.push(box);
                         placed = true;
@@ -258,7 +291,7 @@
     };
 
     // Check for conflicts
-    const conflicts = (a: CalBoxParam, b: CalBoxParam) => {
+    const conflicts = (a: BoxParam, b: BoxParam) => {
         return (
             a.section.start_time < b.section.end_time &&
             a.section.end_time > b.section.start_time &&
@@ -267,11 +300,11 @@
     };
 
     // Set the left and right positions for each calbox in the connected group
-    const packEvents = (cols: CalBoxParam[][]) => {
+    const packEvents = (cols: BoxParam[][]) => {
         for (let i = 0; i < cols.length; i++) {
             for (let j = 0; j < cols[i].length; j++) {
-                let cur = cols[i][j];
-                let colSpan = expandEvent(cur, i, cols);
+                const cur = cols[i][j];
+                const colSpan = expandEvent(cur, i, cols);
                 cur.left = `${(cur.day - 1) * 20 + (i / cols.length) * 20}%`;
                 cur.width = `${(20 * colSpan) / cols.length - 0.4}%`;
             }
@@ -280,9 +313,9 @@
 
     // Expand the event to the right
     const expandEvent = (
-        calbox: CalBoxParam,
+        calbox: BoxParam,
         iColumn: number,
-        cols: CalBoxParam[][]
+        cols: BoxParam[][]
     ) => {
         let colSpan = 1;
         for (let i = iColumn + 1; i < cols.length; i++) {
@@ -296,14 +329,14 @@
         return colSpan;
     };
 
-    // Calculate dimensions for each CalBoxParam
-    const calculateDimensions = (calboxes: CalBoxParam[]) => {
+    // Calculate dimensions for each BoxParam
+    const calculateDimensions = (calboxes: BoxParam[]) => {
         for (let i = 0; i < calboxes.length; i++) {
-            let calbox = calboxes[i];
-            let height =
+            const calbox = calboxes[i];
+            const height =
                 ((calbox.section.end_time - calbox.section.start_time) / 90) *
                 100;
-            let top = (calbox.section.start_time / 90) * 100;
+            const top = (calbox.section.start_time / 90) * 100;
 
             calbox.height = `${height}%`;
             calbox.top = `${top}%`;
@@ -356,7 +389,6 @@
                 <div
                     class="flex-1 grid grid-cols-5 h-full relative
                 overflow-x-clip">
-                    <!-- * Grid Lines -->
                     {#each { length: 75 } as _}
                         <div
                             class="outline outline-[0.5px] outline-zinc-200
@@ -364,7 +396,6 @@
                         </div>
                     {/each}
 
-                    <!-- * CalBoxes-->
                     {#key toRender}
                         {#each toRender as params}
                             <CalBox {params} />
@@ -375,6 +406,3 @@
         </div>
     </div>
 </div>
-
-<style lang="postcsss">
-</style>

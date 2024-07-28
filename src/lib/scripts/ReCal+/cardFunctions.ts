@@ -4,9 +4,9 @@ import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCurrentSchedule } from "./getters";
 import { get } from "svelte/store";
-import { hoveredCourse } from "$lib/stores/recal";
 import { sectionData } from "$lib/stores/rsections";
 import { toastStore } from "$lib/stores/toast";
+import { hoveredCourse } from "$lib/scripts/ReCal+/calendar";
 
 //----------------------------------------------------------------------
 // From Search

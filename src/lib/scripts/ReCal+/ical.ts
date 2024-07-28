@@ -8,9 +8,9 @@ import { valueToDays } from "../convert";
  * @returns RRule string
  */
 export const valueToRRule = (value: number, until: readonly number[]) => {
-    let days = valueToDays(value);
+    const days = valueToDays(value);
     let rrule = "FREQ=WEEKLY;BYDAY=";
-    for (let day of days) {
+    for (const day of days) {
         if (day === 1) rrule += "MO,";
         if (day === 2) rrule += "TU,";
         if (day === 3) rrule += "WE,";
@@ -63,9 +63,9 @@ export const calculateStart = (
     sectionDays: number
 ): number[] => {
     // Deep copy start
-    let startCopy = JSON.parse(JSON.stringify(start));
+    const startCopy = JSON.parse(JSON.stringify(start));
 
-    let dayArr = valueToDays(sectionDays);
+    const dayArr = valueToDays(sectionDays);
     if (dayArr.includes(startDay)) return startCopy;
 
     dayArr.sort();

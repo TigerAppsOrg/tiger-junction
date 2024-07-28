@@ -1,73 +1,41 @@
 <script lang="ts">
     import { modalStore } from "$lib/stores/modal";
+
+    // Recal Modals
     import AdvancedSearch from "../recal/modals/AdvancedSearch.svelte";
-    import EditCb from "../recal/modals/EditCb.svelte";
-    import ManageCb from "../recal/modals/ManageCb.svelte";
-    import ExportCal from "../recal/modals/ExportCal.svelte";
-    import ShareCal from "../recal/modals/ShareCal.svelte";
-    import AddSchedule from "../recal/elements/save/AddSchedule.svelte";
-    import EditSchedule from "../recal/elements/save/EditSchedule.svelte";
-    import RecalColors from "../recal/modals/RecalColors.svelte";
-    import RecalPalettes from "../recal/modals/RecalPalettes.svelte";
-    import RecalUtils from "../recal/modals/RecalUtils.svelte";
+    import ExportCal from "../recal/modals/schedule/ExportCal.svelte";
+    import AddSchedule from "../recal/modals/schedule/AddSchedule.svelte";
+    import EditSchedule from "../recal/modals/schedule/EditSchedule.svelte";
     import RecalStats from "../recal/modals/RecalStats.svelte";
-    import SiteTimer from "../recal/modals/SiteTimer.svelte";
     import Feedback from "./Feedback.svelte";
-    import FeedbackPop from "../feedbackpopup/FeedbackPop.svelte";
+    import FeedbackPop from "./FeedbackPop.svelte";
+
+    // Style Modals
+    import Theme from "./style/Theme.svelte";
+    import Palettes from "./style/Palettes.svelte";
+
+    // Event Modals
+    import ManageEvents from "../recal/modals/events/ManageEvents.svelte";
+    import EditEvent from "../recal/modals/events/EditEvent.svelte";
+    import DeleteEvent from "../recal/modals/events/DeleteEvent.svelte";
+
+    // Register modal components here
+    const modalComponents: Record<string, unknown> = {
+        adv: AdvancedSearch,
+        exportCal: ExportCal,
+        addSchedule: AddSchedule,
+        editSchedule: EditSchedule,
+        rstats: RecalStats,
+        feedback: Feedback,
+        feedbackpop: FeedbackPop,
+        theme: Theme,
+        palettes: Palettes,
+        manageEvents: ManageEvents,
+        editEvent: EditEvent,
+        deleteEvent: DeleteEvent
+    };
 </script>
 
-{#if $modalStore === "adv"}
-    <AdvancedSearch showModal={$modalStore === "adv"} />
-{/if}
-
-{#if $modalStore === "manageCb"}
-    <ManageCb showModal={$modalStore === "manageCb"} />
-{/if}
-
-{#if $modalStore === "editCb"}
-    <EditCb showModal={$modalStore === "editCb"} />
-{/if}
-
-{#if $modalStore === "shareCal"}
-    <ShareCal showModal={$modalStore === "shareCal"} />
-{/if}
-
-{#if $modalStore === "exportCal"}
-    <ExportCal showModal={$modalStore === "exportCal"} />
-{/if}
-
-{#if $modalStore === "addSchedule"}
-    <AddSchedule showModal={$modalStore === "addSchedule"} />
-{/if}
-
-{#if $modalStore === "editSchedule"}
-    <EditSchedule showModal={$modalStore === "editSchedule"} />
-{/if}
-
-{#if $modalStore === "rcolors"}
-    <RecalColors showModal={$modalStore === "rcolors"} />
-{/if}
-
-{#if $modalStore === "rpalettes"}
-    <RecalPalettes showModal={$modalStore === "rpalettes"} />
-{/if}
-
-{#if $modalStore === "rutils"}
-    <RecalUtils showModal={$modalStore === "rutils"} />
-{/if}
-
-{#if $modalStore === "rstats"}
-    <RecalStats showModal={$modalStore === "rstats"} />
-{/if}
-
-{#if $modalStore === "rtimer"}
-    <SiteTimer showModal={$modalStore === "rtimer"} />
-{/if}
-
-{#if $modalStore === "feedback"}
-    <Feedback showModal={$modalStore === "feedback"} />
-{/if}
-
-{#if $modalStore === "feedbackpop"}
-    <FeedbackPop showModal={$modalStore === "feedbackpop"} />
+{#if $modalStore && $modalStore in modalComponents}
+    <svelte:component this={modalComponents[$modalStore]} showModal={true} />
 {/if}

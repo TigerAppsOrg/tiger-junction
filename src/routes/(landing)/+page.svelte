@@ -31,7 +31,7 @@
                 <p
                     class="mt-2 text-lg leading-8 font-bold
                 lg:text-2xl
-                tracking-tight text-gray-900 sm:text-xl">
+                tracking-tight text-zinc-900 sm:text-xl">
                     TigerJunction
                 </p>
                 <h1
@@ -46,7 +46,7 @@
                 <p
                     class="mt-2 max-w-2xl text-lg sm:text-xl
                 lg:text-2xl
-                 text-gray-500 lg:mx-auto">
+                 text-zinc-500 lg:mx-auto">
                     Princeton's premier academic planning platform. Explore
                     courses, plan your schedule, and succeed.
                 </p>
@@ -60,7 +60,7 @@
                         on:click={() => handleLogin(data.supabase)}
                         class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center py-2 px-4 rounded font-bold
-                    active:scale-95 duration-100
+                     duration-100
                     ">
                         Get Started
                     </button>
@@ -86,7 +86,7 @@
             id="poweredby"
             class="glassy max-w-lg
         w-[90%] mx-auto">
-            <div class="text-gray-500 text-center">Powered By</div>
+            <div class="text-zinc-500 text-center">Powered By</div>
             <div
                 class="w-full flex items-center
             justify-center gap-4 mt-2">
@@ -113,9 +113,6 @@
                         src="/home/tailwind.png"
                         alt="TailwindCSS"
                         class="logo" />
-                </a>
-                <a href="https://melt-ui.com/" target="_blank">
-                    <img src="/home/melt.png" alt="MeltUI" class="logo" />
                 </a>
                 <a href="https://sst.dev/" target="_blank">
                     <img src="/home/sst.svg" alt="SST" class="logo" />
@@ -194,8 +191,8 @@
     .blankbutton {
         @apply inline-block px-4 py-2 border 
                     text-center
-                    rounded text-black border-black hover:text-gray-600
-                    hover:border-gray-600
-                    active:scale-95 duration-100;
+                    rounded text-black border-black hover:text-zinc-600
+                    hover:border-zinc-600
+                     duration-100;
     }
 </style>

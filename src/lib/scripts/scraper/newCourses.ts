@@ -65,7 +65,7 @@ export const populateCourses = async (
 
         // Find the index in the subjects array that matches the subject
         // (when querying for a subject, the crosslists are also included)
-        let correctIndex = subjectData.subjects.findIndex(
+        const correctIndex = subjectData.subjects.findIndex(
             (x: any) => x.code === subject
         );
         if (correctIndex === -1) {
@@ -76,7 +76,7 @@ export const populateCourses = async (
 
         // Iterate through all courses in the subject
         for (let j = 0; j < subjectData.length; j++) {
-            let courseIdCodeDist = courselist.find(
+            const courseIdCodeDist = courselist.find(
                 (x: any) => x.listing_id === subjectData[j].course_id
             );
             if (!courseIdCodeDist) {
@@ -154,7 +154,7 @@ export const populateCourses = async (
             }
 
             // Update course
-            let course: CourseInsert = {
+            const course: CourseInsert = {
                 listing_id: courseIdCodeDist.listing_id,
                 term: term,
                 code: courseIdCodeDist.code,
@@ -190,7 +190,7 @@ export const populateCourses = async (
             let courseId: number;
 
             if (exisCourse.length > 0) {
-                let { error } = await supabase
+                const { error } = await supabase
                     .from("courses")
                     .update(course)
                     .eq("id", exisCourse[0].id);
@@ -207,7 +207,7 @@ export const populateCourses = async (
 
                 courseId = exisCourse[0].id;
             } else {
-                let { data, error } = await supabase
+                const { data, error } = await supabase
                     .from("courses")
                     .insert(course)
                     .select("id");
@@ -235,7 +235,7 @@ export const populateCourses = async (
             }
 
             for (let k = 0; k < sections.length; k++) {
-                let section = sections[k];
+                const section = sections[k];
 
                 const room =
                     section.building && section.room
@@ -243,8 +243,8 @@ export const populateCourses = async (
                         : null;
 
                 for (let l = 0; l < section.schedule.meetings.length; l++) {
-                    let meeting = section.schedule.meetings[l];
-                    let sectionData = {
+                    const meeting = section.schedule.meetings[l];
+                    const sectionData = {
                         course_id: courseId,
                         title: section.section,
                         category: section.section[0],
@@ -282,7 +282,7 @@ export const populateCourses = async (
                     }
 
                     if (exisSection.length > 0) {
-                        let { error } = await supabase
+                        const { error } = await supabase
                             .from("sections")
                             .update(sectionData)
                             .eq("id", exisSection[0].id);
@@ -297,7 +297,7 @@ export const populateCourses = async (
                             throw new Error(error.message);
                         }
                     } else {
-                        let { error } = await supabase
+                        const { error } = await supabase
                             .from("sections")
                             .insert(sectionData);
 

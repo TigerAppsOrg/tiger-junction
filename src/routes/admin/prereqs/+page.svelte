@@ -16,7 +16,6 @@
 
     let initialized = false;
     let loading = false;
-    let locked = false;
     let courselist: Course[] = [];
     let term = 1244;
 
@@ -269,10 +268,6 @@
 
     .handlerButton {
         @apply rounded-md px-4 py-2 w-40 flex-1 duration-150;
-    }
-
-    .handlerButton:active {
-        @apply transform scale-95;
     }
 
     :root {

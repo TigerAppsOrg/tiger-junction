@@ -29,7 +29,7 @@ const fetchRawCourseData = async (
 
     // Calculate adjusted rating
     json.forEach((x: any) => {
-        let adj_evals = (x.num_evals + 1) * 1.5;
+        const adj_evals = (x.num_evals + 1) * 1.5;
         x.adj_rating =
             x.rating !== null && x.num_evals !== null
                 ? Math.round(
@@ -108,7 +108,7 @@ const fetchUserSchedules = async (
         return true;
     }
 
-    let ids = data.map(x => {
+    const ids = data.map(x => {
         return {
             id: x.id,
             title: x.title

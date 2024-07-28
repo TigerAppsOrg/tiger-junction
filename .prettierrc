@@ -7,6 +7,7 @@
 	"semi": true,
 	"bracketSpacing": true,
 	"bracketSameLine": true,
+	"quoteProps": "consistent",
 	"arrowParens": "avoid",
 	"plugins": ["prettier-plugin-svelte"],
 	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]

@@ -13,13 +13,13 @@ const RATE = 0; // Number of milliseconds between requests
  * @returns success message
  */
 const populateRatings = async (supabase: SupabaseClient, term: number) => {
-    let ids: DualId[] = await getCourseDualIds(supabase, term);
+    const ids: DualId[] = await getCourseDualIds(supabase, term);
 
     // Limit the number of evaluations fetched
     // ids = ids.slice(0, 50);
 
     // Keep track of number of different cases
-    let counts = {
+    const counts = {
         id_matches: 0,
         instructor_matches: 0,
         most_recent: 0,
@@ -49,7 +49,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         counts.total++;
 
         // Add Instructor to Course
-        let { data: data5, error: err5 } = await supabase
+        const { data: data5, error: err5 } = await supabase
             .from("course_instructor_associations")
             .select("instructors (name)")
             .eq("course_id", ids[index].id);
@@ -60,7 +60,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         }
 
         let instructors: string[] = [];
-        if (data5 !== null || data5 !== undefined) {
+        if (data5 !== null && data5 !== undefined) {
             instructors = data5.map(x => x.instructors).map(x => x.name);
 
             await supabase
@@ -70,7 +70,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         }
 
         // * Case 1: Check for evaluation entry with matching course_id
-        let { data: data1, error: err1 } = await supabase
+        const { data: data1, error: err1 } = await supabase
             .from("evaluations")
             .select("rating, num_evals")
             .eq("course_id", ids[index].id);
@@ -102,7 +102,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         // * Case 2: Check for previous term with a matching instructor
 
         // Get all courses from previous terms with matching listing_id
-        let { data: data2, error: err2 } = await supabase
+        const { data: data2, error: err2 } = await supabase
             .from("courses")
             .select("id")
             .eq("listing_id", ids[index].listing_id)
@@ -115,7 +115,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         }
 
         // Get current course instructors
-        let { data: data4, error: err4 } = await supabase
+        const { data: data4, error: err4 } = await supabase
             .from("courses")
             .select("instructors (netid)")
             .eq("id", ids[index].id);
@@ -139,7 +139,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
         if (data2 && data2.length !== 0) {
             // Get evaluations and instructors for each course
             for (let i = data2.length - 1; i >= 0; i--) {
-                let { data: data3, error: err3 } = await supabase
+                const { data: data3, error: err3 } = await supabase
                     .from("courses")
                     .select(
                         "evaluations (rating, num_evals), instructors (netid)"
@@ -232,7 +232,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
     };
 
     // Send PARALLEL_REQUESTS requests in parallel
-    let promises: Promise<void>[] = [];
+    const promises: Promise<void>[] = [];
     for (let i = 0; i < PARALLEL_REQUESTS; i++) {
         promises.push(processNextRating(i));
     }
@@ -245,7 +245,7 @@ const populateRatings = async (supabase: SupabaseClient, term: number) => {
     // Return success message
     // let msg = `Finished updating ratings for ${term}.
     //     (${ids.length - nulls} updates, ${nulls} nulls)`;
-    let msg = `Finished updating ratings for ${term}. 
+    const msg = `Finished updating ratings for ${term}. 
         (${counts.id_matches} id matches, ${counts.instructor_matches} instructor matches, ${counts.most_recent} most recent, ${counts.nulls} nulls)`;
     console.log(msg);
     return msg;

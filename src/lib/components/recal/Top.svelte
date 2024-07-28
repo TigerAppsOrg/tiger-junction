@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { currentTerm, schedules } from "$lib/changeme";
+    import duck from "$lib/img/duck.gif";
     import {
         fetchRawCourseData,
         fetchUserSchedules,
@@ -11,21 +13,18 @@
         searchCourseData,
         searchSettings
     } from "$lib/stores/recal";
-    import { currentTerm, schedules } from "$lib/changeme";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import duck from "$lib/img/duck.gif";
 
-    import { modalStore } from "$lib/stores/modal";
-    import { goto } from "$app/navigation";
-    import Loader from "../elements/Loader.svelte";
-    import { savedCourses } from "$lib/stores/rpool";
-    import { isMobile, showCal } from "$lib/stores/mobile";
-    import { toastStore } from "$lib/stores/toast";
-    import { SCHEDULE_CAP } from "$lib/constants";
-    import { calColors, calculateCssVars } from "$lib/stores/styles";
     import { ACTIVE_TERMS } from "$lib/changeme";
+    import { SCHEDULE_CAP } from "$lib/constants";
+    import { modalStore } from "$lib/stores/modal";
+    import { savedCourses } from "$lib/stores/rpool";
+    import { getStyles, isMobile, showCal } from "$lib/stores/styles";
+    import { toastStore } from "$lib/stores/toast";
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";
+    import Loader from "../ui/Loader.svelte";
+    import { scheduleEventMap } from "$lib/stores/events";
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -35,7 +34,12 @@
         currentTerm.set(term);
         await fetchRawCourseData(supabase, term);
         await fetchUserSchedules(supabase, term);
-        await populatePools(supabase, term);
+
+        const secondaryPromises: Promise<unknown>[] = [
+            populatePools(supabase, term),
+            scheduleEventMap.loadTerm(supabase, term)
+        ];
+        await Promise.all(secondaryPromises);
 
         if ($schedules[term].length > 0 && term === $currentTerm) {
             currentSchedule.set($schedules[term][0].id);
@@ -53,15 +57,6 @@
         searchCourseData.remove($currentTerm, courses);
     };
 
-    // Logout the user
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (!error) {
-            toastStore.add("success", "Logged out successfully");
-            goto("/");
-        }
-    };
-
     // Add a new schedule if user has less than 10 schedules
     const handleAddSchedule = () => {
         // Check if user has more than 10 schedules (max)
@@ -70,16 +65,17 @@
             return;
         }
 
-        modalStore.open("addSchedule", { clear: true });
+        modalStore.push("addSchedule");
     };
 
+    // Confetti animation
     const invokeFun = () => {
-        var count = 200;
-        var defaults = {
+        const count = 200;
+        const defaults = {
             origin: { y: 0.7 }
         };
 
-        function fire(particleRatio: number, opts: any) {
+        function fire(particleRatio: number, opts: object) {
             confetti({
                 ...defaults,
                 ...opts,
@@ -112,18 +108,19 @@
     };
 
     // Handle theme changes
-    $: cssVarStyles = calculateCssVars("0", $calColors);
+    $: cssVarStyles = getStyles("0");
+    $: eventStyles = getStyles("6");
 </script>
 
 <div
     style={cssVarStyles}
     id="parent"
     class="h-20 px-1 overflow-clip text-zinc-900
-dark:text-zinc-100 text-sm">
+        dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div
             class="bg-zinc-100 dark:bg-zinc-800
-         flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
+            flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
             {#each Object.keys(ACTIVE_TERMS).map( x => parseInt(x) ) as activeTerm}
                 <button
                     class="card
@@ -142,17 +139,59 @@ dark:text-zinc-100 text-sm">
         <div class="flex gap-2">
             {#if $isMobile}
                 <button
+                    on:click={() => modalStore.push("manageEvents")}
+                    style={eventStyles}
+                    id="events"
+                    class="h-6 w-20 rounded-sm duration-150
+                    flex items-center justify-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="h-5 w-5">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
+                    Events
+                </button>
+                <button
                     on:click={() => ($showCal = !$showCal)}
-                    class="h-6 w-20 bg-zinc-100 rounded-sm
-                hover:text-zinc-600
-                dark:bg-zinc-800
-                 dark:text-zinc-100 hover:dark:text-zinc-300
-                flex items-center justify-center">
+                    class="h-6 w-20 rounded-sm flex items-center
+                    justify-center
+                    border-2 border-zinc-200 dark:border-zinc-700
+                    hover:bg-zinc-200 dark:hover:bg-zinc-700
+                    active:bg-zinc-300 dark:active:bg-zinc-600
+                     duration-150">
                     {#if $showCal}
                         ← List
                     {:else}
                         → Calendar
                     {/if}
+                </button>
+            {:else}
+                <button
+                    on:click={() => modalStore.push("manageEvents")}
+                    style={eventStyles}
+                    id="events"
+                    class="h-8 w-36 rounded-sm duration-150
+                    flex items-center justify-center gap-1">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="h-5 w-5">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                    </svg>
+                    <span> Manage Events </span>
                 </button>
             {/if}
         </div>
@@ -161,7 +200,7 @@ dark:text-zinc-100 text-sm">
     <div class="w-auto overflow-x-auto overflow-y-hidden">
         <div
             class="bg-zinc-100 dark:bg-zinc-800 flex gap-2 w-fit
-    p-1 h-8 font-normal rounded-sm">
+            p-1 h-8 font-normal rounded-sm">
             {#key $retop}
                 {#await fetchUserSchedules(supabase, $currentTerm)}
                     <Loader />
@@ -175,9 +214,7 @@ dark:text-zinc-100 text-sm">
                                     class:selected={$currentSchedule ===
                                         schedule.id}
                                     on:click={() =>
-                                        modalStore.open("editSchedule", {
-                                            clear: true
-                                        })}>
+                                        modalStore.push("editSchedule")}>
                                     <span class="whitespace-nowrap"
                                         >{schedule.title}</span>
                                     <svg
@@ -221,11 +258,10 @@ dark:text-zinc-100 text-sm">
                             </svg>
                         </button>
                     {/key}
-                {:catch error}
+                {:catch}
                     <button
                         class="card termchoice"
-                        on:click={() =>
-                            modalStore.open("addSchedule", { clear: true })}>
+                        on:click={() => modalStore.push("addSchedule")}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -259,12 +295,17 @@ dark:text-zinc-100 text-sm">
 </div>
 
 <style lang="postcss">
-    .card {
-        @apply px-3 text-sm rounded-sm;
+    #events {
+        background-color: var(--bg);
+        color: var(--text);
     }
 
-    .card:active {
-        @apply transform scale-95;
+    #events:hover {
+        background-color: var(--bg-hover);
+    }
+
+    .card {
+        @apply px-3 text-sm rounded-sm;
     }
 
     .termchoice:hover {

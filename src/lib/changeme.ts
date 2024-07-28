@@ -1,5 +1,5 @@
 // Change this file when adding a new term
-import { writable, type Writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import type { CourseData } from "./types/dbTypes";
 import type { RawSectionData } from "./stores/rsections";
 
@@ -122,9 +122,10 @@ export const sectionDone = writable({
 
 //----------------------------------------------------------------------
 // ! DO NOT EDIT BELOW THIS LINE
+// TODO Refactor this and put it in a separate file
 //----------------------------------------------------------------------
 
-export type RawCourseData = Record<ActiveTerms, CourseData[]>;
+export type RawCourseData = Record<number, CourseData[]>;
 
 // Last 3 terms
 export const ACTIVE_TERMS: Record<
@@ -141,7 +142,7 @@ export const CURRENT_TERM_ID: keyof RawCourseData = parseInt(
     Object.keys(TERM_MAP)[Object.keys(TERM_MAP).length - 1]
 ) as keyof RawCourseData;
 
-export const currentTerm: Writable<number> = writable(CURRENT_TERM_ID);
+export const currentTerm = writable<number>(CURRENT_TERM_ID);
 
 // Types
 type Calendar_Info = {
@@ -163,12 +164,40 @@ export const SECTION_OBJ: RawSectionData = Object.keys(TERM_MAP)
     .slice(Math.max(Object.keys(TERM_MAP).length - 3, 0))
     .reduce((o, key) => Object.assign(o, { [key]: {} }), {}) as RawSectionData;
 
-export const schedules: Writable<
-    Record<
-        number,
-        {
-            id: number;
-            title: string;
-        }[]
-    >
-> = writable(JSON.parse(JSON.stringify(BASE_OBJ)));
+type ScheduleEntry = {
+    id: number;
+    title: string;
+};
+
+function createScheduleStore() {
+    const store = writable<Record<number, ScheduleEntry[]>>(
+        JSON.parse(JSON.stringify(BASE_OBJ))
+    );
+
+    return {
+        set: store.set,
+        update: store.update,
+        subscribe: store.subscribe,
+
+        /**
+         * Check if a schedule is in any term
+         * @param scheduleId Id of the schedule to check
+         * @returns The term the schedule is in, or null if it is not in any term
+         */
+        includes: (scheduleId: number): number | null => {
+            const schedules = get(store);
+            for (let i = 0; i < Object.keys(schedules).length; i++) {
+                const term = parseInt(Object.keys(schedules)[i]);
+                const scheduleList = schedules[term];
+                for (let j = 0; j < scheduleList.length; j++) {
+                    if (scheduleList[j].id == scheduleId) {
+                        return term;
+                    }
+                }
+            }
+            return null;
+        }
+    };
+}
+
+export const schedules = createScheduleStore();
