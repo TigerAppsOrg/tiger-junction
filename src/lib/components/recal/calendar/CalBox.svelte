@@ -170,7 +170,7 @@
             $eventHoverRev = null;
         }
     }}>
-    <div class="text-xs z-40 -space-y-1 relative overflow-clip">
+    <div class="text-xs z-40 -space-y-1 relative overflow-x-hidden">
         <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(
                 params.section.start_time,

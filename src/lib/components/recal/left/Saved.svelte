@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { currentSchedule, isResult, ready, recal } from "$lib/stores/recal";
+    import { currentSchedule, ready, recal } from "$lib/stores/recal";
     import CourseCard from "./elements/CourseCard.svelte";
     import { savedCourses } from "$lib/stores/rpool";
     import { calColors } from "$lib/stores/styles";

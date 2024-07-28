@@ -9,7 +9,6 @@
     import { currentSchedule, ready } from "$lib/stores/recal";
     import EventCard from "./elements/EventCard.svelte";
     import { getStyles, isEventOpen } from "$lib/stores/styles";
-    import { slide } from "svelte/transition";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { toastStore } from "$lib/stores/toast";
 
