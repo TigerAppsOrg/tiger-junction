@@ -23,6 +23,16 @@
 </div>
 
 <style lang="postcss">
+    /* 
+    This took hours to figure out. It allows the children to take up 
+    the remaining space in the container while maintaining a max-height
+    proportional to the parent container. This is a lesson that
+    StackOverflow is almost always better than AI for complex problems.
+
+    Credit: 
+    https://stackoverflow.com/questions/70324159/how-to-set-up-an-element-with-max-height-so-that-the-elements-inside-it-will-tak 
+    */
+
     section {
         display: grid;
         grid-template-rows: repeat(auto-fit, minmax(0, min-content));
