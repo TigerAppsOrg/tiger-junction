@@ -74,13 +74,13 @@
     }
 
     .info {
-        @apply rounded-full px-4 py-2 border-2 border-slate-600/30
-    dark:border-slate-200/30;
+        @apply rounded-full px-4 py-2 border-2 border-zinc-600/30
+    dark:border-zinc-200/30;
     }
 
     .info:hover {
-        @apply bg-slate-200 dark:bg-slate-700 border-slate-600/30
-    dark:border-slate-200/30 duration-150;
+        @apply bg-zinc-200 dark:bg-zinc-700 border-zinc-600/30
+    dark:border-zinc-200/30 duration-150;
     }
 
     input[type="checkbox"]:checked ~ .info {
