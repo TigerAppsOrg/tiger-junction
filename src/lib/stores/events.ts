@@ -202,7 +202,6 @@ function createScheduleEventStore() {
                 }
             }
             store.set(map);
-            console.log("Initialized schedule event map:", map);
         },
 
         /**
