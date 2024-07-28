@@ -49,15 +49,19 @@
                 class="grid md:grid-cols-2 grid-cols-1
                 gap-2 md:gap-4">
                 {#each $customEvents as event}
-                    <div class="bg-zinc-100 dark:bg-zinc-800 rounded-md p-4">
-                        <h3 class="text-lg font-semibold">{event.title}</h3>
-                        <p class="text-sm mb-2 italic">
-                            {formatTimes(event.times)}
-                        </p>
-                        <div class="flex space-x-2">
+                    <div
+                        class="bg-zinc-100 dark:bg-zinc-800 rounded-md p-4 flex justify-between gap-4">
+                        <div class="overflow-x-hidden">
+                            <h3 class="text-lg font-semibold">{event.title}</h3>
+                            <p class="text-sm mb-2 italic">
+                                {formatTimes(event.times)}
+                            </p>
+                        </div>
+                        <div class="flex flex-col gap-2">
                             <button
                                 on:click={() => handleEdit(event)}
-                                class="action-button bg-blue-500 hover:bg-blue-700">
+                                class="action-button border border-blue-500 text-blue-500
+                                hover:bg-blue-100">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -74,7 +78,8 @@
                             </button>
                             <button
                                 on:click={() => handleDelete(event)}
-                                class="action-button bg-red-500 hover:bg-red-700">
+                                class="action-button border border-red-500 text-red-500
+                                hover:bg-red-100">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -115,8 +120,8 @@
 
 <style lang="postcss">
     .action-button {
-        @apply px-2 rounded-md  duration-150 text-white
-        flex items-center gap-1;
+        @apply px-2 rounded-md  duration-150 
+        flex items-center gap-1 justify-center;
     }
 
     .action-icon {
