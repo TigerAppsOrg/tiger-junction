@@ -35,8 +35,6 @@
     };
 
     onMount(async () => {
-        console.log(data);
-
         // if (!data.body.doneFeedback) {
         //     modalStore.push("feedbackpop");
         // }
@@ -140,7 +138,7 @@
 </script>
 
 <svelte:head>
-    <title>TigerJunction</title>
+    <title>TigerJunction | ReCal+</title>
 </svelte:head>
 
 <div
