@@ -8,7 +8,7 @@
     import { modalStore } from "$lib/stores/modal";
     import { currentSchedule } from "$lib/stores/recal";
     import { calColors, getStyles } from "$lib/stores/styles";
-    import { SupabaseClient } from "@supabase/supabase-js";
+    import { type SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
     import {
         eventHover,

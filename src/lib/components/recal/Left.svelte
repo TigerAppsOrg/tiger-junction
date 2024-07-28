@@ -8,17 +8,13 @@
     import { searchResults } from "$lib/stores/recal";
 </script>
 
-<div class="h-full max-h-full w-full flex flex-col">
+<div class="w-full flex flex-col max-h-full overflow-y-hidden">
     <div>
         <SearchBar />
     </div>
-    <div>
+    <div class="flex-1 flex flex-col overflow-y-hidden space-y-2 mt-2">
         <Events />
-    </div>
-    <div>
         <Saved />
-    </div>
-    <div class="top-0">
         <SearchResults />
     </div>
 </div>

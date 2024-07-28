@@ -8,7 +8,7 @@
     } from "$lib/stores/events";
     import { getContext, onMount } from "svelte";
     import { toastStore } from "$lib/stores/toast";
-    import { SupabaseClient } from "@supabase/supabase-js";
+    import { type SupabaseClient } from "@supabase/supabase-js";
     import StdModal from "$lib/components/ui/StdModal.svelte";
 
     export let showModal: boolean = false;

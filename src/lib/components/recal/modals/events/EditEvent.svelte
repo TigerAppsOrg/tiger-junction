@@ -3,7 +3,7 @@
     import StdButton from "$lib/components/ui/StdButton.svelte";
     import { modalStore } from "$lib/stores/modal";
     import { toastStore } from "$lib/stores/toast";
-    import { SupabaseClient } from "@supabase/supabase-js";
+    import { type SupabaseClient } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
     import {
         dayArrToValue,

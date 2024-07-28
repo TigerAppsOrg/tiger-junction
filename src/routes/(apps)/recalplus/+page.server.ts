@@ -4,7 +4,7 @@ import { REDIS_PASSWORD } from "$env/static/private";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SectionData } from "$lib/stores/rsections";
 import { redirect } from "@sveltejs/kit";
-import { UserCustomEvent } from "$lib/stores/events.js";
+import { type UserCustomEvent } from "$lib/stores/events.js";
 
 // Load course data for default term from Redis
 export const load = async ({ locals: { supabase } }) => {

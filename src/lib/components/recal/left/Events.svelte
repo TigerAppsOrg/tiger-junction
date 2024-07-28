@@ -30,10 +30,13 @@
 </script>
 
 {#if $ready}
-    <div style={cssVarStyles} class="dark:text-zinc-100 overflow-y-auto h-full">
+    <main
+        style={cssVarStyles}
+        class="dark:text-zinc-100 overflow-y-hidden
+        min-h-[24px] flex flex-col flex-1">
         <div
             class="text-base font-normal ml-1
-                flex items-center justify-between mt-4">
+                flex items-center justify-between h-6">
             <span>
                 {scheduleEvents.length} Custom
                 {scheduleEvents.length === 1 ? "Event" : "Events"}
@@ -78,9 +81,7 @@
             </button>
         </div>
         {#if $isEventOpen}
-            <div
-                transition:slide={{ duration: 200, axis: "y" }}
-                class="overflow-hidden">
+            <div class="overflow-y-hidden flex flex-col">
                 <button
                     id="addButton"
                     class="w-full text-sm py-1 mt-1 duration-150
@@ -111,44 +112,50 @@
                     <span> New Event </span>
                 </button>
 
-                <div class="mb-2">
-                    {#if scheduleEvents.length === 0}
-                        <p class="text-sm">No events added yet.</p>
-                    {:else}
-                        <h2 class="text-sm">
-                            {scheduleEvents.length} Added
-                            {scheduleEvents.length === 1 ? "Event" : "Events"}
-                        </h2>
-                        <div class="rounded-sm">
-                            {#each scheduleEvents as event}
-                                <EventCard
-                                    customEvent={event}
-                                    isSelected={true} />
-                            {/each}
-                        </div>
-                    {/if}
-                </div>
+                <div class="overflow-y-auto">
+                    <div class="mb-2">
+                        {#if scheduleEvents.length === 0}
+                            <p class="text-sm">No events added yet.</p>
+                        {:else}
+                            <h2 class="text-sm">
+                                {scheduleEvents.length} Added
+                                {scheduleEvents.length === 1
+                                    ? "Event"
+                                    : "Events"}
+                            </h2>
+                            <div class="rounded-sm">
+                                {#each scheduleEvents as event}
+                                    <EventCard
+                                        customEvent={event}
+                                        isSelected={true} />
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
 
-                <div>
-                    {#if notInSchedule.length === 0}
-                        <p class="text-sm mb-1">No events available.</p>
-                    {:else}
-                        <h2 class="text-sm">
-                            {notInSchedule.length} Available
-                            {notInSchedule.length === 1 ? "Event" : "Events"}
-                        </h2>
-                        <div class="border-2 rounded-sm">
-                            {#each notInSchedule as event}
-                                <EventCard
-                                    customEvent={event}
-                                    isSelected={false} />
-                            {/each}
-                        </div>
-                    {/if}
+                    <div>
+                        {#if notInSchedule.length === 0}
+                            <p class="text-sm mb-1">No events available.</p>
+                        {:else}
+                            <h2 class="text-sm">
+                                {notInSchedule.length} Available
+                                {notInSchedule.length === 1
+                                    ? "Event"
+                                    : "Events"}
+                            </h2>
+                            <div class="border-2 rounded-sm">
+                                {#each notInSchedule as event}
+                                    <EventCard
+                                        customEvent={event}
+                                        isSelected={false} />
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
                 </div>
             </div>
         {/if}
-    </div>
+    </main>
 {:else}
     <div class="flex items-center gap-2 mt-2">
         <Loader />

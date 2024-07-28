@@ -150,7 +150,9 @@
         <Top />
     </div>
     <!-- Fills bottom area does not cause page scroll -->
-    <div id="main" class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-80px)]">
+    <div
+        id="main"
+        class="flex flex-1 m-2 mt-0 max-h-[calc(100vh-140px)] overflow-hidden">
         {#if $isMobile}
             {#if !$showCal}
                 <div class="flex-1 min-w-[200px]">

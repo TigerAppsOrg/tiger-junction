@@ -58,7 +58,7 @@
     $: cssVarStyles = getStyles("2");
 </script>
 
-<div class="flex flex-col gap-1" style={cssVarStyles}>
+<div class="flex flex-col justify-between h-16" style={cssVarStyles}>
     <div
         class="h-4 text-xs w-full
     flex justify-between gap-1 items-center">

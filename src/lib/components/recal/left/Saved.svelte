@@ -17,7 +17,7 @@
 
 {#key saved && $recal}
     {#if saved && $ready}
-        <div class="max-h-full pt-4">
+        <div class="flex-1 flex flex-col overflow-y-hidden">
             <div
                 class="text-base font-normal dark:text-zinc-100 ml-1
                     flex items-center justify-between">
@@ -44,9 +44,7 @@
             </div>
 
             {#if saved.length > 0}
-                <div
-                    class="flex flex-col overflow-hidden rounded-sm
-    {$isResult ? 'max-h-[18vh]' : 'max-h-[70vh]'}">
+                <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
                     <div class="overflow-y-auto">
                         {#key saved && colorChange}
                             {#each saved as course}
