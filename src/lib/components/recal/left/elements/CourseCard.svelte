@@ -162,7 +162,7 @@
 <div
     id="card"
     transition:slide={{ duration: 150, axis: "y" }}
-    class="duration-100 border-b-[1px]
+    class="duration-100 border-b-[1px] dark:border-zinc-800
     {category === 'saved' && 'dark:border-black'}"
     style={cssVarStyles}
     on:mouseenter={handleHover}
@@ -341,7 +341,7 @@
     }
 
     #buttons {
-        border-bottom: 2px solid var(--border);
+        @apply border-b-[2px] dark:border-zinc-800;
     }
 
     /* !-- Refactor --! */

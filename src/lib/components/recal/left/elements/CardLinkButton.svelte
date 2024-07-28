@@ -28,7 +28,7 @@
 
 <style lang="postcss">
     a {
-        border-color: var(--borderColor);
+        @apply dark:border-zinc-800;
     }
 
     a:hover {

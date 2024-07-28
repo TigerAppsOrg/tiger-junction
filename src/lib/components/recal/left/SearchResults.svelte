@@ -14,7 +14,10 @@
         </div>
         <!-- * End Head -->
 
-        <div class="flex flex-col overflow-y-hidden border-2 rounded-sm">
+        <div
+            class="flex flex-col overflow-y-hidden border-2
+        dark:border-zinc-800
+        rounded-sm">
             <div class="overflow-y-auto">
                 {#key resetKey}
                     {#each $searchResults as course}
