@@ -61,7 +61,7 @@
                             <button
                                 on:click={() => handleEdit(event)}
                                 class="action-button border border-blue-500 text-blue-500
-                                hover:bg-blue-100">
+                                hover:bg-blue-100 hover:dark:bg-blue-900">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -79,7 +79,7 @@
                             <button
                                 on:click={() => handleDelete(event)}
                                 class="action-button border border-red-500 text-red-500
-                                hover:bg-red-100">
+                                hover:bg-red-100 hover:dark:bg-red-900">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
