@@ -9,23 +9,33 @@
     <div>
         <SearchBar />
     </div>
-    <div
-        class="flex-1 overflow-y-hidden space-y-2 mt-2
-        border-4 border-red-500 flex flex-col">
-        <div class="area min-h-[24px]">
+    <section class="flex-1 overflow-y-hidden mt-2">
+        <div class="min-h-[24px]">
             <Events />
         </div>
-        <div class="area">
+        <div>
             <Saved />
         </div>
-        <div class="area">
+        <div>
             <SearchResults />
         </div>
-    </div>
+    </section>
 </div>
 
 <style lang="postcss">
-    .area {
+    section {
+        display: grid;
+        grid-template-rows: repeat(auto-fit, minmax(0, min-content));
+        gap: 0.5rem;
+    }
+
+    section > *:last-child {
+        grid-row-end: span 2;
+    }
+
+    section > div {
+        height: fit-content;
+        max-height: 100%;
         @apply overflow-y-hidden flex flex-col;
     }
 </style>
