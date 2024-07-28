@@ -11,6 +11,7 @@
     import { getStyles, isEventOpen } from "$lib/stores/styles";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { toastStore } from "$lib/stores/toast";
+    import { slide } from "svelte/transition";
 
     let scheduleEvents: UserCustomEvent[] = [];
     $: scheduleEvents =
@@ -77,7 +78,10 @@
         </button>
     </div>
     {#if $isEventOpen}
-        <div class="overflow-y-hidden flex flex-col" style={cssVarStyles}>
+        <div
+            class="overflow-y-hidden flex flex-col"
+            transition:slide={{ duration: 150, axis: "y" }}
+            style={cssVarStyles}>
             <button
                 id="addButton"
                 class="w-full text-sm py-1 mt-1 duration-150
