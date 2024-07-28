@@ -83,8 +83,8 @@
                 class="overflow-hidden">
                 <button
                     id="addButton"
-                    class="w-full text-sm py-1 mt-1 active:scale-95 duration-150
-                mb-2 flex items-center gap-2 justify-center rounded-md"
+                    class="w-full text-sm py-1 mt-1 duration-150
+                mb-2 flex items-center gap-2 justify-center rounded-full"
                     on:click={() => {
                         if (customEvents.isAtMax()) {
                             toastStore.add(

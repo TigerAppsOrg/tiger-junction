@@ -3,7 +3,7 @@
 -->
 
 <script lang="ts">
-    import { calColors, getStyles, type CalColors } from "$lib/stores/styles";
+    import { getStyles, type CalColors } from "$lib/stores/styles";
 
     export let scheme: keyof CalColors = "0";
     export let message = "DEFAULT MESSAGE";
@@ -33,9 +33,5 @@
     button:hover {
         @apply cursor-pointer;
         background-color: var(--bg-hover);
-    }
-
-    button:active {
-        @apply transform scale-95;
     }
 </style>

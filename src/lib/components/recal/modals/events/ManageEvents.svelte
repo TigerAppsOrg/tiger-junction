@@ -115,7 +115,7 @@
 
 <style lang="postcss">
     .action-button {
-        @apply px-2 rounded-md active:scale-95 duration-150 text-white
+        @apply px-2 rounded-md  duration-150 text-white
         flex items-center gap-1;
     }
 

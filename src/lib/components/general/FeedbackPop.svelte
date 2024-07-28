@@ -89,8 +89,4 @@
         @apply cursor-pointer;
         background-color: var(--bg-hover);
     }
-
-    button:active {
-        @apply transform scale-95;
-    }
 </style>

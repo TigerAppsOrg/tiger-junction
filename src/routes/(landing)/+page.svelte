@@ -60,7 +60,7 @@
                         on:click={() => handleLogin(data.supabase)}
                         class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center py-2 px-4 rounded font-bold
-                    active:scale-95 duration-100
+                     duration-100
                     ">
                         Get Started
                     </button>
@@ -196,6 +196,6 @@
                     text-center
                     rounded text-black border-black hover:text-gray-600
                     hover:border-gray-600
-                    active:scale-95 duration-100;
+                     duration-100;
     }
 </style>

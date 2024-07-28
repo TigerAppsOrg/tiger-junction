@@ -270,10 +270,6 @@
         @apply rounded-md px-4 py-2 w-40 flex-1 duration-150;
     }
 
-    .handlerButton:active {
-        @apply transform scale-95;
-    }
-
     :root {
         --hue: 200;
         --bg: hsl(var(--hue), 90%, 95%);

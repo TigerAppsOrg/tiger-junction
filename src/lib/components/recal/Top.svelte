@@ -142,7 +142,7 @@
                     on:click={() => modalStore.push("manageEvents")}
                     style={eventStyles}
                     id="events"
-                    class="h-6 w-20 rounded-sm active:scale-95 duration-150
+                    class="h-6 w-20 rounded-sm duration-150
                     flex items-center justify-center">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@
                     border-2 border-zinc-200 dark:border-zinc-700
                     hover:bg-zinc-200 dark:hover:bg-zinc-700
                     active:bg-zinc-300 dark:active:bg-zinc-600
-                    active:scale-95 duration-150">
+                     duration-150">
                     {#if $showCal}
                         ← List
                     {:else}
@@ -177,7 +177,7 @@
                     on:click={() => modalStore.push("manageEvents")}
                     style={eventStyles}
                     id="events"
-                    class="h-8 w-36 rounded-sm active:scale-95 duration-150
+                    class="h-8 w-36 rounded-sm duration-150
                     flex items-center justify-center gap-1">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -306,10 +306,6 @@
 
     .card {
         @apply px-3 text-sm rounded-sm;
-    }
-
-    .card:active {
-        @apply transform scale-95;
     }
 
     .termchoice:hover {
