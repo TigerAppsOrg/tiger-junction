@@ -3,7 +3,7 @@
     import LandingFooter from "./LandingFooter.svelte";
     import LandingHeader from "./LandingHeader.svelte";
 
-    let currentFeature = "advanced-search";
+    let currentFeature = "conflict";
 
     export let data;
 </script>
@@ -113,46 +113,46 @@
                     class="rounded-3xl bg-white p-4 flex flex-col gap-2
                  sm:w-80 w-full">
                     <button
-                        on:click={() => (currentFeature = "conflict-avoidance")}
+                        on:click={() => (currentFeature = "conflict")}
                         class="feature-select
-                        {currentFeature === 'conflict-avoidance'
-                            ? 'bg-red-200'
+                        {currentFeature === 'conflict'
+                            ? 'bg-gradient-to-br from-emerald-100 to-emerald-200'
                             : 'hover:bg-zinc-100'}
                         ">
                         Conflict Avoidance
                     </button>
                     <button
-                        on:click={() => (currentFeature = "advanced-search")}
+                        on:click={() => (currentFeature = "search")}
                         class="feature-select
-                        {currentFeature === 'advanced-search'
-                            ? 'bg-orange-200'
+                        {currentFeature === 'search'
+                            ? 'bg-gradient-to-br from-fuchsia-100 to-fuchsia-200'
                             : 'hover:bg-zinc-100'}
                     ">
                         Advanced Search
                     </button>
                     <button
-                        on:click={() => (currentFeature = "custom-theme")}
+                        on:click={() => (currentFeature = "themes")}
                         class="feature-select
-                        {currentFeature === 'custom-theme'
-                            ? 'bg-yellow-200'
+                        {currentFeature === 'themes'
+                            ? 'bg-gradient-to-br from-violet-100 to-violet-200'
                             : 'hover:bg-zinc-100'}
                     ">
-                        Custom Theme
+                        Beautiful Themes
                     </button>
                     <button
-                        on:click={() => (currentFeature = "integrated-ratings")}
+                        on:click={() => (currentFeature = "ratings")}
                         class="feature-select
-                        {currentFeature === 'integrated-ratings'
-                            ? 'bg-green-200'
+                        {currentFeature === 'ratings'
+                            ? 'bg-gradient-to-br from-sky-100 to-sky-200'
                             : 'hover:bg-zinc-100'}
                     ">
                         Integrated Ratings
                     </button>
                     <button
-                        on:click={() => (currentFeature = "custom-events")}
+                        on:click={() => (currentFeature = "events")}
                         class="feature-select
-                            {currentFeature === 'custom-events'
-                            ? 'bg-blue-200'
+                            {currentFeature === 'events'
+                            ? 'bg-gradient-to-br from-teal-100 to-teal-200'
                             : 'hover:bg-zinc-100'}
                         ">
                         Custom Events
