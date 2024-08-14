@@ -381,18 +381,6 @@
         @apply p-2 sm:p-6 rounded-3xl;
     }
 
-    .logo {
-        @apply w-7 h-7 inline-block object-contain;
-    }
-
-    .blankbutton {
-        @apply inline-block px-4 py-2 border 
-                    text-center
-                    rounded-lg text-black border-black hover:text-zinc-600
-                    hover:border-zinc-600
-                     duration-100;
-    }
-
     #explore {
         background-image: url("/bg/explore.jpg");
         background-size: cover;
