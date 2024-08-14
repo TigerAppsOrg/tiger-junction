@@ -8,7 +8,7 @@
 </script>
 
 <div
-    class="max-w-7xl mx-4 px-4 py-2 w-11/12 bg-white rounded-lg
+    class="max-w-7xl mx-4 px-4 py-2 w-11/12 bg-white rounded-2xl
     fixed shadow-md">
     <nav class="grid grid-cols-3">
         <a
