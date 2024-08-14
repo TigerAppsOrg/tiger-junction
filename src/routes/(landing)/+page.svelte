@@ -4,6 +4,32 @@
     import LandingHeader from "./LandingHeader.svelte";
 
     let currentFeature = "conflict";
+    const FEATURE_MAP: Record<string, Record<string, string>> = {
+        conflict: {
+            title: "Conflict Avoidance",
+            description:
+                "Avoid scheduling conflicts by filtering courses based on your existing schedule."
+        },
+        search: {
+            title: "Advanced Search",
+            description:
+                "Filter by distribution requirement, level, days, and more to find the perfect courses for your schedule."
+        },
+        themes: {
+            title: "Beautiful Themes",
+            description:
+                "Customize your experience with a variety of themes, including a 1-click dark mode."
+        },
+        ratings: {
+            title: "Integrated Ratings",
+            description: "View course ratings directly within the app."
+        },
+        events: {
+            title: "Custom Events",
+            description:
+                "Add custom events to your schedule, such as office hours, club meetings, and more. Integrates with conflict avoideance to ensure you never schedule over your activities."
+        }
+    };
 
     export let data;
 </script>
@@ -108,10 +134,10 @@
 
             <div
                 id="feature-grid"
-                class="flex sm:flex-row flex-col-reverse w-full gap-4 sm:gap-8 mt-12">
+                class="flex md:flex-row flex-col-reverse w-full gap-4 md:gap-8 mt-12">
                 <div
-                    class="rounded-3xl bg-white p-4 flex flex-col gap-2
-                 sm:w-80 w-full">
+                    class="rounded-3xl bg-white p-4 flex flex-col
+                    justify-between md:w-80 w-full h-72">
                     <button
                         on:click={() => (currentFeature = "conflict")}
                         class="feature-select
@@ -158,8 +184,21 @@
                         Custom Events
                     </button>
                 </div>
-                <div class="rounded-3xl p-4 bg-white flex-1">
-                    {currentFeature}
+                <div class="rounded-3xl p-4 bg-white flex-1 flex gap-4 h-72">
+                    <div class="w-1/3">
+                        <h3 class="text-2xl font-semibold text-zinc-800">
+                            {FEATURE_MAP[currentFeature].title}
+                        </h3>
+                        <p class="text-zinc-700 mt-1">
+                            {FEATURE_MAP[currentFeature].description}
+                        </p>
+                    </div>
+                    <div class="flex-1">
+                        <img
+                            src={`/feature/${currentFeature}.png`}
+                            alt="Feature screenshot"
+                            class="w-full h-full object-contain object-center rounded-lg" />
+                    </div>
                 </div>
             </div>
         </div>
