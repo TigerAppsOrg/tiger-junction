@@ -49,7 +49,7 @@
     <meta property="og:url" content="https://junction.tigerapps.org/" />
 </svelte:head>
 
-<section class="bg-white min-h-screen w-screen flex" id="main">
+<section class="bg-white w-screen flex" id="main">
     <div class="overlay flex-1 pt-4 flex flex-col items-center">
         <LandingHeader supabase={data.supabase} />
 
@@ -65,7 +65,7 @@
                 </h1>
                 <p
                     class="mt-2 max-w-2xl text-lg sm:text-xl lg:text-2xl
-                 text-zinc-700 mx-auto">
+                 text-zinc-600 mx-auto">
                     Princeton's premier academic planning platform. Explore
                     courses, plan your schedule, and succeed.
                 </p>
@@ -116,7 +116,95 @@
     </div>
 </section>
 
-<section id="about" class="h-screen bg-indigo-50"></section>
+<section id="about" class="bg-indigo-50 py-32">
+    <div class="max-w-7xl p-4 mx-auto h-full">
+        <h2 class="text-4xl font-semibold text-zinc-800 text-center mb-8">
+            How it Works
+        </h2>
+        <div>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div id="explore" class="flex-1 rounded-3xl">
+                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
+                        <h4>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-8 h-8">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </h4>
+                        <h3 class="text-2xl font-semibold text-zinc-800">
+                            Explore
+                        </h3>
+                        <p class="text-zinc-800 text-lg">
+                            Browse through the lightning-fast course search to
+                            find the perfect courses for your schedule. Use
+                            built-in ratings to make informed decisions, and
+                            powerful filters to narrow down your search.
+                        </p>
+                    </div>
+                </div>
+                <div id="plan" class="flex-1 rounded-3xl">
+                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
+                        <h4>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-8 h-8">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                        </h4>
+                        <h3 class="text-2xl font-semibold text-zinc-800">
+                            Plan
+                        </h3>
+                        <p class="text-zinc-800 text-lg">
+                            Add courses to your schedule to visualize your
+                            semester. Use the conflict avoidance feature to
+                            ensure you never double-book yourself.
+                        </p>
+                    </div>
+                </div>
+                <div id="export" class="flex-1 rounded-3xl">
+                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
+                        <h4>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-8 h-8">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                            </svg>
+                        </h4>
+                        <h3 class="text-2xl font-semibold text-zinc-800">
+                            Export
+                        </h3>
+                        <p class="text-zinc-800 text-lg">
+                            Export your schedule to your favorite calendar app.
+                            Any changes you make will be periodically synced.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section id="features" class="bg-blue-200">
     <div class="w-full h-full p-4 py-12 bg-white/40">
@@ -125,7 +213,7 @@
                 <h2 class="text-4xl font-semibold text-zinc-800">
                     Features Students Love
                 </h2>
-                <p class="text-zinc-700 text-lg mt-2">
+                <p class="text-zinc-800 text-lg mt-2">
                     Developed in collaboration with the student body,
                     TigerJunction contains the features that students wanted to
                     see.
@@ -189,7 +277,7 @@
                         <h3 class="text-2xl font-semibold text-zinc-800">
                             {FEATURE_MAP[currentFeature].title}
                         </h3>
-                        <p class="text-zinc-700 mt-1">
+                        <p class="text-zinc-800 mt-1">
                             {FEATURE_MAP[currentFeature].description}
                         </p>
                     </div>
@@ -227,7 +315,7 @@
 
 <style lang="postcss">
     #features {
-        background-image: url("/bg/ppbg.jpg");
+        background-image: url("/bg/feat.jpg");
         background-size: cover;
         background-position: center;
     }
@@ -303,5 +391,20 @@
                     rounded-lg text-black border-black hover:text-zinc-600
                     hover:border-zinc-600
                      duration-100;
+    }
+
+    #explore {
+        background-image: url("/bg/explore.jpg");
+        background-size: cover;
+    }
+
+    #plan {
+        background-image: url("/bg/plan.jpg");
+        background-size: cover;
+    }
+
+    #export {
+        background-image: url("/bg/export.jpg");
+        background-size: cover;
     }
 </style>
