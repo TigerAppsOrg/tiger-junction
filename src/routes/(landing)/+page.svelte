@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { EMAIL_LIST_FORM_LINK } from "$lib/constants";
     import { handleLogin } from "$lib/scripts/supabase.js";
     import LandingFooter from "./LandingFooter.svelte";
     import LandingHeader from "./LandingHeader.svelte";
@@ -51,19 +50,19 @@
             <div
                 class="flex gap-4 mt-6 lg:justify-center items-center
             text-sm sm:text-base">
-                <div class="flex justify-start lg:justify-center">
+                <!-- <div class="flex justify-start lg:justify-center">
                     <a
                         href={EMAIL_LIST_FORM_LINK}
                         target="_blank"
                         class="blankbutton">
                         Join Email List
                     </a>
-                </div>
+                </div> -->
                 <div class="flex justify-start lg:justify-center">
                     <button
                         on:click={() => handleLogin(data.supabase)}
                         class="bg-indigo-600 hover:bg-indigo-500 text-white
-                    text-center py-2 px-4 rounded-lg font-bold
+                    text-center py-2 px-12 rounded-lg font-bold
                      duration-100
                     ">
                         Get Started
