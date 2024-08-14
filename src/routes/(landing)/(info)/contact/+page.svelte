@@ -2,7 +2,7 @@
     <title>TigerJunction | Contact</title>
 </svelte:head>
 
-<div class="h-fit w-full px-4 pb-8 pt-4 max-w-7xl text-center">
+<div class="h-fit w-full px-4 pb-8 pt-4 max-w-7xl mt-16 text-center">
     <h1 class="text-3xl mb-2 font-bold">Contact Us</h1>
 
     <p class="mb-2">

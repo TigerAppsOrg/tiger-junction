@@ -2,7 +2,7 @@
     <div
         class="text-center text-zinc-500 text-sm
     flex items-center justify-center gap-4">
-        <div>© 2024 TigerJunction</div>
+        <div>© 2024 TigerApps</div>
         <a
             href="https://github.com/TigerAppsOrg/tiger-junction"
             target="_blank">

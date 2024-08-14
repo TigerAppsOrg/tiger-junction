@@ -5,7 +5,7 @@
     import Events from "./left/Events.svelte";
 </script>
 
-<div class="w-full flex flex-col max-h-full overflow-y-hidden">
+<div class="w-full flex flex-col h-full overflow-y-hidden">
     <div>
         <SearchBar />
     </div>
@@ -44,7 +44,7 @@
     }
 
     section > div {
-        height: fit-content;
+        /* height: fit-content; */
         max-height: 100%;
         @apply overflow-y-hidden flex flex-col;
     }
