@@ -71,7 +71,7 @@
                 class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center px-4 py-2 rounded-lg font-bold
                      duration-100">
-                Login
+                Log In
             </button>
         </div>
     </nav>
