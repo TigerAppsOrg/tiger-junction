@@ -2,7 +2,7 @@
     <title>TigerJunction | Privacy Policy</title>
 </svelte:head>
 
-<div class="text-left h-fit w-full px-4 pb-8 pt-4 max-w-7xl">
+<div class="text-left h-fit w-full px-4 pb-8 mt-16 pt-4 max-w-7xl">
     <h1 class="text-3xl mb-2 font-bold">Privacy Policy</h1>
 
     <p>

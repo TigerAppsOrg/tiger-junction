@@ -2,7 +2,7 @@
     <title>TigerJunction | Terms of Service</title>
 </svelte:head>
 
-<div class="text-left h-fit w-full px-4 pb-8 pt-4 max-w-7xl">
+<div class="text-left h-fit w-full px-4 pb-8 pt-4 mt-16 max-w-7xl">
     <h1 class="text-3xl mb-2 font-bold">Terms of Service</h1>
 
     <p>
