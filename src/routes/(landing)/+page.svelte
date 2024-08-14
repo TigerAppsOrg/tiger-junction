@@ -74,6 +74,16 @@
             </div>
         </div>
 
+        <div
+            class="max-w-4xl w-11/12 mt-12 rounded-xl overflow-hidden
+            shadow-2xl glassy">
+            <img
+                src="/recalplusscreenshot.png"
+                alt="Screenshot of the app"
+                class="w-full h-full
+                object-cover object-center rounded-xl
+                " />
+        </div>
         <div class="flex-1"></div>
 
         <!-- <LandingFooter /> -->
@@ -240,10 +250,8 @@
     .glassy {
         background-color: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px;
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+        @apply p-2 sm:p-6 rounded-3xl;
     }
 
     .logo {
