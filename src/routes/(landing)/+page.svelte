@@ -28,27 +28,25 @@
         <LandingHeader supabase={data.supabase} />
 
         <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mt-24">
-            <div class="lg:text-center">
+            <div class="text-center">
                 <h1
                     class="py-2 max-w-4xl text-4xl sm:text-6xl
-                font-extrabold uppercase
-                lg:mx-auto">
+                font-extrabold uppercase mx-auto">
                     <span class="text-pink-500"> Next </span>
                     <span class="text-indigo-500"> Generation </span>
                     <span class="text-blue-500"> Course </span>
                     <span class="text-purple-500"> Planning </span>
                 </h1>
                 <p
-                    class="mt-2 max-w-2xl text-lg sm:text-xl
-                lg:text-2xl
-                 text-zinc-700 lg:mx-auto">
+                    class="mt-2 max-w-2xl text-lg sm:text-xl lg:text-2xl
+                 text-zinc-700 mx-auto">
                     Princeton's premier academic planning platform. Explore
                     courses, plan your schedule, and succeed.
                 </p>
             </div>
 
             <div
-                class="flex gap-4 mt-6 lg:justify-center items-center
+                class="flex gap-4 mt-6 justify-center items-center
             text-sm sm:text-base">
                 <!-- <div class="flex justify-start lg:justify-center">
                     <a
@@ -98,10 +96,12 @@
                 </p>
             </div>
 
-            <div id="feature-grid" class="flex w-full gap-8 mt-12">
+            <div
+                id="feature-grid"
+                class="flex sm:flex-row flex-col-reverse w-full gap-4 sm:gap-8 mt-12">
                 <div
                     class="rounded-3xl bg-white p-4 flex flex-col gap-2
-                 w-80">
+                 sm:w-80 w-full">
                     <button
                         on:click={() => (currentFeature = "conflict-avoidance")}
                         class="feature-select

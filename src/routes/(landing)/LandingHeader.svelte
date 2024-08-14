@@ -8,7 +8,7 @@
 </script>
 
 <div
-    class="max-w-7xl mx-4 sm:mx-6 lg:mx-8 px-4 py-2 w-full bg-white rounded-lg
+    class="max-w-7xl mx-4 px-4 py-2 w-11/12 bg-white rounded-lg
     fixed shadow-md">
     <nav class="grid grid-cols-3">
         <a
@@ -30,7 +30,8 @@
             <span class="font-semibold text-xl tracking-tight"
                 >TigerJunction</span>
         </a>
-        <div class="flex items-center justify-center lg:gap-8 gap-4">
+        <div
+            class="items-center justify-center lg:gap-8 gap-4 flex invisible sm:visible">
             {#if $page.url.pathname === "/"}
                 <a
                     href="/#about"
@@ -69,8 +70,7 @@
                 on:click={() => handleLogin(supabase)}
                 class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center px-4 py-2 rounded-lg font-bold
-                     duration-100
-                    ">
+                     duration-100">
                 Login
             </button>
         </div>
