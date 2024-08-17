@@ -1,6 +1,9 @@
 name: SST CD
 on: 
   push:
+    paths:
+      - 'apps/web/**'
+      - 'cd.yml'
     branches:
       - main
 
@@ -29,6 +32,8 @@ jobs:
           uses: actions/setup-node@v2
           with:
             node-version: '18'
+        - name: Go to the directory with the web app
+          run: cd apps/web
         - name: Install dependencies
           run: npm ci
         - name: Test build
@@ -56,6 +61,8 @@ jobs:
           role-to-assume: arn:aws:iam::104733724423:role/GitHub
           role-duration-seconds: 1200
           aws-region: us-east-1
+      - name: Go to the directory with the web app
+        run: cd apps/web
       - name: Deploy app
         run: |
           npm i && npx sst deploy --stage prod

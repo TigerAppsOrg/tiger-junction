@@ -1,0 +1,4 @@
+.svelte-kit
+.sst
+node_modules
+/src/lib/scripts/scraper/localcache
