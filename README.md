@@ -12,7 +12,7 @@
 
 ### ReCal+
 
-Based heavily on [ReCal](https://recal.io/), `ReCal+` allows easy schedule planning with a visual calendar, powerful advanced search and filtering, built-in course ratings, and iCal exporting.
+Based heavily on [ReCal](https://github.com/TigerAppsOrg/ReCal), `ReCal+` allows easy schedule planning with a visual calendar, powerful advanced search and filtering, built-in course ratings, and iCal exporting.
 
 ## Tech Stack
 
@@ -28,7 +28,7 @@ Unlike most Princeton student applications, `TigerJunction` utilizes a JS backen
 
 ## Acknowledgements
 
-This project is sponsored by [TigerApps](https://tigerapps.org/) (a Princeton USG initiative), and is inspired by 4 other TigerApps: [ReCal](https://recal.io/), [TigerPath](https://www.tigerpath.io/), [PrincetonCourses](https://www.princetoncourses.com/), [TigerMap](https://tigermap.tigerapps.org/). While it does not use any of the code from these projects, they guided decisions about UI, functionality, and overall project design. Additional thanks to the Princeton OIT for providing their API.
+This project is sponsored by [TigerApps](https://tigerapps.org/) (a Princeton USG initiative), and is inspired by 4 other TigerApps: [ReCal](https://github.com/TigerAppsOrg/ReCal), [TigerPath](https://www.tigerpath.io/), [PrincetonCourses](https://www.princetoncourses.com/), [TigerMap](https://github.com/TigerAppsOrg/TigerMap). While it does not use any of the code from these projects, they guided decisions about UI, functionality, and overall project design. Additional thanks to the Princeton OIT for providing their API.
 
 This project would also not have been possible without the numerous students who gave and continue to give valuable input and feedback.
 
