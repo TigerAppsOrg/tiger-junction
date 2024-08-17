@@ -1,20 +1,20 @@
 name: SST CD
-on: 
+on:
   push:
     paths:
-      - 'apps/web/**'
-      - 'cd.yml'
+      - "apps/web/**"
+      - "cd.yml"
     branches:
       - main
 
-# Concurrency group name ensures concurrent workflow 
+# Concurrency group name ensures concurrent workflow
 # runs wait for any in-progress job to finish
 concurrency:
   group: merge-${{ github.ref }}
 
 permissions:
-  id-token: write 
-  contents: read 
+  id-token: write
+  contents: read
 
 jobs:
   TestBuild:
@@ -26,43 +26,42 @@ jobs:
       SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
       API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
     steps:
-        - name: Git clone the repository
-          uses: actions/checkout@v3
-        - name: Use Node.js
-          uses: actions/setup-node@v2
-          with:
-            node-version: '18'
-        - name: Go to the directory with the web app
-          run: cd apps/web
-        - name: Install dependencies
-          run: npm ci
-        - name: Test build
-          run: npm run build
-        
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+      - name: Install dependencies
+        working-directory: apps/web
+        run: npm ci
+      - name: Test build
+        working-directory: apps/web
+        run: npm run build
+
   Deploy:
     needs: TestBuild
     runs-on: ubuntu-latest
     env:
-        PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
-        PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-        SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
-        API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
+      PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+      SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
+      API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: "18"
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::104733724423:role/GitHub
           role-duration-seconds: 1200
           aws-region: us-east-1
-      - name: Go to the directory with the web app
-        run: cd apps/web
       - name: Deploy app
+        working-directory: apps/web
         run: |
           npm i && npx sst deploy --stage prod

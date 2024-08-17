@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "18"
-      - name: Go to the directory with the web app
-        run: cd apps/web
       - name: Install dependencies
+        working-directory: apps/web
         run: npm ci
       - name: Test build
+        working-directory: apps/web
         run: npm run build
