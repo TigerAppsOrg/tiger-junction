@@ -1,6 +1,6 @@
 <h1 align="center">
 <a href="https://junction.tigerapps.org/">
-  <img src="static/tigerjunctiontextlogo.png" alt="ReCal+ Logo" width="80%">
+  <img src="public/tigerjunctiontextlogo.png" alt="ReCal+ Logo" width="80%">
 </a>
 </h1>
 
@@ -39,13 +39,13 @@ Please join our email list [here](https://docs.google.com/forms/d/e/1FAIpQLSebVw
 ## Screenshots
 
 <div align="center">
-<img src="static/recalplusscreenshot.png" width="80%" alt="Screenshot of ReCalPlus">
+<img src="public/recalplusscreenshot.png" width="80%" alt="Screenshot of ReCalPlus">
 <p>Screenshot of ReCal+ App</p>
 </div>
 
 <br />
 
 <div align="center">
-<img src="static/TigerJunctionERD.png" width="80%" alt="Database ERD">
+<img src="public/TigerJunctionERD.png" width="80%" alt="Database ERD">
 <p>The entity relationship diagram for the entire app</p>
 </div>
