@@ -12,8 +12,7 @@
     "sst:deploy": "sst deploy",
     "sst:dev": "sst dev",
     "lint": "prettier --check . && eslint src/",
-    "format": "prettier --write .",
-    "prepare": "husky install"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
@@ -27,7 +26,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.36.0",
     "globals": "^15.8.0",
-    "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
     "postcss": "^8.4.27",
     "prettier": "^3.3.1",
