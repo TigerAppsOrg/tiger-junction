@@ -10,7 +10,7 @@
 <div
     class="max-w-7xl mx-4 px-4 py-2 w-11/12 bg-white rounded-2xl
     fixed shadow-md z-50">
-    <nav class="grid grid-cols-3">
+    <nav class="flex justify-between sm:grid sm:grid-cols-3">
         <a
             href="/"
             on:click|preventDefault={() => {
@@ -30,8 +30,7 @@
             <span class="font-semibold text-xl tracking-tight"
                 >TigerJunction</span>
         </a>
-        <div
-            class="items-center justify-center lg:gap-8 gap-4 flex invisible sm:visible">
+        <div class="items-center justify-center lg:gap-8 gap-4 hidden sm:flex">
             {#if $page.url.pathname === "/"}
                 <a
                     href="/#about"
@@ -53,16 +52,6 @@
                     class="nav-link">
                     Features
                 </a>
-                <!-- <a
-                    href="/#contact"
-                    on:click|preventDefault={() => {
-                        document.getElementById("contact")?.scrollIntoView({
-                            behavior: "smooth"
-                        });
-                    }}
-                    class="nav-link">
-                    Contact
-                </a> -->
             {/if}
         </div>
         <div class="flex items-center justify-end">
