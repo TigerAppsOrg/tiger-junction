@@ -6,7 +6,7 @@
         <a
             href="https://github.com/TigerAppsOrg/tiger-junction"
             target="_blank">
-            <img src="/home/github.svg" alt="GitHub" class="w-4 h-4" />
+            <img src="/github.svg" alt="GitHub" class="w-4 h-4" />
         </a>
     </div>
     <div class="flex items-center justify-center gap-4">
