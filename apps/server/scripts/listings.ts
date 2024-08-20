@@ -16,6 +16,7 @@ type SupabaseListing = Omit<FormattedListing, "code">;
  * @param term numerical term to populate the listings for
  */
 const populateListings = async (term: number) => {
+  console.log("Populating listings for term " + term);
   let time = new Date();
   const token = await getToken();
 
@@ -97,6 +98,7 @@ const populateListings = async (term: number) => {
           }
         }
       } else {
+        course.ult_term = existingCourse.ult_term;
         if (!existingCourse.pen_term || term >= existingCourse.pen_term) {
           course.pen_term = term;
         }
@@ -112,11 +114,18 @@ const populateListings = async (term: number) => {
     }
 
     // Ensure constraints
-    if (course.aka && course.aka.includes(course.title)) {
-      course.aka = course.aka.filter((x) => x !== course.title);
+    if (course.aka) {
+      if (course.aka.includes(course.title)) {
+        course.aka = course.aka.filter((x) => x !== course.title);
+      }
+      if (course.aka.length === 0) {
+        course.aka = null;
+      }
+      course.aka = Array.from(new Set(course.aka)).sort();
     }
 
     if (course.pen_term && course.pen_term >= course.ult_term) {
+      console.error("Error course:", course);
       throw new Error(
         `Course ${course.code} has a penultimate term that is greater than or equal to the ultimate term`
       );
@@ -132,8 +141,12 @@ const populateListings = async (term: number) => {
   }
 
   console.log(
-    "Listings populated in " + (new Date().getTime() - time.getTime()) + "ms"
+    "Populated listings for term " +
+      term +
+      " in " +
+      (new Date().getTime() - time.getTime()) +
+      "ms"
   );
 };
 
-populateListings(1252);
+await populateListings(1252);
