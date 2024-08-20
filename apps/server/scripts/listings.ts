@@ -9,7 +9,6 @@ type FormattedListing = {
   ult_term: number;
   pen_term: number | null;
 };
-type SupabaseListing = Omit<FormattedListing, "code">;
 
 /**
  * Populates the listings for a given term
@@ -28,14 +27,16 @@ const populateListings = async (term: number) => {
         Authorization: token,
       },
     }),
-    supabase.from("listings").select("id, title, aka, ult_term, pen_term"),
+    supabase
+      .from("listings")
+      .select("id, title, aka, ult_term, pen_term, code"),
   ];
 
   const [regDataRaw, { data: currentListings, error: listFetchError }] =
     (await Promise.all(initPromises)) as [
       Response,
       {
-        data: SupabaseListing[];
+        data: FormattedListing[];
         error: Error | null;
       }
     ];
@@ -74,6 +75,7 @@ const populateListings = async (term: number) => {
   for (const course of formattedCourselist) {
     const existingCourse = currentListings.find((x) => x.id === course.id);
 
+    // Merge with existing data
     if (existingCourse) {
       // Fix a bug caused by an earlier version of the script
       if (
@@ -89,7 +91,7 @@ const populateListings = async (term: number) => {
         course.pen_term = existingCourse.ult_term;
 
         if (existingCourse.title !== course.title) {
-          if (!existingCourse.aka) {
+          if (!existingCourse.aka || existingCourse.aka.length === 0) {
             course.aka = [existingCourse.title];
           } else if (!existingCourse.aka.includes(existingCourse.title)) {
             course.aka = [...existingCourse.aka, existingCourse.title];
@@ -99,11 +101,14 @@ const populateListings = async (term: number) => {
         }
       } else {
         course.ult_term = existingCourse.ult_term;
+        course.code = existingCourse.code;
         if (!existingCourse.pen_term || term >= existingCourse.pen_term) {
           course.pen_term = term;
+        } else {
+          course.pen_term = existingCourse.pen_term;
         }
 
-        if (!existingCourse.aka) {
+        if (!existingCourse.aka || existingCourse.aka.length === 0) {
           course.aka = [course.title];
         } else if (!existingCourse.aka.includes(course.title)) {
           course.aka = [...existingCourse.aka, course.title];
