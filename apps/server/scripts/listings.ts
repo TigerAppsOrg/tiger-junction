@@ -1,51 +1,18 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { getToken, TERM_URL } from "./shared";
-
-type StringBoolean = "Y" | "N";
-
-type RegListings = {
-  classes: {
-    class: {
-      class_number: string;
-      crosslistings: string;
-      subject: string;
-      distribution_area: string;
-      section: string;
-      building_code: string | null;
-      building_name: string | null;
-      room: string | null;
-      catnum: string;
-      mon: StringBoolean;
-      tues: StringBoolean;
-      wed: StringBoolean;
-      thurs: StringBoolean;
-      fri: StringBoolean;
-      sat: StringBoolean;
-      sun: StringBoolean;
-      term: string;
-      course_id: string;
-      class_meetings: string;
-      meeting_pattern: string;
-      acad_career: string;
-      end_time: string;
-      long_title: string;
-      start_time: string;
-      topic_title: string | null;
-      class_status: string;
-    }[];
-  };
-};
+import { getToken, supabase, TERM_URL } from "./shared";
+import type { RegListings } from "./types";
 
 type FormattedListing = {
   id: string;
   code: string;
   title: string;
-  aka: string | null;
+  aka: string[] | null;
   ult_term: number;
   pen_term: number | null;
 };
 
 const populateListings = async (term: number) => {
+  let time = new Date();
+
   // Fetch data from registrar API and format it
   const token = await getToken();
   const regDataRaw = await fetch(`${TERM_URL}${term}`, {
@@ -54,6 +21,13 @@ const populateListings = async (term: number) => {
       Authorization: token,
     },
   });
+
+  console.log(
+    "Time taken to fetch data from registrar: " +
+      (new Date().getTime() - time.getTime()) +
+      "ms"
+  );
+  time = new Date();
 
   const regData = (await regDataRaw.json()) as RegListings;
   const courselist = regData.classes.class;
@@ -79,7 +53,89 @@ const populateListings = async (term: number) => {
     return !duplicate;
   });
 
-  console.log(formattedCourselist);
+  console.log(
+    "Time taken to format data: " +
+      (new Date().getTime() - time.getTime()) +
+      "ms"
+  );
+  time = new Date();
+
+  const { data: currentListings, error: listFetchError } = await supabase
+    .from("listings")
+    .select("id, title, aka, ult_term, pen_term");
+
+  if (listFetchError) {
+    console.error(listFetchError);
+    return "Error fetching listings";
+  }
+
+  console.log(
+    "Time taken to fetch data from Supabase: " +
+      (new Date().getTime() - time.getTime()) +
+      "ms"
+  );
+  time = new Date();
+
+  console.log(formattedCourselist.length + " courses to process");
+  for (const course of formattedCourselist) {
+    const existingCourse = currentListings.find((x) => x.id === course.id);
+
+    if (existingCourse) {
+      // Fix a bug caused by an earlier version of the script
+      if (existingCourse.ult_term <= existingCourse.pen_term) {
+        existingCourse.pen_term === null;
+      }
+
+      if (term === existingCourse.ult_term) {
+        course.aka = existingCourse.aka;
+      } else if (term > existingCourse.ult_term) {
+        course.pen_term = existingCourse.ult_term;
+
+        if (existingCourse.title !== course.title) {
+          if (!existingCourse.aka) {
+            course.aka = [existingCourse.title];
+          } else if (!existingCourse.aka.includes(existingCourse.title)) {
+            course.aka = [...existingCourse.aka, existingCourse.title];
+          } else {
+            course.aka = existingCourse.aka;
+          }
+        }
+      } else {
+        if (!existingCourse.pen_term || term >= existingCourse.pen_term) {
+          course.pen_term = term;
+        }
+
+        if (!existingCourse.aka) {
+          course.aka = [course.title];
+        } else if (!existingCourse.aka.includes(course.title)) {
+          course.aka = [...existingCourse.aka, course.title];
+        } else {
+          course.aka = existingCourse.aka;
+        }
+      }
+    }
+
+    // Ensure constraints
+    if (course.aka && course.aka.includes(course.title)) {
+      course.aka = course.aka.filter((x) => x !== course.title);
+    }
+
+    if (course.pen_term && course.pen_term >= course.ult_term) {
+      throw new Error(
+        `Course ${course.code} has a penultimate term that is greater than or equal to the ultimate term`
+      );
+    }
+  }
+
+  console.log(
+    "Time taken to process data: " +
+      (new Date().getTime() - time.getTime()) +
+      "ms"
+  );
+  time = new Date();
+
+  // console.log(formattedCourselist);
+  // Upsert to Supabase
 };
 
 populateListings(1252);
