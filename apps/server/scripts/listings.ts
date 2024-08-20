@@ -9,26 +9,42 @@ type FormattedListing = {
   ult_term: number;
   pen_term: number | null;
 };
+type SupabaseListing = Omit<FormattedListing, "code">;
 
+/**
+ * Populates the listings for a given term
+ * @param term numerical term to populate the listings for
+ */
 const populateListings = async (term: number) => {
   let time = new Date();
-
-  // Fetch data from registrar API and format it
   const token = await getToken();
-  const regDataRaw = await fetch(`${TERM_URL}${term}`, {
-    method: "GET",
-    headers: {
-      Authorization: token,
-    },
-  });
 
-  console.log(
-    "Time taken to fetch data from registrar: " +
-      (new Date().getTime() - time.getTime()) +
-      "ms"
-  );
-  time = new Date();
+  // Fetch the current listings from registrar API and existing listings from Supabase
+  const initPromises = [
+    fetch(`${TERM_URL}${term}`, {
+      method: "GET",
+      headers: {
+        Authorization: token,
+      },
+    }),
+    supabase.from("listings").select("id, title, aka, ult_term, pen_term"),
+  ];
 
+  const [regDataRaw, { data: currentListings, error: listFetchError }] =
+    (await Promise.all(initPromises)) as [
+      Response,
+      {
+        data: SupabaseListing[];
+        error: Error | null;
+      }
+    ];
+
+  if (listFetchError) {
+    console.error(listFetchError);
+    return "Error fetching listings";
+  }
+
+  // Process the data from the registrar API
   const regData = (await regDataRaw.json()) as RegListings;
   const courselist = regData.classes.class;
   let formattedCourselist = courselist.map((x) => {
@@ -53,36 +69,16 @@ const populateListings = async (term: number) => {
     return !duplicate;
   });
 
-  console.log(
-    "Time taken to format data: " +
-      (new Date().getTime() - time.getTime()) +
-      "ms"
-  );
-  time = new Date();
-
-  const { data: currentListings, error: listFetchError } = await supabase
-    .from("listings")
-    .select("id, title, aka, ult_term, pen_term");
-
-  if (listFetchError) {
-    console.error(listFetchError);
-    return "Error fetching listings";
-  }
-
-  console.log(
-    "Time taken to fetch data from Supabase: " +
-      (new Date().getTime() - time.getTime()) +
-      "ms"
-  );
-  time = new Date();
-
   console.log(formattedCourselist.length + " courses to process");
   for (const course of formattedCourselist) {
     const existingCourse = currentListings.find((x) => x.id === course.id);
 
     if (existingCourse) {
       // Fix a bug caused by an earlier version of the script
-      if (existingCourse.ult_term <= existingCourse.pen_term) {
+      if (
+        existingCourse.pen_term &&
+        existingCourse.ult_term <= existingCourse.pen_term
+      ) {
         existingCourse.pen_term === null;
       }
 
@@ -127,14 +123,6 @@ const populateListings = async (term: number) => {
     }
   }
 
-  console.log(
-    "Time taken to process data: " +
-      (new Date().getTime() - time.getTime()) +
-      "ms"
-  );
-  time = new Date();
-
-  // console.log(formattedCourselist);
   // Upsert to Supabase
 };
 
