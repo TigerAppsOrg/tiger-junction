@@ -41,7 +41,7 @@ const populateListings = async (term: number) => {
 
   if (listFetchError) {
     console.error(listFetchError);
-    return "Error fetching listings";
+    return;
   }
 
   // Process the data from the registrar API
@@ -124,6 +124,16 @@ const populateListings = async (term: number) => {
   }
 
   // Upsert to Supabase
+  const { error } = await supabase.from("listings").upsert(formattedCourselist);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  console.log(
+    "Listings populated in " + (new Date().getTime() - time.getTime()) + "ms"
+  );
 };
 
 populateListings(1252);
