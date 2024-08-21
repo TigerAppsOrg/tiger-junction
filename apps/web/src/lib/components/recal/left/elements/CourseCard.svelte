@@ -89,7 +89,7 @@
             }
         } else {
             if ($darkTheme) {
-                styles.color = "hsl(0, 0%, 0%)";
+                styles.color = "hsl(0, 0%, 10%)";
                 styles.text = "hsl(0, 0%, 90%)";
                 styles.hoverColor = "hsl(0, 0%, 10%)";
                 styles.hoverText = "hsl(0, 0%, 100%)";

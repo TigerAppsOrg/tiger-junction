@@ -8,7 +8,7 @@
 </script>
 
 <ModalLib />
-<div class="h-screen w-screen flex flex-col bg-zinc-50 dark:bg-black">
+<div class="h-screen w-screen flex flex-col bg-zinc-50 dark:bg-zinc-900">
     <AppHeader />
     <slot />
 </div>
