@@ -12,7 +12,7 @@
 
 ## Media
 
-Joshua Lau, the creator of TigerJunction, recorded a [demo video](https://mediacentral.princeton.edu/media/TigerJunction%2C+Joshua+Lau%2C+UG+%2726+%2885D0E676%29/1_pbsbeh9i) for Princeton Research Day 2024, highlighting some of the main features. TigerJunction has also been featured in campus publications:
+The creator of TigerJunction, [Joshua Lau](https://github.com/joshuamotoaki), recorded a [demo video](https://mediacentral.princeton.edu/media/TigerJunction%2C+Joshua+Lau%2C+UG+%2726+%2885D0E676%29/1_pbsbeh9i) for Princeton Research Day 2024, highlighting some of the main features. TigerJunction has also been featured in campus publications:
 
 - [The Daily Princetonian 1st Article](https://www.dailyprincetonian.com/article/2023/11/princeton-news-stlife-tigerjunction-students-course-offerings-schedule-semester)
 - [The Daily Princetonian 2nd Article](https://www.dailyprincetonian.com/article/2023/11/princeton-news-stlife-tigerjunction-students-course-offerings-schedule-semester)
