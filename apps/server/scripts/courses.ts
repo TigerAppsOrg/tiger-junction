@@ -1,4 +1,4 @@
-import { getToken, TERM_URL } from "./shared";
+import { fetchRegListings } from "./fetchers";
 
 type RegCourse = {
   listing_id: string;
@@ -7,26 +7,8 @@ type RegCourse = {
 };
 
 const fetchRegCourses = async (term: number): Promise<RegCourse[]> => {
-  const token = await getToken();
-  const rawCourseList = await fetch(`${TERM_URL}${term}`, {
-    method: "GET",
-    headers: {
-      Authorization: token,
-    },
-  });
-  const jsonCourseList: any = await rawCourseList.json();
-
-  const valid =
-    jsonCourseList &&
-    Object.prototype.hasOwnProperty.call(jsonCourseList, "classes") &&
-    Object.prototype.hasOwnProperty.call(jsonCourseList.classes, "class") &&
-    Array.isArray(jsonCourseList.classes.class);
-
-  if (!valid) {
-    throw new Error("Invalid course list response format");
-  }
-
-  const regCourses = jsonCourseList.classes.class.map((x: any) => {
+  const regListings = await fetchRegListings(term);
+  const regCourses = regListings.map((x) => {
     return {
       listing_id: x.course_id,
       code: x.crosslistings.replace(/\s/g, ""),
@@ -36,21 +18,11 @@ const fetchRegCourses = async (term: number): Promise<RegCourse[]> => {
     } as RegCourse;
   });
 
-  // Remove duplicates
-  const seenIds = new Set<string>();
-  const uniqueRegCourses = regCourses.filter((x: RegCourse) => {
-    if (seenIds.has(x.listing_id)) {
-      return false;
-    }
-    seenIds.add(x.listing_id);
-    return true;
-  });
-
-  return uniqueRegCourses;
+  return regCourses;
 };
 
 const populateCourses = async (term: number) => {
   console.log(await fetchRegCourses(term));
 };
 
-console.log(await fetchCourseDetails("017400", 1252));
+console.log(await fetchRegCourses(1252));

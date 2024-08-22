@@ -1,10 +1,14 @@
-import { getToken, TERM_URL } from "./shared";
-import type { RegCourseDetails, RegListings } from "./types";
+import { getToken, REG_API_URL, REG_LISTINGS_URL } from "./shared";
+import type { RegCourseDetails, RegDeptCourses, RegListings } from "./types";
 
+/**
+ * Fetch all course listings for a given term
+ * @param term Term code
+ */
 export const fetchRegListings = async (term: number): Promise<RegListings> => {
   const token = await getToken();
 
-  const rawCourseList = await fetch(`${TERM_URL}${term}`, {
+  const rawCourseList = await fetch(`${REG_LISTINGS_URL}${term}`, {
     method: "GET",
     headers: {
       Authorization: token,
@@ -42,16 +46,18 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
  * Fetch all courses for a department in a given term
  * @param dept Department code
  * @param term Term code
- * @returns
  */
-export const fetchRegDeptCourses = async (dept: string, term: number) => {
+export const fetchRegDeptCourses = async (
+  dept: string,
+  term: number
+): Promise<RegDeptCourses> => {
   const token = process.env.API_ACCESS_TOKEN;
   if (!token) {
     throw new Error("API access token not found");
   }
 
   const rawDeptData = await fetch(
-    `https://api.princeton.edu/student-app/courses/courses?term=${term}&fmt=json&subject=${dept}`,
+    `${REG_API_URL}courses/courses?term=${term}&subject=${dept}&fmt=json`,
     {
       method: "GET",
       headers: {
@@ -83,7 +89,6 @@ export const fetchRegDeptCourses = async (dept: string, term: number) => {
  * Fetch course details for a given course in a given term
  * @param listingId Listing ID
  * @param term Term code
- * @returns
  */
 export const fetchRegCourseDetails = async (
   listingId: string,
@@ -95,7 +100,7 @@ export const fetchRegCourseDetails = async (
   }
 
   const rawCourseDetails = await fetch(
-    `https://api.princeton.edu/student-app/1.0.3/courses/details?term=${term}&course_id=${listingId}&fmt=json`,
+    `${REG_API_URL}courses/details?term=${term}&course_id=${listingId}&fmt=json`,
     {
       method: "GET",
       headers: {
