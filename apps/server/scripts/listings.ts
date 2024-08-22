@@ -1,4 +1,5 @@
-import { getToken, supabase, TERM_URL } from "./shared";
+import { fetchRegListings } from "./fetchers";
+import { supabase } from "./shared";
 import type { RegListings } from "./types";
 
 type FormattedListing = {
@@ -17,24 +18,18 @@ type FormattedListing = {
 const populateListings = async (term: number) => {
   console.log("Populating listings for term " + term);
   let time = new Date();
-  const token = await getToken();
 
   // Fetch the current listings from registrar API and existing listings from Supabase
   const initPromises = [
-    fetch(`${TERM_URL}${term}`, {
-      method: "GET",
-      headers: {
-        Authorization: token,
-      },
-    }),
+    fetchRegListings(term),
     supabase
       .from("listings")
       .select("id, title, aka, ult_term, pen_term, code"),
   ];
 
-  const [regDataRaw, { data: currentListings, error: listFetchError }] =
+  const [regListings, { data: currentListings, error: listFetchError }] =
     (await Promise.all(initPromises)) as [
-      Response,
+      RegListings,
       {
         data: FormattedListing[];
         error: Error | null;
@@ -46,10 +41,7 @@ const populateListings = async (term: number) => {
     return;
   }
 
-  // Process the data from the registrar API
-  const regData = (await regDataRaw.json()) as RegListings;
-  const courselist = regData.classes.class;
-  let formattedCourselist = courselist.map((x) => {
+  const formattedCourselist = regListings.map((x) => {
     return {
       id: x.course_id,
       code: x.subject + x.catnum,
@@ -61,14 +53,6 @@ const populateListings = async (term: number) => {
       ult_term: term,
       pen_term: null,
     } as FormattedListing;
-  });
-
-  // Remove duplicates
-  const seen = new Set();
-  formattedCourselist = formattedCourselist.filter((x) => {
-    const duplicate = seen.has(x.id);
-    seen.add(x.id);
-    return !duplicate;
   });
 
   console.log(formattedCourselist.length + " courses to process");
