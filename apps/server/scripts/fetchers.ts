@@ -1,5 +1,30 @@
-import { getToken, REG_API_URL, REG_LISTINGS_URL } from "./shared";
+// Functions to fetch course data from the registrar API
+
 import type { RegCourseDetails, RegDeptCourses, RegListings } from "./types";
+
+//----------------------------------------------------------------------
+// Helpers and Constants
+//----------------------------------------------------------------------
+
+// API endpoint for the public course listings API
+const REG_PUBLIC_URL =
+  "https://api.princeton.edu/registrar/course-offerings/classes/";
+
+// API endpoint for the registrar student-app API
+const REG_API_URL = "https://api.princeton.edu/student-app/1.0.3/";
+
+// Gets the API token for use in the course listings API
+const getToken = async () => {
+  const response = await fetch(
+    "https://registrar.princeton.edu/course-offerings"
+  );
+  const text = await response.text();
+  return "Bearer " + text.split('apiToken":"')[1].split('"')[0];
+};
+
+//----------------------------------------------------------------------
+// Fetcher Functions
+//----------------------------------------------------------------------
 
 /**
  * Fetch all course listings for a given term
@@ -8,7 +33,7 @@ import type { RegCourseDetails, RegDeptCourses, RegListings } from "./types";
 export const fetchRegListings = async (term: number): Promise<RegListings> => {
   const token = await getToken();
 
-  const rawCourseList = await fetch(`${REG_LISTINGS_URL}${term}`, {
+  const rawCourseList = await fetch(`${REG_PUBLIC_URL}${term}`, {
     method: "GET",
     headers: {
       Authorization: token,
