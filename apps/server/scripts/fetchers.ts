@@ -82,7 +82,7 @@ export const fetchRegDeptCourses = async (
     return [];
   }
 
-  return deptData.term[0].subjects[correctIndex].courses;
+  return deptData.term[0].subjects[correctIndex].courses as RegDeptCourses;
 };
 
 /**

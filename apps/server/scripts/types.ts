@@ -29,7 +29,54 @@ export type RegListings = {
   class_status: string;
 }[];
 
-export type RegDeptCourses = {}[];
+export type RegDeptCourses = {
+  guid: string;
+  course_id: string;
+  catalog_number: string;
+  title: string;
+  detail: {
+    start_date: string;
+    end_date: string;
+    track: string;
+    description: string;
+    seat_reservations: StringBoolean;
+  };
+  instructors: {
+    emplid: string;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+  }[];
+  crosslistings: {
+    subject: string;
+    catalog_number: string;
+  }[];
+  classes: {
+    class_number: string;
+    section: string;
+    status: string;
+    pu_calc_status: string;
+    seat_status: string;
+    type_name: string;
+    capacity: string;
+    enrollment: string;
+    schedule: {
+      start_date: string;
+      end_date: string;
+      meetings: {
+        meeting_number: string;
+        start_time: string;
+        end_time: string;
+        days: string[];
+        building?: {
+          location_code: string;
+          name: string;
+        };
+        room?: string;
+      }[];
+    };
+  }[];
+}[];
 
 export type RegCourseDetails = {
   subject: string;
