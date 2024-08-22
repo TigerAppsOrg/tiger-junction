@@ -87,6 +87,8 @@ const populateListings = async (term: number) => {
 
       if (term === existingCourse.ult_term) {
         course.aka = existingCourse.aka;
+        course.ult_term = existingCourse.ult_term;
+        course.pen_term = existingCourse.pen_term;
       } else if (term > existingCourse.ult_term) {
         course.pen_term = existingCourse.ult_term;
 
