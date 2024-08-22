@@ -40,9 +40,9 @@ export type RegCourseDetails = {
   grading_basis: string;
   course_id: string;
 
-  transcript_title: string;
-  topic_title: string;
-  long_title: string;
+  transcript_title: string | null;
+  topic_title: string | null;
+  long_title: string | null;
   distribution_area_short: string | null;
   course_head_netid: string | null;
 
@@ -54,17 +54,31 @@ export type RegCourseDetails = {
   other_requirements: string | null;
   other_information: string | null;
 
-  // Check if this is correct
   course_instructors: {
-    course_instructor: {
-      netid: string;
-      name: string;
-    };
-  };
+    course_instructor:
+      | {
+          netid: string;
+          name: string;
+        }[]
+      | {
+          netid: string;
+          name: string;
+        };
+  } | null;
 
   seat_reservations: {
-    seat_reservation: {};
-  };
+    seat_reservation:
+      | {
+          class_section: string;
+          description: string;
+          enrl_cap: string;
+        }[]
+      | {
+          class_section: string;
+          description: string;
+          enrl_cap: string;
+        };
+  } | null;
 
   reading_list_title_1: string | null;
   reading_list_author_1: string | null;

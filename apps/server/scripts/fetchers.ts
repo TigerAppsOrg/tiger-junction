@@ -1,5 +1,5 @@
 import { getToken, TERM_URL } from "./shared";
-import type { RegListings } from "./types";
+import type { RegCourseDetails, RegListings } from "./types";
 
 export const fetchRegListings = async (term: number): Promise<RegListings> => {
   const token = await getToken();
@@ -88,7 +88,7 @@ export const fetchRegDeptCourses = async (dept: string, term: number) => {
 export const fetchRegCourseDetails = async (
   listingId: string,
   term: number
-) => {
+): Promise<RegCourseDetails> => {
   const token = process.env.API_ACCESS_TOKEN;
   if (!token) {
     throw new Error("API access token not found");
@@ -115,5 +115,5 @@ export const fetchRegCourseDetails = async (
     throw new Error("Invalid course details response format");
   }
 
-  return courseDetails.course_details.course_detail;
+  return courseDetails.course_details.course_detail as RegCourseDetails;
 };
