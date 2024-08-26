@@ -15,6 +15,8 @@ type RegCourse = {
     dists: string[];
 };
 
+type Status = 0 | 1 | 2;
+
 type CourseInsert = {
     id?: number;
     listing_id: string;
@@ -22,12 +24,25 @@ type CourseInsert = {
     code: string;
     term: number;
     dists: string[];
-    status: 0 | 1 | 2;
+    status: Status;
     instructors: string[];
     emplids: string[];
 };
 
-type SectionInsert = {};
+type SectionInsert = {
+    id?: number;
+    course_id: number;
+    num: string;
+    room: string | null;
+    tot: number;
+    cap: number;
+    days: number;
+    title: string;
+    category: string;
+    start_time: number;
+    end_time: number;
+    status: Status;
+};
 
 type GradedCourseInsert = CourseInsert & {
     basis: string;
@@ -49,7 +64,7 @@ const fetchRegCourses = async (term: number): Promise<RegCourse[]> => {
     return regCourses;
 };
 
-const formatStatus = (course: ArrayElement<RegDeptCourses>): 0 | 1 | 2 => {
+const formatStatus = (course: ArrayElement<RegDeptCourses>): Status => {
     const sections = course.classes;
 
     let allCanceled = true;
@@ -64,7 +79,7 @@ const formatStatus = (course: ArrayElement<RegDeptCourses>): 0 | 1 | 2 => {
         else if (!sectionMap[sectionType]) sectionMap[sectionType] = false;
     }
 
-    let status: 0 | 1 | 2 = 0;
+    let status: Status = 0;
     if (allCanceled) status = 2;
     else if (Object.values(sectionMap).every(x => x)) status = 0;
     else status = 1;
