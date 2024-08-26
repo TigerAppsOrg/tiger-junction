@@ -282,7 +282,6 @@ export const populateCourses = async (
                     basis: gradingBasis,
                     has_final: hasFinal
                 };
-                console.log(gradedCourseData);
                 courseInserts.push(gradedCourseData);
             } else {
                 courseInserts.push(courseData);
@@ -310,11 +309,30 @@ export const populateCourses = async (
                 }
             }
         }
+
+        console.log(
+            "Finished processing " +
+                dept +
+                " in " +
+                (new Date().getTime() - time.getTime()) +
+                "ms"
+        );
+        time = new Date();
     }
 
     // Upload courses to Supabase
+    const { data: courseData, error: courseError } = await supabase
+        .from("courses")
+        .upsert(courseInserts)
+        .select("*");
+
+    if (courseError) {
+        console.error(courseError);
+        return;
+    }
+    console.log(courseData);
 
     // Handle sections
 };
 
-console.log(await populateCourses(1252, true));
+console.log(await populateCourses(1252, false));
