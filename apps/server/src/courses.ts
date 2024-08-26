@@ -6,6 +6,10 @@ import {
 import { supabase } from "./shared";
 import type { RegDeptCourses } from "./types";
 
+//----------------------------------------------------------------------
+// Types
+//----------------------------------------------------------------------
+
 type ArrayElement<ArrayType extends readonly unknown[]> =
     ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
@@ -48,6 +52,10 @@ type GradedCourseInsert = CourseInsert & {
     basis: string;
     has_final: boolean;
 };
+
+//----------------------------------------------------------------------
+// Helper Functions
+//----------------------------------------------------------------------
 
 const fetchRegCourses = async (term: number): Promise<RegCourse[]> => {
     const regListings = await fetchRegListings(term);
@@ -98,6 +106,15 @@ const formatInstructors = (
         : [[], []];
 };
 
+//----------------------------------------------------------------------
+// Main Function
+//----------------------------------------------------------------------
+
+/**
+ * Populates the courses for a given term
+ * @param term numerical term to populate the courses for
+ * @param updateGrading whether to update grading information
+ */
 export const populateCourses = async (
     term: number,
     updateGrading: boolean = false
