@@ -1,4 +1,8 @@
-import { fetchRegDeptCourses, fetchRegListings } from "./fetchers";
+import {
+    fetchRegCourseDetails,
+    fetchRegDeptCourses,
+    fetchRegListings
+} from "./fetchers";
 import { supabase } from "./shared";
 import type { RegDeptCourses } from "./types";
 
@@ -22,6 +26,8 @@ type CourseInsert = {
     instructors: string[];
     emplids: string[];
 };
+
+type SectionInsert = {};
 
 type GradedCourseInsert = CourseInsert & {
     basis: string;
@@ -130,8 +136,8 @@ export const populateCourses = async (
                 continue;
             }
 
+            // Course Information
             const instructorInfo = formatInstructors(course);
-
             const courseData = {
                 listing_id: course.course_id,
                 title: course.title,
@@ -151,12 +157,31 @@ export const populateCourses = async (
             }
 
             if (updateGrading) {
-                console.log("HO");
+                const courseDetails = await fetchRegCourseDetails(
+                    course.course_id,
+                    term
+                );
+                const gradingBasis = courseDetails.grading_basis;
+                const hasFinal =
+                    courseDetails.grading_final_exam &&
+                    parseInt(courseDetails.grading_final_exam) > 0
+                        ? true
+                        : false;
+
+                const gradedCourseData: GradedCourseInsert = {
+                    ...courseData,
+                    basis: gradingBasis,
+                    has_final: hasFinal
+                };
+                console.log(gradedCourseData);
+                courseInserts.push(gradedCourseData);
+            } else {
+                courseInserts.push(courseData);
             }
 
-            courseInserts.push(courseData);
+            // Section Information
         }
     }
 };
 
-console.log(await populateCourses(1252));
+console.log(await populateCourses(1252, true));
