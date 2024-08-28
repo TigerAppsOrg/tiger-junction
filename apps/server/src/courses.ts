@@ -33,9 +33,15 @@ type CourseInsert = {
     emplids: string[];
 };
 
+type GradedCourseInsert = CourseInsert & {
+    basis: string;
+    has_final: boolean;
+};
+
 type SectionPartial = {
     course_id?: number;
-    num: string;
+    listing_id: string;
+    num: number;
     room: string | null;
     tot: number;
     cap: number;
@@ -45,12 +51,13 @@ type SectionPartial = {
     start_time: number;
     end_time: number;
     status: Status;
+    term: number;
 };
 
 type SectionInsert = {
     id?: number;
     course_id: number;
-    num: string;
+    num: number;
     room: string | null;
     tot: number;
     cap: number;
@@ -60,11 +67,7 @@ type SectionInsert = {
     start_time: number;
     end_time: number;
     status: Status;
-};
-
-type GradedCourseInsert = CourseInsert & {
-    basis: string;
-    has_final: boolean;
+    term: number;
 };
 
 //----------------------------------------------------------------------
@@ -230,13 +233,9 @@ export const populateCourses = async (
     );
     time = new Date();
 
-    let a = false;
-
     const sectionPartials: SectionPartial[] = [];
     const courseInserts: (CourseInsert | GradedCourseInsert)[] = [];
     for (const dept of departments) {
-        if (a) break;
-        a = true;
         const deptData = await fetchRegDeptCourses(dept, term);
         for (const course of deptData) {
             const regCourse = regCourses.find(
@@ -296,7 +295,8 @@ export const populateCourses = async (
                 for (const meeting of section.schedule.meetings) {
                     const sectionData = {
                         course_id: courseData.id,
-                        num: section.class_number,
+                        listing_id: courseData.listing_id,
+                        num: parseInt(section.class_number),
                         room: formatRoom(meeting),
                         tot: parseInt(section.enrollment),
                         cap: parseInt(section.capacity),
@@ -305,7 +305,8 @@ export const populateCourses = async (
                         category: section.section[0],
                         start_time: timeToValue(meeting.start_time),
                         end_time: timeToValue(meeting.end_time),
-                        status: formatSectionStatus(section.pu_calc_status)
+                        status: formatSectionStatus(section.pu_calc_status),
+                        term: term
                     } as SectionPartial;
 
                     sectionPartials.push(sectionData);
@@ -324,23 +325,99 @@ export const populateCourses = async (
     }
 
     // Upload courses to Supabase
-    console.log(courseInserts);
-    console.log("Length: " + courseInserts.length);
     const { data: courseData, error: courseError } = await supabase
         .from("courses")
-        .upsert(courseInserts, {
-            ignoreDuplicates: false,
-            onConflict: "id,listing_id"
-        })
-        .select("*");
+        .upsert(courseInserts)
+        .select("id,listing_id");
 
     if (courseError) {
         console.error(courseError);
         return;
     }
-    console.log(courseData);
+
+    const { data: supaSections, error: sectionError } = await supabase
+        .from("sections")
+        .select("id,course_id,num")
+        .eq("term", term);
+
+    if (sectionError) {
+        console.error(sectionError);
+        return;
+    }
 
     // Handle sections
+    const sectionIdDeleteList: number[] = [];
+    const sectionInserts: SectionInsert[] = [];
+    for (const course of courseData) {
+        const courseSections = sectionPartials.filter(
+            x => x.listing_id === course.listing_id
+        );
+
+        const supaCourseSections = supaSections.filter(
+            x => x.course_id === course.id
+        );
+
+        // Remove sections that no longer exist
+        for (const supaSection of supaCourseSections) {
+            if (!courseSections.find(x => x.num === supaSection.num)) {
+                sectionIdDeleteList.push(supaSection.id);
+            }
+        }
+
+        for (const newSection of courseSections) {
+            const matchingSection = supaCourseSections.find(
+                x => x.num === newSection.num
+            );
+
+            const sectionInsert: SectionInsert = {
+                course_id: course.id,
+                num: newSection.num,
+                room: newSection.room,
+                tot: newSection.tot,
+                cap: newSection.cap,
+                days: newSection.days,
+                title: newSection.title,
+                category: newSection.category,
+                start_time: newSection.start_time,
+                end_time: newSection.end_time,
+                status: newSection.status,
+                term: newSection.term
+            };
+
+            if (matchingSection) {
+                sectionInsert.id = matchingSection.id;
+            }
+
+            sectionInserts.push(sectionInsert);
+        }
+    }
+
+    // Upload sections to Supabase
+    const { error: sectionInsertError } = await supabase
+        .from("sections")
+        .upsert(sectionInserts);
+
+    if (sectionInsertError) {
+        console.error(sectionInsertError);
+        return;
+    }
+
+    // Delete sections that no longer exist
+    const { error: sectionDeleteError } = await supabase
+        .from("sections")
+        .delete()
+        .in("id", sectionIdDeleteList);
+
+    if (sectionDeleteError) {
+        console.error(sectionDeleteError);
+        return;
+    }
+
+    console.log(
+        "Finished uploading to Supabase in " +
+            (new Date().getTime() - time.getTime()) +
+            "ms"
+    );
 };
 
 console.log(await populateCourses(1252, false));
