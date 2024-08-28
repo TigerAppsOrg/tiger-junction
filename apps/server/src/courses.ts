@@ -195,6 +195,33 @@ export const populateCourses = async (
     term: number,
     updateGrading: boolean = false
 ) => {
+    const { data, error } = await supabase.from("courses").upsert([
+        {
+            id: 18652,
+            listing_id: "012054",
+            title: "Memory, History and the Archive",
+            basis: "GRD",
+            rating: 5,
+            code: "AAS426/HIS426",
+            term: 1252,
+            dists: ["HA"],
+            status: 1,
+            num_evals: 5,
+            instructors: ["Joshua B. Guild"],
+            has_final: false,
+            emplids: ["960223707"]
+        }
+    ]);
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    console.log(data);
+
+    return;
+
     let time = new Date();
     const initPromises = [
         fetchRegCourses(term),
@@ -230,9 +257,13 @@ export const populateCourses = async (
     );
     time = new Date();
 
+    let a = false;
+
     const sectionPartials: SectionPartial[] = [];
     const courseInserts: (CourseInsert | GradedCourseInsert)[] = [];
     for (const dept of departments) {
+        if (a) break;
+        a = true;
         const deptData = await fetchRegDeptCourses(dept, term);
         for (const course of deptData) {
             const regCourse = regCourses.find(
@@ -248,6 +279,8 @@ export const populateCourses = async (
             // Update Course Information
             const instructorInfo = formatInstructors(course);
             const courseData = {
+                id: supaCourses.find(x => x.listing_id === course.course_id)
+                    ?.id,
                 listing_id: course.course_id,
                 title: course.title,
                 code: regCourse.code,
@@ -258,11 +291,8 @@ export const populateCourses = async (
                 emplids: instructorInfo[1]
             } as CourseInsert;
 
-            const supaCourse = supaCourses.find(
-                x => x.listing_id === course.course_id
-            );
-            if (supaCourse) {
-                courseData.id = supaCourse.id;
+            if (courseData.id === undefined) {
+                delete courseData.id;
             }
 
             if (updateGrading) {
@@ -321,9 +351,14 @@ export const populateCourses = async (
     }
 
     // Upload courses to Supabase
+    console.log(courseInserts);
+    console.log("Length: " + courseInserts.length);
     const { data: courseData, error: courseError } = await supabase
         .from("courses")
-        .upsert(courseInserts)
+        .upsert(courseInserts, {
+            ignoreDuplicates: false,
+            onConflict: "id,listing_id"
+        })
         .select("*");
 
     if (courseError) {
