@@ -195,33 +195,6 @@ export const populateCourses = async (
     term: number,
     updateGrading: boolean = false
 ) => {
-    const { data, error } = await supabase.from("courses").upsert([
-        {
-            id: 18652,
-            listing_id: "012054",
-            title: "Memory, History and the Archive",
-            basis: "GRD",
-            rating: 5,
-            code: "AAS426/HIS426",
-            term: 1252,
-            dists: ["HA"],
-            status: 1,
-            num_evals: 5,
-            instructors: ["Joshua B. Guild"],
-            has_final: false,
-            emplids: ["960223707"]
-        }
-    ]);
-
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    console.log(data);
-
-    return;
-
     let time = new Date();
     const initPromises = [
         fetchRegCourses(term),
