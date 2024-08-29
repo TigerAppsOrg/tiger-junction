@@ -1,3 +1,5 @@
+// Usage: bun run update-data <term>
+
 import { populateListings } from "./listings";
 import { populateCourses } from "./courses";
 import { redisTransfer } from "./transfer";

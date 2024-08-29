@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "lint": "prettier --check . && eslint src/",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "update-data": "bun src/index.ts"
   },
   "devDependencies": {
     "bun-types": "latest",
