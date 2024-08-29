@@ -424,5 +424,3 @@ export const populateCourses = async (
             "ms"
     );
 };
-
-await populateCourses(1252, false);
