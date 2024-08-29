@@ -15,7 +15,7 @@ type FormattedListing = {
  * Populates the listings for a given term
  * @param term numerical term to populate the listings for
  */
-const populateListings = async (term: number) => {
+export const populateListings = async (term: number) => {
     console.log("Populating listings for term " + term);
     const time = new Date();
 
@@ -152,5 +152,3 @@ const populateListings = async (term: number) => {
             "ms"
     );
 };
-
-await populateListings(1252);

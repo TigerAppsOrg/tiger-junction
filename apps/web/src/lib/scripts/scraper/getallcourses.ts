@@ -380,6 +380,7 @@ export const getAllCourses = async (
 
                     const sectionData = {
                         course_id: courseId,
+                        term: term,
                         title: section.section,
                         category: section.section[0],
                         num: section.class_number,
