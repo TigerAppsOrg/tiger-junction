@@ -365,9 +365,14 @@ export const populateCourses = async (
         }
 
         for (const newSection of courseSections) {
-            const matchingSection = supaCourseSections.find(
+            const matchingSectionIndex = supaCourseSections.findIndex(
                 x => x.num === newSection.num
             );
+            const matchingSection =
+                matchingSectionIndex !== -1
+                    ? supaCourseSections[matchingSectionIndex]
+                    : null;
+            supaCourseSections.splice(matchingSectionIndex, 1);
 
             const sectionInsert: SectionInsert = {
                 course_id: course.id,
@@ -420,4 +425,4 @@ export const populateCourses = async (
     );
 };
 
-console.log(await populateCourses(1252, false));
+await populateCourses(1252, false);
