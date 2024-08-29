@@ -324,16 +324,31 @@ export const populateCourses = async (
         time = new Date();
     }
 
+    const newCourses = courseInserts.filter(x => x.id === undefined);
+    const existingCourses = courseInserts.filter(x => x.id !== undefined);
+
     // Upload courses to Supabase
     const { data: courseData, error: courseError } = await supabase
         .from("courses")
-        .upsert(courseInserts)
+        .upsert(existingCourses)
         .select("id,listing_id");
 
     if (courseError) {
         console.error(courseError);
         return;
     }
+
+    const { data: courseDataNew, error: courseErrorNew } = await supabase
+        .from("courses")
+        .insert(newCourses)
+        .select("id,listing_id");
+
+    if (courseErrorNew) {
+        console.error(courseErrorNew);
+        return;
+    }
+
+    courseData.push(...courseDataNew);
 
     const { data: supaSections, error: sectionError } = await supabase
         .from("sections")
@@ -397,13 +412,25 @@ export const populateCourses = async (
         }
     }
 
-    // Upload sections to Supabase
-    const { error: sectionInsertError } = await supabase
-        .from("sections")
-        .upsert(sectionInserts);
+    const newSections = sectionInserts.filter(x => x.id === undefined);
+    const existingSections = sectionInserts.filter(x => x.id !== undefined);
 
-    if (sectionInsertError) {
-        console.error(sectionInsertError);
+    // Upload sections to Supabase
+    const { error: sectionUpdateError } = await supabase
+        .from("sections")
+        .upsert(existingSections);
+
+    if (sectionUpdateError) {
+        console.error(sectionUpdateError);
+        return;
+    }
+
+    const { error: newSectionError } = await supabase
+        .from("sections")
+        .insert(newSections);
+
+    if (newSectionError) {
+        console.error(newSectionError);
         return;
     }
 
