@@ -1,4 +1,4 @@
-// Usage: bun run update-data <term>
+// Usage: bun run update-data <term> (--grading -g)
 
 import { populateListings } from "./listings";
 import { populateCourses } from "./courses";
@@ -18,11 +18,14 @@ if (!TERMS.includes(term)) {
     process.exit(1);
 }
 
+const flags = args.slice(1);
+const updateGrading = flags.includes("--grading") || flags.includes("-g");
+
 (async () => {
     const startTime = Date.now();
     console.log("Starting data update for term", term);
     await populateListings(term);
-    await populateCourses(term);
+    await populateCourses(term, updateGrading);
     await redisTransfer(term);
     const endTime = Date.now();
     console.log("Finished in", (endTime - startTime) / 1000, "s");
