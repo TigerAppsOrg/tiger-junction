@@ -2,6 +2,18 @@
 
 We welcome contribution to TigerJunction from both the TigerApps Team and the Princeton community! Please read the following guidelines before contributing. If you have any questions, feel free to reach out to the project lead at motoaki@princeton.edu.
 
+## Repository Structure
+
+This repository is a monorepo that contains 2 apps in the `apps` directory: `web` and `server`. The `web` app is the SvelteKit application. This includes the entirety of the frontend and the majority of the backend. The `server` app is a Bun-based backend server that updates the app data.
+
+The `data` directory contains data on courses and prerequisites. It is not directly used by the app currently, but could be integrated later.
+
+The `db` directory contains sql files for the Supabase database. The way Supabase works currently is a bit scuffed, and we will probably migrate off of it very soon. These files will be useful for setting up a new database.
+
+The `.github` directory contains GitHub Actions workflows for the repository.
+
+The `public` directory contains images used in the README.
+
 ## Setup
 
 Before you start contributing, make sure you have Node.js version 18 or later installed. You can check your Node.js version by running `node -v` in your terminal. If you don't have Node.js installed, you can download it from the [official website](https://nodejs.org/). If you are working in VSCode, install the Prettier extension.
@@ -11,6 +23,7 @@ To get started, clone the repository and install the dependencies:
 ```bash
 git clone https://github.com/tigerappsorg/tiger-junction
 cd tigerjunction
+cd apps/web
 npm install
 ```
 
@@ -29,12 +42,3 @@ The `main` branch is the default branch and is protected. All changes should be 
 ## Style
 
 The style guidelines are enforced by Prettier (see [.prettierrc](.prettierrc)). If you are using VSCode, you can install the Prettier extension to automatically format your code. Other IDEs may have their own Prettier extensions. Alternatively, you can run `npm run format` to format your code.
-
-## What to Contribute
-
-There are 2 main sources to look for tasks to work on:
-
-1. The [Issues](https://github.com/TigerAppsOrg/tiger-junction/issues) tab on GitHub
-2. The [Workflow Document](https://junction.tigerapps.org/docs/workflow) on the TigerJunction website
-
-If you are unsure about what to work on, reach out to the project lead for guidance.
