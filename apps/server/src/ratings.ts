@@ -1,4 +1,5 @@
 import { supabase, TERMS } from "./shared";
+import { JSDOM } from "jsdom";
 
 type IdPair = {
     listingId: string;
@@ -20,7 +21,11 @@ async function getCoursesFromSupabase(term: number): Promise<IdPair[]> {
     }) as IdPair[];
 }
 
-async function scrapeRatingsForCourse(listingId: string) {
+// Return the most recent rating for a course, or null if none found
+async function scrapeRatingsForCourse(
+    listingId: string,
+    term: number
+): Promise<number | null> {
     // There is no API for course ratings, so we need to scrape the page
     // REG_COOKIE must be set manually by whoever wants to run this script
 
@@ -30,7 +35,13 @@ async function scrapeRatingsForCourse(listingId: string) {
         return `${RATINGS_URL}terminfo=${term}&courseinfo=${listingId}`;
     };
 
-    for (const term of TERMS) {
+    const currentTermIndex = TERMS.indexOf(term);
+    if (currentTermIndex === -1) {
+        throw new Error("Invalid term number");
+    }
+    const activeTerms = TERMS.slice(currentTermIndex);
+
+    for (const term of activeTerms) {
         const url = formatRatingsURL(term);
         const res = await fetch(url, {
             headers: {
@@ -38,18 +49,71 @@ async function scrapeRatingsForCourse(listingId: string) {
             }
         });
         const text = await res.text();
-        console.log(text);
+        const rating = parseRating(text);
+        if (rating !== null) return rating;
     }
+
+    return null;
 }
 
-function processRatingsForCourse(): number {}
+// Analyze the webpage and return the rating, or null if none found
+function parseRating(pageText: string): number | null {
+    const NULL_STRING = "the class you selected are not available online";
+    if (pageText.includes(NULL_STRING)) return null;
+
+    const dom = new JSDOM(pageText);
+
+    const evalLabels = dom.window.document
+        .querySelectorAll("tr")[0]
+        .querySelectorAll("th");
+    const evalRatings = dom.window.document
+        .querySelectorAll("tr")[1]
+        .querySelectorAll("td");
+
+    const evalMap = new Map<string, number>();
+    for (let i = 0; i < evalLabels.length; i++) {
+        const label = evalLabels[i].textContent;
+        const rating = evalRatings[i].textContent;
+        if (rating === null || label === null) continue;
+        evalMap.set(label, parseFloat(rating));
+    }
+
+    // Find the first category that has a rating
+    const CATEGORIES = [
+        "Quality of Course", // General
+        "Overall Quality of the Course", // Some grad courses
+        "Overall Course Quality Rating", // FRS
+        "Quality of the Seminar", // Seminar Edge Case
+        "Quality of Lectures", // Lecture Edge Case
+        "Quality of Precepts", // Precept Edge Case
+        "Quality of Laboratories", // Lab Edge Case
+        "Recommend to Other Students", // Edge Case
+        "Quality of Readings", // Fallback
+        "Quality of Written Assignments" // Fallback
+    ];
+
+    for (const category of CATEGORIES) {
+        if (evalMap.has(category)) return evalMap.get(category)!;
+    }
+
+    return null;
+}
 
 // Update the ratings for a single course
-async function handleCourse(idPair: IdPair) {
-    await scrapeRatingsForCourse(idPair.listingId);
-    processRatingsForCourse();
+async function handleCourse(idPair: IdPair, term: number) {
+    const rating = await scrapeRatingsForCourse(idPair.listingId, term);
+
+    console.log("Updating course", idPair.listingId, "with rating", rating);
 
     // Update course in Supabase
+    // const { error } = await supabase
+    //     .from("courses")
+    //     .update({ rating: rating })
+    //     .eq("id", idPair.supabaseId);
+
+    // if (error) {
+    //     console.error("Error updating course", idPair.listingId);
+    // }
 }
 
 /**
@@ -67,7 +131,7 @@ async function updateRatings(term: number) {
     const courses = await getCoursesFromSupabase(term);
 
     for (const course of courses) {
-        await handleCourse(course);
+        await handleCourse(course, term);
     }
 
     // Return timestamp
