@@ -127,7 +127,7 @@ async function handleCourse(idPair: IdPair, term: number) {
  * Refresh ratings for all courses in a given term
  * @param term
  */
-async function updateRatings(term: number) {
+async function updateRatings(term: number, startIndex: number = 0) {
     // Immediately throw error if REG_COOKIE is not set
     if (!process.env.REG_COOKIE) {
         throw new Error("No REG_COOKIE found in environment");
@@ -135,7 +135,7 @@ async function updateRatings(term: number) {
 
     console.log("Updating ratings for term", term);
     const startTime = Date.now();
-    const courses = await getCoursesFromSupabase(term);
+    const courses = (await getCoursesFromSupabase(term)).slice(startIndex);
 
     const PARALLEL_PROMISES = 5;
     const SLEEP_TIME_MS = 1000;
@@ -173,7 +173,9 @@ async function main() {
         process.exit(1);
     }
 
-    updateRatings(term);
+    const startIndex = args.length > 1 ? parseInt(args[1]) : 0;
+
+    await updateRatings(term, startIndex);
     await redisTransfer(term);
 }
 
