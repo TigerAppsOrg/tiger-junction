@@ -5,9 +5,11 @@
   "scripts": {
     "lint": "prettier --check . && eslint src/",
     "format": "prettier --write .",
-    "update-data": "bun src/index.ts"
+    "update-data": "bun src/index.ts",
+    "ratings": "bun src/ratings.ts"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.7",
     "bun-types": "latest",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
@@ -19,6 +21,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.1",
+    "jsdom": "^25.0.1",
     "redis": "^4.7.0"
   }
 }

@@ -380,6 +380,30 @@ export const populateCourses = async (
         }
 
         for (const newSection of courseSections) {
+            const matchingSectionIndices: number[] = [];
+            for (let i = 0; i < supaCourseSections.length; i++) {
+                if (supaCourseSections[i].num === newSection.num) {
+                    matchingSectionIndices.push(i);
+                }
+            }
+
+            // There was previously a bug that caused duplicate sections
+            // to be created. This code will delete all but the first
+            // matching section (which will be found by the next block)
+            if (matchingSectionIndices.length > 1) {
+                console.error(
+                    "Multiple sections found for " +
+                        newSection.listing_id +
+                        " " +
+                        newSection.num
+                );
+                const extraSections = matchingSectionIndices.slice(1);
+                sectionIdDeleteList.push(
+                    ...extraSections.map(x => supaCourseSections[x].id)
+                );
+            }
+
+            // Find matching section to ensure no duplicates
             const matchingSectionIndex = supaCourseSections.findIndex(
                 x => x.num === newSection.num
             );
@@ -387,6 +411,7 @@ export const populateCourses = async (
                 matchingSectionIndex !== -1
                     ? supaCourseSections[matchingSectionIndex]
                     : null;
+
             supaCourseSections.splice(matchingSectionIndex, 1);
 
             const sectionInsert: SectionInsert = {
