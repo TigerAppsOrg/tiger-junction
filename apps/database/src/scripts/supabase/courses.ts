@@ -352,7 +352,7 @@ export const populateCourses = async (
 
     const { data: supaSections, error: sectionError } = await supabase
         .from("sections")
-        .select("id,course_id,num")
+        .select("id,course_id,num,start_time,days")
         .eq("term", term);
 
     if (sectionError) {
@@ -374,7 +374,18 @@ export const populateCourses = async (
 
         // Remove sections that no longer exist
         for (const supaSection of supaCourseSections) {
-            if (!courseSections.find(x => x.num === supaSection.num)) {
+            if (
+                !courseSections.find(x => {
+                    // All of these conditions have to be checked
+                    // because there are edge cases where there's a
+                    // section with multiple times or days, which
+                    // requires multiple db rows (sadly)
+                    const numMatch = x.num === supaSection.num;
+                    const timeMatch = x.start_time === supaSection.start_time;
+                    const dayMatch = x.days === supaSection.days;
+                    return numMatch && timeMatch && dayMatch;
+                })
+            ) {
                 sectionIdDeleteList.push(supaSection.id);
             }
         }
