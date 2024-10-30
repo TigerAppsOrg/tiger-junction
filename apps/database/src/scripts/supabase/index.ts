@@ -2,7 +2,7 @@
 
 import { populateListings } from "./listings";
 import { populateCourses } from "./courses";
-import { redisTransfer } from "../redis";
+import { redisTransfer } from "./redis";
 import { TERMS } from "./shared";
 
 const args = process.argv.slice(2);

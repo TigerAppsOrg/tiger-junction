@@ -1,3 +1,10 @@
+/**
+ * @file scripts/reg-types.ts
+ * @description This file contains types for the registrar API data.
+ * I pray this does not change anytime in the near future.
+ * @author Joshua Lau
+ */
+
 export type StringBoolean = "Y" | "N";
 
 export type RegListings = {
