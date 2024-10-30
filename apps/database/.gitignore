@@ -6,6 +6,9 @@
 # To recreate it, run `bun run db:schema` in the root of the project
 schema.dbml
 
+# We are using Bun, so this should be ignored in case someone runs npm install
+package-lock.json
+
 # Logs
 
 logs
