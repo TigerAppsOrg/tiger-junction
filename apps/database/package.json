@@ -5,8 +5,8 @@
     "scripts": {
         "lint": "prettier --check . && eslint src/",
         "format": "prettier --write .",
-        "update-data": "bun src/index.ts",
-        "ratings": "bun src/ratings.ts",
+        "update-supabase": "bun src/scripts/supabase/index.ts",
+        "ratings-supabase": "bun src/scripts/supabase/ratings.ts",
         "db:start": "docker compose up",
         "db:schema": "bun src/db/generate-dbml.ts",
         "db:push": "drizzle-kit push",
