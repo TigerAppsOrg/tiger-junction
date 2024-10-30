@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "prettier --check . && eslint src/",
     "format": "prettier --write .",
-    "update-data": "bun src/index.ts"
+    "update-data": "bun src/index.ts",
+    "ratings": "bun src/ratings.ts"
   },
   "devDependencies": {
     "bun-types": "latest",
