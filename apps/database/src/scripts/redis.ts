@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { supabase } from "./shared";
+import { supabase } from "./supabase/shared";
 
 // Transfer data from Supabase to Redis
 export const redisTransfer = async (term: number) => {

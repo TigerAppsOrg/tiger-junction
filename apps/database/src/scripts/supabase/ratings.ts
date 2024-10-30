@@ -1,6 +1,6 @@
 import { supabase, TERMS } from "./shared";
 import { JSDOM } from "jsdom";
-import { redisTransfer } from "./transfer";
+import { redisTransfer } from "../redis";
 
 type IdPair = {
     listingId: string;

@@ -2,9 +2,9 @@ import {
     fetchRegCourseDetails,
     fetchRegDeptCourses,
     fetchRegListings
-} from "./fetchers";
+} from "../reg-fetchers";
 import { supabase } from "./shared";
-import type { RegDeptCourses } from "./types";
+import type { RegDeptCourses } from "../reg-types";
 
 //----------------------------------------------------------------------
 // Types

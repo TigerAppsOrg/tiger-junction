@@ -1,6 +1,10 @@
 // Functions to fetch course data from the registrar API
 
-import type { RegCourseDetails, RegDeptCourses, RegListings } from "./types";
+import type {
+    RegCourseDetails,
+    RegDeptCourses,
+    RegListings
+} from "./reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants
