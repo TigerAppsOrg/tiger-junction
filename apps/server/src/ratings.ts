@@ -1,5 +1,6 @@
 import { supabase, TERMS } from "./shared";
 import { JSDOM } from "jsdom";
+import { redisTransfer } from "./transfer";
 
 type IdPair = {
     listingId: string;
@@ -20,6 +21,8 @@ async function getCoursesFromSupabase(term: number): Promise<IdPair[]> {
         };
     }) as IdPair[];
 }
+
+//----------------------------------------------------------------------
 
 // Return the most recent rating for a course, or null if none found
 async function scrapeRatingsForCourse(
@@ -55,6 +58,8 @@ async function scrapeRatingsForCourse(
 
     return null;
 }
+
+//----------------------------------------------------------------------
 
 // Analyze the webpage and return the rating, or null if none found
 function parseRating(pageText: string): number | null {
@@ -99,22 +104,24 @@ function parseRating(pageText: string): number | null {
     return null;
 }
 
+//----------------------------------------------------------------------
+
 // Update the ratings for a single course
 async function handleCourse(idPair: IdPair, term: number) {
     const rating = await scrapeRatingsForCourse(idPair.listingId, term);
 
-    console.log("Updating course", idPair.listingId, "with rating", rating);
-
     // Update course in Supabase
-    // const { error } = await supabase
-    //     .from("courses")
-    //     .update({ rating: rating })
-    //     .eq("id", idPair.supabaseId);
+    const { error } = await supabase
+        .from("courses")
+        .update({ rating: rating })
+        .eq("id", idPair.supabaseId);
 
-    // if (error) {
-    //     console.error("Error updating course", idPair.listingId);
-    // }
+    if (error) {
+        console.error("Error updating course", idPair.listingId);
+    }
 }
+
+//----------------------------------------------------------------------
 
 /**
  * Refresh ratings for all courses in a given term
@@ -130,14 +137,28 @@ async function updateRatings(term: number) {
     const startTime = Date.now();
     const courses = await getCoursesFromSupabase(term);
 
-    for (const course of courses) {
-        await handleCourse(course, term);
+    const PARALLEL_PROMISES = 5;
+    const SLEEP_TIME_MS = 1000;
+
+    for (let i = 0; i < courses.length; i += PARALLEL_PROMISES) {
+        const progStr = "Progress: " + i + "/" + courses.length;
+        const timeProgS = Math.round((Date.now() - startTime) / 1000);
+        const timeProgStr = "(" + timeProgS + "s elapsed)";
+        console.log(progStr, timeProgStr);
+
+        const batch = courses.slice(i, i + PARALLEL_PROMISES);
+        await Promise.all(batch.map(course => handleCourse(course, term)));
+
+        // Sleep to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, SLEEP_TIME_MS));
     }
 
     // Return timestamp
     const endTime = Date.now();
     console.log("Updated ratings in ", (endTime - startTime) / 1000, "s");
 }
+
+//----------------------------------------------------------------------
 
 async function main() {
     const args = process.argv.slice(2);
@@ -153,6 +174,7 @@ async function main() {
     }
 
     updateRatings(term);
+    await redisTransfer(term);
 }
 
 main();
