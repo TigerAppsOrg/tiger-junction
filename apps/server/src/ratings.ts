@@ -139,17 +139,20 @@ async function updateRatings(term: number) {
     console.log("Updated ratings in ", (endTime - startTime) / 1000, "s");
 }
 
-// Main script execution
-const args = process.argv.slice(2);
-if (args.length === 0) {
-    console.error("Please provide a term number");
-    process.exit(1);
+async function main() {
+    const args = process.argv.slice(2);
+    if (args.length === 0) {
+        console.error("Please provide a term number");
+        process.exit(1);
+    }
+
+    const term = parseInt(args[0]);
+    if (!TERMS.includes(term)) {
+        console.error("Invalid term number");
+        process.exit(1);
+    }
+
+    updateRatings(term);
 }
 
-const term = parseInt(args[0]);
-if (!TERMS.includes(term)) {
-    console.error("Invalid term number");
-    process.exit(1);
-}
-
-updateRatings(term);
+main();
