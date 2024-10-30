@@ -8,6 +8,7 @@
         "update-data": "bun src/index.ts",
         "ratings": "bun src/ratings.ts",
         "db:start": "docker compose up",
+        "db:schema": "bun src/db/generate-dbml.ts",
         "db:push": "drizzle-kit push",
         "db:migrate": "drizzle-kit migrate",
         "db:studio": "drizzle-kit studio"
@@ -26,6 +27,7 @@
     },
     "dependencies": {
         "@supabase/supabase-js": "^2.45.1",
+        "drizzle-dbml-generator": "^0.9.0",
         "drizzle-orm": "^0.36.0",
         "jsdom": "^25.0.1",
         "postgres": "^3.4.5",

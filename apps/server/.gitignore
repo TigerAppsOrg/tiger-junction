@@ -1,5 +1,11 @@
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
+# User Additions
+
+# This is not sensitive info, but it's just to help the developer
+# To recreate it, run `bun run db:schema` in the root of the project
+schema.dbml
+
 # Logs
 
 logs
