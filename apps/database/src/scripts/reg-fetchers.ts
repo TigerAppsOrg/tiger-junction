@@ -1,6 +1,15 @@
-// Functions to fetch course data from the registrar API
+/**
+ * @file scripts/reg-fetchers.ts
+ * @description Functions for fetching course listings and details from
+ * the registrar API.
+ * @author Joshua Lau
+ */
 
-import type { RegCourseDetails, RegDeptCourses, RegListings } from "./types";
+import type {
+    RegCourseDetails,
+    RegDeptCourses,
+    RegListings
+} from "./reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants

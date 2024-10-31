@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "bocovo.dbml-erd-visualizer",
+        "1yib.svelte-bundle",
+        "oven.bun-vscode",
+        "bradlc.vscode-tailwindcss",
+    ]
+}

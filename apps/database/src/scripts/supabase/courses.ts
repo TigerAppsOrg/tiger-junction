@@ -2,9 +2,9 @@ import {
     fetchRegCourseDetails,
     fetchRegDeptCourses,
     fetchRegListings
-} from "./fetchers";
+} from "../reg-fetchers";
 import { supabase } from "./shared";
-import type { RegDeptCourses } from "./types";
+import type { RegDeptCourses } from "../reg-types";
 
 //----------------------------------------------------------------------
 // Types
@@ -352,7 +352,7 @@ export const populateCourses = async (
 
     const { data: supaSections, error: sectionError } = await supabase
         .from("sections")
-        .select("id,course_id,num")
+        .select("id,course_id,num,start_time,days")
         .eq("term", term);
 
     if (sectionError) {
@@ -382,7 +382,16 @@ export const populateCourses = async (
         for (const newSection of courseSections) {
             const matchingSectionIndices: number[] = [];
             for (let i = 0; i < supaCourseSections.length; i++) {
-                if (supaCourseSections[i].num === newSection.num) {
+                const supaSection = supaCourseSections[i];
+                // All of these conditions have to be checked
+                // because there are edge cases where there's a
+                // section with multiple times or days, which
+                // requires multiple db rows (sadly)
+                const numMatch = supaSection.num === newSection.num;
+                const timeMatch =
+                    supaSection.start_time === newSection.start_time;
+                const dayMatch = supaSection.days === newSection.days;
+                if (numMatch && timeMatch && dayMatch) {
                     matchingSectionIndices.push(i);
                 }
             }
