@@ -9,7 +9,7 @@
         "ratings-supabase": "bun src/scripts/supabase/ratings.ts",
         "db:start": "docker compose up",
         "db:schema": "bun src/db/generate-dbml.ts",
-        "db:push": "drizzle-kit push",
+        "db:generate": "drizzle-kit generate",
         "db:migrate": "drizzle-kit migrate",
         "db:studio": "drizzle-kit studio"
     },

@@ -76,8 +76,8 @@ export const schedules = pgTable("schedules", {
 });
 
 export const scheduleRelations = relations(schedules, ({ one, many }) => ({
-    courses: many(courses),
-    customEvents: many(customEvents),
+    scheduleCourseMap: many(scheduleCourseMap),
+    scheduleEventMap: many(scheduleEventMap),
     user: one(users, {
         fields: [schedules.userId],
         references: [users.id]
@@ -115,12 +115,16 @@ export const customEvents = pgTable("custom_events", {
     times: jsonb("times").notNull()
 });
 
-export const customEventRelations = relations(customEvents, ({ one }) => ({
-    user: one(users, {
-        fields: [customEvents.userId],
-        references: [users.id]
+export const customEventRelations = relations(
+    customEvents,
+    ({ one, many }) => ({
+        scheduleEventMap: many(scheduleEventMap),
+        user: one(users, {
+            fields: [customEvents.userId],
+            references: [users.id]
+        })
     })
-}));
+);
 
 export const courses = pgTable("courses", {
     id: serial("id").primaryKey().notNull(),
@@ -137,8 +141,8 @@ export const courses = pgTable("courses", {
 });
 
 export const courseRelations = relations(courses, ({ one, many }) => ({
-    instructors: many(instructors),
-    schedules: many(schedules),
+    courseInstructorMap: many(courseInstructorMap),
+    scheduleCourseMap: many(scheduleCourseMap),
     evaluations: one(evaluations, {
         fields: [courses.id],
         references: [evaluations.courseId]
@@ -153,7 +157,7 @@ export const instructors = pgTable("instructors", {
 });
 
 export const instructorRelations = relations(instructors, ({ many }) => ({
-    courses: many(courses)
+    courseInstructorMap: many(courseInstructorMap)
 }));
 
 export const evaluations = pgTable("evaluations", {
