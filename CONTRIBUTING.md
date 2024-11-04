@@ -4,9 +4,7 @@ We welcome contribution to TigerJunction from both the TigerApps Team and the Pr
 
 ## Repository Structure
 
-This repository is a monorepo that contains 2 apps in the `apps` directory: `web` and `server`. The `web` app is the SvelteKit application. This includes the entirety of the frontend and the majority of the backend. The `server` app is a Bun-based backend server that updates the app data.
-
-The `data` directory contains data on courses and prerequisites. It is not directly used by the app currently, but could be integrated later.
+This repository is a monorepo that contains 3 apps in the `apps` directory: `web`, `server`, and `prerequisites`. The `web` app is the SvelteKit application. This includes the entirety of the frontend and the majority of the backend. The `server` app is a Bun-based backend server that updates the app data. The `prerequisites` app is manually-inputted prerequisite data and a WIP interpreter for it.
 
 The `db` directory contains sql files for the Supabase database. The way Supabase works currently is a bit scuffed, and we will probably migrate off of it very soon. These files will be useful for setting up a new database.
 
