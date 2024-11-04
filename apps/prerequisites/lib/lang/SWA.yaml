@@ -1,0 +1,23 @@
+---
+code: SWA
+name: Swahili
+category: World Languages
+updated: 3/13/2024
+---
+- course: SWA 101
+  last: 1242
+  id: '008705'
+- course: SWA 102
+  last: 1244
+  reqs: SWA101
+  id: '008728'
+- course: SWA 105
+  last: 1242
+  equiv:
+    - SWA 105K
+  reqs: SWA102
+  id: '008947'
+- course: SWA 107
+  last: 1244
+  reqs: SWA105
+  id: '009169'

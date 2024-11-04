@@ -1,0 +1,39 @@
+---
+code: SAS
+name: South Asian Studies
+category: Ethnic and Cultural Studies
+updated: 3/13/2024
+---
+- course: SAS 200
+  last: 1244
+  id: '017184'
+- course: SAS 210
+  last: 1242
+  id: '015051'
+- course: SAS 303
+  last: 1244
+  id: '015207'
+- course: SAS 305
+  last: 1224
+  id: '015934'
+- course: SAS 309
+  last: 1212
+  id: '015670'
+- course: SAS 328
+  last: 1234
+  id: '013927'
+- course: SAS 332
+  last: 1234
+  id: '013875'
+- course: SAS 335
+  last: 1232
+  id: '013126'
+- course: SAS 345
+  last: 1242
+  id: '013874'
+- course: SAS 355
+  last: 1224
+  id: '016323'
+- course: SAS 365
+  last: 1234
+  id: '016728'

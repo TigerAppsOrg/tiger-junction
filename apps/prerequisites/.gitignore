@@ -1,0 +1,5 @@
+log.txt
+cache
+node_modules
+resolve.json
+.venv

@@ -1,0 +1,133 @@
+---
+code: NES
+name: Near Eastern Studies
+category: Ethnic and Cultural Studies
+updated: 3/13/2024
+---
+- course: NES 201
+  last: 1232
+  id: '004583'
+- course: NES 208
+  last: 1224
+  id: '015019'
+- course: NES 212
+  last: 1224
+  id: '014517'
+- course: NES 221
+  last: 1234
+  id: '012911'
+- course: NES 240
+  last: 1242
+  id: '010437'
+- course: NES 251
+  last: 1232
+  id: '016518'
+- course: NES 265
+  last: 1242
+  id: '009518'
+- course: NES 269
+  last: 1234
+  id: '010436'
+- course: NES 300
+  last: 1242
+  iw: null
+  id: '012109'
+- course: NES 301
+  last: 1242
+  id: '016853'
+- course: NES 312
+  last: 1234
+  id: '015449'
+- course: NES 316
+  last: 1224
+  id: '016272'
+- course: NES 317
+  last: 1244
+  id: '017132'
+- course: NES 326
+  last: 1242
+  id: '014507'
+- course: NES 330
+  last: 1224
+  id: '016273'
+- course: NES 332
+  last: 1244
+  id: '017133'
+- course: NES 338
+  last: 1242
+  id: '004616'
+- course: NES 339
+  last: 1242
+  id: '009122'
+- course: NES 342
+  last: 1244
+  id: '017134'
+- course: NES 345
+  last: 1244
+  id: '004622'
+- course: NES 347
+  last: 1222
+  id: '008685'
+- course: NES 359
+  last: 1232
+  id: '016461'
+- course: NES 362
+  last: 1234
+  id: '011288'
+- course: NES 365
+  last: 1234
+  id: '004637'
+- course: NES 366
+  last: 1234
+  id: '010149'
+- course: NES 369
+  last: 1242
+  id: '014247'
+- course: NES 370
+  last: 1224
+  id: '013564'
+- course: NES 373
+  last: 1242
+  id: '012912'
+- course: NES 374
+  last: 1242
+  id: '014052'
+- course: NES 379
+  last: 1212
+  id: '014701'
+- course: NES 385
+  last: 1222
+  id: '014211'
+- course: NES 387
+  last: 1232
+  id: '014702'
+- course: NES 389
+  last: 1224
+  id: '013327'
+- course: NES 391
+  last: 1244
+  id: '014703'
+- course: NES 392
+  last: 1214
+  id: '015927'
+- course: NES 394
+  last: 1212
+  id: '012599'
+- course: NES 396
+  last: 1214
+  id: '015963'
+- course: NES 397
+  last: 1212
+  id: '015689'
+- course: NES 433
+  last: 1242
+  id: '004647'
+- course: NES 437
+  last: 1244
+  id: '004651'
+- course: NES 438
+  last: 1214
+  id: '004652'
+- course: NES 465
+  last: 1244
+  id: '009518'

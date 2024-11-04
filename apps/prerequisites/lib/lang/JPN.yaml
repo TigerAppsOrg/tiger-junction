@@ -1,0 +1,74 @@
+---
+code: JPN
+name: Japanese
+category: World Languages
+updated: 3/13/2024
+---
+- course: JPN 1001
+  last: 1244
+  equiv:
+    - JPN 101
+  id: '017178'
+- course: JPN 101
+  last: 1242
+  id: '003924'
+- course: JPN 102
+  last: 1244
+  reqs: JPN101
+  id: '003925'
+- course: JPN 105
+  last: 1242
+  equiv:
+    - JPN 105J
+  reqs: JPN102
+  id: '003926'
+- course: JPN 107
+  last: 1244
+  equiv:
+    - JPN 107J
+  reqs: JPN105
+  id: '003927'
+- course: JPN 301
+  last: 1242
+  equiv:
+    - JPN 301J
+  reqs: JPN107
+  id: '003930'
+- course: JPN 302
+  last: 1244
+  equiv:
+    - JPN 302J
+  reqs: JPN301
+  id: '003931'
+- course: JPN 305
+  last: 1242
+  reqs: JPN302
+  id: '003932'
+- course: JPN 306
+  last: 1244
+  reqs: JPN305
+  id: '003933'
+- course: JPN 401
+  last: 1242
+  reqs: JPN306
+  id: '003934'
+- course: JPN 402
+  last: 1244
+  reqs: JPN401
+  id: '003935'
+- course: JPN 403
+  last: 1242
+  reqs: JPN402
+  id: '003936'
+- course: JPN 404
+  last: 1244
+  reqs: JPN403
+  id: '003937'
+- course: JPN 407
+  last: 1242
+  reqs: JPN402
+  id: '013787'
+- course: JPN 408
+  last: 1234
+  reqs: JPN407
+  id: '013909'

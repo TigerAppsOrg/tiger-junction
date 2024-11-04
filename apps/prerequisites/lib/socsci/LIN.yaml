@@ -1,0 +1,103 @@
+---
+code: LIN
+name: Linguistics
+category: Social Sciences
+updated: 3/13/2024
+---
+- course: LIN 201
+  last: 1244
+  id: '004322'
+- course: LIN 202
+  last: 1214
+  id: '015922'
+- course: LIN 205
+  last: 1244
+  id: '014553'
+- course: LIN 206
+  last: 1214
+  reqs: LIN205
+  id: '014750'
+- course: LIN 207
+  last: 1222
+  reqs: ASL102
+  id: '015220'
+- course: LIN 210
+  last: 1244
+  id: '008460'
+- course: LIN 214
+  last: 1224
+  reqs: LIN207
+  id: '015526'
+- course: LIN 215
+  last: 1232
+  id: '016358'
+- course: LIN 219
+  last: 1234
+  id: '016747'
+- course: LIN 235
+  last: 1242
+  id: '013911'
+- course: LIN 250
+  last: 1244
+  id: '013797'
+- course: LIN 260
+  last: 1242
+  id: '014267'
+- course: LIN 301
+  last: 1244
+  reqs: LIN201
+  id: '004328'
+- course: LIN 302
+  last: 1242
+  reqs: LIN201 | LIN212
+  id: '004329'
+- course: LIN 303
+  last: 1244
+  reqs: LIN201
+  id: '004330'
+- course: LIN 306
+  last: 1242
+  reqs: LIN201
+  id: '004333'
+- course: LIN 308
+  last: 1244
+  id: '011114'
+- course: LIN 310
+  last: 1242
+  reqs: LIN201
+  id: '013798'
+- course: LIN 313
+  last: 1214
+  reqs: LIN201
+  id: '015923'
+- course: LIN 318
+  last: 1234
+  reqs: LIN201 & (LIN306 | LIN302)
+  id: '016688'
+- course: LIN 355
+  last: 1244
+  reqs: LIN201
+  id: '013561'
+- course: LIN 356
+  last: 1242
+  reqs: LIN201
+  id: '010338'
+- course: LIN 360
+  last: 1242
+  id: '004336'
+- course: LIN 400
+  last: 1242
+  iw: null
+  id: '015658'
+- course: LIN 401
+  last: 1224
+  reqs: LIN301
+  id: '015940'
+- course: LIN 406
+  last: 1244
+  reqs: LIN306
+  id: '016689'
+- course: LIN 412
+  last: 1244
+  reqs: LIN302
+  id: '004339'
