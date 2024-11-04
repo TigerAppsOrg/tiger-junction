@@ -4,7 +4,7 @@
  * @author Joshua Lau
  */
 
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
     pgTable,
     text,
@@ -55,7 +55,9 @@ export const feedback = pgTable("feedback", {
         .references(() => users.id),
     feedback: text("feedback").notNull(),
     isResolved: boolean("is_resolved").notNull().default(false),
-    createdAt: timestamp("created_at").notNull().default(new Date())
+    createdAt: timestamp("created_at")
+        .notNull()
+        .default(sql`now()`)
 });
 
 export const feedbackRelations = relations(feedback, ({ one }) => ({
@@ -187,7 +189,11 @@ export const scheduleCourseMap = pgTable(
             .references(() => schedules.id),
         courseId: integer("course_id")
             .notNull()
-            .references(() => courses.id)
+            .references(() => courses.id),
+        color: smallint("color").notNull(),
+        isComplete: boolean("is_complete").notNull().default(false),
+        confirms: jsonb("confirms").notNull().default({}),
+        sections: text("sections").array()
     },
     t => ({
         pk: primaryKey({ columns: [t.scheduleId, t.courseId] })
