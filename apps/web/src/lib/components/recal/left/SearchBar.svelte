@@ -55,6 +55,22 @@
                 sectionData.add(supabase, $currentTerm, $searchResults[i].id);
     };
 
+    // !ANALYTICS
+    let analyticsTimeout: NodeJS.Timeout;
+    const triggerAnalyticsAdvancedSearch = () => {
+        clearTimeout(analyticsTimeout);
+        analyticsTimeout = setTimeout(async () => {
+            const user = await supabase.auth.getUser();
+            if (user.data.user) {
+                await supabase.from("analytics").insert({
+                    user_id: user.data.user.id,
+                    event: "advanced_search",
+                    page: "recalplus"
+                });
+            }
+        }, 500);
+    };
+
     $: cssVarStyles = getStyles("2");
 </script>
 
@@ -94,6 +110,7 @@
                 if (!$ready)
                     toastStore.add("error", "Please wait for the data to load");
                 else modalStore.push("adv");
+                triggerAnalyticsAdvancedSearch();
             }}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
