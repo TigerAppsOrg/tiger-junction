@@ -5,7 +5,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCurrentSchedule } from "./getters";
 import { get } from "svelte/store";
 import { sectionData } from "$lib/stores/rsections";
-import { toastStore } from "$lib/stores/toast";
 import { hoveredCourse } from "$lib/scripts/ReCal+/calendar";
 
 //----------------------------------------------------------------------
@@ -23,12 +22,6 @@ const saveCourseFromSearch = async (
 ) => {
     // Check if section data is loaded
     if (!get(sectionData)[course.term][course.id]) return;
-
-    // Check if schedule is at capacity
-    if (get(savedCourses)[getCurrentSchedule()].length >= 50) {
-        toastStore.add("error", "Schedules are limited to 50 courses.");
-        return;
-    }
 
     hoveredCourse.set(null);
     await savedCourses.add(supabase, getCurrentSchedule(), course, true);
