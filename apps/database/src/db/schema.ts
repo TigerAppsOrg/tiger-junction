@@ -69,6 +69,7 @@ export const feedbackRelations = relations(feedback, ({ one }) => ({
 
 export const schedules = pgTable("schedules", {
     id: serial("id").primaryKey().notNull(),
+    relativeId: integer("relative_id").notNull(),
     userId: integer("user_id")
         .notNull()
         .references(() => users.id),
@@ -145,9 +146,33 @@ export const courses = pgTable("courses", {
 export const courseRelations = relations(courses, ({ one, many }) => ({
     courseInstructorMap: many(courseInstructorMap),
     scheduleCourseMap: many(scheduleCourseMap),
+    sections: many(sections),
     evaluations: one(evaluations, {
         fields: [courses.id],
         references: [evaluations.courseId]
+    })
+}));
+
+export const sections = pgTable("sections", {
+    id: serial("id").primaryKey().notNull(),
+    courseId: integer("course_id")
+        .notNull()
+        .references(() => courses.id),
+    title: text("title").notNull(),
+    num: integer("num").notNull(),
+    room: text("room"),
+    tot: smallint("tot").notNull(),
+    cap: smallint("cap").notNull(),
+    days: smallint("days").notNull(),
+    startTime: integer("start_time").notNull(),
+    endTime: integer("end_time").notNull(),
+    status: statusEnum("status").notNull().default("open")
+});
+
+export const sectionRelations = relations(sections, ({ one, many }) => ({
+    courses: one(courses, {
+        fields: [sections.courseId],
+        references: [courses.id]
     })
 }));
 
@@ -163,6 +188,7 @@ export const instructorRelations = relations(instructors, ({ many }) => ({
 }));
 
 export const evaluations = pgTable("evaluations", {
+    id: serial("id").primaryKey().notNull(),
     courseId: integer("course_id")
         .notNull()
         .references(() => courses.id),
@@ -192,8 +218,7 @@ export const scheduleCourseMap = pgTable(
             .references(() => courses.id),
         color: smallint("color").notNull(),
         isComplete: boolean("is_complete").notNull().default(false),
-        confirms: jsonb("confirms").notNull().default({}),
-        sections: text("sections").array()
+        confirms: jsonb("confirms").notNull().default({})
     },
     t => ({
         pk: primaryKey({ columns: [t.scheduleId, t.courseId] })

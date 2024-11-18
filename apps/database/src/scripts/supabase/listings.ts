@@ -1,6 +1,6 @@
-import { fetchRegListings } from "../reg-fetchers";
+import { fetchRegListings } from "../shared/reg-fetchers";
 import { supabase } from "./shared";
-import type { RegListings } from "../reg-types";
+import type { RegListings } from "../shared/reg-types";
 
 type FormattedListing = {
     id: string;

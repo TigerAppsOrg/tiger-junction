@@ -77,6 +77,18 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
 };
 
 /**
+ * Fetch all 3-letter department codes for a given term
+ * @param term
+ * @returns
+ */
+export const fetchRegDepartments = async (term: number): Promise<string[]> => {
+    const regListings = await fetchRegListings(term);
+    const departments = new Set<string>();
+    for (const listing of regListings) departments.add(listing.subject);
+    return Array.from(departments).sort();
+};
+
+/**
  * Fetch all courses for a department in a given term
  * @param dept Department code
  * @param term Term code
