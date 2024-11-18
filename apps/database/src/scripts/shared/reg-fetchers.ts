@@ -9,7 +9,7 @@ import type {
     RegCourseDetails,
     RegDeptCourses,
     RegListings
-} from "./reg-types";
+} from "./shared/reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants
