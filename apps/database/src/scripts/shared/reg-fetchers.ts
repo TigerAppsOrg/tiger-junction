@@ -9,7 +9,7 @@ import type {
     RegCourseDetails,
     RegDeptCourses,
     RegListings
-} from "./shared/reg-types";
+} from "./reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants
@@ -74,6 +74,18 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
     });
 
     return uniqueRegListings;
+};
+
+/**
+ * Fetch all 3-letter department codes for a given term
+ * @param term
+ * @returns
+ */
+export const fetchRegDepartments = async (term: number): Promise<string[]> => {
+    const regListings = await fetchRegListings(term);
+    const departments = new Set<string>();
+    for (const listing of regListings) departments.add(listing.subject);
+    return Array.from(departments).sort();
 };
 
 /**
