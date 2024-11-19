@@ -7,7 +7,7 @@
 
 export type StringBoolean = "Y" | "N";
 
-export type RegListings = {
+export type RegListing = {
     class_number: string;
     crosslistings: string;
     subject: string;
@@ -34,9 +34,9 @@ export type RegListings = {
     start_time: string;
     topic_title: string | null;
     class_status: string;
-}[];
+};
 
-export type RegDeptCourses = {
+export type RegDeptCourse = {
     guid: string;
     course_id: string;
     catalog_number: string;
@@ -83,7 +83,7 @@ export type RegDeptCourses = {
             }[];
         };
     }[];
-}[];
+};
 
 export type RegCourseDetails = {
     subject: string;

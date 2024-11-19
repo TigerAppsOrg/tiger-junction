@@ -5,6 +5,7 @@
     "scripts": {
         "lint": "prettier --check . && eslint src/",
         "format": "prettier --write .",
+        "test": "bun src/scripts/tests/index.ts",
         "update-supabase": "bun src/scripts/supabase/index.ts",
         "ratings-supabase": "bun src/scripts/supabase/ratings.ts",
         "db:start": "docker compose up",
@@ -15,8 +16,9 @@
     },
     "devDependencies": {
         "@types/jsdom": "^21.1.7",
+        "@types/pg": "^8.11.10",
         "bun-types": "latest",
-        "drizzle-kit": "^0.27.0",
+        "drizzle-kit": "^0.28.1",
         "eslint": "^9.9.0",
         "eslint-config-prettier": "^9.1.0",
         "prettier": "^3.3.3",

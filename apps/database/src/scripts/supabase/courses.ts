@@ -2,9 +2,9 @@ import {
     fetchRegCourseDetails,
     fetchRegDeptCourses,
     fetchRegListings
-} from "../reg-fetchers";
+} from "../shared/reg-fetchers";
 import { supabase } from "./shared";
-import type { RegDeptCourses } from "../reg-types";
+import type { RegDeptCourse } from "../shared/reg-types";
 
 //----------------------------------------------------------------------
 // Types
@@ -89,7 +89,7 @@ const fetchRegCourses = async (term: number): Promise<RegCourse[]> => {
     return regCourses;
 };
 
-const formatCourseStatus = (course: ArrayElement<RegDeptCourses>): Status => {
+const formatCourseStatus = (course: ArrayElement<RegDeptCourse[]>): Status => {
     const sections = course.classes;
 
     let allCanceled = true;
@@ -112,9 +112,7 @@ const formatCourseStatus = (course: ArrayElement<RegDeptCourses>): Status => {
     return status;
 };
 
-const formatInstructors = (
-    course: ArrayElement<RegDeptCourses>
-): [string[], string[]] => {
+const formatInstructors = (course: RegDeptCourse): [string[], string[]] => {
     return course.instructors
         ? [
               course.instructors.map(x => x.first_name + " " + x.last_name),
@@ -125,9 +123,7 @@ const formatInstructors = (
 
 const formatRoom = (
     meeting: ArrayElement<
-        ArrayElement<
-            ArrayElement<RegDeptCourses>["classes"]
-        >["schedule"]["meetings"]
+        ArrayElement<RegDeptCourse["classes"]>["schedule"]["meetings"]
     >
 ): string | null => {
     if (meeting.building && meeting.room)

@@ -1,6 +1,6 @@
-import { fetchRegListings } from "../reg-fetchers";
+import { fetchRegListings } from "../shared/reg-fetchers";
 import { supabase } from "./shared";
-import type { RegListings } from "../reg-types";
+import type { RegListing } from "../shared/reg-types";
 
 type FormattedListing = {
     id: string;
@@ -29,7 +29,7 @@ export const populateListings = async (term: number) => {
 
     const [regListings, { data: currentListings, error: listFetchError }] =
         (await Promise.all(initPromises)) as [
-            RegListings,
+            RegListing[],
             {
                 data: FormattedListing[];
                 error: Error | null;

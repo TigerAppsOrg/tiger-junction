@@ -5,11 +5,7 @@
  * @author Joshua Lau
  */
 
-import type {
-    RegCourseDetails,
-    RegDeptCourses,
-    RegListings
-} from "./reg-types";
+import type { RegCourseDetails, RegDeptCourse, RegListing } from "./reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants
@@ -39,7 +35,7 @@ const getToken = async () => {
  * Fetch all course listings for a given term
  * @param term Term code
  */
-export const fetchRegListings = async (term: number): Promise<RegListings> => {
+export const fetchRegListings = async (term: number): Promise<RegListing[]> => {
     const token = await getToken();
 
     const rawCourseList = await fetch(`${REG_PUBLIC_URL}${term}`, {
@@ -61,7 +57,7 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
         throw new Error("Invalid course list response format");
     }
 
-    const regListings = courseList.classes.class as RegListings;
+    const regListings = courseList.classes.class as RegListing[];
 
     // Remove duplicates
     const seenIds = new Set<string>();
@@ -77,6 +73,18 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
 };
 
 /**
+ * Fetch all 3-letter department codes for a given term
+ * @param term
+ * @returns
+ */
+export const fetchRegDepartments = async (term: number): Promise<string[]> => {
+    const regListings = await fetchRegListings(term);
+    const departments = new Set<string>();
+    for (const listing of regListings) departments.add(listing.subject);
+    return Array.from(departments).sort();
+};
+
+/**
  * Fetch all courses for a department in a given term
  * @param dept Department code
  * @param term Term code
@@ -84,7 +92,7 @@ export const fetchRegListings = async (term: number): Promise<RegListings> => {
 export const fetchRegDeptCourses = async (
     dept: string,
     term: number
-): Promise<RegDeptCourses> => {
+): Promise<RegDeptCourse[]> => {
     const token = process.env.API_ACCESS_TOKEN;
     if (!token) {
         throw new Error("API access token not found");
@@ -116,7 +124,7 @@ export const fetchRegDeptCourses = async (
         return [];
     }
 
-    return deptData.term[0].subjects[correctIndex].courses as RegDeptCourses;
+    return deptData.term[0].subjects[correctIndex].courses as RegDeptCourse[];
 };
 
 /**
