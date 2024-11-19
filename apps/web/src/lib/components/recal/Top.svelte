@@ -110,6 +110,22 @@
     // Handle theme changes
     $: cssVarStyles = getStyles("0");
     $: eventStyles = getStyles("6");
+
+    // !ANALYTICS
+    let analyticsTimeout: NodeJS.Timeout;
+    const triggerAnalytics = (event: string) => {
+        clearTimeout(analyticsTimeout);
+        analyticsTimeout = setTimeout(async () => {
+            const user = await supabase.auth.getUser();
+            if (user.data.user) {
+                await supabase.from("analytics").insert({
+                    user_id: user.data.user.id,
+                    event: event,
+                    page: "recalplus"
+                });
+            }
+        }, 500);
+    };
 </script>
 
 <div
@@ -243,7 +259,11 @@
                         {/each}
                         <button
                             class="card termchoice"
-                            on:click={handleAddSchedule}>
+                            on:click={() => {
+                                handleAddSchedule();
+                                // !ANALYTICS
+                                triggerAnalytics("clicked_add_schedule");
+                            }}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
