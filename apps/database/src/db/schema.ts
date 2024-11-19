@@ -42,6 +42,7 @@ export const userRelations = relations(users, ({ one, many }) => ({
     feedback: many(feedback),
     schedules: many(schedules),
     customEvents: many(customEvents),
+    analytics: many(analytics),
     icals: one(icals, {
         fields: [users.id],
         references: [icals.userId]
@@ -296,3 +297,21 @@ export const courseInstructorMapRelations = relations(
         })
     })
 );
+
+export const analytics = pgTable("analytics", {
+    id: serial("id").primaryKey().notNull(),
+    userId: integer("user_id").references(() => users.id),
+    event: text("event").notNull(),
+    page: text("page").notNull(),
+    metadata: jsonb("metadata").default({}),
+    createdAt: timestamp("created_at")
+        .notNull()
+        .default(sql`now()`)
+});
+
+export const analyticsRelations = relations(analytics, ({ one }) => ({
+    user: one(users, {
+        fields: [analytics.userId],
+        references: [users.id]
+    })
+}));
