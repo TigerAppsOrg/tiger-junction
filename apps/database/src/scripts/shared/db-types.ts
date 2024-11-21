@@ -1,1 +1,1 @@
-export type Status = "open" | "closed" | "cancelled";
+export type Status = "open" | "closed" | "canceled";

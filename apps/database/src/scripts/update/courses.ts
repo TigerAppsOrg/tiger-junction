@@ -39,7 +39,7 @@ export const formatCourseInserts = (
                 days: daysToValue(meeting.days),
                 start_time: timeToValue(meeting.start_time),
                 end_time: timeToValue(meeting.end_time),
-                status: section.pu_calc_status
+                status: section.pu_calc_status.toLowerCase()
             };
             sectionInserts.push(meetingInsert);
         }
@@ -75,7 +75,7 @@ export const handleCourse = async (course: RegDeptCourse, term: number) => {
     // console.log(details);
 
     const inserts = formatCourseInserts(course, details, term);
-    console.log(inserts);
+    // console.log(inserts);
 
     // await db.transaction(async tx => {});
 };

@@ -1,3 +1,4 @@
+import { sectionRelations } from "../../db/schema";
 import {
     fetchRegCourseDetails,
     fetchRegDepartments,
@@ -12,15 +13,77 @@ const testCourseData = async () => {
 
     const departments: string[] = await fetchRegDepartments(TERM);
 
+    let passed = true;
+    const uniqueListingIds = new Set();
+
     for (const department of departments) {
         const courseList = await fetchRegDeptCourses(department, TERM);
         for (const course of courseList) {
             const details = await fetchRegCourseDetails(course.course_id, TERM);
             const inserts = formatCourseInserts(course, details, TERM);
 
+            //----------------------------------------------------------
             // Validate course insert data
+            //----------------------------------------------------------
+
+            // courses
+            passed = assert(
+                !uniqueListingIds.has(inserts.course.listing_id),
+                `Duplicate course ID: ${inserts.course.listing_id}`
+            );
+            uniqueListingIds.add(inserts.course.listing_id);
+
+            // sections
+            passed = assert(
+                inserts.sections.every(section =>
+                    ["open", "closed", "cancelled"].includes(section.status)
+                ),
+                `${course.course_id}: Invalid section status -- ${inserts.sections.map(
+                    x => {
+                        return x.status;
+                    }
+                )}`
+            );
+
+            passed = assert(
+                inserts.sections.every(
+                    section => section.end_time >= section.start_time
+                ),
+                `${course.course_id}: Section end time is before start time`
+            );
+
+            passed = assert(
+                inserts.sections.every(section => section.cap >= 0),
+                `${course.course_id}: Section capacity is negative`
+            );
+
+            passed = assert(
+                inserts.sections.every(section => section.tot >= 0),
+                `${course.course_id}: Section enrollment is negative`
+            );
+
+            passed = assert(
+                inserts.sections.every(
+                    section => typeof section.num === "string"
+                ),
+                `${course.course_id}: Section number is not a string`
+            );
+
+            // instructors
+            passed = assert(
+                Array.isArray(inserts.instructors),
+                `${course.course_id}: instructors is not an array`
+            );
+
+            // courseInstructorMap
+            passed = assert(
+                Array.isArray(inserts.courseInstructorMap),
+                `${course.course_id}: courseInstructorMap is not an array`
+            );
         }
     }
+
+    return passed;
 };
 
 export const updateTests = {
