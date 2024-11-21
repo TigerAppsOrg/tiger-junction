@@ -9,7 +9,7 @@ import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
 
 //----------------------------------------------------------------------
 
-const formatCourseInserts = (
+export const formatCourseInserts = (
     course: RegDeptCourse,
     details: RegCourseDetails,
     term: number
@@ -67,7 +67,7 @@ const formatCourseInserts = (
     };
 };
 
-const handleCourse = async (course: RegDeptCourse, term: number) => {
+export const handleCourse = async (course: RegDeptCourse, term: number) => {
     // Fetch details
     const details = await fetchRegCourseDetails(course.course_id, term);
 
@@ -82,7 +82,7 @@ const handleCourse = async (course: RegDeptCourse, term: number) => {
 
 //----------------------------------------------------------------------
 
-const updateCourses = async (term: number) => {
+export const updateCourses = async (term: number) => {
     const departments: string[] = await fetchRegDepartments(term);
     for (const department of departments) {
         const startTime = Date.now();
