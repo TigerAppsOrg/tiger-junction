@@ -159,7 +159,7 @@ export const sections = pgTable("sections", {
         .notNull()
         .references(() => courses.id),
     title: text("title").notNull(),
-    num: integer("num").notNull(),
+    num: text("num").notNull(),
     room: text("room"),
     tot: smallint("tot").notNull(),
     cap: smallint("cap").notNull(),
@@ -169,7 +169,7 @@ export const sections = pgTable("sections", {
     status: statusEnum("status").notNull().default("open")
 });
 
-export const sectionRelations = relations(sections, ({ one, many }) => ({
+export const sectionRelations = relations(sections, ({ one }) => ({
     courses: one(courses, {
         fields: [sections.courseId],
         references: [courses.id]

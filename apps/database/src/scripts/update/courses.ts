@@ -34,8 +34,8 @@ export const formatCourseInserts = (
                 room: meeting.building
                     ? meeting.building.name + " " + meeting.room
                     : null,
-                tot: section.enrollment,
-                cap: section.capacity,
+                tot: parseInt(section.enrollment),
+                cap: parseInt(section.capacity),
                 days: daysToValue(meeting.days),
                 start_time: timeToValue(meeting.start_time),
                 end_time: timeToValue(meeting.end_time),

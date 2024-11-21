@@ -21,15 +21,6 @@ export const formatCourseStatus = (course: RegDeptCourse): Status => {
     else return "closed";
 };
 
-export const formatRoom = (meeting: {
-    building: { name: string } | null;
-    room: string | null;
-}): string | null => {
-    if (meeting.building && meeting.room)
-        return meeting.building.name + " " + meeting.room;
-    else return null;
-};
-
 export const daysToValue = (days: string[]): number => {
     let value = 0;
     if (days.includes("M")) value += 1;
