@@ -5,6 +5,7 @@ import {
 } from "../shared/reg-fetchers";
 import type { RegCourseDetails, RegDeptCourse } from "../shared/reg-types";
 import { db } from "../../db/db";
+import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
 
 //----------------------------------------------------------------------
 
@@ -16,25 +17,33 @@ const formatCourseInserts = (
     const courseInsert = {
         listing_id: course.course_id,
         term: term,
-        code: course.crosslistings,
+        code: details.crosslistings.replace(/\s/g, ""),
         title: course.title,
-        status: "",
-        dists: [],
-        gradingBasis: "",
-        hasFinal: false
+        status: formatCourseStatus(course),
+        dists: details.distribution_area_short?.split(" or ").sort() || [],
+        gradingBasis: details.grading_basis,
+        hasFinal: details.grading_final_exam !== "0"
     };
 
-    const sectionsInsert = {
-        title: "",
-        num: 0,
-        room: null,
-        tot: 0,
-        cap: 0,
-        days: 0,
-        start_time: 0,
-        end_time: 0,
-        status: ""
-    };
+    const sectionInserts = [];
+    for (const section of course.classes) {
+        for (const meeting of section.schedule.meetings) {
+            const meetingInsert = {
+                title: section.section,
+                num: section.class_number,
+                room: meeting.building
+                    ? meeting.building.name + " " + meeting.room
+                    : null,
+                tot: section.enrollment,
+                cap: section.capacity,
+                days: daysToValue(meeting.days),
+                start_time: timeToValue(meeting.start_time),
+                end_time: timeToValue(meeting.end_time),
+                status: section.pu_calc_status
+            };
+            sectionInserts.push(meetingInsert);
+        }
+    }
 
     const instructorsInsert = course.instructors.map(instructor => {
         return {
@@ -52,7 +61,7 @@ const formatCourseInserts = (
 
     return {
         course: courseInsert,
-        sections: sectionsInsert,
+        sections: sectionInserts,
         instructors: instructorsInsert,
         courseInstructorMap: courseInstructorMapInsert
     };
@@ -62,12 +71,13 @@ const handleCourse = async (course: RegDeptCourse, term: number) => {
     // Fetch details
     const details = await fetchRegCourseDetails(course.course_id, term);
 
-    console.log(course);
-    console.log(details);
+    // console.log(course);
+    // console.log(details);
 
     const inserts = formatCourseInserts(course, details, term);
+    console.log(inserts);
 
-    await db.transaction(async tx => {});
+    // await db.transaction(async tx => {});
 };
 
 //----------------------------------------------------------------------
@@ -77,9 +87,8 @@ const updateCourses = async (term: number) => {
     for (const department of departments) {
         const startTime = Date.now();
         const courseList = await fetchRegDeptCourses(department, term);
-        for (const course of [courseList[0]]) await handleCourse(course, term);
+        for (const course of courseList) await handleCourse(course, term);
         console.log(department + ": " + (Date.now() - startTime) + "ms");
-        return;
     }
 };
 
