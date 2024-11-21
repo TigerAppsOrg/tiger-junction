@@ -23,7 +23,7 @@ import {
 // Enums
 //----------------------------------------------------------------------
 
-export const statusEnum = pgEnum("status", ["open", "closed", "cancelled"]);
+export const statusEnum = pgEnum("status", ["open", "closed", "canceled"]);
 
 //----------------------------------------------------------------------
 // Tables
