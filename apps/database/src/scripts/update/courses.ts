@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../db/db";
 import * as schema from "../../db/schema";
+import { Status } from "../shared/db-types";
 import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
 import {
     fetchRegCourseDetails,
@@ -42,8 +43,23 @@ export const formatCourseInserts = (
                 days: daysToValue(meeting.days),
                 startTime: timeToValue(meeting.start_time),
                 endTime: timeToValue(meeting.end_time),
-                status: section.pu_calc_status.toLowerCase()
+                status: section.pu_calc_status.toLowerCase() as Status
             };
+
+            // Ensure status is valid
+            if (
+                !["open", "closed", "canceled"].includes(meetingInsert.status)
+            ) {
+                console.error(
+                    "Unknown section status: " +
+                        meetingInsert.status +
+                        " for " +
+                        courseInsert.listingId +
+                        " " +
+                        meetingInsert.title
+                );
+            }
+
             sectionInserts.push(meetingInsert);
         }
     }
@@ -110,6 +126,19 @@ export const handleCourse = async (course: RegDeptCourse, term: number) => {
             await tx.insert(schema.courseInstructorMap).values({
                 courseId: courseId,
                 instructorId: instructor.emplid
+            });
+        }
+
+        // Delete old sections
+        await tx
+            .delete(schema.sections)
+            .where(eq(schema.sections.courseId, courseId));
+
+        // Insert sections
+        for (const section of inserts.sections) {
+            await tx.insert(schema.sections).values({
+                courseId: courseId,
+                ...section
             });
         }
     });
