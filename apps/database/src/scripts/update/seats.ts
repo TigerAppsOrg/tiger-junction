@@ -73,5 +73,6 @@ export const updateSeatsForever = async (term: number) => {
 
 const isMainModule = process.argv[1] === import.meta.url.slice(7);
 if (isMainModule) {
+    console.log("Updating seats for term 1254");
     updateSeatsForever(1254);
 }
