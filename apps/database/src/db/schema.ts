@@ -16,7 +16,8 @@ import {
     serial,
     jsonb,
     timestamp,
-    primaryKey
+    primaryKey,
+    uniqueIndex
 } from "drizzle-orm/pg-core";
 
 //----------------------------------------------------------------------
@@ -130,19 +131,25 @@ export const customEventRelations = relations(
     })
 );
 
-export const courses = pgTable("courses", {
-    id: serial("id").primaryKey().notNull(),
-    listingId: text("listing_id").notNull(),
-    term: smallint("term").notNull(),
-    code: text("code").notNull(),
-    title: text("title").notNull(),
-    status: statusEnum("status").notNull().default("open"),
-    dists: text("dists").array(),
-    gradingBasis: text("grading_basis").notNull(),
-    calculatedRating: real("calculated_rating"),
-    numEvals: integer("num_evals"),
-    hasFinal: boolean("has_final")
-});
+export const courses = pgTable(
+    "courses",
+    {
+        id: serial("id").primaryKey().notNull(),
+        listingId: text("listing_id").notNull(),
+        term: smallint("term").notNull(),
+        code: text("code").notNull(),
+        title: text("title").notNull(),
+        status: statusEnum("status").notNull().default("open"),
+        dists: text("dists").array(),
+        gradingBasis: text("grading_basis").notNull(),
+        calculatedRating: real("calculated_rating"),
+        numEvals: integer("num_evals"),
+        hasFinal: boolean("has_final")
+    },
+    t => ({
+        unqCourse: uniqueIndex().on(t.listingId, t.term)
+    })
+);
 
 export const courseRelations = relations(courses, ({ one, many }) => ({
     courseInstructorMap: many(courseInstructorMap),

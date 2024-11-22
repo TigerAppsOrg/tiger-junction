@@ -6,6 +6,7 @@ import {
 import type { RegCourseDetails, RegDeptCourse } from "../shared/reg-types";
 import { db } from "../../db/db";
 import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
+import * as schema from "../../db/schema";
 
 //----------------------------------------------------------------------
 
@@ -15,7 +16,7 @@ export const formatCourseInserts = (
     term: number
 ) => {
     const courseInsert = {
-        listing_id: course.course_id,
+        listingId: course.course_id,
         term: term,
         code: details.crosslistings.replace(/\s/g, ""),
         title: course.title,
@@ -37,8 +38,8 @@ export const formatCourseInserts = (
                 tot: parseInt(section.enrollment),
                 cap: parseInt(section.capacity),
                 days: daysToValue(meeting.days),
-                start_time: timeToValue(meeting.start_time),
-                end_time: timeToValue(meeting.end_time),
+                startTime: timeToValue(meeting.start_time),
+                endTime: timeToValue(meeting.end_time),
                 status: section.pu_calc_status.toLowerCase()
             };
             sectionInserts.push(meetingInsert);
@@ -54,8 +55,8 @@ export const formatCourseInserts = (
 
     const courseInstructorMapInsert = instructorsInsert.map(instructor => {
         return {
-            course_id: course.course_id,
-            instructor_id: instructor.emplid
+            courseId: course.course_id,
+            instructorId: instructor.emplid
         };
     });
 
@@ -70,14 +71,34 @@ export const formatCourseInserts = (
 export const handleCourse = async (course: RegDeptCourse, term: number) => {
     // Fetch details
     const details = await fetchRegCourseDetails(course.course_id, term);
-
-    // console.log(course);
-    // console.log(details);
-
     const inserts = formatCourseInserts(course, details, term);
-    // console.log(inserts);
 
-    // await db.transaction(async tx => {});
+    // Insert course and related data to database
+    await db.transaction(async tx => {
+        // Upsert course and get id
+        const courseRes = await tx
+            .insert(schema.courses)
+            .values(inserts.course)
+            .onConflictDoUpdate({
+                target: [schema.courses.listingId, schema.courses.term],
+                set: {
+                    code: inserts.course.code,
+                    title: inserts.course.title,
+                    status: inserts.course.status,
+                    dists: inserts.course.dists,
+                    gradingBasis: inserts.course.gradingBasis,
+                    hasFinal: inserts.course.hasFinal
+                }
+            })
+            .returning({
+                id: schema.courses.id
+            });
+
+        if (courseRes.length !== 1) {
+            throw new Error("Course upsert failed");
+        }
+        const courseId = courseRes[0].id;
+    });
 };
 
 //----------------------------------------------------------------------

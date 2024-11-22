@@ -43,6 +43,13 @@
       "when": 1732234339391,
       "tag": "0005_superb_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1732246404367,
+      "tag": "0006_sharp_justin_hammer",
+      "breakpoints": true
     }
   ]
 }

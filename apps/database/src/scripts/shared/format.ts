@@ -16,7 +16,7 @@ export const formatCourseStatus = (course: RegDeptCourse): Status => {
         else if (!sectionMap[sectionType]) sectionMap[sectionType] = false;
     }
 
-    if (allCanceled) return "cancelled";
+    if (allCanceled) return "canceled";
     else if (Object.values(sectionMap).every(x => x)) return "open";
     else return "closed";
 };
