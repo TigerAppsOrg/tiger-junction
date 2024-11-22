@@ -1,15 +1,16 @@
+import { db } from "../../db/db";
+import * as schema from "../../db/schema";
+import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
 import {
     fetchRegCourseDetails,
     fetchRegDepartments,
     fetchRegDeptCourses
 } from "../shared/reg-fetchers";
 import type { RegCourseDetails, RegDeptCourse } from "../shared/reg-types";
-import { db } from "../../db/db";
-import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
-import * as schema from "../../db/schema";
 
 //----------------------------------------------------------------------
 
+// Convert registrar format to database format
 export const formatCourseInserts = (
     course: RegDeptCourse,
     details: RegCourseDetails,
@@ -68,6 +69,9 @@ export const formatCourseInserts = (
     };
 };
 
+//----------------------------------------------------------------------
+
+// Fetch course details, format inserts, and insert into database
 export const handleCourse = async (course: RegDeptCourse, term: number) => {
     // Fetch details
     const details = await fetchRegCourseDetails(course.course_id, term);
@@ -103,6 +107,7 @@ export const handleCourse = async (course: RegDeptCourse, term: number) => {
 
 //----------------------------------------------------------------------
 
+// Update all courses for a given term
 export const updateCourses = async (term: number) => {
     const departments: string[] = await fetchRegDepartments(term);
     for (const department of departments) {
