@@ -1,0 +1,27 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+    font-family: "Lato", sans-serif;
+}
+
+.cta-button {
+    @apply rounded-lg bg-indigo-600 text-center font-bold text-white duration-100 hover:bg-indigo-500;
+}
+
+::-webkit-scrollbar {
+    @apply h-1 w-1;
+}
+
+::-webkit-scrollbar-button {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+    @apply bg-zinc-400/40;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-zinc-400/40;
+}
