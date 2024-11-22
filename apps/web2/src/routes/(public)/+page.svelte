@@ -70,36 +70,17 @@
             </div>
 
             <div
-                class="mt-6 flex items-center justify-center gap-4
-            text-sm sm:text-base">
-                <!-- <div class="flex justify-start lg:justify-center">
-                    <a
-                        href={EMAIL_LIST_FORM_LINK}
-                        target="_blank"
-                        class="blankbutton">
-                        Join Email List
-                    </a>
-                </div> -->
+                class="mt-6 flex items-center justify-center gap-4 text-sm sm:text-base">
                 <div class="flex justify-start lg:justify-center">
-                    <button
-                        class="rounded-lg bg-indigo-600 px-12
-                    py-2 text-center font-bold text-white duration-100
-                     hover:bg-indigo-500
-                    ">
+                    <a href="/recalplus" class="cta-button px-12 py-2">
                         Get Started
-                    </button>
-                </div>
-                <!-- <div class="flex justify-start lg:justify-center">
-                    <a href="about" class="blankbutton">
-                        Learn More
                     </a>
-                </div> -->
+                </div>
             </div>
         </div>
 
         <div
-            class="glassy mt-12 w-11/12 max-w-4xl overflow-hidden
-            rounded-xl shadow-2xl">
+            class="glassy mt-12 w-11/12 max-w-4xl overflow-hidden rounded-xl shadow-2xl">
             <img
                 src="/recalplusscreenshot.png"
                 alt="Screenshot of the app"
@@ -108,8 +89,6 @@
                 " />
         </div>
         <div class="flex-1"></div>
-
-        <!-- <LandingFooter /> -->
     </div>
 </section>
 
@@ -257,13 +236,7 @@
             <h2 class="text-center text-3xl font-semibold text-zinc-800">
                 Join thousands of students in seamless academic planning.
             </h2>
-            <button
-                class="rounded-lg bg-indigo-600 px-8
-                py-2 text-center font-bold text-white
-                duration-100 hover:bg-indigo-500
-                ">
-                Get Started
-            </button>
+            <a href="/recalplus" class="cta-button px-8 py-2"> Get Started </a>
         </div>
     </div>
 </section>
@@ -271,6 +244,10 @@
 <LandingFooter />
 
 <style lang="postcss">
+    .cta-button {
+        @apply rounded-lg bg-indigo-600 text-center font-bold text-white duration-100 hover:bg-indigo-500;
+    }
+
     #features {
         background-image: url("/bg/feat.jpg");
         background-size: cover;
