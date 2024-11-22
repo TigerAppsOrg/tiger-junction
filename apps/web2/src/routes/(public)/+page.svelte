@@ -244,10 +244,6 @@
 <LandingFooter />
 
 <style lang="postcss">
-    .cta-button {
-        @apply rounded-lg bg-indigo-600 text-center font-bold text-white duration-100 hover:bg-indigo-500;
-    }
-
     #features {
         background-image: url("/bg/feat.jpg");
         background-size: cover;

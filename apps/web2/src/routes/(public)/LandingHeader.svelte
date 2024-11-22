@@ -1,6 +1,7 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { goto } from "$app/navigation";
+    import { toggleFont } from "$lib/client/font";
 </script>
 
 <div
@@ -47,13 +48,16 @@
                 </button>
             {/if}
         </div>
-        <div class="flex items-center justify-end">
+        <div class="flex items-center justify-end gap-2">
             <button
-                class="rounded-lg bg-indigo-600 px-4
-                    py-2 text-center font-bold text-white duration-100
-                     hover:bg-indigo-500">
-                Log In
+                aria-label="Toggle font"
+                onclick={toggleFont}
+                class="flex aspect-square h-full items-center justify-center rounded-lg
+                border border-zinc-200 font-bold
+                duration-100 hover:bg-zinc-200">
+                A
             </button>
+            <button class="cta-button px-4 py-2"> Log In </button>
         </div>
     </nav>
 </div>
