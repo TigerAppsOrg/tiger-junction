@@ -5,6 +5,8 @@
  * @author Joshua Lau
  */
 
+import { Status } from "./db-types";
+
 export type StringBoolean = "Y" | "N";
 
 export type RegListing = {
@@ -163,4 +165,14 @@ export type RegCourseDetails = {
     grading_prob_sets: string;
     grading_precept_part: string;
     grading_term_papers: string;
+};
+
+export type RegSeat = {
+    listingId: string;
+    sections: {
+        num: string;
+        tot: number;
+        cap: number;
+        status: Status;
+    }[];
 };

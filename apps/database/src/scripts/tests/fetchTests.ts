@@ -1,4 +1,8 @@
-import { fetchRegDepartments } from "../shared/reg-fetchers";
+import {
+    fetchRegDepartments,
+    fetchRegListings,
+    fetchRegSeats
+} from "../shared/reg-fetchers";
 import { assert } from "./shared";
 
 const testDepartments = async () => {
@@ -27,6 +31,32 @@ const testDepartments = async () => {
     return passed;
 };
 
+const testSeats = async () => {
+    const TERM = 1254;
+    const BATCH_SIZE = 50;
+
+    let passed = true;
+    const startTime = Date.now();
+
+    const courseList = await fetchRegListings(TERM);
+    for (let i = 0; i < courseList.length; i += BATCH_SIZE) {
+        const batch = courseList.slice(i, i + BATCH_SIZE).map(x => x.course_id);
+        console.log("Fetching seats for batch " + i);
+        const seatData = await fetchRegSeats(batch, TERM);
+        passed = assert(
+            seatData.length === batch.length,
+            "Seat data length mismatch for batch " + i
+        );
+    }
+
+    console.log(
+        "Finished seat test in " + (Date.now() - startTime) / 1000 + "s"
+    );
+
+    return passed;
+};
+
 export const fetchTests = {
-    "Fetch Departments": testDepartments
+    "Fetch Departments": testDepartments,
+    "Fetch Seats": testSeats
 };
