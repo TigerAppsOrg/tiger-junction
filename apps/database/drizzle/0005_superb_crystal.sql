@@ -1,3 +1,5 @@
+ALTER TABLE "public"."courses" ALTER COLUMN "status" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "public"."sections" ALTER COLUMN "status" DROP DEFAULT;--> statement-breakpoint
 ALTER TABLE "sections" ALTER COLUMN "num" SET DATA TYPE text;--> statement-breakpoint
 ALTER TABLE "public"."courses" ALTER COLUMN "status" SET DATA TYPE text;--> statement-breakpoint
 ALTER TABLE "public"."sections" ALTER COLUMN "status" SET DATA TYPE text;--> statement-breakpoint
