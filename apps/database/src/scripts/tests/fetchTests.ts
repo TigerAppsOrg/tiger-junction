@@ -57,6 +57,6 @@ const testSeats = async () => {
 };
 
 export const fetchTests = {
-    "Fetch Departments": testDepartments,
-    "Fetch Seats": testSeats
+    departments: testDepartments,
+    seats: testSeats
 };

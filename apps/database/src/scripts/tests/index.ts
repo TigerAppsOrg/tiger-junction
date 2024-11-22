@@ -9,8 +9,8 @@ type Tests = {
 
 // Register new units here (make sure to import them)
 const tests: Tests = {
-    "Fetch Tests": fetchTests,
-    "Update Tests": updateTests
+    fetch: fetchTests,
+    update: updateTests
 };
 
 const runTests = async (tests: Tests) => {
@@ -45,4 +45,26 @@ const runTests = async (tests: Tests) => {
     );
 };
 
-await runTests(tests);
+//----------------------------------------------------------------------
+
+const args = process.argv.slice(2);
+if (args.length === 1 && args[0] === "--list") {
+    console.log("Available tests:");
+    for (const unit of Object.keys(tests)) {
+        console.log(`- ${unit}`);
+    }
+    process.exit(0);
+}
+
+if (args.length === 2 && args[0] === "--run") {
+    const unit = args[1];
+    if (!tests[unit]) {
+        console.error(`Unit "${unit}" not found`);
+        process.exit(1);
+    }
+
+    await runTests({ [unit]: tests[unit] });
+    process.exit(0);
+} else {
+    await runTests(tests);
+}
