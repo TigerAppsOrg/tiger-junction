@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @file scripts/reg-fetchers.ts
  * @description Functions for fetching course listings and details from
@@ -5,7 +6,13 @@
  * @author Joshua Lau
  */
 
-import type { RegCourseDetails, RegDeptCourse, RegListing } from "./reg-types";
+import { Status } from "./db-types";
+import type {
+    RegCourseDetails,
+    RegDeptCourse,
+    RegListing,
+    RegSeat
+} from "./reg-types";
 
 //----------------------------------------------------------------------
 // Helpers and Constants
@@ -44,7 +51,6 @@ export const fetchRegListings = async (term: number): Promise<RegListing[]> => {
             Authorization: token
         }
     });
-
     const courseList: any = await rawCourseList.json();
 
     const valid =
@@ -52,10 +58,7 @@ export const fetchRegListings = async (term: number): Promise<RegListing[]> => {
         courseList.classes &&
         courseList.classes.class &&
         Array.isArray(courseList.classes.class);
-
-    if (!valid) {
-        throw new Error("Invalid course list response format");
-    }
+    if (!valid) throw new Error("Invalid course list response format");
 
     const regListings = courseList.classes.class as RegListing[];
 
@@ -94,9 +97,7 @@ export const fetchRegDeptCourses = async (
     term: number
 ): Promise<RegDeptCourse[]> => {
     const token = process.env.API_ACCESS_TOKEN;
-    if (!token) {
-        throw new Error("API access token not found");
-    }
+    if (!token) throw new Error("API access token not found");
 
     const rawDeptData = await fetch(
         `${REG_API_URL}courses/courses?term=${term}&subject=${dept}&fmt=json`,
@@ -137,9 +138,7 @@ export const fetchRegCourseDetails = async (
     term: number
 ): Promise<RegCourseDetails> => {
     const token = process.env.API_ACCESS_TOKEN;
-    if (!token) {
-        throw new Error("API access token not found");
-    }
+    if (!token) throw new Error("API access token not found");
 
     const rawCourseDetails = await fetch(
         `${REG_API_URL}courses/details?term=${term}&course_id=${listingId}&fmt=json`,
@@ -150,17 +149,69 @@ export const fetchRegCourseDetails = async (
             }
         }
     );
-
     const courseDetails: any = await rawCourseDetails.json();
 
     const valid =
         courseDetails &&
         courseDetails.course_details &&
         courseDetails.course_details.course_detail;
-
-    if (!valid) {
-        throw new Error("Invalid course details response format");
-    }
+    if (!valid) throw new Error("Invalid course details response format");
 
     return courseDetails.course_details.course_detail as RegCourseDetails;
+};
+
+/**
+ * Fetch seat data for a list of courses in a given term
+ * @param courseIds
+ * @param term
+ */
+export const fetchRegSeats = async (
+    courseIds: string[],
+    term: number
+): Promise<RegSeat[]> => {
+    const token = process.env.API_ACCESS_TOKEN;
+    if (!token) throw new Error("API access token not found");
+
+    const rawSeatData = await fetch(
+        `${REG_API_URL}courses/seats?term=${term}&course_ids=${courseIds.join(
+            ","
+        )}&fmt=json`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: token
+            }
+        }
+    );
+    const seatData: any = await rawSeatData.json();
+
+    const valid = seatData.course && Array.isArray(seatData.course);
+    if (!valid) throw new Error("Invalid seat data response format");
+
+    const formattedSeatData = seatData.course.map((x: any) => {
+        return {
+            listingId: x.course_id,
+            sections: x.classes.map((y: any) => {
+                return {
+                    num: y.class_number,
+                    tot: parseInt(y.enrollment),
+                    cap: parseInt(y.capacity),
+                    status: y.pu_calc_status.toLowerCase() as Status
+                };
+            })
+        };
+    }) as RegSeat[];
+
+    // Ensure section status is valid
+    for (const seat of formattedSeatData) {
+        if (
+            seat.sections.some(
+                x => !["open", "closed", "canceled"].includes(x.status)
+            )
+        ) {
+            console.error("Unknown section status for " + seat.listingId);
+        }
+    }
+
+    return formattedSeatData;
 };

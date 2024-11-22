@@ -28,10 +28,10 @@ const testCourseData = async () => {
 
             // courses
             passed = assert(
-                !uniqueListingIds.has(inserts.course.listing_id),
-                `Duplicate course ID: ${inserts.course.listing_id}`
+                !uniqueListingIds.has(inserts.course.listingId),
+                `Duplicate course ID: ${inserts.course.listingId}`
             );
-            uniqueListingIds.add(inserts.course.listing_id);
+            uniqueListingIds.add(inserts.course.listingId);
 
             // sections
             passed = assert(
@@ -47,7 +47,7 @@ const testCourseData = async () => {
 
             passed = assert(
                 inserts.sections.every(
-                    section => section.end_time >= section.start_time
+                    section => section.endTime >= section.startTime
                 ),
                 `${course.course_id}: Section end time is before start time`
             );
@@ -74,12 +74,6 @@ const testCourseData = async () => {
                 Array.isArray(inserts.instructors),
                 `${course.course_id}: instructors is not an array`
             );
-
-            // courseInstructorMap
-            passed = assert(
-                Array.isArray(inserts.courseInstructorMap),
-                `${course.course_id}: courseInstructorMap is not an array`
-            );
         }
         console.log(`Finished testing ${department}`);
     }
@@ -88,5 +82,5 @@ const testCourseData = async () => {
 };
 
 export const updateTests = {
-    "Format Course Data": testCourseData
+    "format-course-data": testCourseData
 };
