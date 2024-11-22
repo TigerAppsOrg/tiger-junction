@@ -92,4 +92,7 @@ export const updateCourses = async (term: number) => {
     }
 };
 
-updateCourses(1254);
+const isMainModule = process.argv[1] === import.meta.url.slice(7);
+if (isMainModule) {
+    updateCourses(1254);
+}

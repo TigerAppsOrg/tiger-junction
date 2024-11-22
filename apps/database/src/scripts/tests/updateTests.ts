@@ -1,4 +1,3 @@
-import { sectionRelations } from "../../db/schema";
 import {
     fetchRegCourseDetails,
     fetchRegDepartments,
@@ -9,6 +8,7 @@ import { assert } from "./shared";
 
 // Ensure course data is formatted correctly before inserting into database
 const testCourseData = async () => {
+    console.log("This test may take a while to run...");
     const TERM = 1254; // Spring 2025
 
     const departments: string[] = await fetchRegDepartments(TERM);
@@ -36,7 +36,7 @@ const testCourseData = async () => {
             // sections
             passed = assert(
                 inserts.sections.every(section =>
-                    ["open", "closed", "cancelled"].includes(section.status)
+                    ["open", "closed", "canceled"].includes(section.status)
                 ),
                 `${course.course_id}: Invalid section status -- ${inserts.sections.map(
                     x => {
@@ -81,6 +81,7 @@ const testCourseData = async () => {
                 `${course.course_id}: courseInstructorMap is not an array`
             );
         }
+        console.log(`Finished testing ${department}`);
     }
 
     return passed;
