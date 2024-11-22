@@ -1,5 +1,6 @@
+import { httpCodes } from "$lib/httpCodes";
 import { redirect } from "@sveltejs/kit";
 
 export const load = async () => {
-    redirect(308, "/");
+    redirect(httpCodes.redirection.movedPermanently, "/");
 };
