@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "../../db/db";
 import * as schema from "../../db/schema";
 import { daysToValue, formatCourseStatus, timeToValue } from "../shared/format";
@@ -54,18 +55,10 @@ export const formatCourseInserts = (
         };
     });
 
-    const courseInstructorMapInsert = instructorsInsert.map(instructor => {
-        return {
-            courseId: course.course_id,
-            instructorId: instructor.emplid
-        };
-    });
-
     return {
         course: courseInsert,
         sections: sectionInserts,
-        instructors: instructorsInsert,
-        courseInstructorMap: courseInstructorMapInsert
+        instructors: instructorsInsert
     };
 };
 
@@ -102,6 +95,23 @@ export const handleCourse = async (course: RegDeptCourse, term: number) => {
             throw new Error("Course upsert failed");
         }
         const courseId = courseRes[0].id;
+
+        // Delete old course-instructor mappings
+        await tx
+            .delete(schema.courseInstructorMap)
+            .where(eq(schema.courseInstructorMap.courseId, courseId));
+
+        // Insert instructors and course-instructor mappings
+        for (const instructor of inserts.instructors) {
+            await tx
+                .insert(schema.instructors)
+                .values(instructor)
+                .onConflictDoNothing();
+            await tx.insert(schema.courseInstructorMap).values({
+                courseId: courseId,
+                instructorId: instructor.emplid
+            });
+        }
     });
 };
 
