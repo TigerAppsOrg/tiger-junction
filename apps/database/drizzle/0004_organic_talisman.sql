@@ -1,1 +1,0 @@
-ALTER TABLE "sections" ALTER COLUMN "num" SET DATA TYPE text;
