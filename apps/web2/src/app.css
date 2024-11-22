@@ -1,3 +1,19 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+::-webkit-scrollbar {
+    @apply h-1 w-1;
+}
+
+::-webkit-scrollbar-button {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+    @apply bg-zinc-400/40;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-zinc-400/40;
+}
