@@ -1,4 +1,5 @@
 import { fetchTests } from "./fetchTests";
+import { updateTests } from "./updateTests";
 
 type Tests = {
     [unit: string]: {
@@ -8,7 +9,8 @@ type Tests = {
 
 // Register new units here (make sure to import them)
 const tests: Tests = {
-    "Fetch Tests": fetchTests
+    "Fetch Tests": fetchTests,
+    "Update Tests": updateTests
 };
 
 const runTests = async (tests: Tests) => {
