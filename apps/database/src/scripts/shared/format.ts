@@ -16,7 +16,7 @@ export const formatCourseStatus = (course: RegDeptCourse): Status => {
         else if (!sectionMap[sectionType]) sectionMap[sectionType] = false;
     }
 
-    if (allCanceled) return "cancelled";
+    if (allCanceled) return "canceled";
     else if (Object.values(sectionMap).every(x => x)) return "open";
     else return "closed";
 };
@@ -57,5 +57,5 @@ export const timeToValue = (time: string): number => {
     if (pm) val += 12 * TIME_CONVERSION.HOUR_FACTOR;
 
     // Round to nearest tenth (account for floating point error)
-    return Math.round(val * 10) / 10;
+    return Math.round(val * 10);
 };
