@@ -131,16 +131,13 @@ def parse_prerequisite_expression(expr: str) -> Node:
                     current_node = node
             elif token[-1] == "*":
                 # is a wildcard
-                dept, num, _ = parse_course_code(token)
-                # TODO: maybe something going wrong with ART2** | CWR2** | DAN2** | MUS2** | THR2** | VIS2**
-                if dept is None or num is None:
-                    breakpoint()
+                dept, num = token[:3], token[3:]
+                num = num.replace("*", "")
                 if num is None:
-                    regex_pattern = "^" + dept + '.*' + "$"
+                    regex_pattern = "^" + dept + " " + '.*' + "$"
                 else:
                     regex_pattern = "^" + dept + " " + num + '.*' + "$"
-                breakpoint()
-                
+               
                 # TODO: this is a very inefficient way to do it, do we have ready-made data?
                 matching_courses = []
                 
@@ -243,6 +240,7 @@ def process_yaml_file(file_path: str):
 
         # Parse prerequisites if they exist
         if 'reqs' in course:
+            print(course['reqs'])
             course_data["prerequisite_head"] = parse_prerequisite_expression(course['reqs'])
             print("----------")
             print(course_data["code"])
@@ -258,14 +256,6 @@ if __name__ == "__main__":
     file_path = "../lib/vpa/VIS.yaml"
     try:
         dept_info, courses = process_yaml_file(file_path)
-        
-        # Print sample of processed data
-        print("Department Info:", dept_info)
-        print("\nCourses:")
-        # for course in courses:
-        #     print("-----------------")
-        #     print(course["code"], ":", course["prerequisite_expression"])
-        #     print(course["prerequisite_head"])
             
     except Exception as e:
         print(f"Error processing YAML file: {e}")
