@@ -29,7 +29,6 @@ with open('../coursedata/resolve/cross_table.json', 'r') as file:
     CROSSLISTING_DATA = json.load(file)
 
 
-
 @dataclass
 class PrerequisiteRule:
     rule_type: str  # 'exact', 'wildcard', 'greater_eq', 'coreq'
@@ -81,7 +80,7 @@ def parse_course_code(course_code: str) -> Tuple[str, int]:
         dept, num = match.groups()
         key = dept + " " + num
         if key not in CROSSLISTING_DATA:
-            return None, None, None
+            return dept, num, None
         course_id = CROSSLISTING_DATA[key]["id"]
         return dept, int(num), course_id
     return None, None, None
@@ -130,6 +129,35 @@ def parse_prerequisite_expression(expr: str) -> Node:
                     current_node.children.append((node, is_coreq))
                 else:
                     current_node = node
+            elif token[-1] == "*":
+                # is a wildcard
+                dept, num, _ = parse_course_code(token)
+                # TODO: maybe something going wrong with ART2** | CWR2** | DAN2** | MUS2** | THR2** | VIS2**
+                if dept is None or num is None:
+                    breakpoint()
+                if num is None:
+                    regex_pattern = "^" + dept + '.*' + "$"
+                else:
+                    regex_pattern = "^" + dept + " " + num + '.*' + "$"
+                breakpoint()
+                
+                # TODO: this is a very inefficient way to do it, do we have ready-made data?
+                matching_courses = []
+                
+                # Iterate through the course data and check for matches
+                for course, details in CROSSLISTING_DATA.items():
+                    if re.match(regex_pattern, course):
+                        matching_courses.append(course)
+
+                # or union of all that match department and level
+                expanded_expr = " | ".join(matching_courses)
+                expanded_tokens = tokenize_expression(expanded_expr)
+                node = parse(expanded_tokens)
+                if isinstance(current_node, OperatorNode):
+                    current_node.children.append((node, is_coreq))
+                else:
+                    current_node = node
+
             elif token:
                 # Handle a regular course
                 dept, num, course_id = parse_course_code(token)
@@ -227,17 +255,17 @@ def process_yaml_file(file_path: str):
 
 # Example usage
 if __name__ == "__main__":
-    file_path = "../lib/bse/MAE.yaml"
+    file_path = "../lib/vpa/VIS.yaml"
     try:
         dept_info, courses = process_yaml_file(file_path)
         
         # Print sample of processed data
         print("Department Info:", dept_info)
         print("\nCourses:")
-        for course in courses:
-            print("-----------------")
-            print(course["code"], ":", course["prerequisite_expression"])
-            print(course["prerequisite_head"])
+        # for course in courses:
+        #     print("-----------------")
+        #     print(course["code"], ":", course["prerequisite_expression"])
+        #     print(course["prerequisite_head"])
             
     except Exception as e:
         print(f"Error processing YAML file: {e}")
