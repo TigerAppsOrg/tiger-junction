@@ -75,17 +75,17 @@ class CourseNode(Node):
 
 def parse_course_code(course_code: str) -> Tuple[str, int]:
     """Extract department and course number from course code."""
-    match = re.match(r'([A-Z]+)\s*(\d+)', course_code)
+    match = re.match(r'([A-Z]+)\s*(\d+[A-Z]*)', course_code)
     if match:
         dept, num = match.groups()
         key = dept + " " + num
         if key not in CROSSLISTING_DATA:
             return dept, num, None
         course_id = CROSSLISTING_DATA[key]["id"]
-        return dept, int(num), course_id
+        return dept, num, course_id
     return None, None, None
 
-def parse_prerequisite_expression(expr: str) -> Node:
+def parse_prerequisite_expression(expr: str, DEPARMENT_MACROS: dict) -> Node:
     """Parses a prerequisite expression and returns the head node of the graph."""
     def parse(tokens):
         """Recursively parse tokens into a graph."""
@@ -106,9 +106,11 @@ def parse_prerequisite_expression(expr: str) -> Node:
                     current_node.children.append((node, is_coreq))
                 else:
                     current_node = node
+                    
             elif token == ')':
                 # End the current subexpression
                 break
+
             elif token in {'&', '|'}:
                 # Handle operators
                 if isinstance(current_node, OperatorNode) and current_node.value == token:
@@ -120,17 +122,22 @@ def parse_prerequisite_expression(expr: str) -> Node:
                     if current_node:
                         new_node.children.append((current_node, is_coreq))
                     current_node = new_node
-            elif token in KNOWN_MACROS_EXPANSIONS:
+
+            elif token in KNOWN_MACROS_EXPANSIONS or token in DEPARMENT_MACROS:
                 # Expand macros and parse the expanded expression
-                expanded_expr = KNOWN_MACROS_EXPANSIONS[token]
+                if token in KNOWN_MACROS_EXPANSIONS:
+                    expanded_expr = KNOWN_MACROS_EXPANSIONS[token]
+                else:
+                    expanded_expr = DEPARMENT_MACROS[token]
                 expanded_tokens = tokenize_expression(expanded_expr)
                 node = parse(expanded_tokens)
                 if isinstance(current_node, OperatorNode):
                     current_node.children.append((node, is_coreq))
                 else:
                     current_node = node
+
             elif token[-1] == "*":
-                # is a wildcard
+                # Is a wildcard
                 dept, num = token[:3], token[3:]
                 num = num.replace("*", "")
                 if num is None:
@@ -155,19 +162,49 @@ def parse_prerequisite_expression(expr: str) -> Node:
                 else:
                     current_node = node
 
+            elif token[0] == "<":
+                # Is a greater than or equal to 
+                # Note: Placing a `<` before a coures code means that any course in the department with a
+                # course code greater than or equal to it satisfies the prerequisite.
+                dept, num = token[1:4], token[4:]
+                
+                # TODO: this is a very inefficient way to do it, do we have ready-made data?
+                matching_courses = []
+                
+                # Iterate through the course data and check for matches
+                for course, details in CROSSLISTING_DATA.items():
+                    curr_dept, curr_num, curr_course_id = parse_course_code(course)
+                    if curr_dept == dept and int(curr_num) >= int(num):
+                        matching_courses.append(course)
+
+                # or union of all that match department and level
+                expanded_expr = " | ".join(matching_courses)
+                expanded_tokens = tokenize_expression(expanded_expr)
+                node = parse(expanded_tokens)
+                if isinstance(current_node, OperatorNode):
+                    current_node.children.append((node, is_coreq))
+                else:
+                    current_node = node
+
             elif token:
                 # Handle a regular course
                 dept, num, course_id = parse_course_code(token)
                 if course_id is None:
-                    #raise Exception(f"Course {token} is not listed.")
-                    # uncomment later, continuing for testing
-                    print(f"Course {token} is not listed.")
+                    # try stripping last character
+                    dept, num, course_id = parse_course_code(token[:-1])
+
+                    # still not a valid course
+                    if course_id is None:
+                        # TODO: uncomment later, continuing for testing
+                        # raise Exception(f"Course {token} is not listed.")
+                        print(f"ERROR: Course {token} is not listed.")
+                        continue
+
+                node = CourseNode(value=token, course_id=course_id)
+                if isinstance(current_node, OperatorNode):
+                    current_node.children.append((node, is_coreq))
                 else:
-                    node = CourseNode(value=token, course_id=course_id)
-                    if isinstance(current_node, OperatorNode):
-                        current_node.children.append((node, is_coreq))
-                    else:
-                        current_node = node
+                    current_node = node
 
         return current_node
 
@@ -210,9 +247,15 @@ def process_yaml_file(file_path: str):
         'code': header.get('code'),
         'name': header.get('name'),
         'category': header.get('category'),
-        'updated': datetime.strptime(header.get('updated'), '%m/%d/%Y')
+        'updated': datetime.strptime(header.get('updated'), '%m/%d/%Y'),
+        'vars': header.get('vars'),
     }
-    
+
+    DEPTARTMENT_MACROS = {}
+    if department_info['vars'] is not None:
+        for item in department_info['vars']:
+            DEPTARTMENT_MACROS[item['name']]= item['equ']
+
     # Second document contains course list
     courses = documents[1]
     courses_data = []
@@ -240,12 +283,11 @@ def process_yaml_file(file_path: str):
 
         # Parse prerequisites if they exist
         if 'reqs' in course:
-            print(course['reqs'])
-            course_data["prerequisite_head"] = parse_prerequisite_expression(course['reqs'])
-            print("----------")
             print(course_data["code"])
-            print(course_data["prerequisite_expression"])
+            print("Requirements: ", course_data["prerequisite_expression"])
+            course_data["prerequisite_head"] = parse_prerequisite_expression(course['reqs'], DEPTARTMENT_MACROS)
             print(course_data["prerequisite_head"])
+            print("----------")
             
         courses_data.append(course_data)
     
@@ -253,7 +295,8 @@ def process_yaml_file(file_path: str):
 
 # Example usage
 if __name__ == "__main__":
-    file_path = "../lib/vpa/VIS.yaml"
+    file_path = "../lib/lang/SPA.yaml"
+    #file_path = "../lib/vpa/VIS.yaml"
     try:
         dept_info, courses = process_yaml_file(file_path)
             
