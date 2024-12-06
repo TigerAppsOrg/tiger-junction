@@ -295,8 +295,9 @@ def process_yaml_file(file_path: str):
 
 # Example usage
 if __name__ == "__main__":
-    file_path = "../lib/lang/SPA.yaml"
+    #file_path = "../lib/lang/SPA.yaml"
     #file_path = "../lib/vpa/VIS.yaml"
+    file_path = "../lib/bse/MAE.yaml"
     try:
         dept_info, courses = process_yaml_file(file_path)
             
