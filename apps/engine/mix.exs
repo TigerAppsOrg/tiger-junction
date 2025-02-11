@@ -32,6 +32,7 @@ defmodule Engine.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      # Phoenix Defaults
       {:phoenix, "~> 1.7.18"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
@@ -44,7 +45,12 @@ defmodule Engine.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+
+      # For scheduling tasks
+      {:quantum, "~> 3.0"},
+      # For making HTTP requests
+      {:httpoison, "~> 2.0"}
     ]
   end
 
