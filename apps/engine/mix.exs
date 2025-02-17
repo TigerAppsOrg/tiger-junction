@@ -50,7 +50,9 @@ defmodule Engine.MixProject do
       # For scheduling tasks
       {:quantum, "~> 3.0"},
       # For making HTTP requests
-      {:httpoison, "~> 2.0"}
+      {:httpoison, "~> 2.0"},
+      # Middleware HTTP client
+      {:tesla, "~> 1.14"}
     ]
   end
 

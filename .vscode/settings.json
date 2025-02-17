@@ -9,5 +9,6 @@
   "dbmlERDPreviewer.preferredTheme": "light",
   "cSpell.words": [
     "emplid"
-  ]
+  ],
+  "elixirLS.projectDir": "apps/engine",
 }
