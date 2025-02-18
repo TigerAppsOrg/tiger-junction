@@ -7,7 +7,7 @@ defmodule Engine.Sync.CourseSync do
     with {:ok, data} <- OitClient.get_terms() do
       Enum.each(data["term"], fn term_data ->
         term_data
-        |> term_changeset()
+        |> Term.changeset(term_data)
         |> Repo.insert_or_update()
       end)
     end

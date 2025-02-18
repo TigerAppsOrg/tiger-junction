@@ -7,7 +7,7 @@ defmodule Engine.Scheduler.Supervisor do
 
   def init(_args) do
     children = [
-      {Quantum, scheduler_config()}
+      {Quantum, [name: Engine.Scheduler] ++ scheduler_config()}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

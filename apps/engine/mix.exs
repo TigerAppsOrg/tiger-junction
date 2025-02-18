@@ -47,6 +47,9 @@ defmodule Engine.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
 
+      # For environment variables
+      {:dotenv, "~> 3.0.0", only: [:dev, :test]},
+
       # For scheduling tasks
       {:quantum, "~> 3.0"},
       # For making HTTP requests

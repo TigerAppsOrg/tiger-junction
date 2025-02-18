@@ -3,6 +3,11 @@ defmodule Engine.Clients.OitClient do
   use Engine.Clients.BaseClient
 
   plug Tesla.Middleware.BaseUrl, "https://api.princeton.edu/student-app"
+
+  plug Tesla.Middleware.Headers, [
+    {"Authorization", System.get_env("OIT_AUTH_TOKEN")}
+  ]
+
   plug Tesla.Middleware.JSON
 
   def get_terms do
