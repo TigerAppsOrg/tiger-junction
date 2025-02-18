@@ -10,7 +10,6 @@ defmodule Engine.Clients.OitClient do
 
   plug Tesla.Middleware.JSON
 
-  @spec get_terms() :: {:error, any()} | {:ok, any()}
   def get_terms do
     get("/courses/terms", query: [fmt: "json"])
     |> handle_response()

@@ -2,8 +2,9 @@ defmodule Engine.Schema.Term do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:code, :string, autogenerate: false}
+  @primary_key {:id, :id, autogenerate: true}
   schema "terms" do
+    field :code, :string
     field :suffix, :string
     field :name, :string
     field :cal_name, :string
