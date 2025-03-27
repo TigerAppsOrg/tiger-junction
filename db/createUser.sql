@@ -10,9 +10,9 @@ BEGIN
   
   -- Create default schedules for terms (1242, 1234, 1244)
   INSERT INTO public.schedules (user_id, title, term)
-  VALUES (new.id, 'My Schedule', 1242),
+  VALUES (new.id, 'My Schedule', 1262),
          (new.id, 'My Schedule', 1252),
-         (new.id, 'My Schedule', 1244);
+         (new.id, 'My Schedule', 1254);
 
 
   RETURN new;
