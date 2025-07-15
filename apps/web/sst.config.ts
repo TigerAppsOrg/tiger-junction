@@ -16,7 +16,7 @@ export default {
           isExternalDomain: true,
           domainName: "junction.tigerapps.org",
           cdk: {
-            certificate: Certificate.fromCertificateArn(stack, "c32864d7-bdba-4b3d-8a6d-7deb06847894", "arn:aws:acm:us-east-1:104733724423:certificate/c32864d7-bdba-4b3d-8a6d-7deb06847894"),
+            certificate: Certificate.fromCertificateArn(stack, "33579ba9-6a6d-4918-b2fe-587f745d2851", "arn:aws:acm:us-east-1:104733724423:certificate/33579ba9-6a6d-4918-b2fe-587f745d2851"),
           }
         }
       });
