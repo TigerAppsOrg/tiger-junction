@@ -1,0 +1,10 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "dbmlERDPreviewer.preferredTheme": "light",
+  "cSpell.words": [
+    "emplid"
+  ]
+}
