@@ -4,7 +4,5 @@
   },
   "editor.formatOnSave": true,
   "dbmlERDPreviewer.preferredTheme": "light",
-  "cSpell.words": [
-    "emplid"
-  ]
+  "cSpell.words": ["emplid"]
 }
