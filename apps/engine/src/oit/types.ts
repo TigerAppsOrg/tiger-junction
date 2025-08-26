@@ -94,24 +94,85 @@ export interface OIT_SeatsResponse {
 }
 
 export interface OIT_CourseDetails {
+  // Basic course info
   course_id: string;
   subject: string;
   catnum: string;
   long_title: string;
   transcript_title: string;
   description: string;
+  term: string;
+  crosslistings: string;
+  topic_title: string | null;
+
+  // Grading and academic info
   grading_basis: string;
   distribution_area_short: string;
   distribution_area_long: string;
-  crosslistings: string;
+
+  // Consent and flags
+  add_consent: string;
+  drop_consent: string;
+  pu_flag: string;
+
+  // Grading breakdown (string numbers like "0", "30", "40")
+  grading_oral_pres: string;
+  grading_paper_mid_exam: string;
+  grading_quizzes: string;
+  grading_home_mid_exam: string;
+  grading_other_exam: string;
+  grading_lab_reports: string;
+  grading_paper_final_exam: string;
+  grading_papers: string;
+  grading_mid_exam: string;
+  grading_prog_assign: string;
+  grading_final_exam: string;
+  grading_design_projects: string;
+  grading_other: string;
+  grading_home_final_exam: string;
+  grading_prob_sets: string;
+  grading_precept_part: string;
+  grading_term_papers: string;
+
+  // Course head info
+  course_head_name: string | null;
+  course_head_netid: string | null;
+
+  // Additional info
   web_address?: string;
   reading_writing_assignment?: string;
+  other_information: string | null;
+  other_restrictions: string | null;
+  other_requirements: string | null;
+
+  // Reading list
+  reading_list_author_1?: string;
+  reading_list_author_2?: string;
+  reading_list_author_3?: string;
+  reading_list_author_4?: string;
+  reading_list_author_5?: string;
+  reading_list_author_6?: string;
+  reading_list_title_1?: string;
+  reading_list_title_2?: string;
+  reading_list_title_3?: string;
+  reading_list_title_4?: string;
+  reading_list_title_5?: string;
+  reading_list_title_6?: string;
+
+  // Instructors - note the structure difference from your original
   course_instructors: {
-    course_instructor: {
-      netid: string;
-      name: string;
-    };
+    course_instructor:
+      | {
+          netid: string;
+          name: string;
+        }
+      | Array<{
+          netid: string;
+          name: string;
+        }>;
   };
+
+  // Seat reservations
   seat_reservations?: {
     seat_reservation: Array<{
       class_section: string;
@@ -127,7 +188,7 @@ export type OIT_RegListing = {
   class_number: string;
   crosslistings: string;
   subject: string;
-  distribution_area: string;
+  distribution_area: string | null;
   section: string;
   building_code: string | null;
   building_name: string | null;
@@ -143,11 +204,11 @@ export type OIT_RegListing = {
   term: string;
   course_id: string;
   class_meetings: string;
-  meeting_pattern: string;
-  acad_career: string;
-  end_time: string;
+  meeting_pattern: string | null;
+  acad_career: "UGRD" | "GRAD";
   long_title: string;
-  start_time: string;
+  start_time: string | null;
+  end_time: string | null;
   topic_title: string | null;
-  class_status: string;
+  class_status: "A" | "X";
 };
