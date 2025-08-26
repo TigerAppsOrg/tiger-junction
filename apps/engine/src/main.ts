@@ -1,31 +1,28 @@
-import Fastify from "fastify";
+import Fastify, { type FastifyInstance } from "fastify";
+import fp from "fastify-plugin";
+import sensible from "@fastify/sensible";
 
-const fastify = Fastify({
-  logger: true,
-});
+import healthRoutes from "./routes/health.ts";
 
-fastify.route({
-  method: "GET",
-  url: "/health",
-  schema: {
-    response: {
-      200: {
-        description: "Health check successful",
-        type: "object",
-        properties: {
-          status: { type: "string" },
-        },
-      },
-    },
-  },
-  handler: (request, reply) => {
-    reply.send({ status: "ok" });
-  },
-});
+function build(): FastifyInstance {
+  const app = Fastify({ logger: true });
 
-try {
-  await fastify.listen({ port: 3000 });
-} catch (err) {
-  fastify.log.error(err);
-  process.exit(1);
+  // Global plugins (apply everywhere)
+  app.register(
+    fp(async (app) => {
+      await app.register(sensible);
+    })
+  );
+
+  // Route groups
+  app.register(healthRoutes, { prefix: "/health" });
+
+  return app;
 }
+
+const app = build();
+
+app.listen({ port: 3000 }).catch((err) => {
+  app.log.error(err);
+  process.exit(1);
+});

@@ -9,7 +9,9 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
-    "fastify": "^5.5.0"
+    "@fastify/sensible": "^6.0.3",
+    "fastify": "^5.5.0",
+    "fastify-plugin": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
