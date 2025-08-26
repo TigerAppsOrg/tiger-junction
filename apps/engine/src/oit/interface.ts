@@ -29,6 +29,13 @@ export interface I_OIT_API {
   }): Promise<t.OIT_CoursesResponse>;
 
   /**
+   * Get courses for a specific department in a term
+   * @param term - 4-digit term code (e.g., "1202")
+   * @param dept - 3-letter department code (e.g., "COS")
+   */
+  getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]>;
+
+  /**
    * Get fast seat information for courses
    * Note: This is a fast endpoint and can be spammed
    * @param term - Optional 4-digit term code

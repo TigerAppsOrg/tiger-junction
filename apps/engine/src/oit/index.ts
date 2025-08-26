@@ -48,10 +48,15 @@ export default class OIT_API implements I_OIT_API {
     if (options.catnum) params.append("catnum", options.catnum);
     if (options.search) params.append("search", options.search);
 
-    const data = await this.fetchOIT<{
-      term: t.OIT_CoursesResponse;
-    }>(`/courses/courses?${params}`);
-    return data.term;
+    const data = await this.fetchOIT<t.OIT_CoursesResponse>(`/courses/courses?${params}`);
+    return data;
+  }
+
+  async getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]> {
+    const data = await this.getCourses({ term, subject: dept });
+    if (data.term.length === 0) return [];
+    const subject = data.term[0].subjects.find((s) => s.code === dept);
+    return subject ? subject.courses : [];
   }
 
   async getMostRecentTermCode(): Promise<string | null> {
