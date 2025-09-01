@@ -63,4 +63,10 @@ export interface I_OIT_API {
    * @param term - 4-digit term code (e.g., "1262")
    */
   getRegDepartments(term: string): Promise<string[]>;
+
+  /**
+   * Scrape evaluations for a course
+   * @param courseId - Course ID
+   */
+  getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>>;
 }

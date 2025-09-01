@@ -212,3 +212,10 @@ export type OIT_RegListing = {
   topic_title: string | null;
   class_status: "A" | "X";
 };
+
+export type OIT_Eval = {
+  numComments: number;
+  comments: string[];
+  rating: number;
+  ratingSource: string;
+};

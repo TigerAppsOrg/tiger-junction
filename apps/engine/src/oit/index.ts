@@ -1,17 +1,21 @@
 import * as t from "./types";
 import * as h from "./helpers";
 import { I_OIT_API } from "./interface";
+import { scrapeCourseEvals } from "./evals";
 
 export default class OIT_API implements I_OIT_API {
   private readonly regPublicUrl = "https://api.princeton.edu/registrar/course-offerings/classes/";
   private readonly baseUrl = "https://api.princeton.edu/student-app/1.0.3";
+  private readonly evalUrl = "https://registrarapps.princeton.edu/course-evaluation?";
+
   private apiKey: string;
+  private sessionToken: string;
 
   constructor() {
-    if (!process.env.API_ACCESS_TOKEN) {
+    if (!process.env.API_ACCESS_TOKEN)
       throw new Error("API_ACCESS_TOKEN environment variable is not set.");
-    }
     this.apiKey = process.env.API_ACCESS_TOKEN;
+    this.sessionToken = process.env.SESSION_TOKEN || "";
   }
 
   private async fetchOIT<T>(endpoint: string): Promise<T> {
@@ -132,5 +136,18 @@ export default class OIT_API implements I_OIT_API {
   async getRegDepartments(term: string): Promise<string[]> {
     const regListings = await this.getRegListings(term);
     return Array.from(new Set(regListings.map((x) => x.subject)));
+  }
+
+  async getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>> {
+    if (this.sessionToken === "")
+      throw new Error("Registrar session token not set. Please visit <TODO>.");
+
+    const evals = await scrapeCourseEvals({
+      evalUrl: this.evalUrl,
+      sessionToken: this.sessionToken,
+      courseId,
+    });
+
+    return evals;
   }
 }
