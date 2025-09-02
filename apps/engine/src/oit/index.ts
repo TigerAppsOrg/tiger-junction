@@ -30,14 +30,14 @@ export default class OIT_API implements I_OIT_API {
     return await response.json();
   }
 
-  async getTerms(): Promise<t.OIT_Term[]> {
+  async __oit_getTerms(): Promise<t.OIT_Term[]> {
     const data = await this.fetchOIT<{
       term: t.OIT_Term[];
     }>("/courses/terms?fmt=json");
     return data.term;
   }
 
-  async getCourses(
+  async __oit_getCourses(
     options: {
       term?: string;
       subject?: string;
@@ -57,14 +57,14 @@ export default class OIT_API implements I_OIT_API {
   }
 
   async getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]> {
-    const data = await this.getCourses({ term, subject: dept });
+    const data = await this.__oit_getCourses({ term, subject: dept });
     if (data.term.length === 0) return [];
     const subject = data.term[0].subjects.find((s) => s.code === dept);
     return subject ? subject.courses : [];
   }
 
-  async getMostRecentTermCode(): Promise<string | null> {
-    const terms = await this.getTerms();
+  async getLatestTermCode(): Promise<string | null> {
+    const terms = await this.__oit_getTerms();
     return terms.length > 0 ? terms[0].code : null;
   }
 

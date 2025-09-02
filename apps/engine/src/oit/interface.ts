@@ -2,31 +2,9 @@ import * as t from "./types.js";
 
 export interface I_OIT_API {
   /**
-   * Get list of active/upcoming academic terms, with the most recent being first
-   * For example, if we are in term 1252, but the data for term 1254 has been released,
-   * 1254 data will be first, and then 1252.
-   * This endpoint should return exactly 1 or 2 items.
+   * Get the latest term code
    */
-  getTerms(): Promise<t.OIT_Term[]>;
-
-  /**
-   * Get the most recent term code
-   */
-  getMostRecentTermCode(): Promise<string | null>;
-
-  /**
-   * Get courses for a term
-   * @param term - 4-digit term code (e.g., "1202")
-   * @param subject - Optional subject code(s) (e.g., "COS" or "COS,MAT")
-   * @param catnum - Optional catalog number
-   * @param search - Optional search string
-   */
-  getCourses(options?: {
-    term?: string;
-    subject?: string;
-    catnum?: string;
-    search?: string;
-  }): Promise<t.OIT_CoursesResponse>;
+  getLatestTermCode(): Promise<string | null>;
 
   /**
    * Get courses for a specific department in a term
