@@ -248,22 +248,6 @@
         input = "";
         modalStore.pop();
     };
-
-    // !ANALYTICS
-    let analyticsTimeout: NodeJS.Timeout;
-    const triggerAnalytics = (event: string) => {
-        clearTimeout(analyticsTimeout);
-        analyticsTimeout = setTimeout(async () => {
-            const user = await supabase.auth.getUser();
-            if (user.data.user) {
-                await supabase.from("analytics").insert({
-                    user_id: user.data.user.id,
-                    event: event,
-                    page: "recalplus"
-                });
-            }
-        }, 500);
-    };
 </script>
 
 <Modal {showModal}>
@@ -307,8 +291,6 @@
                     message="Duplicate"
                     onClick={() => {
                         duplicateSchedule();
-                        // !ANALYTICS
-                        triggerAnalytics("clicked_duplicate_schedule");
                     }}
                     scheme="2"
                     submit={true} />

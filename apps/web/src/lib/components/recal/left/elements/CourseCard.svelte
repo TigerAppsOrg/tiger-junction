@@ -154,22 +154,6 @@
             $hoveredCourse = null;
         }
     };
-
-    // !ANALYTICS
-    let analyticsTimeout: NodeJS.Timeout;
-    const triggerAnalytics = (event: string) => {
-        clearTimeout(analyticsTimeout);
-        analyticsTimeout = setTimeout(async () => {
-            const user = await supabase.auth.getUser();
-            if (user.data.user) {
-                await supabase.from("analytics").insert({
-                    user_id: user.data.user.id,
-                    event: event,
-                    page: "recalplus"
-                });
-            }
-        }, 500);
-    };
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -230,8 +214,6 @@
                 duration-100"
                     on:click={() => {
                         cf.removeCourseFromSaved(supabase, course);
-                        // !ANALYTICS
-                        triggerAnalytics("clicked_remove_course");
                     }}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -253,8 +235,6 @@
                 duration-100"
                     on:click={() => {
                         cf.saveCourseFromSearch(supabase, course);
-                        // !ANALYTICS
-                        triggerAnalytics("clicked_add_course");
                     }}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -280,8 +260,6 @@
                     <CardLinkButton
                         href={tigersnatch}
                         title="TigerSnatch"
-                        analyticsFunction={() =>
-                            triggerAnalytics("clicked_card_link_tiger_snatch")}
                         hoverColor={styles.hoverColor}
                         hoverText={styles.hoverText}
                         borderColor={styles.border}>
@@ -303,8 +281,6 @@
                 <CardLinkButton
                     href={princetoncourses}
                     title="PrincetonCourses"
-                    analyticsFunction={() =>
-                        triggerAnalytics("clicked_card_link_princeton_courses")}
                     hoverColor={styles.hoverColor}
                     hoverText={styles.hoverText}
                     borderColor={styles.border}>
@@ -325,8 +301,6 @@
                 <CardLinkButton
                     href={registrar}
                     title="Registrar"
-                    analyticsFunction={() =>
-                        triggerAnalytics("clicked_card_link_registrar")}
                     hoverColor={styles.hoverColor}
                     hoverText={styles.hoverText}
                     borderColor={styles.border}>
