@@ -12,6 +12,8 @@ export interface I_OIT_API {
    */
   getCourseIds(term: string): Promise<string[]>;
 
+  getAllSeats(term: string): Promise<t.OIT_Seat[]>;
+
   //--------------------------------------------------------------------
   /**
    * Get the latest term code
@@ -31,7 +33,7 @@ export interface I_OIT_API {
    * @param term - Optional 4-digit term code
    * @param courseIds - Optional comma-separated list of course IDs
    */
-  getSeats(options: { term: string; courseIds: string[] }): Promise<t.OIT_SeatsResponse>;
+  getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]>;
 
   /**
    * Get detailed course information

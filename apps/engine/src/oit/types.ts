@@ -1,6 +1,8 @@
 // src/oit/types.ts
 // Author(s): Joshua Lau
 
+export type StringBoolean = "Y" | "N";
+
 export interface OIT_Term {
   code: string;
   suffix: string;
@@ -89,11 +91,9 @@ export interface OIT_SeatInfo {
   enrollment: string;
 }
 
-export interface OIT_SeatsResponse {
-  course: Array<{
-    course_id: string;
-    classes: OIT_SeatInfo[];
-  }>;
+export interface OIT_Seat {
+  course_id: string;
+  classes: OIT_SeatInfo[];
 }
 
 export interface OIT_CourseDetails {
@@ -185,9 +185,7 @@ export interface OIT_CourseDetails {
   };
 }
 
-export type StringBoolean = "Y" | "N";
-
-export type OIT_RegListing = {
+export interface OIT_RegListing {
   class_number: string;
   crosslistings: string;
   subject: string;
@@ -214,11 +212,11 @@ export type OIT_RegListing = {
   end_time: string | null;
   topic_title: string | null;
   class_status: "A" | "X";
-};
+}
 
-export type OIT_Eval = {
+export interface OIT_Eval {
   numComments: number;
   comments: string[];
   rating: number;
   ratingSource: string;
-};
+}
