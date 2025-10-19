@@ -1,5 +1,5 @@
 {
-  "id": "161ef7e2-b59d-4d1c-a49b-cedeecbc82f4",
+  "id": "4cc5a63a-c63b-40a4-98d4-bc2f333780a1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -69,13 +69,73 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.course_department_map": {
+      "name": "course_department_map",
+      "schema": "",
+      "columns": {
+        "course_id": {
+          "name": "course_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "department_code": {
+          "name": "department_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "course_department_map_course_id_courses_id_fk": {
+          "name": "course_department_map_course_id_courses_id_fk",
+          "tableFrom": "course_department_map",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "course_department_map_department_code_departments_code_fk": {
+          "name": "course_department_map_department_code_departments_code_fk",
+          "tableFrom": "course_department_map",
+          "tableTo": "departments",
+          "columnsFrom": [
+            "department_code"
+          ],
+          "columnsTo": [
+            "code"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "course_department_map_course_id_department_code_pk": {
+          "name": "course_department_map_course_id_department_code_pk",
+          "columns": [
+            "course_id",
+            "department_code"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.course_instructor_map": {
       "name": "course_instructor_map",
       "schema": "",
       "columns": {
         "course_id": {
           "name": "course_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -101,15 +161,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "course_instructor_map_instructor_id_instructors_emplid_fk": {
-          "name": "course_instructor_map_instructor_id_instructors_emplid_fk",
+        "course_instructor_map_instructor_id_instructors_netid_fk": {
+          "name": "course_instructor_map_instructor_id_instructors_netid_fk",
           "tableFrom": "course_instructor_map",
           "tableTo": "instructors",
           "columnsFrom": [
             "instructor_id"
           ],
           "columnsTo": [
-            "emplid"
+            "netid"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -135,7 +195,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
@@ -196,29 +256,7 @@
           "notNull": false
         }
       },
-      "indexes": {
-        "courses_listing_id_term_index": {
-          "name": "courses_listing_id_term_index",
-          "columns": [
-            {
-              "expression": "listing_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "term",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -277,6 +315,31 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.departments": {
+      "name": "departments",
+      "schema": "",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.evaluations": {
       "name": "evaluations",
       "schema": "",
@@ -289,7 +352,7 @@
         },
         "course_id": {
           "name": "course_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -479,10 +542,16 @@
       "name": "instructors",
       "schema": "",
       "columns": {
+        "netid": {
+          "name": "netid",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
         "emplid": {
           "name": "emplid",
           "type": "text",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -491,14 +560,44 @@
           "primaryKey": false,
           "notNull": true
         },
+        "full_name": {
+          "name": "full_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "department": {
+          "name": "department",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "office": {
+          "name": "office",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "rating": {
           "name": "rating",
           "type": "real",
           "primaryKey": false,
           "notNull": false
         },
-        "num_evals": {
-          "name": "num_evals",
+        "rating_uncertainty": {
+          "name": "rating_uncertainty",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "num_ratings": {
+          "name": "num_ratings",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -524,7 +623,7 @@
         },
         "course_id": {
           "name": "course_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -728,7 +827,7 @@
         },
         "course_id": {
           "name": "course_id",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

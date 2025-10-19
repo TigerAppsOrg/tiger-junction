@@ -323,7 +323,7 @@ export const courseInstructorMap = pgTable(
       .references(() => courses.id),
     instructorId: text("instructor_id")
       .notNull()
-      .references(() => instructors.emplid),
+      .references(() => instructors.netid),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.courseId, t.instructorId] }),
@@ -337,7 +337,7 @@ export const courseInstructorMapRelations = relations(courseInstructorMap, ({ on
   }),
   instructor: one(instructors, {
     fields: [courseInstructorMap.instructorId],
-    references: [instructors.emplid],
+    references: [instructors.netid],
   }),
 }));
 
