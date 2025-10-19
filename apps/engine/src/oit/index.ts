@@ -59,6 +59,11 @@ export default class OIT_API implements I_OIT_API {
     return data;
   }
 
+  async getCourseIds(term: string): Promise<string[]> {
+    const regListings = await this.getRegListings(term);
+    return regListings.map((x) => x.course_id);
+  }
+
   async getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]> {
     const data = await this.__oit_getCourses({ term, subject: dept });
     if (data.term.length === 0) return [];
@@ -71,16 +76,11 @@ export default class OIT_API implements I_OIT_API {
     return terms.length > 0 ? terms[0].code : null;
   }
 
-  async getSeats(
-    options: {
-      term?: string;
-      courseIds?: string;
-    } = {}
-  ): Promise<t.OIT_SeatsResponse> {
+  async getSeats(options: { term: string; courseIds: string[] }): Promise<t.OIT_SeatsResponse> {
     const params = new URLSearchParams({ fmt: "json" });
 
-    if (options.term) params.append("term", options.term);
-    if (options.courseIds) params.append("course_ids", options.courseIds);
+    params.append("term", options.term);
+    params.append("course_ids", options.courseIds.join(","));
 
     const data = await this.fetchOIT<{
       course: t.OIT_SeatsResponse;

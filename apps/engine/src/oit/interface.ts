@@ -5,6 +5,15 @@ import * as t from "./types.js";
 
 export interface I_OIT_API {
   /**
+   * Get list of course IDs for a specific term
+   * Note: This uses the public registrar endpoint and should NOT be spammed
+   * @param term - 4-digit term code (e.g., "1202")
+   * @return List of course IDs for the specified term
+   */
+  getCourseIds(term: string): Promise<string[]>;
+
+  //--------------------------------------------------------------------
+  /**
    * Get the latest term code
    */
   getLatestTermCode(): Promise<string | null>;
@@ -22,7 +31,7 @@ export interface I_OIT_API {
    * @param term - Optional 4-digit term code
    * @param courseIds - Optional comma-separated list of course IDs
    */
-  getSeats(options?: { term?: string; courseIds?: string }): Promise<t.OIT_SeatsResponse>;
+  getSeats(options: { term: string; courseIds: string[] }): Promise<t.OIT_SeatsResponse>;
 
   /**
    * Get detailed course information
