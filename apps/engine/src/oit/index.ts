@@ -59,13 +59,38 @@ export default class OIT_API implements I_OIT_API {
     return data;
   }
 
+  async __oit_getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {
+    const params = new URLSearchParams({ fmt: "json" });
+
+    params.append("term", term);
+    params.append("course_ids", courseIds.join(","));
+
+    const data = await this.fetchOIT<{
+      course: t.OIT_Seat[];
+    }>(`/courses/seats?${params}`);
+    return data.course;
+  }
+
   async getCourseIds(term: string): Promise<string[]> {
     const regListings = await this.getRegListings(term);
     return regListings.map((x) => x.course_id);
   }
 
-  async getAllSeats(term: string): Promise<t.OIT_Seat[]> {
-    return [];
+  async getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {
+    // Empirically, splitting into batches of 500 works the best
+    // Make it larger, and the server fails to respond sometimes
+    // Make it smaller, and it's inefficient with the number of calls made
+    const BATCH_SIZE = 500;
+    const allSeats: t.OIT_Seat[] = [];
+
+    // Fetch in batches
+    for (let i = 0; i < courseIds.length; i += BATCH_SIZE) {
+      const chunk = courseIds.slice(i, i + BATCH_SIZE);
+      const seats = await this.__oit_getSeats(term, chunk);
+      allSeats.push(...seats);
+    }
+
+    return allSeats;
   }
 
   async getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]> {
@@ -78,18 +103,6 @@ export default class OIT_API implements I_OIT_API {
   async getLatestTermCode(): Promise<string | null> {
     const terms = await this.__oit_getTerms();
     return terms.length > 0 ? terms[0].code : null;
-  }
-
-  async getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {
-    const params = new URLSearchParams({ fmt: "json" });
-
-    params.append("term", term);
-    params.append("course_ids", courseIds.join(","));
-
-    const data = await this.fetchOIT<{
-      course: t.OIT_Seat[];
-    }>(`/courses/seats?${params}`);
-    return data.course;
   }
 
   async getCourseDetails(courseId: string, term?: string): Promise<t.OIT_CourseDetails> {

@@ -12,7 +12,14 @@ export interface I_OIT_API {
    */
   getCourseIds(term: string): Promise<string[]>;
 
-  getAllSeats(term: string): Promise<t.OIT_Seat[]>;
+  /**
+   * Get seat information for all courses in a specific term
+   * Note: This is a fast endpoint and can be spammed
+   * @param term - 4-digit term code (e.g., "1202")
+   * @param courseIds - List of course IDs to fetch seat information for
+   * @return List of seat information for all courses in the specified term
+   */
+  getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]>;
 
   //--------------------------------------------------------------------
   /**
@@ -26,14 +33,6 @@ export interface I_OIT_API {
    * @param dept - 3-letter department code (e.g., "COS")
    */
   getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]>;
-
-  /**
-   * Get fast seat information for courses
-   * Note: This is a fast endpoint and can be spammed
-   * @param term - Optional 4-digit term code
-   * @param courseIds - Optional comma-separated list of course IDs
-   */
-  getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]>;
 
   /**
    * Get detailed course information
