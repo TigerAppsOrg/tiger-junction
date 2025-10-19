@@ -5,6 +5,19 @@ import * as t from "./types.js";
 
 export interface I_OIT_API {
   /**
+   * Get database-formatted course data for all courses in a specific term
+   *
+   * This is what you would want to call to get all the data you need
+   * to populate the database for a term.
+   * ! It is slow (can take up to 10 minutes to run during peak times),
+   * ! use getSeats if you only need seat information!
+   *
+   * @param term - 4-digit term code (e.g., "1202")
+   * @return List of course data for all courses in the specified term
+   */
+  getAllCourseData(term: string): Promise<t.OIT_CourseData[]>;
+
+  /**
    * Get list of course IDs for a specific term
    * Note: This uses the public registrar endpoint and should NOT be spammed
    * @param term - 4-digit term code (e.g., "1202")
@@ -17,8 +30,6 @@ export interface I_OIT_API {
    * @param courseId - Course ID
    */
   getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>>;
-
-  getAllCourseData(term: string): Promise<t.OIT_CourseDetails[]>;
 
   /**
    * Get seat information for all courses in a specific term

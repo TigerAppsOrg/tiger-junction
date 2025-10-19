@@ -39,7 +39,7 @@ export interface OIT_Meeting {
   };
 }
 
-export interface OIT_Class {
+export interface OIT_Section {
   class_number: string;
   section: string;
   status: string;
@@ -70,7 +70,7 @@ export interface OIT_Course {
     subject: string;
     catalog_number: string;
   }>;
-  classes: OIT_Class[];
+  classes: OIT_Section[];
 }
 
 export interface OIT_Subject {
