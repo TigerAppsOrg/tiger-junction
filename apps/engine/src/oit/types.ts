@@ -1,3 +1,9 @@
+// src/oit/types.ts
+// Author(s): Joshua Lau
+
+export type StringBoolean = "Y" | "N";
+export type Status = "open" | "closed" | "canceled";
+
 export interface OIT_Term {
   code: string;
   suffix: string;
@@ -15,6 +21,12 @@ export interface OIT_Instructor {
   full_name: string;
 }
 
+export interface OIT_FullInstructor {
+  netid: string;
+  name: string; // concat(first_name, ' ', last_name) (ex. Robert Dondero)
+  full_name: string; // (ex. Robert M. Dondero)
+}
+
 export interface OIT_Meeting {
   meeting_number: string;
   start_time: string;
@@ -27,7 +39,7 @@ export interface OIT_Meeting {
   };
 }
 
-export interface OIT_Class {
+export interface OIT_Section {
   class_number: string;
   section: string;
   status: string;
@@ -58,7 +70,7 @@ export interface OIT_Course {
     subject: string;
     catalog_number: string;
   }>;
-  classes: OIT_Class[];
+  classes: OIT_Section[];
 }
 
 export interface OIT_Subject {
@@ -86,11 +98,9 @@ export interface OIT_SeatInfo {
   enrollment: string;
 }
 
-export interface OIT_SeatsResponse {
-  course: Array<{
-    course_id: string;
-    classes: OIT_SeatInfo[];
-  }>;
+export interface OIT_Seat {
+  course_id: string;
+  classes: OIT_SeatInfo[];
 }
 
 export interface OIT_CourseDetails {
@@ -182,9 +192,36 @@ export interface OIT_CourseDetails {
   };
 }
 
-export type StringBoolean = "Y" | "N";
+export interface OIT_SectionData {
+  course_id: string; // concat(listing_id, '-', term)
+  title: string;
+  num: string;
+  room?: string;
+  tot: number;
+  cap: number;
+  days: number;
+  start_time: number;
+  end_time: number;
+  status: Status;
+}
 
-export type OIT_RegListing = {
+export interface OIT_CourseData {
+  id: string; // concat(listing_id, '-', term)
+  listing_id: string;
+  term: string;
+  code: string;
+  title: string;
+  description: string;
+  status: Status;
+  dists?: string[];
+  grading_basis: string;
+  has_final: boolean;
+
+  sections: OIT_SectionData[];
+  instructors: OIT_FullInstructor[];
+}
+
+export interface OIT_RegListing {
   class_number: string;
   crosslistings: string;
   subject: string;
@@ -211,11 +248,11 @@ export type OIT_RegListing = {
   end_time: string | null;
   topic_title: string | null;
   class_status: "A" | "X";
-};
+}
 
-export type OIT_Eval = {
+export interface OIT_Eval {
   numComments: number;
   comments: string[];
   rating: number;
   ratingSource: string;
-};
+}

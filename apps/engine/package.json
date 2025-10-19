@@ -1,24 +1,44 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node ./src/main.ts",
-    "cli": "node ./src/cli.ts",
+    "start": "bun ./src/main.ts",
+    "cli": "bun ./src/cli.ts",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:schema": "bun src/db/generate-dbml.ts",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart",
+    "docker:ps": "docker-compose ps",
+    "docker:clean": "docker-compose down -v"
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.3",
+    "@fastify/websocket": "^11.2.0",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
     "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
-    "jsdom": "^26.1.0"
+    "jsdom": "^26.1.0",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@types/jsdom": "^27.0.0",
     "@types/node": "^24.3.0",
+    "@types/pg": "^8.15.5",
+    "@types/ws": "^8.18.1",
+    "drizzle-dbml-generator": "^0.10.0",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9.34.0",
     "globals": "^16.3.0",
     "jiti": "^2.5.1",
     "prettier": "3.6.2",
+    "tsx": "^4.20.6",
     "typescript-eslint": "^8.41.0"
   }
 }
