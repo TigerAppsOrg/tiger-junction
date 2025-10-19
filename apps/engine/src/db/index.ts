@@ -1,3 +1,6 @@
+// src/db/index.ts
+// Author(s): Joshua Lau
+
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { I_DB } from "./interface";

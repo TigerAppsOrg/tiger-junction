@@ -1,3 +1,6 @@
+// src/oit/evals.ts
+// Author(s): Joshua Lau
+
 import { JSDOM } from "jsdom";
 import { OIT_Eval } from "./types";
 

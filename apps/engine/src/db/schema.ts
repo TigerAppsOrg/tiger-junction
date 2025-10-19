@@ -1,8 +1,5 @@
-/**
- * @file db/schema.ts
- * @description This file contains the Drizzle ORM schema for the database.
- * @author Joshua Lau
- */
+// src/db/schema.ts
+// Author(s): Joshua Lau
 
 import { relations, sql } from "drizzle-orm";
 import {

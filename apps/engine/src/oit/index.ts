@@ -1,3 +1,6 @@
+// src/oit/index.ts
+// Author(s): Joshua Lau
+
 import * as t from "./types";
 import * as h from "./helpers";
 import { I_OIT_API } from "./interface";

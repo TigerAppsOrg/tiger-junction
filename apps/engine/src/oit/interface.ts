@@ -1,3 +1,6 @@
+// src/oit/interface.ts
+// Author(s): Joshua Lau
+
 import * as t from "./types.js";
 
 export interface I_OIT_API {

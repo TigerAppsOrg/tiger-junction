@@ -1,3 +1,6 @@
+// src/main.ts
+// Author(s): Joshua Lau
+
 import Fastify, { type FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import sensible from "@fastify/sensible";

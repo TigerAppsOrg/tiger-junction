@@ -1,3 +1,6 @@
+// src/oit/types.ts
+// Author(s): Joshua Lau
+
 export interface OIT_Term {
   code: string;
   suffix: string;
