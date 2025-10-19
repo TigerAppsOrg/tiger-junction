@@ -1,5 +1,5 @@
 {
-  "id": "917a63ba-560a-41d8-8c19-a337a4a20507",
+  "id": "161ef7e2-b59d-4d1c-a49b-cedeecbc82f4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -163,6 +163,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "status": {
           "name": "status",
           "type": "status",
@@ -182,18 +188,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "calculated_rating": {
-          "name": "calculated_rating",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "num_evals": {
-          "name": "num_evals",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "has_final": {
           "name": "has_final",

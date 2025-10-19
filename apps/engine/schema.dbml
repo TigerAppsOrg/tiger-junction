@@ -1,0 +1,183 @@
+enum status {
+  open
+  closed
+  canceled
+}
+
+table analytics {
+  id serial [pk, not null, increment]
+  user_id integer
+  event text [not null]
+  page text [not null]
+  metadata jsonb [default: `{}`]
+  created_at timestamp [not null, default: `now()`]
+}
+
+table course_department_map {
+  course_id text [not null]
+  department_code text [not null]
+
+  indexes {
+    (course_id, department_code) [pk]
+  }
+}
+
+table course_instructor_map {
+  course_id text [not null]
+  instructor_id text [not null]
+
+  indexes {
+    (course_id, instructor_id) [pk]
+  }
+}
+
+table courses {
+  id text [pk, not null]
+  listing_id text [not null]
+  term smallint [not null]
+  code text [not null]
+  title text [not null]
+  description text [not null]
+  status status [not null, default: 'open']
+  dists text[]
+  grading_basis text [not null]
+  has_final boolean
+}
+
+table custom_events {
+  id serial [pk, not null, increment]
+  user_id integer [not null]
+  title text [not null]
+  times jsonb [not null]
+}
+
+table departments {
+  code text [pk, not null]
+  name text [not null]
+}
+
+table evaluations {
+  id serial [pk, not null, increment]
+  course_id text [not null]
+  num_comments integer
+  comments text[]
+  summary text
+  rating real
+  rating_source text
+  metadata jsonb
+}
+
+table feedback {
+  id serial [pk, not null, increment]
+  user_id integer [not null]
+  feedback text [not null]
+  is_resolved boolean [not null, default: false]
+  created_at timestamp [not null, default: `now()`]
+}
+
+table icals {
+  id serial [pk, not null, increment]
+  user_id integer [not null]
+  schedule_id integer [not null]
+  url text [not null]
+}
+
+table instructors {
+  netid text [pk, not null]
+  emplid text [not null]
+  name text [not null]
+  full_name text [not null]
+  department text
+  email text
+  office text
+  rating real
+  rating_uncertainty real
+  num_ratings integer
+}
+
+table schedule_course_map {
+  schedule_id integer [not null]
+  course_id text [not null]
+  color smallint [not null]
+  is_complete boolean [not null, default: false]
+  confirms jsonb [not null, default: `{}`]
+
+  indexes {
+    (schedule_id, course_id) [pk]
+  }
+}
+
+table schedule_event_map {
+  schedule_id integer [not null]
+  custom_event_id integer [not null]
+
+  indexes {
+    (schedule_id, custom_event_id) [pk]
+  }
+}
+
+table schedules {
+  id serial [pk, not null, increment]
+  relative_id integer [not null]
+  user_id integer [not null]
+  title text [not null]
+  is_public boolean [not null, default: false]
+  term smallint [not null]
+}
+
+table sections {
+  id serial [pk, not null, increment]
+  course_id text [not null]
+  title text [not null]
+  num text [not null]
+  room text
+  tot smallint [not null]
+  cap smallint [not null]
+  days smallint [not null]
+  start_time integer [not null]
+  end_time integer [not null]
+  status status [not null, default: 'open']
+}
+
+table users {
+  id serial [pk, not null, increment]
+  email text [not null]
+  netid text [not null]
+  year smallint [not null]
+  is_admin boolean [not null, default: false]
+  theme jsonb [not null, default: `{}`]
+}
+
+ref: analytics.user_id > users.id
+
+ref: course_department_map.course_id > courses.id
+
+ref: course_department_map.department_code > departments.code
+
+ref: course_instructor_map.course_id > courses.id
+
+ref: course_instructor_map.instructor_id > instructors.emplid
+
+ref: evaluations.course_id - courses.id
+
+ref: custom_events.user_id > users.id
+
+ref: feedback.user_id > users.id
+
+ref: users.id - icals.user_id
+
+ref: icals.schedule_id - schedules.id
+
+ref: instructors.department > departments.code
+
+ref: schedule_course_map.schedule_id > schedules.id
+
+ref: schedule_course_map.course_id > courses.id
+
+ref: schedule_event_map.schedule_id > schedules.id
+
+ref: schedule_event_map.custom_event_id > custom_events.id
+
+ref: schedules.user_id > users.id
+
+ref: sections.course_id > courses.id

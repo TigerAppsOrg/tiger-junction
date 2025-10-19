@@ -66,6 +66,7 @@ The server will be running at `http://localhost:3000`.
 - `bun run db:generate` - Generate migration files from schema changes
 - `bun run db:migrate` - Apply migrations to database
 - `bun run db:studio` - Open Drizzle Studio to browse database
+- `bun run db:schema` - Generate DBML schema file
 
 ### Cleaning Up
 

@@ -105,14 +105,13 @@ export default class OIT_API implements I_OIT_API {
     return terms.length > 0 ? terms[0].code : null;
   }
 
-  async getCourseDetails(courseId: string, term?: string): Promise<t.OIT_CourseDetails> {
+  async getCourseDetails(term: string, courseId: string): Promise<t.OIT_CourseDetails> {
     const params = new URLSearchParams({
       course_id: courseId,
       fmt: "json",
     });
 
-    if (term) params.append("term", term);
-
+    params.append("term", term);
     const data = await this.fetchOIT<{
       course_details: {
         course_detail: t.OIT_CourseDetails;

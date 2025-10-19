@@ -2,6 +2,7 @@
 // Author(s): Joshua Lau
 
 export type StringBoolean = "Y" | "N";
+export type Status = "open" | "closed" | "canceled";
 
 export interface OIT_Term {
   code: string;
@@ -18,6 +19,12 @@ export interface OIT_Instructor {
   first_name: string;
   last_name: string;
   full_name: string;
+}
+
+export interface OIT_FullInstructor {
+  netid: string;
+  name: string; // concat(first_name, ' ', last_name) (ex. Robert Dondero)
+  full_name: string; // (ex. Robert M. Dondero)
 }
 
 export interface OIT_Meeting {
@@ -183,6 +190,35 @@ export interface OIT_CourseDetails {
       enrl_cap: string;
     }>;
   };
+}
+
+export interface OIT_SectionData {
+  course_id: string; // concat(listing_id, '-', term)
+  title: string;
+  num: string;
+  room?: string;
+  tot: number;
+  cap: number;
+  days: number;
+  start_time: number;
+  end_time: number;
+  status: Status;
+}
+
+export interface OIT_CourseData {
+  id: string; // concat(listing_id, '-', term)
+  listing_id: string;
+  term: string;
+  code: string;
+  title: string;
+  description: string;
+  status: Status;
+  dists?: string[];
+  grading_basis: string;
+  has_final: boolean;
+
+  sections: OIT_SectionData[];
+  instructors: OIT_FullInstructor[];
 }
 
 export interface OIT_RegListing {

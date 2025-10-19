@@ -13,6 +13,14 @@ export interface I_OIT_API {
   getCourseIds(term: string): Promise<string[]>;
 
   /**
+   * Scrape evaluations for a course
+   * @param courseId - Course ID
+   */
+  getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>>;
+
+  getAllCourseData(term: string): Promise<t.OIT_CourseDetails[]>;
+
+  /**
    * Get seat information for all courses in a specific term
    * Note: This is a fast endpoint and can be spammed
    * @param term - 4-digit term code (e.g., "1202")
@@ -36,10 +44,10 @@ export interface I_OIT_API {
 
   /**
    * Get detailed course information
+   * @param term - 4-digit term code (e.g., "1202")
    * @param courseId - Course ID
-   * @param term - Optional 4-digit term code
    */
-  getCourseDetails(courseId: string, term?: string): Promise<t.OIT_CourseDetails>;
+  getCourseDetails(term: string, courseId: string): Promise<t.OIT_CourseDetails>;
 
   /**
    * Get the course listings from the registrar
@@ -54,10 +62,4 @@ export interface I_OIT_API {
    * @param term - 4-digit term code (e.g., "1262")
    */
   getRegDepartments(term: string): Promise<string[]>;
-
-  /**
-   * Scrape evaluations for a course
-   * @param courseId - Course ID
-   */
-  getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>>;
 }

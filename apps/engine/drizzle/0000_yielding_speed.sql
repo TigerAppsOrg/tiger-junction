@@ -20,11 +20,10 @@ CREATE TABLE "courses" (
 	"term" smallint NOT NULL,
 	"code" text NOT NULL,
 	"title" text NOT NULL,
+	"description" text NOT NULL,
 	"status" "status" DEFAULT 'open' NOT NULL,
 	"dists" text[],
 	"grading_basis" text NOT NULL,
-	"calculated_rating" real,
-	"num_evals" integer,
 	"has_final" boolean
 );
 --> statement-breakpoint

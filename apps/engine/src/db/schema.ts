@@ -14,7 +14,6 @@ import {
   jsonb,
   timestamp,
   primaryKey,
-  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 //----------------------------------------------------------------------
@@ -125,29 +124,30 @@ export const customEventRelations = relations(customEvents, ({ one, many }) => (
   }),
 }));
 
-export const courses = pgTable(
-  "courses",
-  {
-    id: serial("id").primaryKey().notNull(),
-    listingId: text("listing_id").notNull(),
-    term: smallint("term").notNull(),
-    code: text("code").notNull(),
-    title: text("title").notNull(),
-    status: statusEnum("status").notNull().default("open"),
-    dists: text("dists").array(),
-    gradingBasis: text("grading_basis").notNull(),
-    calculatedRating: real("calculated_rating"),
-    numEvals: integer("num_evals"),
-    hasFinal: boolean("has_final"),
-  },
-  (t) => ({
-    unqCourse: uniqueIndex().on(t.listingId, t.term),
-  })
-);
+export const courses = pgTable("courses", {
+  // concat(listing_id, '-', term)
+  id: text("id").primaryKey().notNull(),
+  listingId: text("listing_id").notNull(),
+  term: smallint("term").notNull(),
+
+  // e.g., "COS126 / EGR126"
+  code: text("code").notNull(),
+
+  // e.g. "Computer Science: An Interdisciplinary Approach"
+  title: text("title").notNull(),
+
+  description: text("description").notNull(),
+
+  status: statusEnum("status").notNull().default("open"),
+  dists: text("dists").array(),
+  gradingBasis: text("grading_basis").notNull(),
+  hasFinal: boolean("has_final"),
+});
 
 export const courseRelations = relations(courses, ({ one, many }) => ({
   courseInstructorMap: many(courseInstructorMap),
   scheduleCourseMap: many(scheduleCourseMap),
+  courseDepartmentMap: many(courseDepartmentMap),
   sections: many(sections),
   evaluations: one(evaluations, {
     fields: [courses.id],
@@ -157,7 +157,7 @@ export const courseRelations = relations(courses, ({ one, many }) => ({
 
 export const sections = pgTable("sections", {
   id: serial("id").primaryKey().notNull(),
-  courseId: integer("course_id")
+  courseId: text("course_id")
     .notNull()
     .references(() => courses.id),
   title: text("title").notNull(),
@@ -178,20 +178,45 @@ export const sectionRelations = relations(sections, ({ one }) => ({
   }),
 }));
 
-export const instructors = pgTable("instructors", {
-  emplid: text("emplid").primaryKey().notNull(),
+export const departments = pgTable("departments", {
+  code: text("code").primaryKey().notNull(),
   name: text("name").notNull(),
-  rating: real("rating"),
-  numEvals: integer("num_evals"),
 });
 
-export const instructorRelations = relations(instructors, ({ many }) => ({
+export const departmentRelations = relations(departments, ({ many }) => ({
+  courseDepartmentMap: many(courseDepartmentMap),
+  instructors: many(instructors),
+}));
+
+export const instructors = pgTable("instructors", {
+  // Data from OIT API
+  netid: text("netid").primaryKey().notNull(),
+  emplid: text("emplid").notNull(),
+  name: text("name").notNull(),
+  fullName: text("full_name").notNull(),
+
+  // Data from scraping advanced people search
+  department: text("department"),
+  email: text("email"),
+  office: text("office"),
+
+  // Data derived from scraping course evals
+  rating: real("rating"),
+  ratingUncertainty: real("rating_uncertainty"),
+  numRatings: integer("num_ratings"),
+});
+
+export const instructorRelations = relations(instructors, ({ one, many }) => ({
   courseInstructorMap: many(courseInstructorMap),
+  department: one(departments, {
+    fields: [instructors.department],
+    references: [departments.code],
+  }),
 }));
 
 export const evaluations = pgTable("evaluations", {
   id: serial("id").primaryKey().notNull(),
-  courseId: integer("course_id")
+  courseId: text("course_id")
     .notNull()
     .references(() => courses.id),
   numComments: integer("num_comments"),
@@ -215,7 +240,7 @@ export const scheduleCourseMap = pgTable(
     scheduleId: integer("schedule_id")
       .notNull()
       .references(() => schedules.id),
-    courseId: integer("course_id")
+    courseId: text("course_id")
       .notNull()
       .references(() => courses.id),
     color: smallint("color").notNull(),
@@ -264,10 +289,36 @@ export const scheduleEventMapRelations = relations(scheduleEventMap, ({ one }) =
   }),
 }));
 
+export const courseDepartmentMap = pgTable(
+  "course_department_map",
+  {
+    courseId: text("course_id")
+      .notNull()
+      .references(() => courses.id),
+    departmentCode: text("department_code")
+      .notNull()
+      .references(() => departments.code),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.courseId, t.departmentCode] }),
+  })
+);
+
+export const courseDepartmentMapRelations = relations(courseDepartmentMap, ({ one }) => ({
+  course: one(courses, {
+    fields: [courseDepartmentMap.courseId],
+    references: [courses.id],
+  }),
+  department: one(departments, {
+    fields: [courseDepartmentMap.departmentCode],
+    references: [departments.code],
+  }),
+}));
+
 export const courseInstructorMap = pgTable(
   "course_instructor_map",
   {
-    courseId: integer("course_id")
+    courseId: text("course_id")
       .notNull()
       .references(() => courses.id),
     instructorId: text("instructor_id")
