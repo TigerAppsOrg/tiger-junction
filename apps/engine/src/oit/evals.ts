@@ -6,7 +6,8 @@ const formatRatingsURL = (ratingsUrl: string, term: string, courseId: string) =>
 
 const getEvalTerms = (pageText: string): string[] => {
   const dom = new JSDOM(pageText);
-  const termLinks = dom.window.document.querySelectorAll(".terms-list .term-link");
+  const termLinks: NodeListOf<HTMLAnchorElement> =
+    dom.window.document.querySelectorAll(".terms-list .term-link");
 
   const terms: string[] = [];
 
