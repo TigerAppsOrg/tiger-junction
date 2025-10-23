@@ -180,7 +180,7 @@ export const sectionRelations = relations(sections, ({ one }) => ({
 
 export const departments = pgTable("departments", {
   code: text("code").primaryKey().notNull(),
-  name: text("name").notNull(),
+  name: text("name"),
 });
 
 export const departmentRelations = relations(departments, ({ many }) => ({

@@ -98,7 +98,7 @@ export default class OIT_API implements I_OIT_API {
                 days: h.daysToValue(meeting.days),
                 start_time: h.timeToValue(meeting.start_time),
                 end_time: h.timeToValue(meeting.end_time),
-                status: section.status.toLowerCase() as t.Status,
+                status: "open", // TODO : h.calculateSectionStatus(section),
               });
             } catch (e) {
               console.error(`Error processing section ${section.class_number}:`, e);
