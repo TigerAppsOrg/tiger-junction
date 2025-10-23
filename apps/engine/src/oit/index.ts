@@ -34,14 +34,14 @@ export default class OIT_API implements I_OIT_API {
     return await response.json();
   }
 
-  async __oit_getTerms(): Promise<t.OIT_Term[]> {
+  private async __oit_getTerms(): Promise<t.OIT_Term[]> {
     const data = await this.fetchOIT<{
       term: t.OIT_Term[];
     }>("/courses/terms?fmt=json");
     return data.term;
   }
 
-  async __oit_getCourses(
+  private async __oit_getCourses(
     options: {
       term?: string;
       subject?: string;
@@ -60,7 +60,7 @@ export default class OIT_API implements I_OIT_API {
     return data;
   }
 
-  async __oit_getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {
+  private async __oit_getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {
     const params = new URLSearchParams({ fmt: "json" });
 
     params.append("term", term);
@@ -98,7 +98,7 @@ export default class OIT_API implements I_OIT_API {
                 days: h.daysToValue(meeting.days),
                 start_time: h.timeToValue(meeting.start_time),
                 end_time: h.timeToValue(meeting.end_time),
-                status: section.status.toLowerCase() as t.Status,
+                status: "open", // TODO : h.calculateSectionStatus(section),
               });
             } catch (e) {
               console.error(`Error processing section ${section.class_number}:`, e);

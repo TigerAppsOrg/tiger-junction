@@ -156,7 +156,7 @@ ref: course_department_map.department_code > departments.code
 
 ref: course_instructor_map.course_id > courses.id
 
-ref: course_instructor_map.instructor_id > instructors.emplid
+ref: course_instructor_map.instructor_id > instructors.netid
 
 ref: evaluations.course_id - courses.id
 
