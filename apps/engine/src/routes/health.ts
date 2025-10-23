@@ -19,7 +19,6 @@ const healthRoutes: FastifyPluginAsync = async (app) => {
             properties: {
               status: { type: "string", example: "ok" },
               timestamp: { type: "string", format: "date-time" },
-              uptime: { type: "number", description: "Server uptime in seconds" },
             },
           },
         },
@@ -28,7 +27,6 @@ const healthRoutes: FastifyPluginAsync = async (app) => {
     async () => ({
       status: "ok",
       timestamp: new Date().toISOString(),
-      uptime: Math.round(process.uptime()),
     })
   );
 
