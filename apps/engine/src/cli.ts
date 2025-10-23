@@ -2,6 +2,7 @@
 // Author(s): Joshua Lau
 
 import OIT_API from "./oit";
+import DB from "./db";
 import util from "util";
 
 // Override console.log to print objects with full depth
@@ -13,6 +14,9 @@ console.log = function (...args) {
   originalLog(...inspectedArgs);
 };
 
-const api = new OIT_API();
-const d = await api.getAllCourseData("1262");
-console.log(d);
+// const api = new OIT_API();
+// const d = await api.getAllCourseData("1262");
+// console.log(d);
+
+const db = new DB();
+await db.updateOitData();
