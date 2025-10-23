@@ -4,10 +4,12 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import sensible from "@fastify/sensible";
+import swagger from "@fastify/swagger";
+import swaggerUI from "@fastify/swagger-ui";
 
 import healthRoutes from "./routes/health.ts";
 
-function build(): FastifyInstance {
+async function build(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
 
   // Global plugins (apply everywhere)
@@ -20,10 +22,34 @@ function build(): FastifyInstance {
   // Route groups
   app.register(healthRoutes, { prefix: "/health" });
 
+  // Swagger documentation
+  await app.register(swagger, {
+    openapi: {
+      openapi: "3.0.0",
+      info: {
+        title: "Engine API",
+        version: "1.0.0",
+        description: "API documentation for the TigerJunction Engine (backend)",
+      },
+      servers: [{ url: "http://localhost:3000", description: "Local server" }],
+      tags: [{ name: "Health", description: "Health check endpoints" }],
+    },
+  });
+
+  await app.register(swaggerUI, {
+    routePrefix: "/docs",
+    uiConfig: {
+      docExpansion: "full",
+      deepLinking: false,
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header,
+  });
+
   return app;
 }
 
-const app = build();
+const app = await build();
 
 app.listen({ port: 3000 }).catch((err) => {
   app.log.error(err);
