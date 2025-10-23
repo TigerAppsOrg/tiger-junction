@@ -19,9 +19,6 @@ async function build(): Promise<FastifyInstance> {
     })
   );
 
-  // Route groups
-  app.register(healthRoutes, { prefix: "/health" });
-
   // Swagger documentation
   await app.register(swagger, {
     openapi: {
@@ -45,6 +42,9 @@ async function build(): Promise<FastifyInstance> {
     staticCSP: true,
     transformStaticCSP: (header) => header,
   });
+
+  // Route groups
+  app.register(healthRoutes, { prefix: "/health" });
 
   return app;
 }
