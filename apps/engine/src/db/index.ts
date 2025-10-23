@@ -74,10 +74,7 @@ export default class DB implements I_DB {
       }
 
       // Insert/update instructors
-      const allInstructors = new Map<
-        string,
-        { netid: string; emplid: string; name: string; fullName: string }
-      >();
+      const allInstructors = new Map();
       for (const course of courses) {
         for (const instructor of course.instructors) {
           if (!allInstructors.has(instructor.netid)) {
@@ -173,14 +170,20 @@ export default class DB implements I_DB {
           .where(sql`${schema.courseDepartmentMap.courseId} = ${course.id}`);
 
         // Insert course-department mappings
-        const deptCodes = course.code.split(" / ").map((code) => code.replace(/\d+/g, "").trim());
+        // Department codes are always exactly 3 letters
+        const deptCodes = course.code
+          .split(" / ")
+          .map((code) => {
+            const match = code.match(/^([A-Z]{3})/);
+            return match ? match[1] : null;
+          })
+          .filter((code): code is string => code !== null);
+
         for (const deptCode of deptCodes) {
-          if (deptCode) {
-            await this.db.insert(schema.courseDepartmentMap).values({
-              courseId: course.id,
-              departmentCode: deptCode,
-            });
-          }
+          await this.db.insert(schema.courseDepartmentMap).values({
+            courseId: course.id,
+            departmentCode: deptCode,
+          });
         }
 
         // Delete existing course-instructor mappings for this course

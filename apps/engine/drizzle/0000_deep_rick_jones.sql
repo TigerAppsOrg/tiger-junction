@@ -42,7 +42,7 @@ CREATE TABLE "custom_events" (
 --> statement-breakpoint
 CREATE TABLE "departments" (
 	"code" text PRIMARY KEY NOT NULL,
-	"name" text NOT NULL
+	"name" text
 );
 --> statement-breakpoint
 CREATE TABLE "evaluations" (
