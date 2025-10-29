@@ -246,7 +246,9 @@ export default class OIT_API implements I_OIT_API {
 
   async getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>> {
     if (this.sessionToken === "")
-      throw new Error("Registrar session token not set. Please visit <TODO>.");
+      throw new Error(
+        "Registrar session token not set. Please visit https://registrarapps.princeton.edu/course-evaluation and copy PHPSESSID from cookies."
+      );
 
     const evals = await scrapeCourseEvals({
       evalUrl: this.evalUrl,
