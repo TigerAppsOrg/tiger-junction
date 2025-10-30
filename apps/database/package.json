@@ -10,6 +10,7 @@
         "ratings-supabase": "bun src/scripts/supabase/ratings.ts",
         "update:courses": "bun src/scripts/update/courses.ts",
         "update:seats": "bun src/scripts/update/seats.ts",
+        "update:evals": "bun src/scripts/evals/updateEvals.ts",
         "db:start": "docker compose up",
         "db:schema": "bun src/db/generate-dbml.ts",
         "db:generate": "drizzle-kit generate",

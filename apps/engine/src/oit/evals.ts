@@ -119,6 +119,16 @@ export const scrapeCourseEvals = async (
       },
     });
     const text = await termRes.text();
+
+    // Check if evals are not available
+    if (
+      text.includes(
+        "The student evaluation results for the class you selected are not available online"
+      )
+    ) {
+      continue;
+    }
+
     const evals = parseEvals(text);
     const rating = parseRating(text);
     if (evals && rating) courseEvals[term] = [{ ...evals, ...rating }];
