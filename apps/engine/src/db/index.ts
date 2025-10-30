@@ -7,6 +7,7 @@ import { sql } from "drizzle-orm";
 import { I_DB } from "./interface";
 import OIT from "../oit";
 import * as schema from "./schema";
+import { OIT_Eval } from "../oit/types";
 
 export default class DB implements I_DB {
   public db = drizzle(process.env.POSTGRES_URL!);
@@ -27,17 +28,21 @@ export default class DB implements I_DB {
     }
   }
 
-  public async updateOitData() {
+  public async updateOitData(term?: string) {
     await this.testConnection();
 
     const oit = new OIT();
-    const latestTerm = await oit.getLatestTermCode();
-    if (!latestTerm)
-      throw new Error("No terms found in OIT data. Please check OIT API connectivity.");
 
-    console.log(`Fetching all course data for term ${latestTerm}...`);
+    if (!term) {
+      const latestTerm = await oit.getLatestTermCode();
+      if (!latestTerm)
+        throw new Error("No terms found in OIT data. Please check OIT API connectivity.");
+      term = latestTerm;
+    }
+
+    console.log(`Fetching all course data for term ${term}...`);
     // ! This takes a while to run (several minutes)
-    const courses = await oit.getAllCourseData(latestTerm);
+    const courses = await oit.getAllCourseData(term);
     console.log(`Fetched ${courses.length} courses. Starting database updates...`);
 
     try {
@@ -205,5 +210,35 @@ export default class DB implements I_DB {
       console.error("Error updating OIT data:", error);
       throw error;
     }
+  }
+
+  public async getAllListingIds(): Promise<string[]> {
+    const result = await this.db
+      .selectDistinct({
+        listingId: schema.courses.listingId,
+      })
+      .from(schema.courses);
+    return result.map((row) => row.listingId);
+  }
+
+  public async upsertEval(courseId: string, evalData: OIT_Eval): Promise<void> {
+    await this.db
+      .insert(schema.evaluations)
+      .values({
+        courseId: courseId,
+        numComments: evalData.numComments,
+        comments: evalData.comments,
+        rating: evalData.rating,
+        ratingSource: evalData.ratingSource,
+      })
+      .onConflictDoUpdate({
+        target: schema.evaluations.courseId,
+        set: {
+          numComments: evalData.numComments,
+          comments: evalData.comments,
+          rating: evalData.rating,
+          ratingSource: evalData.ratingSource,
+        },
+      });
   }
 }

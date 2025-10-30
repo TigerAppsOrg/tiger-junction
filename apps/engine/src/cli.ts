@@ -1,9 +1,10 @@
 // src/cli.ts
 // Author(s): Joshua Lau
 
-// import OIT_API from "./oit";
+import OIT_API from "./oit";
 import DB from "./db";
 import util from "util";
+import { updateEvals } from "./scripts/updateEvals";
 
 // Override console.log to print objects with full depth
 const originalLog = console.log;
@@ -14,9 +15,8 @@ console.log = function (...args) {
   originalLog(...inspectedArgs);
 };
 
-// const api = new OIT_API();
-// const d = await api.getAllCourseData("1262");
-// console.log(d);
-
+const oit = new OIT_API();
 const db = new DB();
-await db.updateOitData();
+await updateEvals(db, oit);
+
+process.exit(0);

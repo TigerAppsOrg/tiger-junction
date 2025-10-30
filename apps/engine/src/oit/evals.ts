@@ -124,6 +124,9 @@ export const scrapeCourseEvals = async (
     if (
       text.includes(
         "The student evaluation results for the class you selected are not available online"
+      ) ||
+      text.includes(
+        "student comment evaluation results for the class you selected are not available online;"
       )
     ) {
       continue;
@@ -132,7 +135,10 @@ export const scrapeCourseEvals = async (
     const evals = parseEvals(text);
     const rating = parseRating(text);
     if (evals && rating) courseEvals[term] = [{ ...evals, ...rating }];
-    else throw new Error(`Failed to parse evaluations for course ${courseId}, term ${term}`);
+    else
+      throw new Error(
+        `Failed to parse evaluations for course ${courseId}, term ${term}, text: ${text}`
+      );
   }
 
   return courseEvals;

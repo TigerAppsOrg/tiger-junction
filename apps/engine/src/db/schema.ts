@@ -218,6 +218,7 @@ export const evaluations = pgTable("evaluations", {
   id: serial("id").primaryKey().notNull(),
   courseId: text("course_id")
     .notNull()
+    .unique()
     .references(() => courses.id),
   numComments: integer("num_comments"),
   comments: text("comments").array(),
