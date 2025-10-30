@@ -21,6 +21,7 @@
     "@fastify/swagger": "^9.5.2",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/websocket": "^11.2.0",
+    "@supabase/supabase-js": "^2.77.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
     "fastify": "^5.5.0",
