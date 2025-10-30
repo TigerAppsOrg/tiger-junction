@@ -5,6 +5,10 @@ import type { RawSectionData } from "./stores/rsections";
 
 // Add the new term at the top of the list
 export const TERM_MAP: Record<number, Record<string, string>> = {
+    1264: {
+        name: "Spring 2026",
+        mobile_name: "S26"
+    },
     1262: {
         name: "Fall 2025",
         mobile_name: "F25"
@@ -69,6 +73,7 @@ export const TERM_MAP: Record<number, Record<string, string>> = {
 
 // Add the new term at the top of the list
 export const EVALS_TERM_MAP: Record<number, string> = {
+    1264: "2025-2026 Spring Course Evaluation Results",
     1262: "2025-2026 Fall Course Evaluation Results",
     1254: "2024-2025 Spring Course Evaluation Results",
     1252: "2024-2025 Fall Course Evaluation Results",
@@ -92,6 +97,13 @@ export const EVALS_TERM_MAP: Record<number, string> = {
 // Ignore exclusions for now, they're not used, set to []
 // Delete the old term at the bottom of the list
 export const CALENDAR_INFO: Record<string, Calendar_Info> = {
+    "1264": {
+        name: "Spring 2026",
+        start: [2026, 1, 26],
+        start_day: 1,
+        end: [2026, 4, 24],
+        exclusions: []
+    },
     "1262": {
         name: "Fall 2025",
         start: [2025, 9, 2],
@@ -133,15 +145,15 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
 } as const;
 
 // Add the new term and delete the oldest term (be careful!)
-export type ActiveTerms = 1252 | 1254 | 1262;
+export type ActiveTerms = 1264 | 1254 | 1262;
 
 // Add the new term at the top of the list
 // Set the most recent term to true, and the rest to false
 // Delete the oldest term (at the bottom)
 export const sectionDone = writable({
-    1262: true,
+    1262: false,
     1254: false,
-    1252: false
+    1264: true
 });
 
 //----------------------------------------------------------------------
