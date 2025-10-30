@@ -636,7 +636,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     style: {
-        "Show Rating": true,
+        "Show Rating": false,
         "Show # of Comments": false,
         "Show Weighted Rating": false,
         "Color by Rating": false,
