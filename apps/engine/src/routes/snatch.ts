@@ -19,7 +19,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
               netid: { type: "string", example: "ab1234" },
               classid: { type: "string", example: "12345" },
               success: { type: "boolean", example: true },
-              message: { type: "string" }
+              message: { type: "string" },
             },
           },
           400: {
@@ -57,16 +57,13 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
           message: "Environmental variable error",
         });
       }
-      const response = await fetch(
-        `${url}/junction/add_to_waitlist/${netid}/${classid}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": token,
-          },
-        }
-      );
-      const data = await response.json()
+      const response = await fetch(`${url}/junction/add_to_waitlist/${netid}/${classid}`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      });
+      const data = await response.json();
       if (!response.ok) {
         return reply.code(500).send({
           netid,
@@ -75,22 +72,22 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
           message: "Server error",
         });
       }
-      
+
       if (data && data.isSuccess !== 1) {
-          return reply.code(400).send({
-            netid,
-            classid,
-            success: false,
-            message: `Upstream returned isSuccess=${data.isSuccess}`,
-          });
-        }
+        return reply.code(400).send({
+          netid,
+          classid,
+          success: false,
+          message: `Upstream returned isSuccess=${data.isSuccess}`,
+        });
+      }
 
       return reply.code(200).send({
         netid,
         classid,
         success: true,
         message: "Successfully added to waitlist",
-      })
+      });
     }
   );
 
@@ -147,16 +144,13 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
           message: "Environmental variable error",
         });
       }
-      const response = await fetch(
-        `${url}/junction/remove_from_waitlist/${netid}/${classid}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": token,
-          },
-        }
-      );
-      const data = await response.json()
+      const response = await fetch(`${url}/junction/remove_from_waitlist/${netid}/${classid}`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      });
+      const data = await response.json();
       if (!response.ok) {
         return reply.code(500).send({
           netid,
@@ -166,19 +160,19 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
         });
       }
       if (data && !data.isSuccess) {
-          return reply.code(400).send({
-            netid,
-            classid,
-            success: false,
-            message: `Upstream returned isSuccess=${data.isSuccess}`,
-          });
-        }
+        return reply.code(400).send({
+          netid,
+          classid,
+          success: false,
+          message: `Upstream returned isSuccess=${data.isSuccess}`,
+        });
+      }
       return reply.code(200).send({
         netid,
-        classid,  
+        classid,
         success: true,
-        message: "Successfully removed from waitlist", 
-      })
+        message: "Successfully removed from waitlist",
+      });
     }
   );
 
@@ -221,7 +215,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
       },
     },
     async (request, reply) => {
-      const { netid } = request.params as { netid: string};
+      const { netid } = request.params as { netid: string };
       const token = process.env.SNATCH_TOKEN;
       const url = process.env.SNATCH_URL;
       if (!token || !url) {
@@ -231,16 +225,13 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
           message: "Environment variable error",
         });
       }
-      const response = await fetch(
-        `${url}/junction/get_user_data/${netid}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": token,
-          },
-        }
-      );
-      const data = await response.json()
+      const response = await fetch(`${url}/junction/get_user_data/${netid}`, {
+        method: "POST",
+        headers: {
+          Authorization: token,
+        },
+      });
+      const data = await response.json();
       if (!response.ok) {
         return reply.code(500).send({
           netid,
@@ -248,7 +239,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
           message: data.message || "Server error",
         });
       }
-      if (data && data.data=="missing") {
+      if (data && data.data == "missing") {
         return reply.code(400).send({
           netid,
           success: false,
@@ -259,7 +250,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
         netid,
         success: true,
         message: "Successfully got user data",
-      })
+      });
     }
   );
 };

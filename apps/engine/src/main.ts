@@ -30,7 +30,10 @@ async function build(): Promise<FastifyInstance> {
         description: "API documentation for the TigerJunction Engine (backend)",
       },
       servers: [{ url: "http://localhost:3000", description: "Local server" }],
-      tags: [{ name: "Health", description: "Health check endpoints" }, { name: "Snatch", description: "TigerSnatch integration endpoints" }],
+      tags: [
+        { name: "Health", description: "Health check endpoints" },
+        { name: "Snatch", description: "TigerSnatch integration endpoints" },
+      ],
     },
   });
 
