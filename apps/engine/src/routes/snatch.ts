@@ -92,7 +92,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
   );
 
   app.post(
-    "/junction/remove_from_waitlist/:netid/:classid",
+    "/remove_from_waitlist/:netid/:classid",
     {
       schema: {
         tags: ["Snatch"],
@@ -176,7 +176,7 @@ const snatchRoutes: FastifyPluginAsync = async (app) => {
     }
   );
 
-  app.post(
+  app.get(
     "/get_user_data/:netid",
     {
       schema: {
