@@ -8,6 +8,7 @@ import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 
 import healthRoutes from "./routes/health.ts";
+import snatchRoutes from "./routes/snatch.ts";
 
 async function build(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -29,7 +30,7 @@ async function build(): Promise<FastifyInstance> {
         description: "API documentation for the TigerJunction Engine (backend)",
       },
       servers: [{ url: "http://localhost:3000", description: "Local server" }],
-      tags: [{ name: "Health", description: "Health check endpoints" }],
+      tags: [{ name: "Health", description: "Health check endpoints" }, { name: "Snatch", description: "TigerSnatch integration endpoints" }],
     },
   });
 
@@ -45,6 +46,7 @@ async function build(): Promise<FastifyInstance> {
 
   // Route groups
   app.register(healthRoutes, { prefix: "/health" });
+  app.register(snatchRoutes, { prefix: "/snatch" });
 
   return app;
 }
