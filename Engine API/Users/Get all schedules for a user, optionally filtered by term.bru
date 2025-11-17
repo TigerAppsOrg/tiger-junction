@@ -1,0 +1,19 @@
+meta {
+  name: Get all schedules for a user, optionally filtered by term
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/users/:userId/schedules
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~term: 
+}
+
+params:path {
+  userId: 
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get all custom events for a user
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/users/:userId/events
+  body: none
+  auth: inherit
+}
+
+params:path {
+  userId: 
+}

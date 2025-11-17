@@ -1,0 +1,16 @@
+meta {
+  name: Remove an event from a schedule
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/api/schedules/:scheduleId/events/:eventId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+  eventId: 
+}

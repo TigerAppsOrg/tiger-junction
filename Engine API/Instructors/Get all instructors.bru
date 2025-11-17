@@ -1,0 +1,11 @@
+meta {
+  name: Get all instructors
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/instructors/
+  body: none
+  auth: inherit
+}

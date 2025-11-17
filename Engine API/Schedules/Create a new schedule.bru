@@ -1,0 +1,21 @@
+meta {
+  name: Create a new schedule
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/schedules/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "",
+    "term": "",
+    "title": "",
+    "relativeId": "",
+    "isPublic": false
+  }
+}

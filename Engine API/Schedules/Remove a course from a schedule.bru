@@ -1,0 +1,16 @@
+meta {
+  name: Remove a course from a schedule
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/api/schedules/:scheduleId/courses/:courseId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+  courseId: 
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get all courses for a specific term with instructor information
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/courses/:term
+  body: none
+  auth: inherit
+}
+
+params:path {
+  term: 
+}
