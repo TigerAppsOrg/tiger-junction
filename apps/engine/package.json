@@ -2,6 +2,7 @@
   "type": "module",
   "scripts": {
     "start": "bun ./src/main.ts",
+    "dev": "bun ./src/main.ts",
     "cli": "bun ./src/cli.ts",
     "format": "prettier --write .",
     "lint": "eslint .",
@@ -9,12 +10,12 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:schema": "bun src/db/generate-dbml.ts",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "docker:restart": "docker-compose restart",
-    "docker:ps": "docker-compose ps",
-    "docker:clean": "docker-compose down -v"
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "docker compose restart",
+    "docker:ps": "docker compose ps",
+    "docker:clean": "docker compose down -v"
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.3",
@@ -26,7 +27,8 @@
     "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
     "jsdom": "^26.1.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "redis": "^4.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",

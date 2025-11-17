@@ -8,3 +8,7 @@ node_modules
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .VSCODECounter
+Engine API
+.vscode/settings.json
+apps/engine/src/cache/rediscache.ts.timestamp-*
+apps/engine/.env
