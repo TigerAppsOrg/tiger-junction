@@ -1,0 +1,15 @@
+meta {
+  name: Delete a custom event (cascades to delete event-schedule associations)
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/events/:eventId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  eventId: 
+}

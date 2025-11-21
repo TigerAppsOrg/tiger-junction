@@ -1,0 +1,21 @@
+meta {
+  name: Add an event to a schedule
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/api/schedules/:scheduleId/events
+  body: json
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}
+
+body:json {
+  {
+    "eventId": ""
+  }
+}

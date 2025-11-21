@@ -1,0 +1,15 @@
+meta {
+  name: Get all sections for a specific term
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/sections/:term
+  body: none
+  auth: inherit
+}
+
+params:path {
+  term: 
+}

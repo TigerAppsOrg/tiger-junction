@@ -1,0 +1,15 @@
+meta {
+  name: Get all event associations for a schedule
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/schedules/:scheduleId/events
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}

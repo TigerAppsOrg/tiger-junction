@@ -1,0 +1,15 @@
+meta {
+  name: Get all sections for a specific course
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/courses/:courseId/sections
+  body: none
+  auth: inherit
+}
+
+params:path {
+  courseId: 
+}

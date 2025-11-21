@@ -1,0 +1,18 @@
+meta {
+  name: Submit user feedback
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/feedback/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "",
+    "feedback": ""
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get all course associations for a schedule
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/schedules/:scheduleId/courses
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}

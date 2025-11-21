@@ -1,0 +1,15 @@
+meta {
+  name: Clear all courses from a schedule
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/schedules/:scheduleId/courses
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Add a course to a schedule
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/schedules/:scheduleId/courses
+  body: json
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}
+
+body:json {
+  {
+    "courseId": "",
+    "color": "",
+    "isComplete": false,
+    "confirms": {}
+  }
+}

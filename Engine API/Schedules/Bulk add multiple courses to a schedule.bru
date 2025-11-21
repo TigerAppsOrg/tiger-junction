@@ -1,0 +1,28 @@
+meta {
+  name: Bulk add multiple courses to a schedule
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/schedules/:scheduleId/courses/bulk
+  body: json
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}
+
+body:json {
+  {
+    "courses": [
+      {
+        "courseId": "",
+        "color": "",
+        "isComplete": false,
+        "confirms": {}
+      }
+    ]
+  }
+}

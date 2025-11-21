@@ -1,0 +1,15 @@
+meta {
+  name: Get a specific instructor by netid
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/instructors/:netid
+  body: none
+  auth: inherit
+}
+
+params:path {
+  netid: 
+}

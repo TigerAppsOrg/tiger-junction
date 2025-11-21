@@ -1,0 +1,19 @@
+meta {
+  name: Create a new custom event
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/events/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "",
+    "title": "",
+    "times": {}
+  }
+}

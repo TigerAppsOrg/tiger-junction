@@ -1,0 +1,11 @@
+meta {
+  name: get /openapi.json
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/openapi.json
+  body: none
+  auth: inherit
+}

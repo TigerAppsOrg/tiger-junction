@@ -1,0 +1,15 @@
+meta {
+  name: Get a specific schedule by ID
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/schedules/:scheduleId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete a schedule (cascades to delete associated courses/events)
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/schedules/:scheduleId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  scheduleId: 
+}
