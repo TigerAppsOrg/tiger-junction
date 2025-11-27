@@ -1,99 +1,136 @@
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
+import { writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { users as usersTable } from '../src/db/schema.ts';
+import { eq } from 'drizzle-orm';
 
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Load environment variables from the .env file in this directory
+// Setup
+const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, '.env') });
 
-const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const { PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, POSTGRES_URL } = process.env;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing required environment variables:');
-  if (!supabaseUrl) console.error('  - PUBLIC_SUPABASE_URL');
-  if (!supabaseServiceKey) console.error('  - SUPABASE_SERVICE_ROLE_KEY');
-  console.error('\nNote: Accessing auth.users requires SUPABASE_SERVICE_ROLE_KEY, not the anon key.');
-  process.exit(1);
+if (!PUBLIC_SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !POSTGRES_URL) {
+    console.error('Missing environment variables: PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, or POSTGRES_URL');
+    process.exit(1);
 }
 
-// Create Supabase client with service role key to access auth schema
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
+const supabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false }
 });
+const db = drizzle(POSTGRES_URL);
 
+// Fetch all auth users with pagination
 async function fetchAuthUsers() {
-  console.log('Connecting to Supabase...');
-  console.log(`URL: ${supabaseUrl}\n`);
-
-  try {
-    // Fetch ALL users from auth.users table with pagination
-    // Note: This requires service role key permissions
+    console.log('Fetching auth users...');
     const allUsers = [];
     let page = 1;
-    const perPage = 10000; // Max per page
-    
-    while (true) {
-      const { data, error } = await supabase.auth.admin.listUsers({
-        page,
-        perPage
-      });
+    const perPage = 1000000;
 
-      if (error) {
-        console.error('Error fetching users:', error.message);
-        process.exit(1);
-      }
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+    if (error) throw new Error(`Failed to fetch users: ${error.message}`);
 
-      allUsers.push(...data.users);
-      console.log(`Fetched page ${page}: ${data.users.length} users (total so far: ${allUsers.length})`);
+    allUsers.push(...data.users);
 
-      // Break if we got fewer users than requested (last page)
-      if (data.users.length < perPage) {
-        break;
-      }
-      
-      page++;
-    }
 
-    console.log(`\nSuccessfully fetched ${allUsers.length} users from auth.users`);
-    console.log('\nSample user data:');
-    
-    // Display first user as sample (if any exist)
-    if (allUsers.length > 0) {
-      const sampleUser = allUsers[0];
-      console.log({
-        id: sampleUser.id,
-        email: sampleUser.email,
-        created_at: sampleUser.created_at,
-        last_sign_in_at: sampleUser.last_sign_in_at,
-        // Add other fields as needed
-      });
-    }
-
-    // Return all users for further processing
+    console.log(`✅ Fetched ${allUsers.length} users\n`);
     return allUsers;
-  } catch (err) {
-    console.error('Unexpected error:', err);
-    process.exit(1);
-  }
 }
 
-// Run the script
-fetchAuthUsers()
-  .then(users => {
-    console.log(`\nTotal users: ${users.length}`);
-    console.log('\nNext steps:');
-    console.log('- Process these users and insert into PostgreSQL user table');
-    console.log('- Store Supabase user ID for linking data in other migration scripts');
-  })
-  .catch(err => {
-    console.error('Fatal error:', err);
-    process.exit(1);
-  });
+// Fetch all private profiles
+async function fetchPrivateProfiles() {
+    console.log('Fetching private profiles...');
+    const { data, error } = await supabase.from('private_profiles').select('id, is_admin');
+
+    if (error) throw new Error(`Failed to fetch profiles: ${error.message}`);
+
+    const profilesMap = new Map(data?.map(p => [p.id, p.is_admin || false]) || []);
+    console.log(`✅ Loaded ${profilesMap.size} profiles\n`);
+    return profilesMap;
+}
+
+// Helper functions
+const getNetId = (email: string): string | null => {
+    // TODO: Implement netid extraction logic
+    const netid = email.split('@')[0];
+    if (netid.length === 6 && netid.match(/^[a-z]{2}\d{4}$/)) {
+        return netid;
+    }
+
+    // How to get netid from email if email is alias?
+    return null;
+};
+
+
+
+const getClassYear = (email: string): number => {
+    // TODO: Implement class year extraction logic
+    return 0;
+};
+
+const getIsAdmin = (userId: string, profiles: Map<string, boolean>) => profiles.get(userId) || false;
+
+// Check if user exists in PostgreSQL
+async function userExists(supabaseId: string) {
+    const result = await db.select().from(usersTable).where(eq(usersTable.supabase_id, supabaseId)).limit(1);
+    return result.length > 0;
+}
+
+// Process single user
+async function processUser(user: any, profiles: Map<string, boolean>) {
+    if (!user.id || !user.email) return { skipped: true, reason: 'missing id/email' };
+
+    if (await userExists(user.id)) return { skipped: true, reason: 'already exists' };
+
+    const netid = getNetId(user.email);
+    if (!netid) return { skipped: true, reason: 'no valid netid' };
+
+    await db.insert(usersTable).values({
+        supabase_id: user.id,
+        email: user.email,
+        netid,
+        year: getClassYear(user.email),
+        isAdmin: getIsAdmin(user.id, profiles),
+        theme: {},
+    });
+
+    return { inserted: true, netid, isAdmin: getIsAdmin(user.id, profiles) };
+}
+
+// Main migration
+async function migrate() {
+    try {
+        const [users, profiles] = await Promise.all([fetchAuthUsers(), fetchPrivateProfiles()]);
+
+        console.log('Starting migration...\n');
+        const stats = { inserted: 0, skipped: 0, errors: 0 };
+
+        for (const user of users) {
+            try {
+                const result = await processUser(user, profiles);
+
+                if (result.inserted) {
+                    // console.log(`✅ ${user.email} (${result.netid}, admin: ${result.isAdmin})`);
+                    stats.inserted++;
+                } else if (result.skipped) {
+                    console.log(`⏭️  ${user.email} (${result.reason})`);
+                    stats.skipped++;
+                }
+            } catch (err) {
+                console.error(`❌ ${user.email}: ${err}`);
+                stats.errors++;
+            }
+        }
+
+        console.log('\n=== Complete ===');
+        console.log(`✅ Inserted: ${stats.inserted} | ⏭️  Skipped: ${stats.skipped} | ❌ Errors: ${stats.errors}`);
+    } catch (err) {
+        console.error('Migration failed:', err);
+        process.exit(1);
+    }
+}
+
+migrate();

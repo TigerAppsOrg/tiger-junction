@@ -53,7 +53,7 @@ table custom_events {
 
 table departments {
   code text [pk, not null]
-  name text [not null]
+  name text
 }
 
 table evaluations {
@@ -141,6 +141,7 @@ table sections {
 
 table users {
   id serial [pk, not null, increment]
+  supabase_id text [not null, unique]
   email text [not null]
   netid text [not null]
   year smallint [not null]

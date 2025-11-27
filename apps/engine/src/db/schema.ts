@@ -28,6 +28,7 @@ export const statusEnum = pgEnum("status", ["open", "closed", "canceled"]);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey().notNull(),
+  supabase_id: text("supabase_id").notNull().unique(),
   email: text("email").notNull(),
   netid: text("netid").notNull(),
   year: smallint("year").notNull(),
