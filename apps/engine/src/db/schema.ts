@@ -137,11 +137,11 @@ export const courses = pgTable("courses", {
   // e.g. "Computer Science: An Interdisciplinary Approach"
   title: text("title").notNull(),
 
-  description: text("description").notNull(),
+  description: text("description"),
 
   status: statusEnum("status").notNull().default("open"),
   dists: text("dists").array(),
-  gradingBasis: text("grading_basis").notNull(),
+  gradingBasis: text("grading_basis"),
   hasFinal: boolean("has_final"),
 });
 
@@ -167,8 +167,8 @@ export const sections = pgTable("sections", {
   tot: smallint("tot").notNull(),
   cap: smallint("cap").notNull(),
   days: smallint("days").notNull(),
-  startTime: integer("start_time").notNull(),
-  endTime: integer("end_time").notNull(),
+  startTime: real("start_time").notNull(),
+  endTime: real("end_time").notNull(),
   status: statusEnum("status").notNull().default("open"),
 });
 

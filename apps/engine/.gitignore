@@ -1,1 +1,4 @@
 supabase_to_postgres_migrations/student_data.csv
+supabase_to_postgres_migrations/users_without_netid.log
+supabase_to_postgres_migrations/users_with_schedules_no_netid.txt
+supabase_to_postgres_migrations/netids_by_year.json

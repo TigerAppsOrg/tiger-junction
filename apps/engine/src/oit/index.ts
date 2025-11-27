@@ -149,8 +149,7 @@ export default class OIT_API implements I_OIT_API {
 
       const deptEndTime = Date.now();
       console.log(
-        `Fetched ${deptCourses.length} courses for department ${dept} in ${
-          (deptEndTime - deptStartTime) / 1000
+        `Fetched ${deptCourses.length} courses for department ${dept} in ${(deptEndTime - deptStartTime) / 1000
         } seconds.`
       );
     }

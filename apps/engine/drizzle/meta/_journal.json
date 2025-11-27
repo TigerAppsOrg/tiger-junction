@@ -15,6 +15,20 @@
       "when": 1763696931818,
       "tag": "0001_purple_legion",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764281202467,
+      "tag": "0002_sudden_cyclops",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1764282796608,
+      "tag": "0003_gigantic_mantis",
+      "breakpoints": true
     }
   ]
 }
