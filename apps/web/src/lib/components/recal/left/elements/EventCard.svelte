@@ -47,7 +47,7 @@
     on:blur={handleLeave}
     on:mouseleave={handleLeave}>
     <div class="w-[60%]">
-        <p id="title" class="text-sm p-1 overflow-clip">
+        <p id="title" class="text-sm p-1 overflow-cli {isSelected ? "" : "dark:text-zinc-100"}">
             {customEvent.title}
         </p>
     </div>
