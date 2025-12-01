@@ -115,7 +115,9 @@
             <div class="overflow-y-auto">
                 <div class="mb-2">
                     {#if scheduleEvents.length === 0}
-                        <p class="text-sm dark:text-zinc-100">No events added yet.</p>
+                        <p class="text-sm dark:text-zinc-100">
+                            No events added yet.
+                        </p>
                     {:else}
                         <h2 class="text-sm dark:text-zinc-100">
                             {scheduleEvents.length} Added
@@ -133,7 +135,9 @@
 
                 <div>
                     {#if notInSchedule.length === 0}
-                        <p class="text-sm mb-1 dark:text-zinc-100">No events available.</p>
+                        <p class="text-sm mb-1 dark:text-zinc-100">
+                            No events available.
+                        </p>
                     {:else}
                         <h2 class="text-sm dark:text-zinc-100">
                             {notInSchedule.length} Available

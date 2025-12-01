@@ -8,7 +8,7 @@
     import { modalStore } from "$lib/stores/modal";
 
     // Export for parent to read content height
-    export let contentHeight = 0;
+    export let contentHeight: number = 0;
 
     // Element refs for measurement
     let headerEl: HTMLElement;
@@ -62,7 +62,10 @@
 
         {#if saved.length > 0}
             <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
-                <div bind:this={scrollContainerEl} class="overflow-y-auto" style="scrollbar-gutter: stable;">
+                <div
+                    bind:this={scrollContainerEl}
+                    class="overflow-y-auto"
+                    style="scrollbar-gutter: stable;">
                     {#key saved && colorChange}
                         {#each saved as course}
                             <CourseCard {course} category="saved" />
