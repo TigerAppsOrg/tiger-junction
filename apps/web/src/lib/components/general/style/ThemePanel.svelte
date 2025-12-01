@@ -318,8 +318,11 @@
                     <button
                         on:click={() => appFont.set(font.name)}
                         class="font-button {$appFont === font.name
-                            ? 'ring-2 ring-blue-500 border-blue-500'
-                            : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}">
+                            ? 'ring-2 selected-item'
+                            : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}"
+                        style={$appFont === font.name
+                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            : ""}>
                         <span
                             class="text-2xl dark:text-zinc-100"
                             style="font-family: '{font.name}', {font.fallback}">
@@ -343,7 +346,12 @@
             <div class="grid grid-cols-2 gap-2">
                 {#each Object.entries(colorPalettes) as [name, palette]}
                     <button
-                        class="palette-card"
+                        class="palette-card {lastSelectedTheme?.name === name
+                            ? 'ring-2 selected-item'
+                            : ''}"
+                        style={lastSelectedTheme?.name === name
+                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            : ""}
                         on:click={() => applyPalette(name, palette)}>
                         <div class="flex flex-col">
                             {#each sortPaletteColors(palette) as color}
@@ -731,6 +739,10 @@
                bg-zinc-50 dark:bg-zinc-800/50
                transition-all cursor-pointer;
         aspect-ratio: 1;
+    }
+
+    .selected-item {
+        --tw-ring-color: var(--ring-color);
     }
 
     .color-swatch {
