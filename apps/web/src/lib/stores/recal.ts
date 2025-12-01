@@ -682,7 +682,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     style: {
-        // "Show Rating": false,
+        "Show Rating": false,
         // "Show Weighted Rating": false,
         // "Show # of Comments": false,
         "Show Instructors": false,
