@@ -34,7 +34,7 @@
         class="flex flex-col overflow-y-hidden border-2
         dark:border-zinc-800
         rounded-sm">
-        <div bind:this={scrollContainerEl} class="overflow-y-auto">
+        <div bind:this={scrollContainerEl} class="overflow-y-auto" style="scrollbar-gutter: stable;">
             {#key resetKey}
                 {#each $searchResults as course}
                     <CourseCard {course} />

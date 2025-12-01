@@ -62,7 +62,7 @@
 
         {#if saved.length > 0}
             <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
-                <div bind:this={scrollContainerEl} class="overflow-y-auto">
+                <div bind:this={scrollContainerEl} class="overflow-y-auto" style="scrollbar-gutter: stable;">
                     {#key saved && colorChange}
                         {#each saved as course}
                             <CourseCard {course} category="saved" />
