@@ -682,13 +682,12 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         }
     },
     style: {
-        "Show Rating": false,
-        "Show # of Comments": false,
-        "Show Weighted Rating": false,
+        // "Show Rating": false,
+        // "Show Weighted Rating": false,
+        // "Show # of Comments": false,
+        "Show Instructors": false,
         "Show Enrollment": false,
-        "Always Show Rooms": false,
-        "Always Show Enrollments": false,
-        "Show Instructor(s)": false,
+        "Always Show Calendar Box Info": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
         "Duck": false

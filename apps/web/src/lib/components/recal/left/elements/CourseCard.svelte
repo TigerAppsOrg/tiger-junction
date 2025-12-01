@@ -195,7 +195,7 @@
                 {/if}
             </div>
 
-            {#if $searchSettings.style["Show Instructor(s)"]}
+            {#if $searchSettings.style["Show Instructors"]}
                 {#if course.instructors && course.instructors.length > 0}
                     {#each course.instructors as instructor}
                         <div class="text-xs italic font-light">
