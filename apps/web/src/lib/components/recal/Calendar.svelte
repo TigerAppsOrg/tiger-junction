@@ -347,22 +347,40 @@
 <!--!------------------------------------------------------------------>
 
 <div class="h-full">
-    <div class="h-full w-full std-area flex rounded-md">
+    <div class="h-full w-full std-area flex rounded-md relative">
+        <!-- Time marks toggle button (absolutely positioned) -->
+        <button
+            class="absolute top-0 left-0 z-10 h-[4%] w-7 flex items-center justify-center
+                 dark:text-zinc-100 hover:text-zinc-600 hover:dark:text-zinc-300 hover:duration-150"
+            on:click={() =>
+                ($searchSettings.style["Show Time Marks"] =
+                    !$searchSettings.style["Show Time Marks"])}
+            title="Toggle time marks">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="w-4 h-4">
+                <path
+                    d="M2 4.5A.5.5 0 012.5 4h6a.5.5 0 010 1h-6a.5.5 0 01-.5-.5zm0 5A.5.5 0 012.5 9h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5zm0 5a.5.5 0 01.5-.5h6a.5.5 0 010 1h-6a.5.5 0 01-.5-.5z" />
+            </svg>
+        </button>
+
+        <!-- Time marks column (only when enabled) -->
         {#if $searchSettings.style["Show Time Marks"]}
             <div
-                class="w-10 h-full"
-                transition:slide={{ axis: "x", duration: 150, easing: linear }}>
+                class="h-full flex flex-col shrink-0 w-8"
+                transition:slide={{ axis: "x", duration: 75, easing: linear }}>
                 <div
-                    class="h-[4%] outline outline-[0.5px] outline-zinc-200
-            dark:outline-zinc-700 overflow-hidden">
+                    class="h-[4%] outline outline-[0.5px] outline-zinc-200 dark:outline-zinc-700">
                 </div>
-                <div class="h-[96%] grid grid-cols-1">
+                <div class="flex-1 grid grid-cols-1">
                     {#each MARKERS as marker}
                         <div
-                            class="text-xs font-light
-                outline outline-[0.5px] outline-zinc-200
-                dark:outline-zinc-700 pt-[1px] pl-[1px]
-                overflow-hidden">
+                            class="text-[10px] font-light
+                            outline outline-[0.5px] outline-zinc-200
+                            dark:outline-zinc-700 pt-[1px] pl-[2px]
+                            overflow-hidden text-zinc-500 dark:text-zinc-400">
                             {marker}
                         </div>
                     {/each}

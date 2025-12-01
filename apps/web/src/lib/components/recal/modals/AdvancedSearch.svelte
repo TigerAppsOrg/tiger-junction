@@ -226,7 +226,7 @@
                     </div>
                     <div class="flex flex-wrap gap-1 p-1.5">
                         <Checkpill name="Show All" category="filters" />
-                        {#each Object.keys($searchSettings.style) as style}
+                        {#each Object.keys($searchSettings.style).filter(s => s !== "Show Time Marks") as style}
                             <Checkpill name={style} category="style" />
                         {/each}
                     </div>
