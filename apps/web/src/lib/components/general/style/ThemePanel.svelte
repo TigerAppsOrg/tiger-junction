@@ -67,7 +67,10 @@
 
         // Persist to localStorage
         if (typeof window !== "undefined") {
-            localStorage.setItem(LAST_THEME_KEY, JSON.stringify(lastSelectedTheme));
+            localStorage.setItem(
+                LAST_THEME_KEY,
+                JSON.stringify(lastSelectedTheme)
+            );
         }
 
         // Auto-toggle dark mode for dark palettes

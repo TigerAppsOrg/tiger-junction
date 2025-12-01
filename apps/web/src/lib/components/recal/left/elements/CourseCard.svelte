@@ -171,6 +171,28 @@
                 {#if $searchSettings.style["Show Weighted Rating"]}
                     [{course.adj_rating} adj]
                 {/if}
+                {#if $searchSettings.style["Show Enrollment"]}
+                    {@const sections =
+                        $sectionData[$currentTerm]?.[course.id] || []}
+                    {@const priority = ["L", "S", "C", "P", "B", "D", "U"]}
+                    {@const mainCat = priority.find(cat =>
+                        sections.some(s => s.category === cat)
+                    )}
+                    {@const mainSections = mainCat
+                        ? sections.filter(s => s.category === mainCat)
+                        : []}
+                    {@const totalEnroll = mainSections.reduce(
+                        (sum, s) => sum + s.tot,
+                        0
+                    )}
+                    {@const totalCap = mainSections.reduce(
+                        (sum, s) => sum + (s.cap !== 999 ? s.cap : 0),
+                        0
+                    )}
+                    Enrollment: {totalCap > 0
+                        ? `${totalEnroll}/${totalCap}`
+                        : "N/A"}
+                {/if}
             </div>
 
             {#if $searchSettings.style["Show Instructor(s)"]}

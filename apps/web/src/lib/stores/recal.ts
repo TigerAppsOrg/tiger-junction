@@ -360,18 +360,30 @@ export const searchResults = {
             const termSec = get(sectionData)[term];
             await loadSections(term, termSec);
 
-            // Calculate total capacity per course
+            // Section priority: L > S > C > P > B > D > U
+            const SECTION_PRIORITY = ["L", "S", "C", "P", "B", "D", "U"];
+
+            // Calculate main section capacity per course
             const capacityMap: Record<number, number> = {};
             for (const course of data) {
                 const sections = termSec[course.id] || [];
-                // Sum capacity of all sections (excluding unlimited capacity=999)
-                let totalCap = 0;
-                for (const sec of sections) {
-                    if (sec.cap !== 999) {
-                        totalCap += sec.cap;
-                    }
+
+                // Find main section category
+                const mainCat = SECTION_PRIORITY.find(cat =>
+                    sections.some(s => s.category === cat)
+                );
+
+                if (mainCat) {
+                    const mainSections = sections.filter(
+                        s => s.category === mainCat
+                    );
+                    capacityMap[course.id] = mainSections.reduce(
+                        (sum, s) => sum + (s.cap !== 999 ? s.cap : 0),
+                        0
+                    );
+                } else {
+                    capacityMap[course.id] = 0;
                 }
-                capacityMap[course.id] = totalCap;
             }
 
             data = data.sort((a, b) => {
@@ -673,6 +685,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         "Show Rating": false,
         "Show # of Comments": false,
         "Show Weighted Rating": false,
+        "Show Enrollment": false,
         "Always Show Rooms": false,
         "Always Show Enrollments": false,
         "Show Instructor(s)": false,
