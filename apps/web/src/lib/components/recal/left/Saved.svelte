@@ -1,10 +1,18 @@
 <script lang="ts">
+    import { tick } from "svelte";
     import { currentSchedule, ready, recal } from "$lib/stores/recal";
     import CourseCard from "./elements/CourseCard.svelte";
     import { savedCourses } from "$lib/stores/rpool";
     import { calColors } from "$lib/stores/styles";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
+
+    // Export for parent to read content height
+    export let contentHeight = 0;
+
+    // Element refs for measurement
+    let headerEl: HTMLElement;
+    let scrollContainerEl: HTMLElement;
 
     $: saved = $savedCourses[$currentSchedule]
         ? $savedCourses[$currentSchedule].sort((a, b) =>
@@ -13,11 +21,21 @@
         : [];
 
     $: colorChange = $calColors;
+
+    // Measure content height after DOM updates when content changes
+    $: if (saved && headerEl) {
+        tick().then(() => {
+            const headerHeight = headerEl?.offsetHeight ?? 0;
+            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+            contentHeight = headerHeight + cardsHeight;
+        });
+    }
 </script>
 
 {#key saved && $recal}
     {#if saved && $ready}
         <div
+            bind:this={headerEl}
             class="text-base font-normal dark:text-zinc-100 ml-1
                     flex items-center justify-between">
             <span>
@@ -44,7 +62,7 @@
 
         {#if saved.length > 0}
             <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
-                <div class="overflow-y-auto">
+                <div bind:this={scrollContainerEl} class="overflow-y-auto">
                     {#key saved && colorChange}
                         {#each saved as course}
                             <CourseCard {course} category="saved" />

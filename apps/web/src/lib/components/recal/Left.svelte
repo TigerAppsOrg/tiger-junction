@@ -1,31 +1,30 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import Saved from "./left/Saved.svelte";
     import SearchResults from "./left/SearchResults.svelte";
     import SearchBar from "./left/SearchBar.svelte";
     import Events from "./left/Events.svelte";
     import Handlebar from "./left/Handlebar.svelte";
-    import { searchResults, currentSchedule } from "$lib/stores/recal";
-    import { sectionRatio, isMobile } from "$lib/stores/styles";
-    import { savedCourses } from "$lib/stores/rpool";
+    import { searchResults } from "$lib/stores/recal";
+    import { sectionRatio, isMobile, isEventOpen } from "$lib/stores/styles";
 
     // Element refs
     let sectionEl: HTMLElement;
+    let eventsWrapperEl: HTMLElement;
 
     // Height tracking
     let availableHeight = 0;
 
-    // Constants for height estimation
+    // Content heights from children (dynamic measurement)
+    let savedContentHeight = 0;
+    let searchContentHeight = 0;
+    let eventsHeight = 0;
+
+    // Constants
     const HANDLEBAR_HEIGHT = 16;
     const BASE_MIN_RATIO = 0.1;
     const BASE_MAX_RATIO = 0.9;
     const GAP_SIZE = 16; // Two gaps of 8px each
-
-    // Height estimation constants
-    const EVENTS_HEADER_HEIGHT = 24;
-    const SAVED_HEADER_HEIGHT = 28;
-    const SEARCH_HEADER_HEIGHT = 28;
-    const CARD_HEIGHT = 65; // Average height per course card
     const INNER_GAP = 8;
 
     onMount(() => {
@@ -39,37 +38,39 @@
         return () => resizeObserver.disconnect();
     });
 
-    // Get item counts from stores
-    $: savedCount = $savedCourses[$currentSchedule]?.length ?? 0;
-    $: searchCount = $searchResults.length;
+    // Measure events section when it changes (collapsed/expanded)
+    $: if (eventsWrapperEl && $isEventOpen !== undefined) {
+        tick().then(() => {
+            eventsHeight = eventsWrapperEl?.offsetHeight ?? 0;
+        });
+    }
 
-    // Estimate content heights based on item counts
-    $: estimatedTopHeight = EVENTS_HEADER_HEIGHT + INNER_GAP +
-        SAVED_HEADER_HEIGHT + (savedCount * CARD_HEIGHT);
-    $: estimatedBottomHeight = SEARCH_HEADER_HEIGHT + (searchCount * CARD_HEIGHT);
+    // Calculate total content heights from dynamic measurements
+    $: topContentHeight = eventsHeight + INNER_GAP + savedContentHeight;
+    $: bottomContentHeight = searchContentHeight;
 
     // Show handlebar when there are search results AND content would overflow
-    $: hasSearchResults = searchCount > 0;
-    $: totalEstimatedContent = estimatedTopHeight + estimatedBottomHeight + INNER_GAP;
-    $: showHandlebar = !$isMobile && hasSearchResults && totalEstimatedContent > availableHeight;
+    $: hasSearchResults = $searchResults.length > 0;
+    $: totalContent = topContentHeight + bottomContentHeight + INNER_GAP;
+    $: showHandlebar = !$isMobile && hasSearchResults && totalContent > availableHeight;
 
     // Calculate usable height (minus handlebar and gaps when shown)
     $: usableHeight = showHandlebar
         ? Math.max(0, availableHeight - HANDLEBAR_HEIGHT - GAP_SIZE)
         : availableHeight;
 
-    // Content-based ratio constraints
+    // Content-based ratio constraints (using measured heights)
     $: maxRatio = usableHeight > 0
-        ? Math.min(BASE_MAX_RATIO, estimatedTopHeight / usableHeight)
+        ? Math.min(BASE_MAX_RATIO, topContentHeight / usableHeight)
         : BASE_MAX_RATIO;
     $: minRatio = usableHeight > 0
-        ? Math.max(BASE_MIN_RATIO, 1 - (estimatedBottomHeight / usableHeight))
+        ? Math.max(BASE_MIN_RATIO, 1 - (bottomContentHeight / usableHeight))
         : BASE_MIN_RATIO;
 
     // Default ratio based on content proportions
     function getDefaultRatio(): number {
-        if (estimatedTopHeight + estimatedBottomHeight === 0) return 0.5;
-        const ratio = estimatedTopHeight / (estimatedTopHeight + estimatedBottomHeight);
+        if (topContentHeight + bottomContentHeight === 0) return 0.5;
+        const ratio = topContentHeight / (topContentHeight + bottomContentHeight);
         return Math.max(minRatio, Math.min(maxRatio, ratio));
     }
 
@@ -79,8 +80,8 @@
     // Calculate heights
     $: rawTopHeight = Math.round(usableHeight * effectiveRatio);
 
-    // Cap at estimated content height to prevent gaps
-    $: topHeight = Math.min(rawTopHeight, estimatedTopHeight);
+    // Cap at measured content height to prevent gaps
+    $: topHeight = Math.min(rawTopHeight, topContentHeight);
     $: bottomHeight = usableHeight - topHeight;
 
     // Style strings
@@ -111,11 +112,11 @@
             class:shrink-0={showHandlebar}
             class:flex-1={!showHandlebar}
             style={topSectionStyle}>
-            <div class="shrink-0">
+            <div bind:this={eventsWrapperEl} class="shrink-0">
                 <Events />
             </div>
             <div class="flex-1 overflow-y-hidden min-h-0 flex flex-col">
-                <Saved />
+                <Saved bind:contentHeight={savedContentHeight} />
             </div>
         </div>
 
@@ -132,7 +133,7 @@
                 class="flex-1 overflow-y-hidden min-h-0 flex flex-col"
                 class:shrink-0={showHandlebar}
                 style={bottomSectionStyle}>
-                <SearchResults />
+                <SearchResults bind:contentHeight={searchContentHeight} />
             </div>
         {/if}
     </section>
