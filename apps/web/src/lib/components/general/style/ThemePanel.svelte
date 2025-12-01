@@ -311,7 +311,7 @@
         <div>
             <h3
                 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
-                Font
+                Typography
             </h3>
             <div class="grid grid-cols-3 gap-2">
                 {#each FONT_OPTIONS as font}
@@ -338,7 +338,7 @@
         <div>
             <h3
                 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-3">
-                Preset Themes
+                Themes
             </h3>
             <div class="grid grid-cols-2 gap-2">
                 {#each Object.entries(colorPalettes) as [name, palette]}
