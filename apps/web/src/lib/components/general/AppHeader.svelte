@@ -43,9 +43,7 @@ dark:border-zinc-700 border-zinc-200"
         </div>
 
         <div id="right" class="sm:space-x-6 space-x-4 flex items-center">
-            <button
-                on:click={toggleTheme}
-                class="btn-circ">
+            <button on:click={toggleTheme} class="btn-circ">
                 {#if $darkTheme}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
