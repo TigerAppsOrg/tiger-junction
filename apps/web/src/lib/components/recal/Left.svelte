@@ -25,7 +25,7 @@
     const EVENTS_HEADER_HEIGHT = 24;
     const SAVED_HEADER_HEIGHT = 28;
     const SEARCH_HEADER_HEIGHT = 28;
-    const CARD_HEIGHT = 75; // Average height per course card
+    const CARD_HEIGHT = 65; // Average height per course card
     const INNER_GAP = 8;
 
     onMount(() => {
@@ -107,12 +107,14 @@
         class="flex-1 overflow-y-hidden mt-2 flex flex-col gap-2">
         <!-- Top Section: Events + Saved -->
         <div
-            class="flex flex-col gap-2 shrink-0 overflow-y-hidden"
+            class="flex flex-col gap-2 overflow-y-hidden min-h-0"
+            class:shrink-0={showHandlebar}
+            class:flex-1={!showHandlebar}
             style={topSectionStyle}>
             <div class="shrink-0">
                 <Events />
             </div>
-            <div class="flex-1 overflow-y-hidden min-h-0">
+            <div class="flex-1 overflow-y-hidden min-h-0 flex flex-col">
                 <Saved />
             </div>
         </div>
@@ -127,7 +129,8 @@
         <!-- Bottom Section: SearchResults -->
         {#if hasSearchResults}
             <div
-                class="flex-1 overflow-y-hidden min-h-0"
+                class="flex-1 overflow-y-hidden min-h-0 flex flex-col"
+                class:shrink-0={showHandlebar}
                 style={bottomSectionStyle}>
                 <SearchResults />
             </div>
