@@ -5,7 +5,7 @@
     import SearchBar from "./left/SearchBar.svelte";
     import Events from "./left/Events.svelte";
     import Handlebar from "./left/Handlebar.svelte";
-    import { searchResults } from "$lib/stores/recal";
+    import { searchResults, recal } from "$lib/stores/recal";
     import { sectionRatio, isMobile, isEventOpen } from "$lib/stores/styles";
 
     // Element refs
@@ -26,6 +26,14 @@
     const BASE_MAX_RATIO = 0.9;
     const GAP_SIZE = 16; // Two gaps of 8px each
     const INNER_GAP = 8;
+
+    // Force update on window resize
+    function handleWindowResize() {
+        if (sectionEl) {
+            availableHeight = sectionEl.getBoundingClientRect().height;
+        }
+        $recal = !$recal; // Force re-render like CalBox click does
+    }
 
     onMount(() => {
         const resizeObserver = new ResizeObserver(entries => {
@@ -108,6 +116,8 @@
         }
     }
 </script>
+
+<svelte:window on:resize={handleWindowResize} />
 
 <div class="w-full flex flex-col h-full overflow-y-hidden">
     <div>
