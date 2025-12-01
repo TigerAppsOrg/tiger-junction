@@ -28,7 +28,7 @@
     <!-- Backdrop -->
     <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
     <div
-        class="fixed inset-0 bg-black/10 z-50"
+        class="fixed inset-0 bg-black/20 z-50"
         transition:fade={{ duration: 200 }}
         on:click={close} />
 
