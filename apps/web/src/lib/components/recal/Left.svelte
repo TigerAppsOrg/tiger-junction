@@ -145,8 +145,10 @@
         <!-- Bottom Section: SearchResults -->
         {#if hasSearchResults}
             <div
-                class="overflow-y-hidden min-h-0 flex flex-col shrink-0"
-                class:flex-1={showHandlebar}
+                class="min-h-0 flex flex-col flex-1"
+                class:shrink-0={showHandlebar}
+                class:overflow-y-hidden={showHandlebar}
+                class:overflow-y-auto={!showHandlebar}
                 style={bottomSectionStyle}>
                 <SearchResults bind:contentHeight={searchContentHeight} />
             </div>
