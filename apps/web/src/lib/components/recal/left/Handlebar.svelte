@@ -16,6 +16,11 @@
         handlebarEl.setPointerCapture(e.pointerId);
         document.body.style.cursor = "row-resize";
         document.body.style.userSelect = "none";
+
+        // Add window-level listeners to ensure cleanup even if pointer leaves element/window
+        window.addEventListener("pointermove", handlePointerMove);
+        window.addEventListener("pointerup", handlePointerUp);
+        window.addEventListener("pointercancel", handlePointerUp);
     }
 
     function handlePointerMove(e: PointerEvent) {
@@ -38,7 +43,21 @@
     function handlePointerUp(e: PointerEvent) {
         if (!isDragging) return;
         isDragging = false;
-        handlebarEl.releasePointerCapture(e.pointerId);
+
+        // Clean up window-level listeners
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerUp);
+        window.removeEventListener("pointercancel", handlePointerUp);
+
+        // Release pointer capture if we still have it
+        if (handlebarEl && e.pointerId !== undefined) {
+            try {
+                handlebarEl.releasePointerCapture(e.pointerId);
+            } catch {
+                // Pointer capture may already be released
+            }
+        }
+
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
     }
@@ -57,9 +76,6 @@
         if (!isDragging) isHovering = false;
     }}
     on:pointerdown={handlePointerDown}
-    on:pointermove={handlePointerMove}
-    on:pointerup={handlePointerUp}
-    on:pointercancel={handlePointerUp}
     on:dblclick={handleDoubleClick}>
     <!-- Full-width horizontal line -->
     <div class="handlebar-line"></div>

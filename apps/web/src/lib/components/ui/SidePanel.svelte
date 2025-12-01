@@ -30,8 +30,7 @@
     <div
         class="fixed inset-0 bg-black/10 z-50"
         transition:fade={{ duration: 200 }}
-        on:click={close}
-    />
+        on:click={close} />
 
     <!-- Panel -->
     <div
@@ -39,30 +38,27 @@
                border-l-2 border-zinc-300 dark:border-zinc-700
                flex flex-col overflow-hidden"
         style="width: {width};"
-        transition:fly={{ x: 320, duration: 300, opacity: 1 }}
-    >
+        transition:fly={{ x: 320, duration: 200, opacity: 1 }}>
         <!-- Header -->
-        <div class="flex items-center justify-between p-4 border-b
+        <div
+            class="flex items-center justify-between p-4 border-b
                     border-zinc-200 dark:border-zinc-700">
             <h2 class="text-lg font-semibold dark:text-zinc-100">{title}</h2>
             <button
                 on:click={close}
                 class="p-1 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800
-                       text-zinc-500 dark:text-zinc-400 transition-colors"
-            >
+                       text-zinc-500 dark:text-zinc-400 transition-colors">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    class="w-5 h-5"
-                >
+                    class="w-5 h-5">
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                    />
+                        d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
