@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { modalStore } from "$lib/stores/modal";
+    import { panelStore } from "$lib/stores/panel";
     import { darkTheme, getStyles, isMobile } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
@@ -63,7 +64,7 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
-            <button class="btn-circ" on:click={() => modalStore.push("theme")}>
+            <button class="btn-circ" on:click={() => panelStore.open("theme")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
