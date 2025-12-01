@@ -528,12 +528,12 @@
                         {#if $bgEffects.noise.enabled}
                             <div class="space-y-2">
                                 <div>
-                                    <label
+                                    <span
                                         class="text-[10px] text-zinc-500 dark:text-zinc-400">
                                         Opacity: {Math.round(
                                             $bgEffects.noise.opacity * 100
                                         )}%
-                                    </label>
+                                    </span>
                                     <input
                                         type="range"
                                         min="0"
@@ -550,12 +550,12 @@
                                         class="slider" />
                                 </div>
                                 <div>
-                                    <label
+                                    <span
                                         class="text-[10px] text-zinc-500 dark:text-zinc-400">
                                         Grain Size: {$bgEffects.noise.baseFrequency.toFixed(
                                             1
                                         )}
-                                    </label>
+                                    </span>
                                     <input
                                         type="range"
                                         min="0.5"
@@ -659,12 +659,12 @@
                                     </label>
                                 </div>
                                 <div>
-                                    <label
+                                    <span
                                         class="text-[10px] text-zinc-500 dark:text-zinc-400">
                                         Intensity: {Math.round(
                                             $bgEffects.glows.opacity * 100
                                         )}%
-                                    </label>
+                                    </span>
                                     <input
                                         type="range"
                                         min="0"
