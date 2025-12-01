@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from "svelte";
 
     export let containerHeight: number;
 
@@ -14,15 +14,16 @@
     function handlePointerDown(e: PointerEvent) {
         isDragging = true;
         handlebarEl.setPointerCapture(e.pointerId);
-        document.body.style.cursor = 'row-resize';
-        document.body.style.userSelect = 'none';
+        document.body.style.cursor = "row-resize";
+        document.body.style.userSelect = "none";
     }
 
     function handlePointerMove(e: PointerEvent) {
         if (!isDragging) return;
 
         // Calculate new ratio based on pointer position relative to container
-        const containerRect = handlebarEl.parentElement?.getBoundingClientRect();
+        const containerRect =
+            handlebarEl.parentElement?.getBoundingClientRect();
         if (!containerRect) return;
 
         const relativeY = e.clientY - containerRect.top;
@@ -31,19 +32,19 @@
         // Clamp ratio to prevent sections from being too small
         newRatio = Math.max(0.15, Math.min(0.85, newRatio));
 
-        dispatch('resize', { ratio: newRatio });
+        dispatch("resize", { ratio: newRatio });
     }
 
     function handlePointerUp(e: PointerEvent) {
         if (!isDragging) return;
         isDragging = false;
         handlebarEl.releasePointerCapture(e.pointerId);
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
     }
 
     function handleDoubleClick() {
-        dispatch('resize', { ratio: -1 }); // -1 signals reset to auto
+        dispatch("resize", { ratio: -1 }); // -1 signals reset to auto
     }
 </script>
 
@@ -59,19 +60,17 @@
     on:pointermove={handlePointerMove}
     on:pointerup={handlePointerUp}
     on:pointercancel={handlePointerUp}
-    on:dblclick={handleDoubleClick}
->
+    on:dblclick={handleDoubleClick}>
     <!-- Full-width horizontal line -->
-    <div class="handlebar-line" class:visible={isHovering || isDragging}></div>
+    <div class="handlebar-line"></div>
 
     <!-- Center pill with up/down arrows -->
-    <div class="handlebar-pill" class:visible={isHovering || isDragging}>
+    <div class="handlebar-pill">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="w-3 h-3"
-        >
+            class="w-3 h-3">
             <path d="M12 4l-4 4h8l-4-4z" />
             <path d="M12 20l4-4H8l4 4z" />
         </svg>
@@ -93,11 +92,6 @@
         @apply bg-zinc-300 dark:bg-zinc-600;
         @apply transition-opacity duration-150;
         height: 2px;
-        opacity: 0;
-    }
-
-    .handlebar-line.visible {
-        opacity: 1;
     }
 
     .handlebar-pill {
@@ -106,11 +100,6 @@
         @apply transition-opacity duration-150;
         width: 36px;
         height: 12px;
-        opacity: 0;
-    }
-
-    .handlebar-pill.visible {
-        opacity: 1;
     }
 
     .handlebar-pill svg {

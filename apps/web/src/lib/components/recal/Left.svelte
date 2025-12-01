@@ -28,7 +28,7 @@
     const INNER_GAP = 8;
 
     onMount(() => {
-        const resizeObserver = new ResizeObserver((entries) => {
+        const resizeObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
                 availableHeight = entry.contentRect.height;
             }
@@ -52,7 +52,8 @@
     // Show handlebar when there are search results AND content would overflow
     $: hasSearchResults = $searchResults.length > 0;
     $: totalContent = topContentHeight + bottomContentHeight + INNER_GAP;
-    $: showHandlebar = !$isMobile && hasSearchResults && totalContent > availableHeight;
+    $: showHandlebar =
+        !$isMobile && hasSearchResults && totalContent > availableHeight;
 
     // Calculate usable height (minus handlebar and gaps when shown)
     $: usableHeight = showHandlebar
@@ -60,22 +61,28 @@
         : availableHeight;
 
     // Content-based ratio constraints (using measured heights)
-    $: maxRatio = usableHeight > 0
-        ? Math.min(BASE_MAX_RATIO, topContentHeight / usableHeight)
-        : BASE_MAX_RATIO;
-    $: minRatio = usableHeight > 0
-        ? Math.max(BASE_MIN_RATIO, 1 - (bottomContentHeight / usableHeight))
-        : BASE_MIN_RATIO;
+    $: maxRatio =
+        usableHeight > 0
+            ? Math.min(BASE_MAX_RATIO, topContentHeight / usableHeight)
+            : BASE_MAX_RATIO;
+    $: minRatio =
+        usableHeight > 0
+            ? Math.max(BASE_MIN_RATIO, 1 - bottomContentHeight / usableHeight)
+            : BASE_MIN_RATIO;
 
     // Default ratio based on content proportions
     function getDefaultRatio(): number {
         if (topContentHeight + bottomContentHeight === 0) return 0.5;
-        const ratio = topContentHeight / (topContentHeight + bottomContentHeight);
+        const ratio =
+            topContentHeight / (topContentHeight + bottomContentHeight);
         return Math.max(minRatio, Math.min(maxRatio, ratio));
     }
 
     // Get effective ratio (user-set or default), clamped to valid range
-    $: effectiveRatio = Math.max(minRatio, Math.min(maxRatio, $sectionRatio ?? getDefaultRatio()));
+    $: effectiveRatio = Math.max(
+        minRatio,
+        Math.min(maxRatio, $sectionRatio ?? getDefaultRatio())
+    );
 
     // Calculate heights
     $: rawTopHeight = Math.round(usableHeight * effectiveRatio);
@@ -93,7 +100,10 @@
             sectionRatio.reset();
         } else {
             // Constrain to content-based bounds
-            const clampedRatio = Math.max(minRatio, Math.min(maxRatio, e.detail.ratio));
+            const clampedRatio = Math.max(
+                minRatio,
+                Math.min(maxRatio, e.detail.ratio)
+            );
             sectionRatio.set(clampedRatio);
         }
     }
@@ -108,9 +118,7 @@
         class="flex-1 overflow-y-hidden mt-2 flex flex-col gap-2">
         <!-- Top Section: Events + Saved -->
         <div
-            class="flex flex-col gap-2 overflow-y-hidden min-h-0"
-            class:shrink-0={showHandlebar}
-            class:flex-1={!showHandlebar}
+            class="flex flex-col gap-2 overflow-y-hidden min-h-0 shrink-0"
             style={topSectionStyle}>
             <div bind:this={eventsWrapperEl} class="shrink-0">
                 <Events />
@@ -130,8 +138,8 @@
         <!-- Bottom Section: SearchResults -->
         {#if hasSearchResults}
             <div
-                class="flex-1 overflow-y-hidden min-h-0 flex flex-col"
-                class:shrink-0={showHandlebar}
+                class="overflow-y-hidden min-h-0 flex flex-col shrink-0"
+                class:flex-1={showHandlebar}
                 style={bottomSectionStyle}>
                 <SearchResults bind:contentHeight={searchContentHeight} />
             </div>
