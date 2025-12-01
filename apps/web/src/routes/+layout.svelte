@@ -7,7 +7,9 @@
         darkTheme,
         isMobile,
         bgColors,
-        bgEffects
+        bgEffects,
+        appFont,
+        FONT_OPTIONS
     } from "$lib/stores/styles";
     import { hslToRGBComponents } from "$lib/scripts/convert";
     import ToastLib from "$lib/components/general/ToastLib.svelte";
@@ -34,6 +36,15 @@
             $bgColors.light
         );
         document.documentElement.style.setProperty("--bg-dark", $bgColors.dark);
+    }
+
+    // Apply font CSS variable
+    $: if (browser) {
+        const fontOption = FONT_OPTIONS.find(f => f.name === $appFont);
+        document.documentElement.style.setProperty(
+            "--app-font",
+            `"${$appFont}", ${fontOption?.fallback || "sans-serif"}`
+        );
     }
 
     // Apply background effects CSS variables
@@ -85,7 +96,7 @@
 </script>
 
 <NoiseFilter />
-<div class="font-lato">
+<div>
     <ToastLib />
     <slot />
 </div>

@@ -147,6 +147,47 @@ export const bgEffects = {
 };
 
 //----------------------------------------------------------------------
+// Font
+//----------------------------------------------------------------------
+
+export type FontFamily =
+    | "Lato"
+    | "Inter"
+    | "Roboto"
+    | "Merriweather"
+    | "Playfair Display"
+    | "JetBrains Mono";
+
+export const FONT_OPTIONS: { name: FontFamily; fallback: string }[] = [
+    { name: "Lato", fallback: "sans-serif" },
+    { name: "Inter", fallback: "sans-serif" },
+    { name: "Roboto", fallback: "sans-serif" },
+    { name: "Merriweather", fallback: "serif" },
+    { name: "Playfair Display", fallback: "serif" },
+    { name: "JetBrains Mono", fallback: "monospace" }
+];
+
+export const DEFAULT_FONT: FontFamily = "Lato";
+
+function createFontStore() {
+    const store = writable<FontFamily>(
+        typeof window !== "undefined"
+            ? (localStorage.getItem("appFont") as FontFamily) || DEFAULT_FONT
+            : DEFAULT_FONT
+    );
+
+    return {
+        subscribe: store.subscribe,
+        set: (value: FontFamily) => {
+            store.set(value);
+            localStorage.setItem("appFont", value);
+        }
+    };
+}
+
+export const appFont = createFontStore();
+
+//----------------------------------------------------------------------
 // General
 //----------------------------------------------------------------------
 

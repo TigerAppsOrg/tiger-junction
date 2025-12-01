@@ -9,6 +9,9 @@
         DEFAULT_BG_COLORS,
         bgEffects,
         DEFAULT_BG_EFFECTS,
+        appFont,
+        FONT_OPTIONS,
+        DEFAULT_FONT,
         type CalColors,
         type BgColors,
         type BackgroundEffects
@@ -160,6 +163,7 @@
         calColors.set(DEFAULT_RCARD_COLORS);
         bgColors.set(DEFAULT_BG_COLORS);
         bgEffects.set(DEFAULT_BG_EFFECTS);
+        appFont.set(DEFAULT_FONT);
         darkTheme.set(false);
         lastSelectedTheme = null;
         effectsExpanded = false;
@@ -301,6 +305,33 @@
                         ? 'translate-x-5'
                         : 'translate-x-0'}" />
             </button>
+        </div>
+
+        <!-- Font Selector -->
+        <div>
+            <h3
+                class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
+                Font
+            </h3>
+            <div class="grid grid-cols-3 gap-2">
+                {#each FONT_OPTIONS as font}
+                    <button
+                        on:click={() => appFont.set(font.name)}
+                        class="font-button {$appFont === font.name
+                            ? 'ring-2 ring-blue-500 border-blue-500'
+                            : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}">
+                        <span
+                            class="text-2xl dark:text-zinc-100"
+                            style="font-family: '{font.name}', {font.fallback}">
+                            Aa
+                        </span>
+                        <span
+                            class="text-[10px] text-zinc-500 dark:text-zinc-400 truncate w-full text-center">
+                            {font.name}
+                        </span>
+                    </button>
+                {/each}
+            </div>
         </div>
 
         <!-- Preset Themes -->
@@ -692,6 +723,14 @@
                border-zinc-200 dark:border-zinc-700
                hover:border-zinc-400 dark:hover:border-zinc-500
                transition-colors cursor-pointer;
+    }
+
+    .font-button {
+        @apply flex flex-col items-center justify-center
+               p-2 rounded-lg border-2
+               bg-zinc-50 dark:bg-zinc-800/50
+               transition-all cursor-pointer;
+        aspect-ratio: 1;
     }
 
     .color-swatch {
