@@ -159,8 +159,10 @@
     const resetToDefault = () => {
         calColors.set(DEFAULT_RCARD_COLORS);
         bgColors.set(DEFAULT_BG_COLORS);
+        bgEffects.set(DEFAULT_BG_EFFECTS);
         darkTheme.set(false);
         lastSelectedTheme = null;
+        effectsExpanded = false;
 
         // Remove from localStorage
         if (typeof window !== "undefined") {
