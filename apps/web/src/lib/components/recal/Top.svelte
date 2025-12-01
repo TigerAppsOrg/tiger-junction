@@ -19,7 +19,12 @@
     import { SCHEDULE_CAP } from "$lib/constants";
     import { modalStore } from "$lib/stores/modal";
     import { savedCourses } from "$lib/stores/rpool";
-    import { getStyles, isMobile, showCal } from "$lib/stores/styles";
+    import {
+        calColors,
+        getStyles,
+        isMobile,
+        showCal
+    } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";
@@ -107,9 +112,14 @@
         });
     };
 
-    // Handle theme changes
-    $: cssVarStyles = getStyles("0");
-    $: eventStyles = getStyles("6");
+    // Handle theme changes (reference $calColors to establish reactive dependency)
+    let cssVarStyles: string;
+    let eventStyles: string;
+    $: {
+        $calColors;
+        cssVarStyles = getStyles("0");
+        eventStyles = getStyles("6");
+    }
 </script>
 
 <div

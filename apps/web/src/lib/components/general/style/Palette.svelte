@@ -28,7 +28,13 @@
                 {}
             ) as CalColors;
 
-        if (title === "Midnight" || title === "Cobalt" || title === "Shadow")
+        if (
+            title === "Midnight" ||
+            title === "Cobalt" ||
+            title === "Shadow" ||
+            title === "Crimson" ||
+            title === "Aurora"
+        )
             darkTheme.set(true);
         else darkTheme.set(false);
 

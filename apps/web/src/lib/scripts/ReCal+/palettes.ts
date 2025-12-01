@@ -3,18 +3,6 @@ import type { CalColors } from "$lib/stores/styles";
 
 // Title -> CalColors
 export const colorPalettes: Record<string, CalColors> = {
-    // From ReCal
-    Original: {
-        "-1": "#e6e6e6",
-        "0": "#D0DECF",
-        "1": "#d5dcec",
-        "2": "#ebd2db",
-        "3": "#faf4cb",
-        "4": "#e7dcce",
-        "5": "#d1e7e4",
-        "6": "#dcd5e2",
-        "E": "#e6e8f0"
-    },
     Bright: {
         "-1": "#a8a8a8",
         "0": "#9ee09e",
@@ -25,6 +13,40 @@ export const colorPalettes: Record<string, CalColors> = {
         "5": "#ff99cc",
         "6": "#cc99c8",
         "E": "#e0e8f0"
+    },
+    // From the original ReCal
+    Legacy: {
+        "-1": "#e6e6e6",
+        "0": "#D0DECF",
+        "1": "#d5dcec",
+        "2": "#ebd2db",
+        "3": "#faf4cb",
+        "4": "#e7dcce",
+        "5": "#d1e7e4",
+        "6": "#dcd5e2",
+        "E": "#e6e8f0"
+    },
+    Coastal: {
+        "-1": "#e6e6e6",
+        "0": "#b8e0d2",
+        "1": "#d6eadf",
+        "2": "#eac4d5",
+        "3": "#f9e2ae",
+        "4": "#95d5b2",
+        "5": "#a2d2ff",
+        "6": "#cdb4db",
+        "E": "#f0f9f4"
+    },
+    Sunset: {
+        "-1": "#e6e6e6",
+        "0": "#ffecd2",
+        "1": "#ffd6a5",
+        "2": "#fdcfe8",
+        "3": "#fff5ba",
+        "4": "#c8f7dc",
+        "5": "#d4e4f7",
+        "6": "#e8d4f7",
+        "E": "#fff8f0"
     },
     Crayon: {
         "-1": "#e6e6e6",
@@ -37,28 +59,6 @@ export const colorPalettes: Record<string, CalColors> = {
         "6": "#bdb2ff",
         "E": "#fff0f0"
     },
-    Grass: {
-        "-1": "#e6e6e6",
-        "0": "#ebf4e2",
-        "1": "#e1eed3",
-        "2": "#d3e6be",
-        "3": "#cde2b6",
-        "4": "#c3dca7",
-        "5": "#b9d798",
-        "6": "#afd189",
-        "E": "#f0f8e6"
-    },
-    Ice: {
-        "-1": "#e6e6e6",
-        "0": "#edf2fb",
-        "1": "#e2eafc",
-        "2": "#d7e3fc",
-        "3": "#ccdbfd",
-        "4": "#c1d3fe",
-        "5": "#b6ccfe",
-        "6": "#abc4ff",
-        "E": "#f0f8ff"
-    },
     Minty: {
         "-1": "#e6e6e6",
         "0": "#84ffc9",
@@ -69,17 +69,6 @@ export const colorPalettes: Record<string, CalColors> = {
         "5": "#a4bff6",
         "6": "#aab2ff",
         "E": "#e6fff0"
-    },
-    Pink: {
-        "-1": "#e6e6e6",
-        "0": "#ffecee",
-        "1": "#ffe0e6",
-        "2": "#ffd4de",
-        "3": "#ffc9d6",
-        "4": "#febdce",
-        "5": "#feb1c6",
-        "6": "#fea5be",
-        "E": "#fff0f5"
     },
     Sweet: {
         "-1": "#e6e6e6",
@@ -103,17 +92,6 @@ export const colorPalettes: Record<string, CalColors> = {
         "6": "#d3f3f1",
         "E": "#fff5f0"
     },
-    Royal: {
-        "-1": "#e6e6e6",
-        "0": "#9d80cb",
-        "1": "#ac8bd0",
-        "2": "#bb96d4",
-        "3": "#caa1d9",
-        "4": "#d9acdd",
-        "5": "#e8b7e2",
-        "6": "#f7c2e6",
-        "E": "#f8f0ff"
-    },
     Forest: {
         "-1": "#A8A8A8",
         "0": "#A8B1A9",
@@ -135,6 +113,28 @@ export const colorPalettes: Record<string, CalColors> = {
         "5": "#95a8b0",
         "6": "#8399a2",
         "E": "#f0f5f7"
+    },
+    Aurora: {
+        "-1": "#A8A8A8",
+        "0": "#1a5c5c",
+        "1": "#6b4a0a",
+        "2": "#6b1a4a",
+        "3": "#1a5c2e",
+        "4": "#6b3a1a",
+        "5": "#1a3a6b",
+        "6": "#4a1a6b",
+        "E": "#1a2a3a"
+    },
+    Crimson: {
+        "-1": "#A8A8A8",
+        "0": "#4a0d1c",
+        "1": "#5c1024",
+        "2": "#6e132c",
+        "3": "#801634",
+        "4": "#92193c",
+        "5": "#a41c44",
+        "6": "#b61f4c",
+        "E": "#2e0812"
     },
     Midnight: {
         "-1": "#A8A8A8",
