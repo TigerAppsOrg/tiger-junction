@@ -164,7 +164,7 @@
         dark:text-zinc-100 text-sm">
     <div class="justify-between flex">
         <div
-            class="bg-zinc-100 dark:bg-zinc-800
+            class="themed-panel
             flex gap-2 w-fit p-1 h-8 mb-1 rounded-sm">
             {#each Object.keys(ACTIVE_TERMS).map( x => parseInt(x) ) as activeTerm}
                 <button
@@ -244,7 +244,7 @@
 
     <div class="w-auto overflow-x-auto overflow-y-hidden">
         <div
-            class="bg-zinc-100 dark:bg-zinc-800 flex gap-2 w-fit
+            class="themed-panel flex gap-2 w-fit
             p-1 h-8 font-normal rounded-sm">
             {#key $retop}
                 {#await fetchUserSchedules(supabase, $currentTerm)}
@@ -270,7 +270,8 @@
                                 class="card {$currentSchedule === schedule.id
                                     ? 'flex items-center gap-4'
                                     : 'termchoice'}"
-                                class:selected={$currentSchedule === schedule.id}
+                                class:selected={$currentSchedule ===
+                                    schedule.id}
                                 on:click={() =>
                                     $currentSchedule === schedule.id
                                         ? modalStore.push("editSchedule")
@@ -295,7 +296,7 @@
                         {/each}
                     </div>
                     <button
-                        class="card termchoice"
+                        class="card add-button"
                         on:click={() => {
                             handleAddSchedule();
                         }}>
@@ -314,7 +315,7 @@
                     </button>
                 {:catch}
                     <button
-                        class="card termchoice"
+                        class="card add-button"
                         on:click={() => modalStore.push("addSchedule")}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -368,6 +369,16 @@
 
     .termchoice:hover {
         @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
+    }
+
+    .add-button:hover {
+        background-color: var(--bg);
+        color: var(--text);
+        transition-duration: 150ms;
+    }
+
+    .add-button:hover svg {
+        @apply text-current;
     }
 
     .selected {

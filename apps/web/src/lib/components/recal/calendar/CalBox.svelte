@@ -178,7 +178,7 @@
                 params.section.end_time
             )}
         </div>
-        <div class="font-normal">
+        <div class="font-normal serif-lowercase">
             {courseCode}
             {params.section.title}
         </div>

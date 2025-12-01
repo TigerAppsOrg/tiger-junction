@@ -248,17 +248,21 @@
 
 <style lang="postcss">
     .filter-group {
-        @apply rounded-md border border-zinc-200 bg-white overflow-hidden;
+        @apply rounded-md border border-zinc-200 overflow-hidden;
+        background-color: color-mix(in srgb, var(--bg-light) 95%, #000);
     }
     :global(.dark) .filter-group {
-        @apply border-zinc-700 bg-zinc-800/80;
+        @apply border-zinc-700;
+        background-color: color-mix(in srgb, var(--bg-dark) 90%, #fff);
     }
 
     .filter-group-header {
-        @apply px-2 py-1 bg-zinc-100 border-b border-zinc-200 text-zinc-600;
+        @apply px-2 py-1 border-b border-zinc-200 text-zinc-600;
+        background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
     }
     :global(.dark) .filter-group-header {
-        @apply bg-zinc-700/50 border-zinc-700 text-zinc-400;
+        @apply border-zinc-700 text-zinc-400;
+        background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
     }
 
     .filter-item {
@@ -266,10 +270,12 @@
     }
 
     .filter-expansion {
-        @apply px-2 py-1.5 bg-zinc-50 border-t border-zinc-100;
+        @apply px-2 py-1.5 border-t border-zinc-100;
+        background-color: color-mix(in srgb, var(--bg-light) 95%, #000);
     }
     :global(.dark) .filter-expansion {
-        @apply bg-zinc-900/50 border-zinc-700;
+        @apply border-zinc-700;
+        background-color: color-mix(in srgb, var(--bg-dark) 90%, #fff);
     }
 
     /* Secondary pills are smaller than main filter pills */

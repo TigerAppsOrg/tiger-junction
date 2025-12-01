@@ -34,7 +34,7 @@
 
     <!-- Panel -->
     <div
-        class="fixed top-0 right-0 h-full bg-white dark:bg-zinc-900 shadow-xl z-50
+        class="fixed top-0 right-0 h-full panel-bg shadow-xl z-50
                border-l-2 border-zinc-300 dark:border-zinc-700
                flex flex-col overflow-hidden"
         style="width: {width};"
@@ -69,3 +69,12 @@
         </div>
     </div>
 {/if}
+
+<style lang="postcss">
+    .panel-bg {
+        background-color: var(--bg-light);
+    }
+    :global(.dark) .panel-bg {
+        background-color: var(--bg-dark);
+    }
+</style>

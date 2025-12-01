@@ -10,7 +10,16 @@
 
 <ModalLib />
 <ThemePanel />
-<div class="h-screen w-screen flex flex-col bg-zinc-50 dark:bg-zinc-900">
+<div class="h-screen w-screen flex flex-col app-bg bg-effects">
     <AppHeader />
     <slot />
 </div>
+
+<style lang="postcss">
+    .app-bg {
+        background-color: var(--bg-light);
+    }
+    :global(.dark) .app-bg {
+        background-color: var(--bg-dark);
+    }
+</style>

@@ -106,8 +106,8 @@
     <div class="flex gap-2">
         <input
             type="text"
-            placeholder="Search"
-            class="search-input std-area rounded-md"
+            placeholder="Search..."
+            class="search-input std-area rounded-md section-header serif-lowercase text-sm"
             bind:this={inputBar}
             on:input={triggerSearch}
             on:focus={() => (searchFocused = true)}
@@ -206,11 +206,19 @@
     }
 
     .disabled {
-        @apply bg-zinc-200 dark:bg-zinc-700 text-zinc-900
-    dark:text-zinc-100;
+        background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
+        @apply text-zinc-700 dark:text-zinc-300;
+    }
+
+    :global(.dark) .disabled {
+        background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
     }
 
     .disabled:hover {
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        background-color: color-mix(in srgb, var(--bg-light) 85%, #000);
+    }
+
+    :global(.dark) .disabled:hover {
+        background-color: color-mix(in srgb, var(--bg-dark) 80%, #fff);
     }
 </style>

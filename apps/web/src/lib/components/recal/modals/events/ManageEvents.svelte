@@ -50,7 +50,7 @@
                 gap-2 md:gap-4">
                 {#each $customEvents as event}
                     <div
-                        class="bg-zinc-100 dark:bg-zinc-800 rounded-md p-4 flex justify-between gap-4">
+                        class="themed-panel rounded-md p-4 flex justify-between gap-4">
                         <div class="overflow-x-hidden">
                             <h3 class="text-lg font-semibold">{event.title}</h3>
                             <p class="text-sm mb-2 italic">

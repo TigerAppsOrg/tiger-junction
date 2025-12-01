@@ -33,7 +33,7 @@
     <div
         style={cssVarStyles}
         class="text-base font-normal ml-1 dark:text-zinc-100
-                flex items-center justify-between h-6">
+                flex items-center justify-between h-6 serif-lowercase section-header">
         <span>
             {scheduleEvents.length} Custom
             {scheduleEvents.length === 1 ? "Event" : "Events"}
@@ -73,7 +73,7 @@
                         stroke-linejoin="round"
                         d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
                 </svg>
-                <p>Show</p>
+                <p class="serif-lowercase section-header">Show</p>
             {/if}
         </button>
     </div>
@@ -164,7 +164,7 @@
 
 <style lang="postcss">
     .icon {
-        @apply w-5 h-5;
+        @apply w-4 h-4;
     }
 
     #addButton {
