@@ -78,12 +78,9 @@
             ? Math.max(BASE_MIN_RATIO, 1 - bottomContentHeight / usableHeight)
             : BASE_MIN_RATIO;
 
-    // Default ratio based on content proportions
+    // Default ratio for handlebar position (0.5 = middle)
     function getDefaultRatio(): number {
-        if (topContentHeight + bottomContentHeight === 0) return 0.5;
-        const ratio =
-            topContentHeight / (topContentHeight + bottomContentHeight);
-        return Math.max(minRatio, Math.min(maxRatio, ratio));
+        return 0.5;
     }
 
     // Get effective ratio (user-set or default), clamped to valid range
