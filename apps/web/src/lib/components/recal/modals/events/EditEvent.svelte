@@ -238,7 +238,7 @@
                     </p>
                     {#each times as time, i}
                         <div
-                            class="bg-zinc-100 dark:bg-zinc-800
+                            class="themed-panel
                             rounded-md p-4 relative mt-2">
                             <!-- Delete Button -->
                             <button

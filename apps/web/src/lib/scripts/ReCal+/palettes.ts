@@ -97,8 +97,8 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#aab2ff",
             "E": "#e6fff0"
         },
-        bgLight: "#f6fffe",
-        bgDark: "#18181b"
+        bgLight: "#f2fcf9",
+        bgDark: "#152224"
     },
     Sweet: {
         colors: {
@@ -112,8 +112,8 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#cacff9",
             "E": "#fdf0ff"
         },
-        bgLight: "#f5e6fa",
-        bgDark: "#18181b"
+        bgLight: "#fbf7fd",
+        bgDark: "#231e29"
     },
     Pearl: {
         colors: {
@@ -157,8 +157,8 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#8399a2",
             "E": "#f0f5f7"
         },
-        bgLight: "#f8fafb",
-        bgDark: "#18181b"
+        bgLight: "#f1f5f8",
+        bgDark: "#1b2126"
     },
     Aurora: {
         colors: {

@@ -26,6 +26,24 @@
     background-color: var(--bg-dark);
 }
 
+@layer components {
+    /* Themed panel/control backgrounds - slightly offset from main bg */
+    .themed-panel {
+        background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
+    }
+    .dark .themed-panel {
+        background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
+    }
+
+    /* Lighter variant for nested panels */
+    .themed-panel-light {
+        background-color: color-mix(in srgb, var(--bg-light) 95%, #000);
+    }
+    .dark .themed-panel-light {
+        background-color: color-mix(in srgb, var(--bg-dark) 90%, #fff);
+    }
+}
+
 /* Background effects class for noise and glows */
 .bg-effects {
     position: relative;
