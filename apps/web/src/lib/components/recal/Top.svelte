@@ -270,7 +270,8 @@
                                 class="card {$currentSchedule === schedule.id
                                     ? 'flex items-center gap-4'
                                     : 'termchoice'}"
-                                class:selected={$currentSchedule === schedule.id}
+                                class:selected={$currentSchedule ===
+                                    schedule.id}
                                 on:click={() =>
                                     $currentSchedule === schedule.id
                                         ? modalStore.push("editSchedule")

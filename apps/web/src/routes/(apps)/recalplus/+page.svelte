@@ -142,8 +142,7 @@
 </svelte:head>
 
 <div
-    class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto
- dark:bg-zinc-900 max-h-screen overflow-clip">
+    class="flex flex-col flex-1 w-full max-w-[1500px] mx-auto max-h-screen overflow-clip">
     <div class="mx-2">
         <Top />
     </div>

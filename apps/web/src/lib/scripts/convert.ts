@@ -325,6 +325,27 @@ const rgbToHSL = (hex: string) => {
     return `hsl(${hVal}, ${sVal}%, ${lVal}%)`;
 };
 
+/**
+ * Converts an HSL color to RGB components string (for CSS rgba usage)
+ * @param hsl
+ * @returns RGB components string like "255, 149, 0"
+ */
+const hslToRGBComponents = (hsl: string): string => {
+    // eslint-disable-next-line prefer-const
+    let [h, s, l] = hsl.split(",").map(x => parseInt(x.replace(/\D/g, "")));
+
+    l /= 100;
+    const a = (s * Math.min(l, 1 - l)) / 100;
+
+    const f = (n: number) => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color);
+    };
+
+    return `${f(0)}, ${f(8)}, ${f(4)}`;
+};
+
 //----------------------------------------------------------------------
 
 // TODO Refactor
@@ -339,5 +360,6 @@ export {
     normalizeText,
     darkenHSL,
     hslToRGB,
+    hslToRGBComponents,
     rgbToHSL
 };

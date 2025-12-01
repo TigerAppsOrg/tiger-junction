@@ -5,9 +5,15 @@
         darkTheme,
         calColors,
         DEFAULT_RCARD_COLORS,
-        type CalColors
+        bgColors,
+        DEFAULT_BG_COLORS,
+        bgEffects,
+        DEFAULT_BG_EFFECTS,
+        type CalColors,
+        type BgColors,
+        type BackgroundEffects
     } from "$lib/stores/styles";
-    import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
+    import { colorPalettes, type Palette } from "$lib/scripts/ReCal+/palettes";
     import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
 
     $: open = $panelStore === "theme";
@@ -54,8 +60,8 @@
     /**
      * Apply a preset palette
      */
-    const applyPalette = (name: string, colors: CalColors) => {
-        const hslColors: CalColors = Object.entries(colors)
+    const applyPalette = (name: string, palette: Palette) => {
+        const hslColors: CalColors = Object.entries(palette.colors)
             .map(([key, value]) => [key, rgbToHSL(value)])
             .reduce(
                 (acc, [key, value]) => ({ ...acc, [key]: value }),
@@ -64,6 +70,12 @@
 
         calColors.set(hslColors);
         lastSelectedTheme = { name, colors: hslColors };
+
+        // Apply background colors from palette
+        bgColors.set({
+            light: rgbToHSL(palette.bgLight),
+            dark: rgbToHSL(palette.bgDark)
+        });
 
         // Persist to localStorage
         if (typeof window !== "undefined") {
@@ -103,6 +115,7 @@
      */
     const resetToDefault = () => {
         calColors.set(DEFAULT_RCARD_COLORS);
+        bgColors.set(DEFAULT_BG_COLORS);
         darkTheme.set(false);
         lastSelectedTheme = null;
 
@@ -110,6 +123,57 @@
         if (typeof window !== "undefined") {
             localStorage.removeItem(LAST_THEME_KEY);
         }
+    };
+
+    /**
+     * Update background color
+     */
+    const updateBgColor = (mode: "light" | "dark", rgbValue: string) => {
+        const hslValue = rgbToHSL(rgbValue);
+        bgColors.set({ ...$bgColors, [mode]: hslValue });
+    };
+
+    /**
+     * Reset background colors to default
+     */
+    const resetBgColors = () => {
+        bgColors.set(DEFAULT_BG_COLORS);
+    };
+
+    /**
+     * Reset effects to default
+     */
+    const resetEffects = () => {
+        bgEffects.set(DEFAULT_BG_EFFECTS);
+    };
+
+    /**
+     * Update noise settings
+     */
+    const updateNoise = (key: keyof BackgroundEffects["noise"], value: any) => {
+        bgEffects.set({
+            ...$bgEffects,
+            noise: { ...$bgEffects.noise, [key]: value }
+        });
+    };
+
+    /**
+     * Update glow settings
+     */
+    const updateGlow = (key: keyof BackgroundEffects["glows"], value: any) => {
+        bgEffects.set({
+            ...$bgEffects,
+            glows: { ...$bgEffects.glows, [key]: value }
+        });
+    };
+
+    /**
+     * Update glow color (convert from RGB to HSL)
+     */
+    const updateGlowColor = (colorNum: 1 | 2, rgbValue: string) => {
+        const hslValue = rgbToHSL(rgbValue);
+        const key = colorNum === 1 ? "color1" : "color2";
+        updateGlow(key, hslValue);
     };
 
     /**
@@ -122,8 +186,8 @@
     };
 
     // Sort palette colors for display: E first, then 0-6, then -1 last
-    const sortPaletteColors = (colors: CalColors): string[] => {
-        return Object.entries(colors)
+    const sortPaletteColors = (palette: Palette): string[] => {
+        return Object.entries(palette.colors)
             .sort(([a], [b]) => {
                 if (a === "E") return -1;
                 if (b === "E") return 1;
@@ -133,6 +197,9 @@
             })
             .map(([_, value]) => value);
     };
+
+    // State for collapsible sections
+    let effectsExpanded = false;
 </script>
 
 <SidePanel
@@ -198,12 +265,12 @@
                 Preset Themes
             </h3>
             <div class="grid grid-cols-2 gap-2">
-                {#each Object.entries(colorPalettes) as [name, colors]}
+                {#each Object.entries(colorPalettes) as [name, palette]}
                     <button
                         class="palette-card"
-                        on:click={() => applyPalette(name, colors)}>
+                        on:click={() => applyPalette(name, palette)}>
                         <div class="flex flex-col">
-                            {#each sortPaletteColors(colors) as color}
+                            {#each sortPaletteColors(palette) as color}
                                 <div
                                     class="h-3 w-full"
                                     style="background-color: {color}" />
@@ -216,6 +283,64 @@
                     </button>
                 {/each}
             </div>
+        </div>
+
+        <!-- Background Colors -->
+        <div>
+            <h3
+                class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
+                Background Colors
+            </h3>
+            <div
+                class="flex gap-4 p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                <label
+                    class="color-swatch flex-1"
+                    title="Light Mode Background">
+                    <div class="color-input-wrapper w-full">
+                        <input
+                            type="color"
+                            value={hslToRGB($bgColors.light)}
+                            on:input={e =>
+                                updateBgColor("light", e.currentTarget.value)}
+                            class="color-input" />
+                        <div
+                            class="color-display w-full"
+                            style="background-color: {hslToRGB(
+                                $bgColors.light
+                            )}" />
+                    </div>
+                    <span
+                        class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">
+                        Light Mode
+                    </span>
+                </label>
+                <label class="color-swatch flex-1" title="Dark Mode Background">
+                    <div class="color-input-wrapper w-full">
+                        <input
+                            type="color"
+                            value={hslToRGB($bgColors.dark)}
+                            on:input={e =>
+                                updateBgColor("dark", e.currentTarget.value)}
+                            class="color-input" />
+                        <div
+                            class="color-display w-full"
+                            style="background-color: {hslToRGB(
+                                $bgColors.dark
+                            )}" />
+                    </div>
+                    <span
+                        class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">
+                        Dark Mode
+                    </span>
+                </label>
+            </div>
+            <button
+                on:click={resetBgColors}
+                class="mt-2 w-full py-1.5 px-3 rounded-lg text-xs font-medium
+                       bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
+                       hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                Reset Background Colors
+            </button>
         </div>
 
         <!-- Custom Colors -->
@@ -257,6 +382,230 @@
                     </label>
                 {/each}
             </div>
+        </div>
+
+        <!-- Background Effects (Collapsible) -->
+        <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4">
+            <button
+                on:click={() => (effectsExpanded = !effectsExpanded)}
+                class="flex items-center justify-between w-full text-left">
+                <h3
+                    class="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+                    Background Effects
+                </h3>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 text-zinc-500 transition-transform {effectsExpanded
+                        ? 'rotate-180'
+                        : ''}">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+            </button>
+
+            {#if effectsExpanded}
+                <div class="mt-3 space-y-4">
+                    <!-- Noise Settings -->
+                    <div
+                        class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span
+                                class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                                Noise Texture
+                            </span>
+                            <button
+                                on:click={() =>
+                                    updateNoise(
+                                        "enabled",
+                                        !$bgEffects.noise.enabled
+                                    )}
+                                class="relative w-9 h-5 rounded-full transition-colors
+                                       {$bgEffects.noise.enabled
+                                    ? 'bg-blue-600'
+                                    : 'bg-zinc-300 dark:bg-zinc-600'}">
+                                <span
+                                    class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
+                                           transition-transform {$bgEffects
+                                        .noise.enabled
+                                        ? 'translate-x-4'
+                                        : 'translate-x-0'}" />
+                            </button>
+                        </div>
+
+                        {#if $bgEffects.noise.enabled}
+                            <div class="space-y-2">
+                                <div>
+                                    <label
+                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                        Opacity: {Math.round(
+                                            $bgEffects.noise.opacity * 100
+                                        )}%
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.05"
+                                        value={$bgEffects.noise.opacity}
+                                        on:input={e =>
+                                            updateNoise(
+                                                "opacity",
+                                                parseFloat(
+                                                    e.currentTarget.value
+                                                )
+                                            )}
+                                        class="slider" />
+                                </div>
+                                <div>
+                                    <label
+                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                        Grain Size: {$bgEffects.noise.baseFrequency.toFixed(
+                                            1
+                                        )}
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0.5"
+                                        max="3"
+                                        step="0.1"
+                                        value={$bgEffects.noise.baseFrequency}
+                                        on:input={e =>
+                                            updateNoise(
+                                                "baseFrequency",
+                                                parseFloat(
+                                                    e.currentTarget.value
+                                                )
+                                            )}
+                                        class="slider" />
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <!-- Glow Settings -->
+                    <div
+                        class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                        <div class="flex items-center justify-between mb-3">
+                            <span
+                                class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                                Gradient Glows
+                            </span>
+                            <button
+                                on:click={() =>
+                                    updateGlow(
+                                        "enabled",
+                                        !$bgEffects.glows.enabled
+                                    )}
+                                class="relative w-9 h-5 rounded-full transition-colors
+                                       {$bgEffects.glows.enabled
+                                    ? 'bg-blue-600'
+                                    : 'bg-zinc-300 dark:bg-zinc-600'}">
+                                <span
+                                    class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
+                                           transition-transform {$bgEffects
+                                        .glows.enabled
+                                        ? 'translate-x-4'
+                                        : 'translate-x-0'}" />
+                            </button>
+                        </div>
+
+                        {#if $bgEffects.glows.enabled}
+                            <div class="space-y-3">
+                                <div class="flex gap-3">
+                                    <label
+                                        class="color-swatch flex-1"
+                                        title="Glow Color 1">
+                                        <div class="color-input-wrapper w-full">
+                                            <input
+                                                type="color"
+                                                value={hslToRGB(
+                                                    $bgEffects.glows.color1
+                                                )}
+                                                on:input={e =>
+                                                    updateGlowColor(
+                                                        1,
+                                                        e.currentTarget.value
+                                                    )}
+                                                class="color-input" />
+                                            <div
+                                                class="color-display w-full h-8"
+                                                style="background-color: {hslToRGB(
+                                                    $bgEffects.glows.color1
+                                                )}" />
+                                        </div>
+                                        <span
+                                            class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                            Color 1
+                                        </span>
+                                    </label>
+                                    <label
+                                        class="color-swatch flex-1"
+                                        title="Glow Color 2">
+                                        <div class="color-input-wrapper w-full">
+                                            <input
+                                                type="color"
+                                                value={hslToRGB(
+                                                    $bgEffects.glows.color2
+                                                )}
+                                                on:input={e =>
+                                                    updateGlowColor(
+                                                        2,
+                                                        e.currentTarget.value
+                                                    )}
+                                                class="color-input" />
+                                            <div
+                                                class="color-display w-full h-8"
+                                                style="background-color: {hslToRGB(
+                                                    $bgEffects.glows.color2
+                                                )}" />
+                                        </div>
+                                        <span
+                                            class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                            Color 2
+                                        </span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label
+                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                        Intensity: {Math.round(
+                                            $bgEffects.glows.opacity * 100
+                                        )}%
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="0.5"
+                                        step="0.02"
+                                        value={$bgEffects.glows.opacity}
+                                        on:input={e =>
+                                            updateGlow(
+                                                "opacity",
+                                                parseFloat(
+                                                    e.currentTarget.value
+                                                )
+                                            )}
+                                        class="slider" />
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <button
+                        on:click={resetEffects}
+                        class="w-full py-1.5 px-3 rounded-lg text-xs font-medium
+                               bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
+                               hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                        Reset Effects
+                    </button>
+                </div>
+            {/if}
         </div>
 
         <!-- Reset Buttons -->
@@ -322,5 +671,20 @@
         to {
             transform: rotate(360deg);
         }
+    }
+
+    .slider {
+        @apply w-full h-1.5 rounded-full appearance-none cursor-pointer
+               bg-zinc-300 dark:bg-zinc-600;
+    }
+
+    .slider::-webkit-slider-thumb {
+        @apply appearance-none w-3.5 h-3.5 rounded-full
+               bg-blue-600 cursor-pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        @apply w-3.5 h-3.5 rounded-full border-0
+               bg-blue-600 cursor-pointer;
     }
 </style>

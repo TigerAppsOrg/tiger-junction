@@ -3,6 +3,150 @@ import { colorPalettes } from "$lib/scripts/ReCal+/palettes";
 import { get, writable } from "svelte/store";
 
 //----------------------------------------------------------------------
+// Background Colors
+//----------------------------------------------------------------------
+
+export type BgColors = {
+    light: string; // HSL string
+    dark: string; // HSL string
+};
+
+export const DEFAULT_BG_COLORS: BgColors = {
+    light: "hsl(0, 0%, 100%)", // white
+    dark: "hsl(240, 6%, 10%)" // zinc-900
+};
+
+const initializeBgColors = (): BgColors => {
+    if (typeof window === "undefined") return DEFAULT_BG_COLORS;
+
+    const stored = localStorage.getItem("bgColors");
+    if (!stored) {
+        localStorage.setItem("bgColors", JSON.stringify(DEFAULT_BG_COLORS));
+        return DEFAULT_BG_COLORS;
+    }
+
+    try {
+        const parsed = JSON.parse(stored);
+        if (parsed.light && parsed.dark) {
+            return parsed;
+        }
+    } catch {
+        // Invalid JSON, reset to defaults
+    }
+
+    localStorage.setItem("bgColors", JSON.stringify(DEFAULT_BG_COLORS));
+    return DEFAULT_BG_COLORS;
+};
+
+const {
+    subscribe: bgSubscribe,
+    update: bgUpdate,
+    set: bgSet
+} = writable<BgColors>(initializeBgColors());
+
+export const bgColors = {
+    subscribe: bgSubscribe,
+    update: bgUpdate,
+    set: (value: BgColors) => {
+        bgSet(value);
+        localStorage.setItem("bgColors", JSON.stringify(value));
+    }
+};
+
+//----------------------------------------------------------------------
+// Background Effects (Noise + Glows)
+//----------------------------------------------------------------------
+
+export type BackgroundEffects = {
+    noise: {
+        enabled: boolean;
+        opacity: number; // 0-1
+        baseFrequency: number; // default 1.5
+    };
+    glows: {
+        enabled: boolean;
+        color1: string; // HSL
+        color2: string; // HSL
+        opacity: number; // 0-1
+    };
+};
+
+export const DEFAULT_BG_EFFECTS: BackgroundEffects = {
+    noise: {
+        enabled: false,
+        opacity: 0.5,
+        baseFrequency: 1.5
+    },
+    glows: {
+        enabled: false,
+        color1: "hsl(36, 100%, 50%)", // orange
+        color2: "hsl(211, 100%, 50%)", // blue
+        opacity: 0.15
+    }
+};
+
+const initializeBgEffects = (): BackgroundEffects => {
+    if (typeof window === "undefined") return DEFAULT_BG_EFFECTS;
+
+    const stored = localStorage.getItem("bgEffects");
+    if (!stored) {
+        localStorage.setItem("bgEffects", JSON.stringify(DEFAULT_BG_EFFECTS));
+        return DEFAULT_BG_EFFECTS;
+    }
+
+    try {
+        const parsed = JSON.parse(stored);
+        // Validate structure
+        if (parsed.noise && parsed.glows) {
+            return {
+                noise: {
+                    enabled:
+                        parsed.noise.enabled ??
+                        DEFAULT_BG_EFFECTS.noise.enabled,
+                    opacity:
+                        parsed.noise.opacity ??
+                        DEFAULT_BG_EFFECTS.noise.opacity,
+                    baseFrequency:
+                        parsed.noise.baseFrequency ??
+                        DEFAULT_BG_EFFECTS.noise.baseFrequency
+                },
+                glows: {
+                    enabled:
+                        parsed.glows.enabled ??
+                        DEFAULT_BG_EFFECTS.glows.enabled,
+                    color1:
+                        parsed.glows.color1 ?? DEFAULT_BG_EFFECTS.glows.color1,
+                    color2:
+                        parsed.glows.color2 ?? DEFAULT_BG_EFFECTS.glows.color2,
+                    opacity:
+                        parsed.glows.opacity ?? DEFAULT_BG_EFFECTS.glows.opacity
+                }
+            };
+        }
+    } catch {
+        // Invalid JSON, reset to defaults
+    }
+
+    localStorage.setItem("bgEffects", JSON.stringify(DEFAULT_BG_EFFECTS));
+    return DEFAULT_BG_EFFECTS;
+};
+
+const {
+    subscribe: effectsSubscribe,
+    update: effectsUpdate,
+    set: effectsSet
+} = writable<BackgroundEffects>(initializeBgEffects());
+
+export const bgEffects = {
+    subscribe: effectsSubscribe,
+    update: effectsUpdate,
+    set: (value: BackgroundEffects) => {
+        effectsSet(value);
+        localStorage.setItem("bgEffects", JSON.stringify(value));
+    }
+};
+
+//----------------------------------------------------------------------
 // General
 //----------------------------------------------------------------------
 
@@ -130,7 +274,7 @@ const initializeCalColors = (): CalColors => {
     if (!("E" in parsedColors)) {
         for (const key in colorPalettes) {
             const palette = colorPalettes[key];
-            const hslPalette = Object.entries(palette)
+            const hslPalette = Object.entries(palette.colors)
                 .map(([key, value]) => [key, rgbToHSL(value)])
                 .reduce(
                     (acc, [key, value]) => ({ ...acc, [key]: value }),

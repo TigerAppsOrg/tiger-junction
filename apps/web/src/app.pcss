@@ -3,13 +3,89 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --bg-light: hsl(0, 0%, 100%);
+    --bg-dark: hsl(240, 6%, 10%);
+    --noise-opacity: 0;
+    --noise-frequency: 1.5;
+    --glow-opacity: 0;
+    --glow-color-1: 255, 149, 0;
+    --glow-color-2: 0, 122, 255;
+}
+
 .std-area {
-    @apply overflow-auto 
+    @apply overflow-auto
     focus:outline-std-blue
-    bg-white dark:bg-zinc-900
     text-zinc-900 dark:text-zinc-100
-     border-zinc-200 dark:border-zinc-700;
+    border-zinc-200 dark:border-zinc-700;
+    background-color: var(--bg-light);
     border-width: 1px;
+}
+
+.dark .std-area {
+    background-color: var(--bg-dark);
+}
+
+/* Background effects class for noise and glows */
+.bg-effects {
+    position: relative;
+    isolation: isolate;
+}
+
+/* Gradient glows layer */
+.bg-effects::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            ellipse at 0% 15%,
+            rgba(var(--glow-color-1), var(--glow-opacity)) 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            ellipse at 100% 30%,
+            rgba(var(--glow-color-2), var(--glow-opacity)) 0%,
+            transparent 40%
+        );
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* Noise texture layer */
+.bg-effects::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    filter: url(#pageNoise);
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Darker, more vibrant glows for dark mode */
+.dark .bg-effects::before {
+    background: radial-gradient(
+            ellipse at 0% 15%,
+            rgba(var(--glow-color-1), calc(var(--glow-opacity) * 1.33)) 0%,
+            transparent 30%
+        ),
+        radial-gradient(
+            ellipse at 100% 30%,
+            rgba(var(--glow-color-2), calc(var(--glow-opacity) * 1.33)) 0%,
+            transparent 40%
+        );
+}
+
+/* Subtler noise background for dark mode */
+.dark .bg-effects::after {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 body.waiting {
