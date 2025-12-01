@@ -32,39 +32,21 @@
 </script>
 
 <button
-    class="info flex items-center gap-2 select-none"
+    class="info select-none"
     class:checked={sortParam.enabled}
     style={cssVarStyles}
     on:click={handleToggle}>
-    {name}
-    {sortParam.enabled ? " — " + sortParam.options[sortParam.value] : ""}
-    {#if sortParam.enabled}
-        <span>
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-        </span>
-    {/if}
+    {name}{sortParam.enabled ? " — " + sortParam.options[sortParam.value] : ""}
 </button>
 
 <style lang="postcss">
     .info {
-        @apply rounded-full px-4 py-2 border-2 border-zinc-600/30
-    dark:border-zinc-200/30;
+        @apply rounded-md px-2.5 py-1 text-sm border border-zinc-300
+            dark:border-zinc-600;
     }
 
     .info:hover {
-        @apply bg-zinc-200 dark:bg-zinc-700 border-zinc-600/30
-    dark:border-zinc-200/30 duration-150;
+        @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
     }
 
     .checked {
