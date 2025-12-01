@@ -114,17 +114,17 @@ export const DEFAULT_GRADIENTS: GradientConfig[] = [
         color: "hsl(36, 100%, 50%)", // orange
         x: 0,
         y: 15,
-        size: 30,
+        size: 60,
         opacity: 1,
         shape: "ellipse",
-        blur: 30
+        blur: 60
     },
     {
         id: "default_2",
         color: "hsl(211, 100%, 50%)", // blue
         x: 100,
         y: 30,
-        size: 40,
+        size: 70,
         opacity: 1,
         shape: "ellipse",
         blur: 40
