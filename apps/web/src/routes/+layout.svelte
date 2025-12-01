@@ -30,8 +30,10 @@
             .map(g => {
                 const rgbComponents = hslToRGBComponents(g.color);
                 const finalOpacity = effectiveOpacity * g.opacity;
+                // Size scales the overall gradient, blur controls the fade softness
+                const scaledBlur = (g.size / 100) * g.blur;
 
-                return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgbComponents}, ${finalOpacity}) 0%, transparent ${g.blur}%)`;
+                return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgbComponents}, ${finalOpacity}) 0%, transparent ${scaledBlur}%)`;
             })
             .join(", ");
     }

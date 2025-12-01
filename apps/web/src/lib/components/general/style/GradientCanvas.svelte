@@ -15,6 +15,7 @@
     let canvasEl: HTMLElement;
     let isDragging = false;
     let draggedGradientId: string | null = null;
+    let justFinishedDragging = false;
 
     // Generate preview gradient CSS
     $: previewCSS =
@@ -22,7 +23,8 @@
             ? gradients
                   .map(g => {
                       const rgb = hslToRGBComponents(g.color);
-                      return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgb}, ${globalOpacity * g.opacity}) 0%, transparent ${g.blur}%)`;
+                      const scaledBlur = (g.size / 100) * g.blur;
+                      return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgb}, ${globalOpacity * g.opacity}) 0%, transparent ${scaledBlur}%)`;
                   })
                   .join(", ")
             : "none";
@@ -60,6 +62,7 @@
     function handlePointerUp() {
         isDragging = false;
         draggedGradientId = null;
+        justFinishedDragging = true;
 
         document.body.style.cursor = "";
         document.body.style.userSelect = "";
@@ -67,11 +70,16 @@
         window.removeEventListener("pointermove", handlePointerMove);
         window.removeEventListener("pointerup", handlePointerUp);
         window.removeEventListener("pointercancel", handlePointerUp);
+
+        // Reset flag after a short delay to allow click event to be ignored
+        setTimeout(() => {
+            justFinishedDragging = false;
+        }, 10);
     }
 
     function handleCanvasClick(e: MouseEvent) {
-        // Only deselect if clicking on canvas background
-        if (e.target === canvasEl) {
+        // Only deselect if clicking on canvas background and not just finished dragging
+        if (e.target === canvasEl && !justFinishedDragging) {
             dispatch("select", { id: "" });
         }
     }
@@ -136,12 +144,7 @@
     .gradient-handle {
         @apply absolute w-4 h-4 rounded-full cursor-grab;
         @apply border-2 border-white shadow-md;
-        @apply transition-transform duration-100;
         transform: translate(-50%, -50%);
-    }
-
-    .gradient-handle:hover {
-        @apply scale-125;
     }
 
     .gradient-handle.selected {
