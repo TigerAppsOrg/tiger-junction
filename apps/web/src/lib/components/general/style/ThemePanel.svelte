@@ -19,7 +19,7 @@
     };
 
     // Dark palettes that should auto-enable dark mode
-    const DARK_PALETTES = ["Midnight", "Cobalt", "Shadow", "Crimson", "Aurora"];
+    const DARK_PALETTES = ["Midnight", "Cobalt", "Shadow", "Crimson", "Aurora", "Neon"];
 
     // Track the last selected theme for "Reset to Theme" functionality
     let lastSelectedTheme: { name: string; colors: CalColors } | null = null;
@@ -68,6 +68,7 @@
      */
     const resetToDefault = () => {
         calColors.set(DEFAULT_RCARD_COLORS);
+        darkTheme.set(false);
         lastSelectedTheme = null;
     };
 
@@ -173,23 +174,34 @@
 
         <!-- Custom Colors -->
         <div>
-            <h3 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-3">
+            <h3 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
                 Custom Colors
             </h3>
-            <div class="grid grid-cols-3 gap-3">
-                {#each Object.keys($calColors) as colorKey}
-                    <div class="flex flex-col items-center gap-1">
-                        <input
-                            type="color"
-                            value={hslToRGB($calColors[colorKey])}
-                            on:input={(e) => updateColor(colorKey, e.currentTarget.value)}
-                            class="w-12 h-8 rounded cursor-pointer
-                                   border border-zinc-300 dark:border-zinc-600"
-                        />
-                        <span class="text-xs text-zinc-600 dark:text-zinc-400">
+            <div class="grid grid-cols-3 gap-2 p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                {#each Object.keys($calColors).sort((a, b) => {
+                    if (a === "E") return 1;
+                    if (b === "E") return 1;
+                    if (a === "-1") return 1;
+                    if (b === "-1") return -1;
+                    return parseInt(a) - parseInt(b);
+                }) as colorKey}
+                    <label class="color-swatch" title={getColorLabel(colorKey)}>
+                        <div class="color-input-wrapper">
+                            <input
+                                type="color"
+                                value={hslToRGB($calColors[colorKey])}
+                                on:input={(e) => updateColor(colorKey, e.currentTarget.value)}
+                                class="color-input"
+                            />
+                            <div
+                                class="color-display"
+                                style="background-color: {hslToRGB($calColors[colorKey])}"
+                            />
+                        </div>
+                        <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">
                             {getColorLabel(colorKey)}
                         </span>
-                    </div>
+                    </label>
                 {/each}
             </div>
         </div>
@@ -224,6 +236,28 @@
                border-zinc-200 dark:border-zinc-700
                hover:border-zinc-400 dark:hover:border-zinc-500
                transition-colors cursor-pointer;
+    }
+
+    .color-swatch {
+        @apply flex flex-col items-center gap-0.5 cursor-pointer;
+    }
+
+    .color-input-wrapper {
+        @apply relative w-10 h-10;
+    }
+
+    .color-input {
+        @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer;
+    }
+
+    .color-display {
+        @apply w-10 h-10 rounded-md shadow-sm
+               border border-zinc-400/50
+               transition-all pointer-events-none;
+    }
+
+    .color-swatch:hover .color-display {
+        @apply scale-105 border-zinc-500;
     }
 
     .spin {
