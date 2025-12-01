@@ -43,14 +43,38 @@
 
     // Track the last selected theme for "Reset to Theme" functionality
     // Load from localStorage on init
-    let lastSelectedTheme: { name: string; colors: CalColors } | null = null;
+    let lastSelectedTheme: {
+        name: string;
+        colors: CalColors;
+        bgColors: BgColors;
+    } | null = null;
 
     // Load last selected theme from localStorage on mount
     if (typeof window !== "undefined") {
         const stored = localStorage.getItem(LAST_THEME_KEY);
         if (stored) {
             try {
-                lastSelectedTheme = JSON.parse(stored);
+                const parsed = JSON.parse(stored);
+                // Handle migration from old format without bgColors
+                if (parsed.bgColors) {
+                    lastSelectedTheme = parsed;
+                } else if (parsed.name && colorPalettes[parsed.name]) {
+                    // Reconstruct bgColors from palette
+                    const palette = colorPalettes[parsed.name];
+                    lastSelectedTheme = {
+                        ...parsed,
+                        bgColors: {
+                            light: rgbToHSL(palette.bgLight),
+                            dark: rgbToHSL(palette.bgDark)
+                        }
+                    };
+                    localStorage.setItem(
+                        LAST_THEME_KEY,
+                        JSON.stringify(lastSelectedTheme)
+                    );
+                } else {
+                    lastSelectedTheme = parsed;
+                }
             } catch {
                 localStorage.removeItem(LAST_THEME_KEY);
             }
@@ -69,13 +93,20 @@
             ) as CalColors;
 
         calColors.set(hslColors);
-        lastSelectedTheme = { name, colors: hslColors };
 
         // Apply background colors from palette
-        bgColors.set({
+        const themeBgColors: BgColors = {
             light: rgbToHSL(palette.bgLight),
             dark: rgbToHSL(palette.bgDark)
-        });
+        };
+        bgColors.set(themeBgColors);
+
+        // Store theme with both colors and bgColors
+        lastSelectedTheme = {
+            name,
+            colors: hslColors,
+            bgColors: themeBgColors
+        };
 
         // Persist to localStorage
         if (typeof window !== "undefined") {
@@ -102,11 +133,23 @@
     };
 
     /**
-     * Reset to last selected theme
+     * Reset to last selected theme (both colors and background)
      */
     const resetToTheme = () => {
         if (lastSelectedTheme) {
             calColors.set(lastSelectedTheme.colors);
+            if (lastSelectedTheme.bgColors) {
+                bgColors.set(lastSelectedTheme.bgColors);
+            }
+        }
+    };
+
+    /**
+     * Reset background colors to last selected theme
+     */
+    const resetBgToTheme = () => {
+        if (lastSelectedTheme?.bgColors) {
+            bgColors.set(lastSelectedTheme.bgColors);
         }
     };
 
@@ -198,8 +241,8 @@
             .map(([_, value]) => value);
     };
 
-    // State for collapsible sections
-    let effectsExpanded = false;
+    // State for collapsible sections - auto-expand if any effects are enabled
+    let effectsExpanded = $bgEffects.noise.enabled || $bgEffects.glows.enabled;
 </script>
 
 <SidePanel
@@ -334,13 +377,24 @@
                     </span>
                 </label>
             </div>
-            <button
-                on:click={resetBgColors}
-                class="mt-2 w-full py-1.5 px-3 rounded-lg text-xs font-medium
-                       bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
-                       hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                Reset Background Colors
-            </button>
+            <div class="flex gap-2 mt-2">
+                {#if lastSelectedTheme?.bgColors}
+                    <button
+                        on:click={resetBgToTheme}
+                        class="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium
+                               bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
+                               hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                        Reset to {lastSelectedTheme.name}
+                    </button>
+                {/if}
+                <button
+                    on:click={resetBgColors}
+                    class="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium
+                           bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
+                           hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                    Reset to Default
+                </button>
+            </div>
         </div>
 
         <!-- Custom Colors -->
@@ -391,7 +445,7 @@
                 class="flex items-center justify-between w-full text-left">
                 <h3
                     class="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
-                    Background Effects
+                    Advanced Background Effects
                 </h3>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -37,7 +37,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#dcd5e2",
             "E": "#e6e8f0"
         },
-        bgLight: "#ffffff",
+        bgLight: "#fafaf8",
         bgDark: "#18181b"
     },
     Coastal: {
@@ -52,7 +52,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#cdb4db",
             "E": "#f0f9f4"
         },
-        bgLight: "#ffffff",
+        bgLight: "#f8fcfa",
         bgDark: "#18181b"
     },
     Sunset: {
@@ -67,7 +67,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#e8d4f7",
             "E": "#fff8f0"
         },
-        bgLight: "#ffffff",
+        bgLight: "#fffcf8",
         bgDark: "#18181b"
     },
     Crayon: {
@@ -82,7 +82,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#bdb2ff",
             "E": "#fff0f0"
         },
-        bgLight: "#ffffff",
+        bgLight: "#fffefa",
         bgDark: "#18181b"
     },
     Minty: {
@@ -97,7 +97,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#aab2ff",
             "E": "#e6fff0"
         },
-        bgLight: "#ffffff",
+        bgLight: "#f6fffe",
         bgDark: "#18181b"
     },
     Sweet: {
@@ -112,7 +112,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#cacff9",
             "E": "#fdf0ff"
         },
-        bgLight: "#ffffff",
+        bgLight: "#f5e6fa",
         bgDark: "#18181b"
     },
     Pearl: {
@@ -127,23 +127,23 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#d3f3f1",
             "E": "#fff5f0"
         },
-        bgLight: "#ffffff",
+        bgLight: "#fffaf8",
         bgDark: "#18181b"
     },
-    Forest: {
+    Book: {
         colors: {
-            "-1": "#A8A8A8",
-            "0": "#A8B1A9",
-            "1": "#B1BAA9",
-            "2": "#C0BDA8",
-            "3": "#909D88",
-            "4": "#A7AFAC",
-            "5": "#E4DED3",
-            "6": "#D3D0C8",
-            "E": "#f0f5e6"
+            "-1": "#c4b8a8",
+            "0": "#d4c4a8",
+            "1": "#c9b896",
+            "2": "#e8dcc8",
+            "3": "#d9cdb5",
+            "4": "#c4b090",
+            "5": "#bfad8f",
+            "6": "#d0c4ac",
+            "E": "#e5dbc8"
         },
-        bgLight: "#ffffff",
-        bgDark: "#18181b"
+        bgLight: "#f5f0e6",
+        bgDark: "#2a2520"
     },
     Slate: {
         colors: {
@@ -157,7 +157,7 @@ export const colorPalettes: Record<string, Palette> = {
             "6": "#8399a2",
             "E": "#f0f5f7"
         },
-        bgLight: "#ffffff",
+        bgLight: "#f8fafb",
         bgDark: "#18181b"
     },
     Aurora: {
