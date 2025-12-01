@@ -150,7 +150,7 @@
 <!-- Height is on scale from 0 to 90 -->
 <button
     id="box"
-    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75"
+    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75 overflow-visible"
     class:hovered={isHovered()}
     style={cssVarStyles}
     on:click={handleClick}
@@ -170,7 +170,7 @@
             $eventHoverRev = null;
         }
     }}>
-    <div class="text-xs z-40 -space-y-1 relative overflow-x-hidden">
+    <div class="text-xs z-40 -space-y-1 relative overflow-x-clip overflow-y-visible">
         <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(
                 params.section.start_time,
