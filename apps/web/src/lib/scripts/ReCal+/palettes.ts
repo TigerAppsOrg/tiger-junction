@@ -3,18 +3,6 @@ import type { CalColors } from "$lib/stores/styles";
 
 // Title -> CalColors
 export const colorPalettes: Record<string, CalColors> = {
-    // From ReCal
-    Original: {
-        "-1": "#e6e6e6",
-        "0": "#D0DECF",
-        "1": "#d5dcec",
-        "2": "#ebd2db",
-        "3": "#faf4cb",
-        "4": "#e7dcce",
-        "5": "#d1e7e4",
-        "6": "#dcd5e2",
-        "E": "#e6e8f0"
-    },
     Bright: {
         "-1": "#a8a8a8",
         "0": "#9ee09e",
@@ -26,16 +14,17 @@ export const colorPalettes: Record<string, CalColors> = {
         "6": "#cc99c8",
         "E": "#e0e8f0"
     },
-    Crayon: {
+    // From the original ReCal
+    Legacy: {
         "-1": "#e6e6e6",
-        "0": "#ffadad",
-        "1": "#ffd6a5",
-        "2": "#fdffb6",
-        "3": "#caffbf",
-        "4": "#9bf6ff",
-        "5": "#a0c4ff",
-        "6": "#bdb2ff",
-        "E": "#fff0f0"
+        "0": "#D0DECF",
+        "1": "#d5dcec",
+        "2": "#ebd2db",
+        "3": "#faf4cb",
+        "4": "#e7dcce",
+        "5": "#d1e7e4",
+        "6": "#dcd5e2",
+        "E": "#e6e8f0"
     },
     Coastal: {
         "-1": "#e6e6e6",
@@ -58,6 +47,17 @@ export const colorPalettes: Record<string, CalColors> = {
         "5": "#d4e4f7",
         "6": "#e8d4f7",
         "E": "#fff8f0"
+    },
+    Crayon: {
+        "-1": "#e6e6e6",
+        "0": "#ffadad",
+        "1": "#ffd6a5",
+        "2": "#fdffb6",
+        "3": "#caffbf",
+        "4": "#9bf6ff",
+        "5": "#a0c4ff",
+        "6": "#bdb2ff",
+        "E": "#fff0f0"
     },
     Minty: {
         "-1": "#e6e6e6",
