@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import { currentTerm } from "$lib/changeme";
     import {
         type BoxParam,
@@ -21,6 +22,24 @@
     import { get } from "svelte/store";
     import { slide } from "svelte/transition";
     import CalBox from "./calendar/CalBox.svelte";
+
+    const TIME_MARKS_KEY = "showTimeMarks";
+
+    // Load preference from localStorage on init
+    if (browser) {
+        const saved = localStorage.getItem(TIME_MARKS_KEY);
+        if (saved !== null) {
+            $searchSettings.style["Show Time Marks"] = saved === "true";
+        }
+    }
+
+    // Save preference to localStorage when it changes
+    $: if (browser) {
+        localStorage.setItem(
+            TIME_MARKS_KEY,
+            String($searchSettings.style["Show Time Marks"])
+        );
+    }
 
     let toRender: BoxParam[] = [];
 
