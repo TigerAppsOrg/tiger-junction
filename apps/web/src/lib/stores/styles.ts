@@ -152,17 +152,13 @@ export const bgEffects = {
 
 export type FontFamily =
     | "Lato"
-    | "Inter"
     | "Roboto"
-    | "Merriweather"
     | "Playfair Display"
     | "JetBrains Mono";
 
 export const FONT_OPTIONS: { name: FontFamily; fallback: string }[] = [
     { name: "Lato", fallback: "sans-serif" },
-    { name: "Inter", fallback: "sans-serif" },
     { name: "Roboto", fallback: "sans-serif" },
-    { name: "Merriweather", fallback: "serif" },
     { name: "Playfair Display", fallback: "serif" },
     { name: "JetBrains Mono", fallback: "monospace" }
 ];

@@ -154,10 +154,10 @@
         <button
             class="text-xs font-light text-left w-[75%] p-1"
             on:click={() => (flipped = !flipped)}>
-            <div class="font-normal">
+            <div class="font-normal serif-lowercase">
                 {code}
             </div>
-            <div>
+            <div class="serif-lowercase">
                 {title}
             </div>
 

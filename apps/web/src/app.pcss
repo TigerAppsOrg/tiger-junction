@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Inter:wght@300;400;700&family=Roboto:wght@300;400;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -129,4 +129,14 @@ body.waiting {
 
 ::-webkit-scrollbar-thumb {
     @apply bg-zinc-400/40;
+}
+
+/* Playfair Display: lowercase course codes/titles */
+body.font-playfair .serif-lowercase {
+    text-transform: lowercase;
+}
+
+/* JetBrains Mono: smaller section headers */
+body.font-jetbrains .section-header {
+    font-size: 0.8rem;
 }

@@ -26,7 +26,7 @@
 {#if $searchResults.length > 0}
     <div
         bind:this={headerEl}
-        class="text-base font-normal dark:text-zinc-100 ml-1">
+        class="text-base font-normal dark:text-zinc-100 ml-1 serif-lowercase">
         {$searchResults.length} Search
         {$searchResults.length === 1 ? "Result" : "Results"}
     </div>

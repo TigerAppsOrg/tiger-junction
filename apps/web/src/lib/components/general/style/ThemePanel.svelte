@@ -313,7 +313,7 @@
                 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
                 Typography
             </h3>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-2 gap-2">
                 {#each FONT_OPTIONS as font}
                     <button
                         on:click={() => appFont.set(font.name)}

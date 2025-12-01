@@ -106,8 +106,8 @@
     <div class="flex gap-2">
         <input
             type="text"
-            placeholder="Search"
-            class="search-input std-area rounded-md"
+            placeholder="Search..."
+            class="search-input std-area rounded-md section-header serif-lowercase text-sm"
             bind:this={inputBar}
             on:input={triggerSearch}
             on:focus={() => (searchFocused = true)}

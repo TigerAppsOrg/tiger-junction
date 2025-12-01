@@ -38,13 +38,20 @@
         document.documentElement.style.setProperty("--bg-dark", $bgColors.dark);
     }
 
-    // Apply font CSS variable
+    // Apply font CSS variable and font-specific body classes
     $: if (browser) {
         const fontOption = FONT_OPTIONS.find(f => f.name === $appFont);
         document.documentElement.style.setProperty(
             "--app-font",
             `"${$appFont}", ${fontOption?.fallback || "sans-serif"}`
         );
+        // Add font-specific classes to body for conditional styling
+        document.body.classList.remove("font-playfair", "font-jetbrains");
+        if ($appFont === "Playfair Display") {
+            document.body.classList.add("font-playfair");
+        } else if ($appFont === "JetBrains Mono") {
+            document.body.classList.add("font-jetbrains");
+        }
     }
 
     // Apply background effects CSS variables
