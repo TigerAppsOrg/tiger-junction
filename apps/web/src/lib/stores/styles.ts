@@ -36,6 +36,36 @@ export const showCal = writable<boolean>(true);
 
 export const isEventOpen = writable<boolean>(false);
 
+// Resize ratio for left panel sections (0.0 to 1.0)
+// Represents the fraction of available space given to the top section (Events + Saved)
+// null means "auto" - use content-based default
+function createSectionRatio() {
+    const store = writable<number | null>(
+        typeof window !== "undefined"
+            ? JSON.parse(localStorage.getItem("sectionRatio") ?? "null")
+            : null
+    );
+
+    return {
+        subscribe: store.subscribe,
+        update: store.update,
+        set: (value: number | null) => {
+            store.set(value);
+            if (value === null) {
+                localStorage.removeItem("sectionRatio");
+            } else {
+                localStorage.setItem("sectionRatio", JSON.stringify(value));
+            }
+        },
+        reset: () => {
+            store.set(null);
+            localStorage.removeItem("sectionRatio");
+        }
+    };
+}
+
+export const sectionRatio = createSectionRatio();
+
 export type CalColors = {
     "-1": string;
     "0": string;
