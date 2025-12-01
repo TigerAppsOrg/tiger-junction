@@ -16,7 +16,6 @@
     import DeleteEvent from "../recal/modals/events/DeleteEvent.svelte";
 
     // Register modal components here
-    // Note: Theme/Palettes have been moved to ThemePanel sidebar
     const modalComponents: Record<string, unknown> = {
         adv: AdvancedSearch,
         exportCal: ExportCal,
