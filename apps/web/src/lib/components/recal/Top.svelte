@@ -296,7 +296,7 @@
                         {/each}
                     </div>
                     <button
-                        class="card termchoice"
+                        class="card add-button"
                         on:click={() => {
                             handleAddSchedule();
                         }}>
@@ -315,7 +315,7 @@
                     </button>
                 {:catch}
                     <button
-                        class="card termchoice"
+                        class="card add-button"
                         on:click={() => modalStore.push("addSchedule")}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -369,6 +369,16 @@
 
     .termchoice:hover {
         @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
+    }
+
+    .add-button:hover {
+        background-color: var(--bg);
+        color: var(--text);
+        transition-duration: 150ms;
+    }
+
+    .add-button:hover svg {
+        @apply text-current;
     }
 
     .selected {

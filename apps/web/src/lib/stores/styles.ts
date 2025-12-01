@@ -57,19 +57,79 @@ export const bgColors = {
 // Background Effects (Noise + Glows)
 //----------------------------------------------------------------------
 
+export type GradientShape = "circle" | "ellipse";
+
+export type GradientConfig = {
+    id: string;
+    color: string; // HSL string
+    x: number; // Position X (0-100%)
+    y: number; // Position Y (0-100%)
+    size: number; // Radius (10-100%)
+    opacity: number; // Individual opacity (0-1)
+    shape: GradientShape;
+    blur: number; // Fade amount (10-100%)
+};
+
+export type GlowsConfig = {
+    enabled: boolean;
+    gradients: GradientConfig[];
+    globalOpacity: number; // Master opacity (0-1)
+    darkModeIntensity: number; // Dark mode multiplier
+};
+
 export type BackgroundEffects = {
     noise: {
         enabled: boolean;
         opacity: number; // 0-1
         baseFrequency: number; // default 1.5
     };
-    glows: {
-        enabled: boolean;
-        color1: string; // HSL
-        color2: string; // HSL
-        opacity: number; // 0-1
+    glows: GlowsConfig;
+};
+
+export const MAX_GRADIENTS = 10;
+
+export const generateGradientId = (): string => {
+    return `grad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const createGradient = (
+    overrides?: Partial<GradientConfig>
+): GradientConfig => {
+    return {
+        id: generateGradientId(),
+        color: "hsl(36, 100%, 50%)",
+        x: 50,
+        y: 50,
+        size: 30,
+        opacity: 1,
+        shape: "ellipse",
+        blur: 30,
+        ...overrides
     };
 };
+
+export const DEFAULT_GRADIENTS: GradientConfig[] = [
+    {
+        id: "default_1",
+        color: "hsl(36, 100%, 50%)", // orange
+        x: 0,
+        y: 15,
+        size: 30,
+        opacity: 1,
+        shape: "ellipse",
+        blur: 30
+    },
+    {
+        id: "default_2",
+        color: "hsl(211, 100%, 50%)", // blue
+        x: 100,
+        y: 30,
+        size: 40,
+        opacity: 1,
+        shape: "ellipse",
+        blur: 40
+    }
+];
 
 export const DEFAULT_BG_EFFECTS: BackgroundEffects = {
     noise: {
@@ -79,9 +139,9 @@ export const DEFAULT_BG_EFFECTS: BackgroundEffects = {
     },
     glows: {
         enabled: false,
-        color1: "hsl(36, 100%, 50%)", // orange
-        color2: "hsl(211, 100%, 50%)", // blue
-        opacity: 0.15
+        gradients: [...DEFAULT_GRADIENTS],
+        globalOpacity: 0.15,
+        darkModeIntensity: 1.33
     }
 };
 
@@ -98,6 +158,61 @@ const initializeBgEffects = (): BackgroundEffects => {
         const parsed = JSON.parse(stored);
         // Validate structure
         if (parsed.noise && parsed.glows) {
+            // Check if old format (has color1/color2 instead of gradients array)
+            if (!Array.isArray(parsed.glows.gradients) && parsed.glows.color1) {
+                // Migrate old format to new format
+                const migratedGradients: GradientConfig[] = [
+                    {
+                        id: "migrated_1",
+                        color: parsed.glows.color1 ?? "hsl(36, 100%, 50%)",
+                        x: 0,
+                        y: 15,
+                        size: 30,
+                        opacity: 1,
+                        shape: "ellipse",
+                        blur: 30
+                    },
+                    {
+                        id: "migrated_2",
+                        color: parsed.glows.color2 ?? "hsl(211, 100%, 50%)",
+                        x: 100,
+                        y: 30,
+                        size: 40,
+                        opacity: 1,
+                        shape: "ellipse",
+                        blur: 40
+                    }
+                ];
+
+                const migrated: BackgroundEffects = {
+                    noise: {
+                        enabled:
+                            parsed.noise.enabled ??
+                            DEFAULT_BG_EFFECTS.noise.enabled,
+                        opacity:
+                            parsed.noise.opacity ??
+                            DEFAULT_BG_EFFECTS.noise.opacity,
+                        baseFrequency:
+                            parsed.noise.baseFrequency ??
+                            DEFAULT_BG_EFFECTS.noise.baseFrequency
+                    },
+                    glows: {
+                        enabled:
+                            parsed.glows.enabled ??
+                            DEFAULT_BG_EFFECTS.glows.enabled,
+                        gradients: migratedGradients,
+                        globalOpacity:
+                            parsed.glows.opacity ??
+                            DEFAULT_BG_EFFECTS.glows.globalOpacity,
+                        darkModeIntensity:
+                            DEFAULT_BG_EFFECTS.glows.darkModeIntensity
+                    }
+                };
+                localStorage.setItem("bgEffects", JSON.stringify(migrated));
+                return migrated;
+            }
+
+            // New format - validate and return
             return {
                 noise: {
                     enabled:
@@ -114,12 +229,15 @@ const initializeBgEffects = (): BackgroundEffects => {
                     enabled:
                         parsed.glows.enabled ??
                         DEFAULT_BG_EFFECTS.glows.enabled,
-                    color1:
-                        parsed.glows.color1 ?? DEFAULT_BG_EFFECTS.glows.color1,
-                    color2:
-                        parsed.glows.color2 ?? DEFAULT_BG_EFFECTS.glows.color2,
-                    opacity:
-                        parsed.glows.opacity ?? DEFAULT_BG_EFFECTS.glows.opacity
+                    gradients:
+                        parsed.glows.gradients ??
+                        DEFAULT_BG_EFFECTS.glows.gradients,
+                    globalOpacity:
+                        parsed.glows.globalOpacity ??
+                        DEFAULT_BG_EFFECTS.glows.globalOpacity,
+                    darkModeIntensity:
+                        parsed.glows.darkModeIntensity ??
+                        DEFAULT_BG_EFFECTS.glows.darkModeIntensity
                 }
             };
         }

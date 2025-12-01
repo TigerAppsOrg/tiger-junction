@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import "../app.pcss";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
@@ -9,9 +9,32 @@
         bgColors,
         bgEffects,
         appFont,
-        FONT_OPTIONS
+        FONT_OPTIONS,
+        type GradientConfig
     } from "$lib/stores/styles";
     import { hslToRGBComponents } from "$lib/scripts/convert";
+
+    // Generate CSS gradient string from gradient configs
+    function generateGradientCSS(
+        gradients: GradientConfig[],
+        globalOpacity: number,
+        isDarkMode: boolean,
+        darkModeIntensity: number
+    ): string {
+        if (gradients.length === 0) return "none";
+
+        const opacityMultiplier = isDarkMode ? darkModeIntensity : 1;
+        const effectiveOpacity = globalOpacity * opacityMultiplier;
+
+        return gradients
+            .map(g => {
+                const rgbComponents = hslToRGBComponents(g.color);
+                const finalOpacity = effectiveOpacity * g.opacity;
+
+                return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgbComponents}, ${finalOpacity}) 0%, transparent ${g.blur}%)`;
+            })
+            .join(", ");
+    }
     import ToastLib from "$lib/components/general/ToastLib.svelte";
     import NoiseFilter from "$lib/components/ui/NoiseFilter.svelte";
 
@@ -61,9 +84,6 @@
                 ? Math.min($bgEffects.noise.opacity * 0.16, 0.15) // Much subtler in dark mode
                 : $bgEffects.noise.opacity
             : 0;
-        const glowOpacity = $bgEffects.glows.enabled
-            ? $bgEffects.glows.opacity
-            : 0;
 
         document.documentElement.style.setProperty(
             "--noise-opacity",
@@ -73,17 +93,19 @@
             "--noise-frequency",
             String($bgEffects.noise.baseFrequency)
         );
+
+        // Generate and apply dynamic gradient CSS
+        const gradientCSS = $bgEffects.glows.enabled
+            ? generateGradientCSS(
+                  $bgEffects.glows.gradients,
+                  $bgEffects.glows.globalOpacity,
+                  $darkTheme,
+                  $bgEffects.glows.darkModeIntensity
+              )
+            : "none";
         document.documentElement.style.setProperty(
-            "--glow-opacity",
-            String(glowOpacity)
-        );
-        document.documentElement.style.setProperty(
-            "--glow-color-1",
-            hslToRGBComponents($bgEffects.glows.color1)
-        );
-        document.documentElement.style.setProperty(
-            "--glow-color-2",
-            hslToRGBComponents($bgEffects.glows.color2)
+            "--gradient-background",
+            gradientCSS
         );
     }
 

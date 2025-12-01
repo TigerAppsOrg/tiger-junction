@@ -12,12 +12,18 @@
         appFont,
         FONT_OPTIONS,
         DEFAULT_FONT,
+        createGradient,
+        MAX_GRADIENTS,
         type CalColors,
         type BgColors,
-        type BackgroundEffects
+        type BackgroundEffects,
+        type GradientConfig
     } from "$lib/stores/styles";
     import { colorPalettes, type Palette } from "$lib/scripts/ReCal+/palettes";
     import { rgbToHSL, hslToRGB } from "$lib/scripts/convert";
+    import GradientCanvas from "./GradientCanvas.svelte";
+    import GradientEditor from "./GradientEditor.svelte";
+    import GradientList from "./GradientList.svelte";
 
     $: open = $panelStore === "theme";
 
@@ -216,13 +222,66 @@
         });
     };
 
+    // Selected gradient for editing
+    let selectedGradientId: string | null = null;
+
+    $: selectedGradient = $bgEffects.glows.gradients.find(
+        g => g.id === selectedGradientId
+    );
+
     /**
-     * Update glow color (convert from RGB to HSL)
+     * Handle gradient selection
      */
-    const updateGlowColor = (colorNum: 1 | 2, rgbValue: string) => {
-        const hslValue = rgbToHSL(rgbValue);
-        const key = colorNum === 1 ? "color1" : "color2";
-        updateGlow(key, hslValue);
+    const handleGradientSelect = (e: CustomEvent<{ id: string }>) => {
+        selectedGradientId = e.detail.id || null;
+    };
+
+    /**
+     * Handle gradient position change (from canvas drag)
+     */
+    const handleGradientMove = (
+        e: CustomEvent<{ id: string; x: number; y: number }>
+    ) => {
+        const { id, x, y } = e.detail;
+        const updatedGradients = $bgEffects.glows.gradients.map(g =>
+            g.id === id ? { ...g, x, y } : g
+        );
+        updateGlow("gradients", updatedGradients);
+    };
+
+    /**
+     * Handle gradient update (from editor)
+     */
+    const handleGradientUpdate = (e: CustomEvent<GradientConfig>) => {
+        const updated = e.detail;
+        const updatedGradients = $bgEffects.glows.gradients.map(g =>
+            g.id === updated.id ? updated : g
+        );
+        updateGlow("gradients", updatedGradients);
+    };
+
+    /**
+     * Handle gradient delete
+     */
+    const handleGradientDelete = (e: CustomEvent<{ id: string }>) => {
+        const { id } = e.detail;
+        const updatedGradients = $bgEffects.glows.gradients.filter(
+            g => g.id !== id
+        );
+        updateGlow("gradients", updatedGradients);
+        if (selectedGradientId === id) {
+            selectedGradientId = null;
+        }
+    };
+
+    /**
+     * Add a new gradient
+     */
+    const handleAddGradient = () => {
+        if ($bgEffects.glows.gradients.length >= MAX_GRADIENTS) return;
+        const newGradient = createGradient();
+        updateGlow("gradients", [...$bgEffects.glows.gradients, newGradient]);
+        selectedGradientId = newGradient.id;
     };
 
     /**
@@ -324,12 +383,12 @@
                             ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
                             : ""}>
                         <span
-                            class="text-2xl dark:text-zinc-100"
+                            class="text-3xl dark:text-zinc-100"
                             style="font-family: '{font.name}', {font.fallback}">
                             Aa
                         </span>
                         <span
-                            class="text-[10px] text-zinc-500 dark:text-zinc-400 truncate w-full text-center">
+                            class="text-[12px] text-zinc-500 dark:text-zinc-400 truncate w-full text-center">
                             {font.name}
                         </span>
                     </button>
@@ -611,83 +670,50 @@
                         </div>
 
                         {#if $bgEffects.glows.enabled}
-                            <div class="space-y-3">
-                                <div class="flex gap-3">
-                                    <label
-                                        class="color-swatch flex-1"
-                                        title="Glow Color 1">
-                                        <div class="color-input-wrapper w-full">
-                                            <input
-                                                type="color"
-                                                value={hslToRGB(
-                                                    $bgEffects.glows.color1
-                                                )}
-                                                on:input={e =>
-                                                    updateGlowColor(
-                                                        1,
-                                                        e.currentTarget.value
-                                                    )}
-                                                class="color-input" />
-                                            <div
-                                                class="color-display w-full h-8"
-                                                style="background-color: {hslToRGB(
-                                                    $bgEffects.glows.color1
-                                                )}" />
-                                        </div>
-                                        <span
-                                            class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                            Color 1
-                                        </span>
-                                    </label>
-                                    <label
-                                        class="color-swatch flex-1"
-                                        title="Glow Color 2">
-                                        <div class="color-input-wrapper w-full">
-                                            <input
-                                                type="color"
-                                                value={hslToRGB(
-                                                    $bgEffects.glows.color2
-                                                )}
-                                                on:input={e =>
-                                                    updateGlowColor(
-                                                        2,
-                                                        e.currentTarget.value
-                                                    )}
-                                                class="color-input" />
-                                            <div
-                                                class="color-display w-full h-8"
-                                                style="background-color: {hslToRGB(
-                                                    $bgEffects.glows.color2
-                                                )}" />
-                                        </div>
-                                        <span
-                                            class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                            Color 2
-                                        </span>
-                                    </label>
-                                </div>
-                                <div>
-                                    <span
-                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                        Intensity: {Math.round(
-                                            $bgEffects.glows.opacity * 100
-                                        )}%
-                                    </span>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="0.5"
-                                        step="0.02"
-                                        value={$bgEffects.glows.opacity}
-                                        on:input={e =>
-                                            updateGlow(
-                                                "opacity",
-                                                parseFloat(
-                                                    e.currentTarget.value
-                                                )
-                                            )}
-                                        class="slider" />
-                                </div>
+                            <!-- Canvas Preview -->
+                            <GradientCanvas
+                                gradients={$bgEffects.glows.gradients}
+                                selectedId={selectedGradientId}
+                                globalOpacity={$bgEffects.glows.globalOpacity}
+                                on:select={handleGradientSelect}
+                                on:move={handleGradientMove} />
+
+                            <!-- Gradient List -->
+                            <GradientList
+                                gradients={$bgEffects.glows.gradients}
+                                selectedId={selectedGradientId}
+                                on:select={handleGradientSelect}
+                                on:add={handleAddGradient} />
+
+                            <!-- Selected Gradient Editor -->
+                            {#if selectedGradient}
+                                <GradientEditor
+                                    gradient={selectedGradient}
+                                    on:update={handleGradientUpdate}
+                                    on:delete={handleGradientDelete} />
+                            {/if}
+
+                            <!-- Global Intensity -->
+                            <div
+                                class="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                                <span
+                                    class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                    Global Intensity: {Math.round(
+                                        $bgEffects.glows.globalOpacity * 100
+                                    )}%
+                                </span>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="0.5"
+                                    step="0.02"
+                                    value={$bgEffects.glows.globalOpacity}
+                                    on:input={e =>
+                                        updateGlow(
+                                            "globalOpacity",
+                                            parseFloat(e.currentTarget.value)
+                                        )}
+                                    class="slider" />
                             </div>
                         {/if}
                     </div>
