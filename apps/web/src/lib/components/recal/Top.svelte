@@ -252,10 +252,15 @@
                 {:then}
                     <div
                         class="flex gap-2"
+                        style={cssVarStyles}
                         use:dndzone={{
                             items: $schedules[$currentTerm],
                             flipDurationMs,
-                            type: "schedule"
+                            type: "schedule",
+                            dropTargetStyle: {
+                                outline: "2px solid var(--bg)",
+                                borderRadius: "2px"
+                            }
                         }}
                         on:consider={handleDndConsider}
                         on:finalize={handleDndFinalize}>
