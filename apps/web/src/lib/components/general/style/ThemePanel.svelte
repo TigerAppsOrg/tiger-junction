@@ -7,8 +7,22 @@
 
     $: open = $panelStore === "theme";
 
+    // Spinning animation state for theme toggle
+    let spinning = false;
+
+    const toggleTheme = () => {
+        spinning = true;
+        darkTheme.set(!$darkTheme);
+        setTimeout(() => {
+            spinning = false;
+        }, 500);
+    };
+
     // Dark palettes that should auto-enable dark mode
     const DARK_PALETTES = ["Midnight", "Cobalt", "Shadow", "Crimson", "Aurora"];
+
+    // Track the last selected theme for "Reset to Theme" functionality
+    let lastSelectedTheme: { name: string; colors: CalColors } | null = null;
 
     /**
      * Apply a preset palette
@@ -22,6 +36,7 @@
             ) as CalColors;
 
         calColors.set(hslColors);
+        lastSelectedTheme = { name, colors: hslColors };
 
         // Auto-toggle dark mode for dark palettes
         if (DARK_PALETTES.includes(name)) {
@@ -40,10 +55,20 @@
     };
 
     /**
-     * Reset to default colors
+     * Reset to last selected theme
+     */
+    const resetToTheme = () => {
+        if (lastSelectedTheme) {
+            calColors.set(lastSelectedTheme.colors);
+        }
+    };
+
+    /**
+     * Reset to app default colors
      */
     const resetToDefault = () => {
         calColors.set(DEFAULT_RCARD_COLORS);
+        lastSelectedTheme = null;
     };
 
     /**
@@ -81,7 +106,7 @@
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="w-5 h-5 dark:text-zinc-100"
+                        class="w-5 h-5 dark:text-zinc-100 {spinning ? 'spin' : ''}"
                     >
                         <path
                             stroke-linecap="round"
@@ -96,7 +121,7 @@
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="w-5 h-5 dark:text-zinc-100"
+                        class="w-5 h-5 dark:text-zinc-100 {spinning ? 'spin' : ''}"
                     >
                         <path
                             stroke-linecap="round"
@@ -108,7 +133,7 @@
                 <span class="font-medium dark:text-zinc-100">Dark Mode</span>
             </div>
             <button
-                on:click={() => darkTheme.set(!$darkTheme)}
+                on:click={toggleTheme}
                 class="relative w-11 h-6 rounded-full transition-colors
                        {$darkTheme ? 'bg-blue-600' : 'bg-zinc-300 dark:bg-zinc-600'}"
             >
@@ -169,15 +194,27 @@
             </div>
         </div>
 
-        <!-- Reset Button -->
-        <button
-            on:click={resetToDefault}
-            class="w-full py-2 px-4 rounded-lg text-sm font-medium
-                   bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300
-                   hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-        >
-            Reset to Default
-        </button>
+        <!-- Reset Buttons -->
+        <div class="flex gap-2">
+            {#if lastSelectedTheme}
+                <button
+                    on:click={resetToTheme}
+                    class="flex-1 py-2 px-3 rounded-lg text-sm font-medium
+                           bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300
+                           hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                >
+                    Reset to {lastSelectedTheme.name}
+                </button>
+            {/if}
+            <button
+                on:click={resetToDefault}
+                class="flex-1 py-2 px-3 rounded-lg text-sm font-medium
+                       bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300
+                       hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            >
+                Reset to Default
+            </button>
+        </div>
     </div>
 </SidePanel>
 
@@ -187,5 +224,18 @@
                border-zinc-200 dark:border-zinc-700
                hover:border-zinc-400 dark:hover:border-zinc-500
                transition-colors cursor-pointer;
+    }
+
+    .spin {
+        animation: spin 0.5s ease-in-out;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>

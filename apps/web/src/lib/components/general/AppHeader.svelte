@@ -14,6 +14,17 @@
     };
 
     $: cssVarStyles = getStyles("0");
+
+    // Spinning animation state for theme toggle
+    let spinning = false;
+
+    const toggleTheme = () => {
+        spinning = true;
+        darkTheme.set(!$darkTheme);
+        setTimeout(() => {
+            spinning = false;
+        }, 500);
+    };
 </script>
 
 <nav
@@ -33,7 +44,7 @@ dark:border-zinc-700 border-zinc-200"
 
         <div id="right" class="sm:space-x-6 space-x-4 flex items-center">
             <button
-                on:click={() => ($darkTheme = !$darkTheme)}
+                on:click={toggleTheme}
                 class="btn-circ">
                 {#if $darkTheme}
                     <svg
@@ -42,7 +53,7 @@ dark:border-zinc-700 border-zinc-200"
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="btn-icon">
+                        class="btn-icon {spinning ? 'spin' : ''}">
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -55,7 +66,7 @@ dark:border-zinc-700 border-zinc-200"
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="btn-icon">
+                        class="btn-icon {spinning ? 'spin' : ''}">
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -135,5 +146,18 @@ dark:border-zinc-700 border-zinc-200"
 
     .btn-icon {
         @apply w-5 h-5;
+    }
+
+    .spin {
+        animation: spin 0.5s ease-in-out;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
