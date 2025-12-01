@@ -74,10 +74,10 @@ const fetchUserSchedules = async (
     // Fetch schedules
     const { data, error } = await supabase
         .from("schedules")
-        .select("id, title")
+        .select("id, title, display_order")
         .eq("user_id", user.data.user.id)
         .eq("term", term)
-        .order("id", { ascending: true });
+        .order("display_order", { ascending: true });
 
     if (error) return false;
 
@@ -86,9 +86,14 @@ const fetchUserSchedules = async (
         const { data: data2, error } = await supabase
             .from("schedules")
             .insert([
-                { user_id: user.data.user.id, term, title: "My Schedule" }
+                {
+                    user_id: user.data.user.id,
+                    term,
+                    title: "My Schedule",
+                    display_order: 0
+                }
             ])
-            .select()
+            .select("id, title, display_order")
             .single();
 
         if (error) return false;
@@ -98,7 +103,8 @@ const fetchUserSchedules = async (
             x[term as keyof RawCourseData] = [
                 {
                     id: data2.id,
-                    title: data2.title
+                    title: data2.title,
+                    displayOrder: data2.display_order
                 }
             ];
             return x;
@@ -111,7 +117,8 @@ const fetchUserSchedules = async (
     const ids = data.map(x => {
         return {
             id: x.id,
-            title: x.title
+            title: x.title,
+            displayOrder: x.display_order
         };
     });
 

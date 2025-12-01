@@ -203,6 +203,7 @@ export const SECTION_OBJ: RawSectionData = Object.keys(TERM_MAP)
 type ScheduleEntry = {
     id: number;
     title: string;
+    displayOrder: number;
 };
 
 function createScheduleStore() {

@@ -2,6 +2,7 @@
     import "../app.pcss";
     import { invalidate } from "$app/navigation";
     import { onMount } from "svelte";
+    import { browser } from "$app/environment";
     import { darkTheme, isMobile } from "$lib/stores/styles";
     import ToastLib from "$lib/components/general/ToastLib.svelte";
 
@@ -10,7 +11,14 @@
     let { supabase, session } = data;
     $: ({ supabase, session } = data);
 
-    $: dark = $darkTheme;
+    // Sync dark mode class on <html> element with the store
+    $: if (browser) {
+        if ($darkTheme) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }
 
     onMount(() => {
         $isMobile = window.innerWidth < 600;
@@ -27,7 +35,7 @@
     });
 </script>
 
-<div class="font-lato" class:dark>
+<div class="font-lato">
     <ToastLib />
     <slot />
 </div>

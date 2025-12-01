@@ -30,8 +30,11 @@
     import { getContext } from "svelte";
     import Loader from "../ui/Loader.svelte";
     import { scheduleEventMap } from "$lib/stores/events";
+    import { dndzone } from "svelte-dnd-action";
+    import { flip } from "svelte/animate";
 
     const supabase = getContext("supabase") as SupabaseClient;
+    const flipDurationMs = 200;
 
     // Change the current term
     const handleTermChange = async (term: number) => {
@@ -72,6 +75,38 @@
 
         modalStore.push("addSchedule");
     };
+
+    // Drag-and-drop handlers for schedule reordering
+    function handleDndConsider(e: CustomEvent) {
+        schedules.update(s => {
+            s[$currentTerm] = e.detail.items;
+            return s;
+        });
+    }
+
+    async function handleDndFinalize(e: CustomEvent) {
+        schedules.update(s => {
+            s[$currentTerm] = e.detail.items;
+            return s;
+        });
+        await persistScheduleOrder();
+    }
+
+    async function persistScheduleOrder() {
+        const termSchedules = $schedules[$currentTerm];
+        for (let i = 0; i < termSchedules.length; i++) {
+            const { error } = await supabase
+                .from("schedules")
+                .update({ display_order: i })
+                .eq("id", termSchedules[i].id);
+
+            if (error) {
+                toastStore.add("error", "Failed to save schedule order");
+                console.error("Error updating order:", error);
+                return;
+            }
+        }
+    }
 
     // Confetti animation
     const invokeFun = () => {
@@ -215,18 +250,29 @@
                 {#await fetchUserSchedules(supabase, $currentTerm)}
                     <Loader />
                 {:then}
-                    {#key $schedules[$currentTerm]}
-                        {#each $schedules[$currentTerm] as schedule}
-                            {#if $currentSchedule === schedule.id}
-                                <button
-                                    class="flex items-center gap-4 card
-                {$currentSchedule === schedule.id ? '' : 'termchoice'}"
-                                    class:selected={$currentSchedule ===
-                                        schedule.id}
-                                    on:click={() =>
-                                        modalStore.push("editSchedule")}>
-                                    <span class="whitespace-nowrap"
-                                        >{schedule.title}</span>
+                    <div
+                        class="flex gap-2"
+                        use:dndzone={{
+                            items: $schedules[$currentTerm],
+                            flipDurationMs,
+                            type: "schedule"
+                        }}
+                        on:consider={handleDndConsider}
+                        on:finalize={handleDndFinalize}>
+                        {#each $schedules[$currentTerm] as schedule (schedule.id)}
+                            <button
+                                animate:flip={{ duration: flipDurationMs }}
+                                class="card {$currentSchedule === schedule.id
+                                    ? 'flex items-center gap-4'
+                                    : 'termchoice'}"
+                                class:selected={$currentSchedule === schedule.id}
+                                on:click={() =>
+                                    $currentSchedule === schedule.id
+                                        ? modalStore.push("editSchedule")
+                                        : handleScheduleChange(schedule.id)}>
+                                <span class="whitespace-nowrap"
+                                    >{schedule.title}</span>
+                                {#if $currentSchedule === schedule.id}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
@@ -239,37 +285,28 @@
                                             stroke-linejoin="round"
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                     </svg>
-                                </button>
-                            {:else}
-                                <button
-                                    class="card termchoice"
-                                    on:click={() =>
-                                        handleScheduleChange(schedule.id)}>
-                                    <span class="whitespace-nowrap">
-                                        {schedule.title}
-                                    </span>
-                                </button>
-                            {/if}
+                                {/if}
+                            </button>
                         {/each}
-                        <button
-                            class="card termchoice"
-                            on:click={() => {
-                                handleAddSchedule();
-                            }}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                        </button>
-                    {/key}
+                    </div>
+                    <button
+                        class="card termchoice"
+                        on:click={() => {
+                            handleAddSchedule();
+                        }}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
                 {:catch}
                     <button
                         class="card termchoice"
@@ -317,7 +354,11 @@
     }
 
     .card {
-        @apply px-3 text-sm rounded-sm;
+        @apply px-3 text-sm rounded-sm cursor-grab;
+    }
+
+    .card:active {
+        @apply cursor-grabbing;
     }
 
     .termchoice:hover {

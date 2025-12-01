@@ -37,15 +37,19 @@
             return;
         }
 
+        // Get next display order
+        const nextOrder = $schedules[$currentTerm].length;
+
         // Upload to database
         supabase
             .from("schedules")
             .insert({
                 title: input.trim(),
                 term: $currentTerm,
-                user_id: user.id
+                user_id: user.id,
+                display_order: nextOrder
             })
-            .select("id, title")
+            .select("id, title, display_order")
             .then(res => {
                 if (res.error) {
                     console.log(res.error);
@@ -58,7 +62,14 @@
 
                 // Update schedule store
                 schedules.update(x => {
-                    x[$currentTerm] = [...x[$currentTerm], res.data[0]];
+                    x[$currentTerm] = [
+                        ...x[$currentTerm],
+                        {
+                            id: res.data[0].id,
+                            title: res.data[0].title,
+                            displayOrder: res.data[0].display_order
+                        }
+                    ];
                     return x;
                 });
 
