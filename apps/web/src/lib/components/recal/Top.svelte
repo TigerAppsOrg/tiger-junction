@@ -113,8 +113,13 @@
     };
 
     // Handle theme changes (reference $calColors to establish reactive dependency)
-    $: cssVarStyles = ($calColors, getStyles("0"));
-    $: eventStyles = ($calColors, getStyles("6"));
+    let cssVarStyles: string;
+    let eventStyles: string;
+    $: {
+        $calColors;
+        cssVarStyles = getStyles("0");
+        eventStyles = getStyles("6");
+    }
 </script>
 
 <div
