@@ -162,9 +162,6 @@
         }
     };
 
-    /**
-     * Reset to app default colors
-     */
     const resetToDefault = () => {
         calColors.set(DEFAULT_RCARD_COLORS);
         bgColors.set(DEFAULT_BG_COLORS);
@@ -172,12 +169,9 @@
         appFont.set(DEFAULT_FONT);
         darkTheme.set(false);
         lastSelectedTheme = null;
-        effectsExpanded = false;
 
-        // Remove from localStorage
-        if (typeof window !== "undefined") {
+        if (typeof window !== "undefined")
             localStorage.removeItem(LAST_THEME_KEY);
-        }
     };
 
     /**
@@ -305,9 +299,6 @@
             })
             .map(([_, value]) => value);
     };
-
-    // State for collapsible sections - auto-expand if any effects are enabled
-    let effectsExpanded = $bgEffects.noise.enabled || $bgEffects.glows.enabled;
 </script>
 
 <SidePanel
@@ -540,193 +531,169 @@
 
         <!-- Background Effects (Collapsible) -->
         <div class="border-t border-zinc-200 dark:border-zinc-700 pt-4">
-            <button
-                on:click={() => (effectsExpanded = !effectsExpanded)}
-                class="flex items-center justify-between w-full text-left">
+            <button class="flex items-center justify-between w-full text-left">
                 <h3
                     class="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
                     Advanced Background Effects
                 </h3>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-4 h-4 text-zinc-500 transition-transform {effectsExpanded
-                        ? 'rotate-180'
-                        : ''}">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
             </button>
 
-            {#if effectsExpanded}
-                <div class="mt-3 space-y-4">
-                    <!-- Noise Settings -->
-                    <div
-                        class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
-                        <div class="flex items-center justify-between mb-3">
-                            <span
-                                class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                                Noise Texture
-                            </span>
-                            <button
-                                on:click={() =>
-                                    updateNoise(
-                                        "enabled",
-                                        !$bgEffects.noise.enabled
-                                    )}
-                                class="relative w-9 h-5 rounded-full transition-colors
+            <div class="mt-3 space-y-4">
+                <!-- Noise Settings -->
+                <div class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                    <div class="flex items-center justify-between mb-3">
+                        <span
+                            class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            Noise Texture
+                        </span>
+                        <button
+                            on:click={() =>
+                                updateNoise(
+                                    "enabled",
+                                    !$bgEffects.noise.enabled
+                                )}
+                            class="relative w-9 h-5 rounded-full transition-colors
                                        {$bgEffects.noise.enabled
-                                    ? 'bg-blue-600'
-                                    : 'bg-zinc-300 dark:bg-zinc-600'}">
-                                <span
-                                    class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
+                                ? 'bg-blue-600'
+                                : 'bg-zinc-300 dark:bg-zinc-600'}">
+                            <span
+                                class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
                                            transition-transform {$bgEffects
-                                        .noise.enabled
-                                        ? 'translate-x-4'
-                                        : 'translate-x-0'}" />
-                            </button>
-                        </div>
-
-                        {#if $bgEffects.noise.enabled}
-                            <div class="space-y-2">
-                                <div>
-                                    <span
-                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                        Opacity: {Math.round(
-                                            $bgEffects.noise.opacity * 100
-                                        )}%
-                                    </span>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="1"
-                                        step="0.05"
-                                        value={$bgEffects.noise.opacity}
-                                        on:input={e =>
-                                            updateNoise(
-                                                "opacity",
-                                                parseFloat(
-                                                    e.currentTarget.value
-                                                )
-                                            )}
-                                        class="slider" />
-                                </div>
-                                <div>
-                                    <span
-                                        class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                        Grain Size: {$bgEffects.noise.baseFrequency.toFixed(
-                                            1
-                                        )}
-                                    </span>
-                                    <input
-                                        type="range"
-                                        min="0.5"
-                                        max="3"
-                                        step="0.1"
-                                        value={$bgEffects.noise.baseFrequency}
-                                        on:input={e =>
-                                            updateNoise(
-                                                "baseFrequency",
-                                                parseFloat(
-                                                    e.currentTarget.value
-                                                )
-                                            )}
-                                        class="slider" />
-                                </div>
-                            </div>
-                        {/if}
+                                    .noise.enabled
+                                    ? 'translate-x-4'
+                                    : 'translate-x-0'}" />
+                        </button>
                     </div>
 
-                    <!-- Glow Settings -->
-                    <div
-                        class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
-                        <div class="flex items-center justify-between mb-3">
-                            <span
-                                class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                                Gradient Glows
-                            </span>
-                            <button
-                                on:click={() =>
-                                    updateGlow(
-                                        "enabled",
-                                        !$bgEffects.glows.enabled
-                                    )}
-                                class="relative w-9 h-5 rounded-full transition-colors
-                                       {$bgEffects.glows.enabled
-                                    ? 'bg-blue-600'
-                                    : 'bg-zinc-300 dark:bg-zinc-600'}">
-                                <span
-                                    class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
-                                           transition-transform {$bgEffects
-                                        .glows.enabled
-                                        ? 'translate-x-4'
-                                        : 'translate-x-0'}" />
-                            </button>
-                        </div>
-
-                        {#if $bgEffects.glows.enabled}
-                            <!-- Canvas Preview -->
-                            <GradientCanvas
-                                gradients={$bgEffects.glows.gradients}
-                                selectedId={selectedGradientId}
-                                globalOpacity={$bgEffects.glows.globalOpacity}
-                                on:select={handleGradientSelect}
-                                on:move={handleGradientMove} />
-
-                            <!-- Gradient List -->
-                            <GradientList
-                                gradients={$bgEffects.glows.gradients}
-                                selectedId={selectedGradientId}
-                                on:select={handleGradientSelect}
-                                on:add={handleAddGradient} />
-
-                            <!-- Selected Gradient Editor -->
-                            {#if selectedGradient}
-                                <GradientEditor
-                                    gradient={selectedGradient}
-                                    on:update={handleGradientUpdate}
-                                    on:delete={handleGradientDelete} />
-                            {/if}
-
-                            <!-- Global Intensity -->
-                            <div
-                                class="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                    {#if $bgEffects.noise.enabled}
+                        <div class="space-y-2">
+                            <div>
                                 <span
                                     class="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                    Global Intensity: {Math.round(
-                                        $bgEffects.glows.globalOpacity * 100
+                                    Opacity: {Math.round(
+                                        $bgEffects.noise.opacity * 100
                                     )}%
                                 </span>
                                 <input
                                     type="range"
                                     min="0"
-                                    max="0.5"
-                                    step="0.02"
-                                    value={$bgEffects.glows.globalOpacity}
+                                    max="1"
+                                    step="0.05"
+                                    value={$bgEffects.noise.opacity}
                                     on:input={e =>
-                                        updateGlow(
-                                            "globalOpacity",
+                                        updateNoise(
+                                            "opacity",
                                             parseFloat(e.currentTarget.value)
                                         )}
                                     class="slider" />
                             </div>
-                        {/if}
+                            <div>
+                                <span
+                                    class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                    Grain Size: {$bgEffects.noise.baseFrequency.toFixed(
+                                        1
+                                    )}
+                                </span>
+                                <input
+                                    type="range"
+                                    min="0.5"
+                                    max="3"
+                                    step="0.1"
+                                    value={$bgEffects.noise.baseFrequency}
+                                    on:input={e =>
+                                        updateNoise(
+                                            "baseFrequency",
+                                            parseFloat(e.currentTarget.value)
+                                        )}
+                                    class="slider" />
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+
+                <!-- Glow Settings -->
+                <div class="p-3 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
+                    <div class="flex items-center justify-between mb-3">
+                        <span
+                            class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            Gradient Glows
+                        </span>
+                        <button
+                            on:click={() =>
+                                updateGlow(
+                                    "enabled",
+                                    !$bgEffects.glows.enabled
+                                )}
+                            class="relative w-9 h-5 rounded-full transition-colors
+                                       {$bgEffects.glows.enabled
+                                ? 'bg-blue-600'
+                                : 'bg-zinc-300 dark:bg-zinc-600'}">
+                            <span
+                                class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow
+                                           transition-transform {$bgEffects
+                                    .glows.enabled
+                                    ? 'translate-x-4'
+                                    : 'translate-x-0'}" />
+                        </button>
                     </div>
 
-                    <button
-                        on:click={resetEffects}
-                        class="w-full py-1.5 px-3 rounded-lg text-xs font-medium
+                    {#if $bgEffects.glows.enabled}
+                        <!-- Canvas Preview -->
+                        <GradientCanvas
+                            gradients={$bgEffects.glows.gradients}
+                            selectedId={selectedGradientId}
+                            globalOpacity={$bgEffects.glows.globalOpacity}
+                            on:select={handleGradientSelect}
+                            on:move={handleGradientMove} />
+
+                        <!-- Gradient List -->
+                        <GradientList
+                            gradients={$bgEffects.glows.gradients}
+                            selectedId={selectedGradientId}
+                            on:select={handleGradientSelect}
+                            on:add={handleAddGradient} />
+
+                        <!-- Selected Gradient Editor -->
+                        {#if selectedGradient}
+                            <GradientEditor
+                                gradient={selectedGradient}
+                                on:update={handleGradientUpdate}
+                                on:delete={handleGradientDelete} />
+                        {/if}
+
+                        <!-- Global Intensity -->
+                        <div
+                            class="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-700">
+                            <span
+                                class="text-[10px] text-zinc-500 dark:text-zinc-400">
+                                Global Intensity: {Math.round(
+                                    $bgEffects.glows.globalOpacity * 100
+                                )}%
+                            </span>
+                            <input
+                                type="range"
+                                min="0"
+                                max="0.5"
+                                step="0.02"
+                                value={$bgEffects.glows.globalOpacity}
+                                on:input={e =>
+                                    updateGlow(
+                                        "globalOpacity",
+                                        parseFloat(e.currentTarget.value)
+                                    )}
+                                class="slider" />
+                        </div>
+                    {/if}
+                </div>
+
+                <button
+                    on:click={resetEffects}
+                    class="w-full py-1.5 px-3 rounded-lg text-xs font-medium
                                bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
                                hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
-                        Reset Effects
-                    </button>
-                </div>
-            {/if}
+                    Reset Effects
+                </button>
+            </div>
         </div>
 
         <!-- Reset Buttons -->
