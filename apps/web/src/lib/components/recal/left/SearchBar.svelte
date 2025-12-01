@@ -12,7 +12,16 @@
         searchSettings
     } from "$lib/stores/recal";
     import { sectionData } from "$lib/stores/rsections";
-    import { calColors, getStyles } from "$lib/stores/styles";
+    import { calColors, darkTheme, getStyles } from "$lib/stores/styles";
+
+    // Adjust HSL lightness: positive = darker, negative = lighter
+    const adjustLightness = (hsl: string, amount: number): string => {
+        const match = hsl.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+        if (!match) return hsl;
+        const [, h, s, l] = match;
+        const newL = Math.max(0, Math.min(100, parseInt(l) - amount));
+        return `hsl(${h}, ${s}%, ${newL}%)`;
+    };
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
@@ -57,6 +66,16 @@
     };
 
     $: cssVarStyles = getStyles("2");
+
+    // Adjust gradient colors: darken in light mode, lighten in dark mode
+    $: adj = $darkTheme ? -25 : 15;
+    $: gradColors = [
+        adjustLightness($calColors["0"], adj),
+        adjustLightness($calColors["1"], adj),
+        adjustLightness($calColors["2"], adj),
+        adjustLightness($calColors["4"], adj),
+        adjustLightness($calColors["5"], adj)
+    ];
 </script>
 
 <div class="flex flex-col justify-between h-16" style={cssVarStyles}>
@@ -106,21 +125,32 @@
                 stroke={searchFocused ? "url(#theme-gradient)" : "currentColor"}
                 class="w-6 h-6 gear-icon">
                 <defs>
-                    <linearGradient id="theme-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color={$calColors["0"]}>
-                            <animate attributeName="stop-color"
-                                values={`${$calColors["0"]};${$calColors["1"]};${$calColors["2"]};${$calColors["4"]};${$calColors["5"]};${$calColors["0"]}`}
-                                dur="3s" repeatCount="indefinite" />
+                    <linearGradient
+                        id="theme-gradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%">
+                        <stop offset="0%" stop-color={gradColors[0]}>
+                            <animate
+                                attributeName="stop-color"
+                                values={`${gradColors[0]};${gradColors[1]};${gradColors[2]};${gradColors[3]};${gradColors[4]};${gradColors[0]}`}
+                                dur="3s"
+                                repeatCount="indefinite" />
                         </stop>
-                        <stop offset="50%" stop-color={$calColors["2"]}>
-                            <animate attributeName="stop-color"
-                                values={`${$calColors["2"]};${$calColors["4"]};${$calColors["5"]};${$calColors["0"]};${$calColors["1"]};${$calColors["2"]}`}
-                                dur="3s" repeatCount="indefinite" />
+                        <stop offset="50%" stop-color={gradColors[2]}>
+                            <animate
+                                attributeName="stop-color"
+                                values={`${gradColors[2]};${gradColors[3]};${gradColors[4]};${gradColors[0]};${gradColors[1]};${gradColors[2]}`}
+                                dur="3s"
+                                repeatCount="indefinite" />
                         </stop>
-                        <stop offset="100%" stop-color={$calColors["5"]}>
-                            <animate attributeName="stop-color"
-                                values={`${$calColors["5"]};${$calColors["0"]};${$calColors["1"]};${$calColors["2"]};${$calColors["4"]};${$calColors["5"]}`}
-                                dur="3s" repeatCount="indefinite" />
+                        <stop offset="100%" stop-color={gradColors[4]}>
+                            <animate
+                                attributeName="stop-color"
+                                values={`${gradColors[4]};${gradColors[0]};${gradColors[1]};${gradColors[2]};${gradColors[3]};${gradColors[4]}`}
+                                dur="3s"
+                                repeatCount="indefinite" />
                         </stop>
                     </linearGradient>
                 </defs>
