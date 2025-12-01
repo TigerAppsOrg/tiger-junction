@@ -12,7 +12,7 @@
         searchSettings
     } from "$lib/stores/recal";
     import { sectionData } from "$lib/stores/rsections";
-    import { getStyles } from "$lib/stores/styles";
+    import { calColors, getStyles } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
@@ -21,6 +21,7 @@
     const supabase = getContext("supabase") as SupabaseClient;
 
     let inputBar: HTMLInputElement;
+    let searchFocused = false;
 
     // Number of results, under which sections are added automatically
     const THRESHOLD = 20;
@@ -87,9 +88,11 @@
             placeholder="Search"
             class="search-input std-area rounded-md"
             bind:this={inputBar}
-            on:input={triggerSearch} />
+            on:input={triggerSearch}
+            on:focus={() => (searchFocused = true)}
+            on:blur={() => (searchFocused = false)} />
         <button
-            class="adv-search"
+            class="adv-search {searchFocused ? 'focused' : ''}"
             on:click={() => {
                 if (!$ready)
                     toastStore.add("error", "Please wait for the data to load");
@@ -100,8 +103,27 @@
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6">
+                stroke={searchFocused ? "url(#theme-gradient)" : "currentColor"}
+                class="w-6 h-6 gear-icon">
+                <defs>
+                    <linearGradient id="theme-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color={$calColors["0"]}>
+                            <animate attributeName="stop-color"
+                                values={`${$calColors["0"]};${$calColors["1"]};${$calColors["2"]};${$calColors["4"]};${$calColors["5"]};${$calColors["0"]}`}
+                                dur="3s" repeatCount="indefinite" />
+                        </stop>
+                        <stop offset="50%" stop-color={$calColors["2"]}>
+                            <animate attributeName="stop-color"
+                                values={`${$calColors["2"]};${$calColors["4"]};${$calColors["5"]};${$calColors["0"]};${$calColors["1"]};${$calColors["2"]}`}
+                                dur="3s" repeatCount="indefinite" />
+                        </stop>
+                        <stop offset="100%" stop-color={$calColors["5"]}>
+                            <animate attributeName="stop-color"
+                                values={`${$calColors["5"]};${$calColors["0"]};${$calColors["1"]};${$calColors["2"]};${$calColors["4"]};${$calColors["5"]}`}
+                                dur="3s" repeatCount="indefinite" />
+                        </stop>
+                    </linearGradient>
+                </defs>
                 <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -121,12 +143,21 @@
     }
 
     .adv-search {
-        @apply h-10 w-10 flex justify-center items-center 
-    dark:text-zinc-100;
+        @apply h-10 w-10 flex justify-center items-center
+        dark:text-zinc-100;
     }
 
-    .adv-search:hover {
-        @apply text-zinc-600 dark:text-zinc-300 duration-150;
+    .adv-search:hover svg {
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     .togglebutton {

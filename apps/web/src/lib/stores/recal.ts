@@ -355,6 +355,35 @@ export const searchResults = {
             });
         }
 
+        // * Capacity
+        if (settings.sortBy["Capacity"].enabled) {
+            const termSec = get(sectionData)[term];
+            await loadSections(term, termSec);
+
+            // Calculate total capacity per course
+            const capacityMap: Record<number, number> = {};
+            for (const course of data) {
+                const sections = termSec[course.id] || [];
+                // Sum capacity of all sections (excluding unlimited capacity=999)
+                let totalCap = 0;
+                for (const sec of sections) {
+                    if (sec.cap !== 999) {
+                        totalCap += sec.cap;
+                    }
+                }
+                capacityMap[course.id] = totalCap;
+            }
+
+            data = data.sort((a, b) => {
+                const aCap = capacityMap[a.id] || 0;
+                const bCap = capacityMap[b.id] || 0;
+
+                return settings.sortBy["Capacity"].value === 0
+                    ? bCap - aCap
+                    : aCap - bCap;
+            });
+        }
+
         //--------------------------------------------------------------
         // Filter by search query
         //--------------------------------------------------------------
@@ -614,7 +643,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false
         },
         "No Cancelled": {
-            enabled: false
+            enabled: true
         },
         "No Conflicts": {
             enabled: false,
@@ -633,13 +662,17 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false,
             options: ["High to Low", "Low to High"],
             value: 0
+        },
+        "Capacity": {
+            enabled: false,
+            options: ["High to Low", "Low to High"],
+            value: 0
         }
     },
     style: {
         "Show Rating": false,
         "Show # of Comments": false,
         "Show Weighted Rating": false,
-        "Color by Rating": false,
         "Always Show Rooms": false,
         "Always Show Enrollments": false,
         "Show Instructor(s)": false,

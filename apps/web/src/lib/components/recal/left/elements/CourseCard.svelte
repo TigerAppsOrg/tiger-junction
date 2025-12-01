@@ -64,39 +64,17 @@
         }
     };
 
-    // Color by rating
+    // Search result styling
     if (category === "search") {
         styles.stripes = "";
-        if ($searchSettings.style["Color by Rating"]) {
-            if (!course.rating) {
-                styles.color = "hsl(0, 0%, 50%)";
-                fillStyles();
-            } else if (course.rating >= 4.5) {
-                styles.color = "hsl(120, 52%, 75%)";
-                fillStyles();
-            } else if (course.rating >= 4.0) {
-                styles.color = "hsl(197, 34%, 72%)";
-                fillStyles();
-            } else if (course.rating >= 3.5) {
-                styles.color = "hsl(60, 96%, 74%)";
-                fillStyles();
-            } else if (course.rating >= 3.0) {
-                styles.color = "hsl(35, 99%, 65%)";
-                fillStyles();
-            } else {
-                styles.color = "hsl(1, 100%, 69%)";
-                fillStyles();
-            }
+        if ($darkTheme) {
+            styles.color = "hsl(0, 0%, 10%)";
+            styles.text = "hsl(0, 0%, 90%)";
+            styles.hoverColor = "hsl(0, 0%, 10%)";
+            styles.hoverText = "hsl(0, 0%, 100%)";
         } else {
-            if ($darkTheme) {
-                styles.color = "hsl(0, 0%, 10%)";
-                styles.text = "hsl(0, 0%, 90%)";
-                styles.hoverColor = "hsl(0, 0%, 10%)";
-                styles.hoverText = "hsl(0, 0%, 100%)";
-            } else {
-                styles.color = "hsl(0, 0%,100%)";
-                fillStyles();
-            }
+            styles.color = "hsl(0, 0%,100%)";
+            fillStyles();
         }
 
         // Dynamic color (saved courses)

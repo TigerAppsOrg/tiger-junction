@@ -189,6 +189,7 @@
                     <!-- <TogTog name="Name" /> -->
                     <TogTog name="Rating" />
                     <TogTog name="Weighted Rating" />
+                    <TogTog name="Capacity" />
                 </div>
             </div>
             <div class="settings-area" id="style">
