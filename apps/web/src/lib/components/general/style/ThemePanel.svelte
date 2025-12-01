@@ -33,8 +33,23 @@
         "Pixel"
     ]);
 
+    const LAST_THEME_KEY = "recal-last-selected-theme";
+
     // Track the last selected theme for "Reset to Theme" functionality
+    // Load from localStorage on init
     let lastSelectedTheme: { name: string; colors: CalColors } | null = null;
+
+    // Load last selected theme from localStorage on mount
+    if (typeof window !== "undefined") {
+        const stored = localStorage.getItem(LAST_THEME_KEY);
+        if (stored) {
+            try {
+                lastSelectedTheme = JSON.parse(stored);
+            } catch {
+                localStorage.removeItem(LAST_THEME_KEY);
+            }
+        }
+    }
 
     /**
      * Apply a preset palette
@@ -49,6 +64,11 @@
 
         calColors.set(hslColors);
         lastSelectedTheme = { name, colors: hslColors };
+
+        // Persist to localStorage
+        if (typeof window !== "undefined") {
+            localStorage.setItem(LAST_THEME_KEY, JSON.stringify(lastSelectedTheme));
+        }
 
         // Auto-toggle dark mode for dark palettes
         if (DARK_PALETTES.has(name)) {
@@ -82,6 +102,11 @@
         calColors.set(DEFAULT_RCARD_COLORS);
         darkTheme.set(false);
         lastSelectedTheme = null;
+
+        // Remove from localStorage
+        if (typeof window !== "undefined") {
+            localStorage.removeItem(LAST_THEME_KEY);
+        }
     };
 
     /**
