@@ -35,10 +35,10 @@
     <div
         class="flex flex-col overflow-y-hidden border-2
         dark:border-zinc-800
-        rounded-sm">
+        rounded-sm flex-1">
         <div
             bind:this={scrollContainerEl}
-            class="overflow-y-auto"
+            class="overflow-y-auto flex-1"
             style="scrollbar-gutter: stable;">
             {#key resetKey}
                 {#each $searchResults as course}

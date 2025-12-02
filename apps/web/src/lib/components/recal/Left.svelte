@@ -94,11 +94,17 @@
 
     // Cap at measured content height to prevent gaps
     $: topHeight = Math.min(rawTopHeight, topContentHeight);
-    $: bottomHeight = usableHeight - topHeight;
+    $: bottomHeight = Math.min(usableHeight - topHeight, bottomContentHeight);
+
+    // Hide handlebar if content actually fits after capping
+    $: actuallyShowHandlebar =
+        showHandlebar && topHeight + bottomHeight >= usableHeight - 10;
 
     // Style strings
-    $: topSectionStyle = showHandlebar ? `height: ${topHeight}px;` : "";
-    $: bottomSectionStyle = showHandlebar ? `height: ${bottomHeight}px;` : "";
+    $: topSectionStyle = actuallyShowHandlebar ? `height: ${topHeight}px;` : "";
+    $: bottomSectionStyle = actuallyShowHandlebar
+        ? `height: ${bottomHeight}px;`
+        : "";
 
     function handleResize(e: CustomEvent<{ ratio: number }>) {
         if (e.detail.ratio === -1) {
@@ -126,8 +132,8 @@
         <!-- Top Section: Events + Saved -->
         <div
             class="flex flex-col gap-2 overflow-y-hidden min-h-0"
-            class:shrink-0={showHandlebar}
-            class:flex-1={!showHandlebar}
+            class:shrink-0={actuallyShowHandlebar}
+            class:flex-1={!actuallyShowHandlebar}
             style={topSectionStyle}>
             <div bind:this={eventsWrapperEl} class="shrink-0">
                 <Events />
@@ -138,7 +144,7 @@
         </div>
 
         <!-- Handlebar -->
-        {#if showHandlebar}
+        {#if actuallyShowHandlebar}
             <Handlebar
                 on:resize={handleResize}
                 containerHeight={usableHeight} />
@@ -148,9 +154,9 @@
         {#if hasSearchResults}
             <div
                 class="min-h-0 flex flex-col flex-1"
-                class:shrink-0={showHandlebar}
-                class:overflow-y-hidden={showHandlebar}
-                class:overflow-y-auto={!showHandlebar}
+                class:shrink-0={actuallyShowHandlebar}
+                class:overflow-y-hidden={actuallyShowHandlebar}
+                class:overflow-y-auto={!actuallyShowHandlebar}
                 style={bottomSectionStyle}>
                 <SearchResults bind:contentHeight={searchContentHeight} />
             </div>
