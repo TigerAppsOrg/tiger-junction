@@ -50,7 +50,9 @@
         await Promise.all(secondaryPromises);
 
         if ($schedules[term].length > 0 && term === $currentTerm) {
-            currentSchedule.set($schedules[term][0].id);
+            // Use handleScheduleChange instead of just setting currentSchedule
+            // This ensures searchCourseData is properly filtered for the current schedule
+            handleScheduleChange($schedules[term][0].id);
         }
 
         $ready = true;
@@ -90,6 +92,9 @@
             return s;
         });
         await persistScheduleOrder();
+
+        // Re-sync searchCourseData with current schedule after reorder
+        handleScheduleChange($currentSchedule);
     }
 
     async function persistScheduleOrder() {
