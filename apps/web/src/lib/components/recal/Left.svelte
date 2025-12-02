@@ -133,12 +133,11 @@
         <div
             class="flex flex-col gap-2 overflow-y-hidden min-h-0"
             class:shrink-0={actuallyShowHandlebar}
-            class:flex-1={!actuallyShowHandlebar}
             style={topSectionStyle}>
             <div bind:this={eventsWrapperEl} class="shrink-0">
                 <Events />
             </div>
-            <div class="flex-1 overflow-y-hidden min-h-0 flex flex-col">
+            <div class="overflow-y-hidden min-h-0 flex flex-col max-h-full">
                 <Saved bind:contentHeight={savedContentHeight} />
             </div>
         </div>
@@ -153,10 +152,9 @@
         <!-- Bottom Section: SearchResults -->
         {#if hasSearchResults}
             <div
-                class="min-h-0 flex flex-col flex-1"
+                class="min-h-0 flex flex-col"
                 class:shrink-0={actuallyShowHandlebar}
                 class:overflow-y-hidden={actuallyShowHandlebar}
-                class:overflow-y-auto={!actuallyShowHandlebar}
                 style={bottomSectionStyle}>
                 <SearchResults bind:contentHeight={searchContentHeight} />
             </div>

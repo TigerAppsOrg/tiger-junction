@@ -63,7 +63,7 @@
         </div>
 
         {#if saved.length > 0}
-            <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
+            <div class="flex flex-col rounded-sm overflow-y-hidden max-h-full">
                 <div
                     bind:this={scrollContainerEl}
                     class="overflow-y-auto flex-1"
