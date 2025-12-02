@@ -66,7 +66,7 @@
             <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
                 <div
                     bind:this={scrollContainerEl}
-                    class="overflow-y-auto"
+                    class="overflow-y-auto flex-1"
                     style="scrollbar-gutter: stable;">
                     {#key saved && colorChange}
                         {#each saved as course}

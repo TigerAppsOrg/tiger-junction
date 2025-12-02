@@ -125,7 +125,9 @@
         class="flex-1 overflow-y-hidden mt-2 flex flex-col gap-2">
         <!-- Top Section: Events + Saved -->
         <div
-            class="flex flex-col gap-2 overflow-y-hidden min-h-0 shrink-0"
+            class="flex flex-col gap-2 overflow-y-hidden min-h-0"
+            class:shrink-0={showHandlebar}
+            class:flex-1={!showHandlebar}
             style={topSectionStyle}>
             <div bind:this={eventsWrapperEl} class="shrink-0">
                 <Events />
