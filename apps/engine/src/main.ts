@@ -65,7 +65,7 @@ async function build(): Promise<FastifyInstance> {
   app.get("/openapi.json", async (request, reply) => {
     // `app.swagger()` is provided by @fastify/swagger after registration
     // Use `as any` to avoid TypeScript complaints in case types are not merged.
-    const spec = (app as any).swagger && (app as any).swagger();
+    const spec = app.swagger && app.swagger();
     if (!spec) {
       return reply.code(500).send({ error: "OpenAPI spec not available" });
     }

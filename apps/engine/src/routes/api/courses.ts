@@ -63,7 +63,7 @@ const coursesRoutes: FastifyPluginAsync = async (app) => {
   }, async (request, reply) => {
     // TODO: Add authentication/authorization check
     try {
-      const cache = (app as any).redis;
+      const cache = app.redis;
 
       const loader = async () => {
         const rows = await db.db
@@ -215,7 +215,7 @@ const coursesRoutes: FastifyPluginAsync = async (app) => {
     }
 
     try {
-      const cache = (app as any).redis;
+      const cache = app.redis;
 
       const loader = async () => {
         // Get courses with instructors
