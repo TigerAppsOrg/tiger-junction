@@ -3,7 +3,7 @@
     "editor.defaultFormatter": "svelte.svelte-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "editor.formatOnSave": true,
   "dbmlERDPreviewer.preferredTheme": "light",

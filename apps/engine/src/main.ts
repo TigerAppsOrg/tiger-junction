@@ -1,5 +1,5 @@
 // src/main.ts
-// Author(s): Joshua Lau
+// Author(s): Joshua Lau '26, Sai Nallani '29
 
 import Fastify, { type FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
@@ -8,7 +8,17 @@ import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
 
 import healthRoutes from "./routes/health.ts";
+import coursesRoutes from "./routes/api/courses.ts";
+import sectionsRoutes from "./routes/api/sections.ts";
+import schedulesRoutes from "./routes/api/schedules.ts";
+import usersRoutes from "./routes/api/users.ts";
+import eventsRoutes from "./routes/api/events.ts";
+import feedbackRoutes from "./routes/api/feedback.ts";
+import instructorsRoutes from "./routes/api/instructors.ts";
+import redisPlugin from "./plugins/redis.ts";
+import dbPlugin from "./plugins/db.ts";
 import snatchRoutes from "./routes/snatch.ts";
+
 
 async function build(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -32,6 +42,13 @@ async function build(): Promise<FastifyInstance> {
       servers: [{ url: "http://localhost:3000", description: "Local server" }],
       tags: [
         { name: "Health", description: "Health check endpoints" },
+        { name: "Courses", description: "Course data endpoints" },
+        { name: "Sections", description: "Section data endpoints" },
+        { name: "Schedules", description: "Schedule management endpoints" },
+        { name: "Users", description: "User-related endpoints" },
+        { name: "Events", description: "Custom event endpoints" },
+        { name: "Feedback", description: "User feedback endpoints" },
+        { name: "Instructors", description: "Instructor data endpoints" },
         { name: "Snatch", description: "TigerSnatch integration endpoints" },
       ],
     },
@@ -47,8 +64,31 @@ async function build(): Promise<FastifyInstance> {
     transformStaticCSP: (header) => header,
   });
 
+  // Expose raw OpenAPI JSON for external tooling (e.g., Bruno)
+  // NOTE: auth should be applied here if your environment requires it.
+  app.get("/openapi.json", async (request, reply) => {
+    // `app.swagger()` is provided by @fastify/swagger after registration
+    // Use `as any` to avoid TypeScript complaints in case types are not merged.
+    const spec = app.swagger && app.swagger();
+    if (!spec) {
+      return reply.code(500).send({ error: "OpenAPI spec not available" });
+    }
+    return reply.send(spec);
+  });
+
+  // Register plugins so routes can use `app.redis` and `app.db`
+  await app.register(dbPlugin);
+  await app.register(redisPlugin);
+
   // Route groups
   app.register(healthRoutes, { prefix: "/health" });
+  app.register(coursesRoutes, { prefix: "/api/courses" });
+  app.register(sectionsRoutes, { prefix: "/api/sections" });
+  app.register(schedulesRoutes, { prefix: "/api/schedules" });
+  app.register(usersRoutes, { prefix: "/api/users" });
+  app.register(eventsRoutes, { prefix: "/api/events" });
+  app.register(feedbackRoutes, { prefix: "/api/feedback" });
+  app.register(instructorsRoutes, { prefix: "/api/instructors" });
   app.register(snatchRoutes, { prefix: "/snatch" });
 
   return app;
