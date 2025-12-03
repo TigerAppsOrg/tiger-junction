@@ -1,10 +1,18 @@
 <script lang="ts">
+    import { tick } from "svelte";
     import { currentSchedule, ready, recal } from "$lib/stores/recal";
     import CourseCard from "./elements/CourseCard.svelte";
     import { savedCourses } from "$lib/stores/rpool";
     import { calColors } from "$lib/stores/styles";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
+
+    // Export for parent to read content height
+    export let contentHeight: number = 0;
+
+    // Element refs for measurement
+    let headerEl: HTMLElement;
+    let scrollContainerEl: HTMLElement;
 
     $: saved = $savedCourses[$currentSchedule]
         ? $savedCourses[$currentSchedule].sort((a, b) =>
@@ -13,38 +21,53 @@
         : [];
 
     $: colorChange = $calColors;
+
+    // Measure content height after DOM updates when content changes
+    $: if (saved && headerEl) {
+        tick().then(() => {
+            const headerHeight = headerEl?.offsetHeight ?? 0;
+            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+            contentHeight = headerHeight + cardsHeight;
+        });
+    }
 </script>
 
 {#key saved && $recal}
     {#if saved && $ready}
         <div
+            bind:this={headerEl}
             class="text-base font-normal dark:text-zinc-100 ml-1
-                    flex items-center justify-between">
+                    flex items-center justify-between serif-lowercase section-header">
             <span>
                 {saved.length} Saved
                 {saved.length === 1 ? "Course" : "Courses"}
             </span>
             <button
                 on:click={() => modalStore.push("exportCal")}
-                class="flex items-center gap-[1px] text-sm">
+                class="flex items-center gap-1 text-sm">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="w-5 h-5 calbut">
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 calbut">
                     <path
-                        fill-rule="evenodd"
-                        d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z"
-                        clip-rule="evenodd" />
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                 </svg>
 
-                <p class="calbut">Export</p>
+                <p class="calbut serif-lowercase section-header">Export</p>
             </button>
         </div>
 
         {#if saved.length > 0}
-            <div class="flex flex-col rounded-sm flex-1 overflow-y-hidden">
-                <div class="overflow-y-auto">
+            <div class="flex flex-col rounded-sm overflow-y-hidden max-h-full">
+                <div
+                    bind:this={scrollContainerEl}
+                    class="overflow-y-auto flex-1"
+                    style="scrollbar-gutter: stable;">
                     {#key saved && colorChange}
                         {#each saved as course}
                             <CourseCard {course} category="saved" />

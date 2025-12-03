@@ -1,15 +1,89 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --bg-light: hsl(0, 0%, 100%);
+    --bg-dark: hsl(240, 6%, 10%);
+    --noise-opacity: 0;
+    --noise-frequency: 1.5;
+    --gradient-background: none;
+    --app-font: "Lato", sans-serif;
+}
+
+body {
+    font-family: var(--app-font);
+}
+
 .std-area {
-    @apply overflow-auto 
+    @apply overflow-auto
     focus:outline-std-blue
-    bg-white dark:bg-zinc-900
     text-zinc-900 dark:text-zinc-100
-     border-zinc-200 dark:border-zinc-700;
+    border-zinc-200 dark:border-zinc-700;
+    background-color: var(--bg-light);
     border-width: 1px;
+}
+
+.dark .std-area {
+    background-color: var(--bg-dark);
+}
+
+@layer components {
+    /* Themed panel/control backgrounds - slightly offset from main bg */
+    .themed-panel {
+        background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
+    }
+    .dark .themed-panel {
+        background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
+    }
+
+    /* Lighter variant for nested panels */
+    .themed-panel-light {
+        background-color: color-mix(in srgb, var(--bg-light) 95%, #000);
+    }
+    .dark .themed-panel-light {
+        background-color: color-mix(in srgb, var(--bg-dark) 90%, #fff);
+    }
+}
+
+/* Background effects class for noise and glows */
+.bg-effects {
+    position: relative;
+    isolation: isolate;
+}
+
+/* Gradient glows layer */
+.bg-effects::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-background);
+    pointer-events: none;
+    z-index: -2;
+}
+
+/* Noise texture layer */
+.bg-effects::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    filter: url(#pageNoise);
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Subtler noise background for dark mode */
+.dark .bg-effects::after {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 body.waiting {
@@ -30,4 +104,14 @@ body.waiting {
 
 ::-webkit-scrollbar-thumb {
     @apply bg-zinc-400/40;
+}
+
+/* Playfair Display: lowercase course codes/titles */
+body.font-playfair .serif-lowercase {
+    text-transform: lowercase;
+}
+
+/* JetBrains Mono: smaller section headers */
+body.font-jetbrains .section-header {
+    font-size: 0.8rem;
 }

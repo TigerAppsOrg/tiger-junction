@@ -39,10 +39,10 @@ export const load = async ({ locals: { supabase } }) => {
     supaPromises.push(
         supabase
             .from("schedules")
-            .select("id, title")
+            .select("id, title, display_order")
             .eq("user_id", userId)
             .eq("term", CURRENT_TERM_ID)
-            .order("id", { ascending: true })
+            .order("display_order", { ascending: true })
     );
     supaPromises.push(
         supabase

@@ -54,15 +54,19 @@
             newTitle = newTitle.substring(0, 100);
         }
 
+        // Get next display order
+        const nextOrder = $schedules[$currentTerm].length;
+
         // Upload to database
         const { data: scheduleData, error: scheduleError } = await supabase
             .from("schedules")
             .insert({
                 title: newTitle,
                 term: $currentTerm,
-                user_id: user.id
+                user_id: user.id,
+                display_order: nextOrder
             })
-            .select("id, title");
+            .select("id, title, display_order");
 
         if (scheduleError) {
             console.error("Error duplicating schedule:", scheduleError);
@@ -71,7 +75,14 @@
 
         // Update schedule store
         schedules.update(x => {
-            x[$currentTerm] = [...x[$currentTerm], scheduleData[0]];
+            x[$currentTerm] = [
+                ...x[$currentTerm],
+                {
+                    id: scheduleData[0].id,
+                    title: scheduleData[0].title,
+                    displayOrder: scheduleData[0].display_order
+                }
+            ];
             return x;
         });
 
@@ -223,7 +234,7 @@
                 title: input.trim()
             })
             .match({ id: $currentSchedule })
-            .select("id, title")
+            .select("id, title, display_order")
             .then(res => {
                 if (res.error) {
                     console.log(res.error);
@@ -239,7 +250,11 @@
                     let index = x[$currentTerm].findIndex(
                         x => x.id === $currentSchedule
                     );
-                    x[$currentTerm][index] = res.data[0];
+                    x[$currentTerm][index] = {
+                        id: res.data[0].id,
+                        title: res.data[0].title,
+                        displayOrder: res.data[0].display_order
+                    };
                     return x;
                 });
             });

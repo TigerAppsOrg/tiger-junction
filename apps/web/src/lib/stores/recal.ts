@@ -355,6 +355,47 @@ export const searchResults = {
             });
         }
 
+        // * Capacity
+        if (settings.sortBy["Capacity"].enabled) {
+            const termSec = get(sectionData)[term];
+            await loadSections(term, termSec);
+
+            // Section priority: L > S > C > P > B > D > U
+            const SECTION_PRIORITY = ["L", "S", "C", "P", "B", "D", "U"];
+
+            // Calculate main section capacity per course
+            const capacityMap: Record<number, number> = {};
+            for (const course of data) {
+                const sections = termSec[course.id] || [];
+
+                // Find main section category
+                const mainCat = SECTION_PRIORITY.find(cat =>
+                    sections.some(s => s.category === cat)
+                );
+
+                if (mainCat) {
+                    const mainSections = sections.filter(
+                        s => s.category === mainCat
+                    );
+                    capacityMap[course.id] = mainSections.reduce(
+                        (sum, s) => sum + (s.cap !== 999 ? s.cap : 0),
+                        0
+                    );
+                } else {
+                    capacityMap[course.id] = 0;
+                }
+            }
+
+            data = data.sort((a, b) => {
+                const aCap = capacityMap[a.id] || 0;
+                const bCap = capacityMap[b.id] || 0;
+
+                return settings.sortBy["Capacity"].value === 0
+                    ? bCap - aCap
+                    : aCap - bCap;
+            });
+        }
+
         //--------------------------------------------------------------
         // Filter by search query
         //--------------------------------------------------------------
@@ -614,7 +655,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false
         },
         "No Cancelled": {
-            enabled: false
+            enabled: true
         },
         "No Conflicts": {
             enabled: false,
@@ -633,16 +674,20 @@ export const DEFAULT_SETTINGS: SearchSettings = {
             enabled: false,
             options: ["High to Low", "Low to High"],
             value: 0
+        },
+        "Capacity": {
+            enabled: false,
+            options: ["High to Low", "Low to High"],
+            value: 0
         }
     },
     style: {
         "Show Rating": false,
-        "Show # of Comments": false,
-        "Show Weighted Rating": false,
-        "Color by Rating": false,
-        "Always Show Rooms": false,
-        "Always Show Enrollments": false,
-        "Show Instructor(s)": false,
+        // "Show Weighted Rating": false,
+        // "Show # of Comments": false,
+        "Show Instructors": false,
+        "Show Enrollment": false,
+        "Always Show Calendar Box Info": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,
         "Duck": false

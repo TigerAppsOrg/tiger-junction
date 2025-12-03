@@ -64,39 +64,17 @@
         }
     };
 
-    // Color by rating
+    // Search result styling
     if (category === "search") {
         styles.stripes = "";
-        if ($searchSettings.style["Color by Rating"]) {
-            if (!course.rating) {
-                styles.color = "hsl(0, 0%, 50%)";
-                fillStyles();
-            } else if (course.rating >= 4.5) {
-                styles.color = "hsl(120, 52%, 75%)";
-                fillStyles();
-            } else if (course.rating >= 4.0) {
-                styles.color = "hsl(197, 34%, 72%)";
-                fillStyles();
-            } else if (course.rating >= 3.5) {
-                styles.color = "hsl(60, 96%, 74%)";
-                fillStyles();
-            } else if (course.rating >= 3.0) {
-                styles.color = "hsl(35, 99%, 65%)";
-                fillStyles();
-            } else {
-                styles.color = "hsl(1, 100%, 69%)";
-                fillStyles();
-            }
+        if ($darkTheme) {
+            styles.color = "hsl(0, 0%, 10%)";
+            styles.text = "hsl(0, 0%, 90%)";
+            styles.hoverColor = "hsl(0, 0%, 10%)";
+            styles.hoverText = "hsl(0, 0%, 100%)";
         } else {
-            if ($darkTheme) {
-                styles.color = "hsl(0, 0%, 10%)";
-                styles.text = "hsl(0, 0%, 90%)";
-                styles.hoverColor = "hsl(0, 0%, 10%)";
-                styles.hoverText = "hsl(0, 0%, 100%)";
-            } else {
-                styles.color = "hsl(0, 0%,100%)";
-                fillStyles();
-            }
+            styles.color = "hsl(0, 0%,100%)";
+            fillStyles();
         }
 
         // Dynamic color (saved courses)
@@ -176,10 +154,10 @@
         <button
             class="text-xs font-light text-left w-[75%] p-1"
             on:click={() => (flipped = !flipped)}>
-            <div class="font-normal">
+            <div class="font-normal serif-lowercase">
                 {code}
             </div>
-            <div>
+            <div class="serif-lowercase">
                 {title}
             </div>
 
@@ -193,9 +171,31 @@
                 {#if $searchSettings.style["Show Weighted Rating"]}
                     [{course.adj_rating} adj]
                 {/if}
+                {#if $searchSettings.style["Show Enrollment"]}
+                    {@const sections =
+                        $sectionData[$currentTerm]?.[course.id] || []}
+                    {@const priority = ["L", "S", "C", "P", "B", "D", "U"]}
+                    {@const mainCat = priority.find(cat =>
+                        sections.some(s => s.category === cat)
+                    )}
+                    {@const mainSections = mainCat
+                        ? sections.filter(s => s.category === mainCat)
+                        : []}
+                    {@const totalEnroll = mainSections.reduce(
+                        (sum, s) => sum + s.tot,
+                        0
+                    )}
+                    {@const totalCap = mainSections.reduce(
+                        (sum, s) => sum + (s.cap !== 999 ? s.cap : 0),
+                        0
+                    )}
+                    Enrollment: {totalCap > 0
+                        ? `${totalEnroll}/${totalCap}`
+                        : "N/A"}
+                {/if}
             </div>
 
-            {#if $searchSettings.style["Show Instructor(s)"]}
+            {#if $searchSettings.style["Show Instructors"]}
                 {#if course.instructors && course.instructors.length > 0}
                     {#each course.instructors as instructor}
                         <div class="text-xs italic font-light">

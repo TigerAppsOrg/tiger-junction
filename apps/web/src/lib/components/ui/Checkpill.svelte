@@ -1,10 +1,15 @@
 <script lang="ts">
     import { searchSettings } from "$lib/stores/recal";
-    import { getStyles } from "$lib/stores/styles";
+    import { calColors, getStyles, type CalColors } from "$lib/stores/styles";
     export let name: string = "";
     export let category: string;
+    export let scheme: keyof CalColors = "0";
 
-    $: cssVarStyles = getStyles("0");
+    let cssVarStyles: string;
+    $: {
+        $calColors;
+        cssVarStyles = getStyles(scheme);
+    }
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -43,30 +48,14 @@
             id={name}
             bind:checked={$searchSettings.filters[category].values[name]} />
     {/if}
-    <span class="info flex items-center gap-1">
-        <span>
-            {category === "Levels" ? name + "00" : name}
-        </span>
-        <span class="icon">
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-        </span>
+    <span class="info">
+        {category === "Levels" ? name + "00" : name}
     </span>
 </label>
 
 <style lang="postcss">
     label {
-        @apply inline-block cursor-pointer select-none rounded-full;
+        @apply inline-block cursor-pointer select-none rounded-md;
     }
 
     input[type="checkbox"] {
@@ -74,13 +63,17 @@
     }
 
     .info {
-        @apply rounded-full px-4 py-2 border-2 border-zinc-600/30
-    dark:border-zinc-200/30;
+        @apply rounded-md px-2.5 py-1 text-sm border border-zinc-300;
+    }
+    :global(.dark) .info {
+        @apply border-zinc-600;
     }
 
     .info:hover {
-        @apply bg-zinc-200 dark:bg-zinc-700 border-zinc-600/30
-    dark:border-zinc-200/30 duration-150;
+        @apply bg-zinc-200 duration-150;
+    }
+    :global(.dark) .info:hover {
+        @apply bg-zinc-700;
     }
 
     input[type="checkbox"]:checked ~ .info {
@@ -92,13 +85,5 @@
     input[type="checkbox"]:checked ~ .info:hover {
         transition-duration: 150ms;
         background-color: var(--bg-hover);
-    }
-
-    .icon {
-        @apply hidden;
-    }
-
-    input[type="checkbox"]:checked ~ .info .icon {
-        @apply inline-block;
     }
 </style>

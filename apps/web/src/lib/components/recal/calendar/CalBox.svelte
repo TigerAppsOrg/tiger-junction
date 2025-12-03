@@ -150,7 +150,7 @@
 <!-- Height is on scale from 0 to 90 -->
 <button
     id="box"
-    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75"
+    class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75 overflow-visible"
     class:hovered={isHovered()}
     style={cssVarStyles}
     on:click={handleClick}
@@ -170,25 +170,26 @@
             $eventHoverRev = null;
         }
     }}>
-    <div class="text-xs z-40 -space-y-1 relative overflow-x-hidden">
+    <div
+        class="text-xs z-40 -space-y-1 relative overflow-x-clip overflow-y-visible">
         <div class="font-light text-2xs leading-3 pb-[1px]">
             {valuesToTimeLabel(
                 params.section.start_time,
                 params.section.end_time
             )}
         </div>
-        <div class="font-normal">
+        <div class="font-normal serif-lowercase">
             {courseCode}
             {params.section.title}
         </div>
 
-        {#if ($searchSettings.style["Always Show Rooms"] || hovered) && isCourseBox(params) && params.section.room}
+        {#if ($searchSettings.style["Always Show Calendar Box Info"] || hovered) && isCourseBox(params) && params.section.room}
             <div class="font-light text-2xs leading-3 pt-[1px]">
                 {params.section.room}
             </div>
         {/if}
 
-        {#if ($searchSettings.style["Always Show Enrollments"] || hovered) && isCourseBox(params)}
+        {#if ($searchSettings.style["Always Show Calendar Box Info"] || hovered) && isCourseBox(params)}
             <div class="font-light text-2xs leading-3 pt-[1px]">
                 Enrollment: {params.section.tot}/{params.section.cap === 999
                     ? "∞"

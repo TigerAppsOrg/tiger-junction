@@ -502,7 +502,7 @@ function createScheduleEventStore() {
             targetId: number
         ): Promise<boolean> => {
             const sourceEvents = get(store)[sourceId];
-            if (sourceEvents === null) {
+            if (sourceEvents == null) {
                 console.error("Source schedule not found while duplicating");
                 return false;
             }

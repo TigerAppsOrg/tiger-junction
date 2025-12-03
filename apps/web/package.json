@@ -54,6 +54,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^22.1.0",
     "redis": "^4.6.10",
+    "svelte-dnd-action": "^0.9.67",
     "svelte-inview": "^4.0.1"
   },
   "lint-staged": {

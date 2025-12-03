@@ -1,51 +1,163 @@
 <script lang="ts">
+    import { onMount, tick } from "svelte";
     import Saved from "./left/Saved.svelte";
     import SearchResults from "./left/SearchResults.svelte";
     import SearchBar from "./left/SearchBar.svelte";
     import Events from "./left/Events.svelte";
+    import Handlebar from "./left/Handlebar.svelte";
+    import { searchResults, recal } from "$lib/stores/recal";
+    import { sectionRatio, isMobile, isEventOpen } from "$lib/stores/styles";
+
+    // Element refs
+    let sectionEl: HTMLElement;
+    let eventsWrapperEl: HTMLElement;
+
+    // Height tracking
+    let availableHeight = 0;
+
+    // Content heights from children (dynamic measurement)
+    let savedContentHeight = 0;
+    let searchContentHeight = 0;
+    let eventsHeight = 0;
+
+    // Constants
+    const HANDLEBAR_HEIGHT = 16;
+    const BASE_MIN_RATIO = 0.1;
+    const BASE_MAX_RATIO = 0.9;
+    const GAP_SIZE = 16; // Two gaps of 8px each
+    const INNER_GAP = 8;
+
+    // Force update on window resize
+    function handleWindowResize() {
+        if (sectionEl) {
+            availableHeight = sectionEl.getBoundingClientRect().height;
+        }
+        $recal = !$recal; // Force re-render like CalBox click does
+    }
+
+    onMount(() => {
+        const resizeObserver = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                availableHeight = entry.contentRect.height;
+            }
+        });
+
+        resizeObserver.observe(sectionEl);
+        return () => resizeObserver.disconnect();
+    });
+
+    // Measure events section when it changes (collapsed/expanded)
+    $: if (eventsWrapperEl && $isEventOpen !== undefined) {
+        tick().then(() => {
+            eventsHeight = eventsWrapperEl?.offsetHeight ?? 0;
+        });
+    }
+
+    // Calculate total content heights from dynamic measurements
+    $: topContentHeight = eventsHeight + INNER_GAP + savedContentHeight;
+    $: bottomContentHeight = searchContentHeight;
+
+    // Show handlebar when there are search results AND content would overflow
+    $: hasSearchResults = $searchResults.length > 0;
+    $: totalContent = topContentHeight + bottomContentHeight + INNER_GAP;
+    $: showHandlebar =
+        !$isMobile && hasSearchResults && totalContent > availableHeight;
+
+    // Calculate usable height (minus handlebar and gaps when shown)
+    $: usableHeight = showHandlebar
+        ? Math.max(0, availableHeight - HANDLEBAR_HEIGHT - GAP_SIZE)
+        : availableHeight;
+
+    // Content-based ratio constraints (using measured heights)
+    $: maxRatio =
+        usableHeight > 0
+            ? Math.min(BASE_MAX_RATIO, topContentHeight / usableHeight)
+            : BASE_MAX_RATIO;
+    $: minRatio =
+        usableHeight > 0
+            ? Math.max(BASE_MIN_RATIO, 1 - bottomContentHeight / usableHeight)
+            : BASE_MIN_RATIO;
+
+    // Default ratio for handlebar position (0.5 = middle)
+    function getDefaultRatio(): number {
+        return 0.5;
+    }
+
+    // Get effective ratio (user-set or default), clamped to valid range
+    $: effectiveRatio = Math.max(
+        minRatio,
+        Math.min(maxRatio, $sectionRatio ?? getDefaultRatio())
+    );
+
+    // Calculate heights
+    $: rawTopHeight = Math.round(usableHeight * effectiveRatio);
+
+    // Cap at measured content height to prevent gaps
+    $: topHeight = Math.min(rawTopHeight, topContentHeight);
+    $: bottomHeight = Math.min(usableHeight - topHeight, bottomContentHeight);
+
+    // Hide handlebar if content actually fits after capping
+    $: actuallyShowHandlebar =
+        showHandlebar && topHeight + bottomHeight >= usableHeight - 10;
+
+    // Style strings
+    $: topSectionStyle = actuallyShowHandlebar ? `height: ${topHeight}px;` : "";
+    $: bottomSectionStyle = actuallyShowHandlebar
+        ? `height: ${bottomHeight}px;`
+        : "";
+
+    function handleResize(e: CustomEvent<{ ratio: number }>) {
+        if (e.detail.ratio === -1) {
+            sectionRatio.reset();
+        } else {
+            // Constrain to content-based bounds
+            const clampedRatio = Math.max(
+                minRatio,
+                Math.min(maxRatio, e.detail.ratio)
+            );
+            sectionRatio.set(clampedRatio);
+        }
+    }
 </script>
+
+<svelte:window on:resize={handleWindowResize} />
 
 <div class="w-full flex flex-col h-full overflow-y-hidden">
     <div>
         <SearchBar />
     </div>
-    <section class="flex-1 overflow-y-hidden mt-2">
-        <div class="min-h-[24px]">
-            <Events />
+    <section
+        bind:this={sectionEl}
+        class="flex-1 overflow-y-hidden mt-2 flex flex-col gap-2">
+        <!-- Top Section: Events + Saved -->
+        <div
+            class="flex flex-col gap-2 overflow-y-hidden min-h-0"
+            class:shrink-0={actuallyShowHandlebar}
+            style={topSectionStyle}>
+            <div bind:this={eventsWrapperEl} class="shrink-0">
+                <Events />
+            </div>
+            <div class="overflow-y-hidden min-h-0 flex flex-col max-h-full">
+                <Saved bind:contentHeight={savedContentHeight} />
+            </div>
         </div>
-        <div>
-            <Saved />
-        </div>
-        <div>
-            <SearchResults />
-        </div>
+
+        <!-- Handlebar -->
+        {#if actuallyShowHandlebar}
+            <Handlebar
+                on:resize={handleResize}
+                containerHeight={usableHeight} />
+        {/if}
+
+        <!-- Bottom Section: SearchResults -->
+        {#if hasSearchResults}
+            <div
+                class="min-h-0 flex flex-col"
+                class:shrink-0={actuallyShowHandlebar}
+                class:overflow-y-hidden={actuallyShowHandlebar}
+                style={bottomSectionStyle}>
+                <SearchResults bind:contentHeight={searchContentHeight} />
+            </div>
+        {/if}
     </section>
 </div>
-
-<style lang="postcss">
-    /* 
-    This took hours to figure out. It allows the children to take up 
-    the remaining space in the container while maintaining a max-height
-    proportional to the parent container. This is a lesson that
-    StackOverflow is almost always better than AI for complex problems.
-
-    Credit: 
-    https://stackoverflow.com/questions/70324159/how-to-set-up-an-element-with-max-height-so-that-the-elements-inside-it-will-tak 
-    */
-
-    section {
-        display: grid;
-        grid-template-rows: repeat(auto-fit, minmax(0, min-content));
-        gap: 0.5rem;
-    }
-
-    section > *:last-child {
-        grid-row-end: span 2;
-    }
-
-    section > div {
-        /* height: fit-content; */
-        max-height: 100%;
-        @apply overflow-y-hidden flex flex-col;
-    }
-</style>

@@ -33,7 +33,7 @@
     <div
         style={cssVarStyles}
         class="text-base font-normal ml-1 dark:text-zinc-100
-                flex items-center justify-between h-6">
+                flex items-center justify-between h-6 serif-lowercase section-header">
         <span>
             {scheduleEvents.length} Custom
             {scheduleEvents.length === 1 ? "Event" : "Events"}
@@ -73,7 +73,7 @@
                         stroke-linejoin="round"
                         d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
                 </svg>
-                <p>Show</p>
+                <p class="serif-lowercase section-header">Show</p>
             {/if}
         </button>
     </div>
@@ -115,9 +115,11 @@
             <div class="overflow-y-auto">
                 <div class="mb-2">
                     {#if scheduleEvents.length === 0}
-                        <p class="text-sm">No events added yet.</p>
+                        <p class="text-sm dark:text-zinc-100">
+                            No events added yet.
+                        </p>
                     {:else}
-                        <h2 class="text-sm">
+                        <h2 class="text-sm dark:text-zinc-100">
                             {scheduleEvents.length} Added
                             {scheduleEvents.length === 1 ? "Event" : "Events"}
                         </h2>
@@ -133,9 +135,11 @@
 
                 <div>
                     {#if notInSchedule.length === 0}
-                        <p class="text-sm mb-1">No events available.</p>
+                        <p class="text-sm mb-1 dark:text-zinc-100">
+                            No events available.
+                        </p>
                     {:else}
-                        <h2 class="text-sm">
+                        <h2 class="text-sm dark:text-zinc-100">
                             {notInSchedule.length} Available
                             {notInSchedule.length === 1 ? "Event" : "Events"}
                         </h2>
@@ -160,7 +164,7 @@
 
 <style lang="postcss">
     .icon {
-        @apply w-5 h-5;
+        @apply w-4 h-4;
     }
 
     #addButton {

@@ -9,7 +9,7 @@
 </svelte:head>
 
 <div
-    class="flex-1 w-full max-w-[1500px] mx-auto dark:bg-zinc-900 dark:text-white max-h-screen overflow-clip">
+    class="flex-1 w-full max-w-[1500px] mx-auto dark:text-white max-h-screen overflow-clip">
     <!-- your markup goes here -->
     <h1>ReqTree</h1>
 </div>
