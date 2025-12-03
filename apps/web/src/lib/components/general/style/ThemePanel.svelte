@@ -305,7 +305,7 @@
     {open}
     title="Theme Settings"
     width="340px"
-    on:close={() => panelStore.close()}>
+    onclose={() => panelStore.close()}>
     <div class="p-4 space-y-6">
         <!-- Dark Mode Toggle -->
         <div class="flex items-center justify-between">

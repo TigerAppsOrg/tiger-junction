@@ -1,7 +1,11 @@
 <script lang="ts">
     import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
     import { getStyles } from "$lib/stores/styles";
-    export let name: string = "";
+
+    let { name = "" }: { name?: string } = $props();
+
+    let sortParam = $derived($searchSettings.sortBy[name]);
+    let cssVarStyles = $derived(getStyles("0"));
 
     const handleToggle = () => {
         if (sortParam.enabled) {
@@ -18,24 +22,20 @@
         $research = !$research;
     };
 
-    $: sortParam = $searchSettings.sortBy[name];
-
-    $: handleFilterChange($currentSortBy);
-    const handleFilterChange = (s: null | string) => {
+    $effect(() => {
+        const s = $currentSortBy;
         if (s == null || s !== name) {
             sortParam.enabled = false;
             sortParam.value = 0;
         }
-    };
-
-    $: cssVarStyles = getStyles("0");
+    });
 </script>
 
 <button
     class="info select-none"
     class:checked={sortParam.enabled}
     style={cssVarStyles}
-    on:click={handleToggle}>
+    onclick={handleToggle}>
     {name}{sortParam.enabled ? " — " + sortParam.options[sortParam.value] : ""}
 </button>
 

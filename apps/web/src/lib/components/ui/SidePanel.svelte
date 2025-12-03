@@ -1,15 +1,24 @@
 <script lang="ts">
-    import { createEventDispatcher, onMount } from "svelte";
+    import { onMount } from "svelte";
     import { fly, fade } from "svelte/transition";
+    import type { Snippet } from "svelte";
 
-    export let open: boolean = false;
-    export let title: string = "";
-    export let width: string = "320px";
-
-    const dispatch = createEventDispatcher();
+    let {
+        open = false,
+        title = "",
+        width = "320px",
+        onclose,
+        children
+    }: {
+        open?: boolean;
+        title?: string;
+        width?: string;
+        onclose?: () => void;
+        children?: Snippet;
+    } = $props();
 
     const close = () => {
-        dispatch("close");
+        onclose?.();
     };
 
     const handleKeydown = (e: KeyboardEvent) => {
@@ -26,11 +35,12 @@
 
 {#if open}
     <!-- Backdrop -->
-    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
     <div
         class="fixed inset-0 bg-black/20 z-50"
         transition:fade={{ duration: 200 }}
-        on:click={close} />
+        onclick={close}>
+    </div>
 
     <!-- Panel -->
     <div
@@ -45,7 +55,8 @@
                     border-zinc-200 dark:border-zinc-700">
             <h2 class="text-lg font-semibold dark:text-zinc-100">{title}</h2>
             <button
-                on:click={close}
+                onclick={close}
+                aria-label="Close panel"
                 class="p-1 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800
                        text-zinc-500 dark:text-zinc-400 transition-colors">
                 <svg
@@ -65,7 +76,7 @@
 
         <!-- Content -->
         <div class="flex-1 overflow-y-auto">
-            <slot />
+            {@render children?.()}
         </div>
     </div>
 {/if}

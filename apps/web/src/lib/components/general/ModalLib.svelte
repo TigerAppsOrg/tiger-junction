@@ -1,5 +1,6 @@
 <script lang="ts">
     import { modalStore } from "$lib/stores/modal";
+    import type { Component } from "svelte";
 
     // Recal Modals
     import AdvancedSearch from "../recal/modals/AdvancedSearch.svelte";
@@ -16,7 +17,7 @@
     import DeleteEvent from "../recal/modals/events/DeleteEvent.svelte";
 
     // Register modal components here
-    const modalComponents: Record<string, unknown> = {
+    const modalComponents: Record<string, Component<{ showModal: boolean }>> = {
         adv: AdvancedSearch,
         exportCal: ExportCal,
         addSchedule: AddSchedule,
@@ -28,8 +29,14 @@
         editEvent: EditEvent,
         deleteEvent: DeleteEvent
     };
+
+    let currentModal = $derived(
+        $modalStore && $modalStore in modalComponents
+            ? modalComponents[$modalStore]
+            : null
+    );
 </script>
 
-{#if $modalStore && $modalStore in modalComponents}
-    <svelte:component this={modalComponents[$modalStore]} showModal={true} />
+{#if currentModal}
+    <svelte:component this={currentModal} showModal={true} />
 {/if}

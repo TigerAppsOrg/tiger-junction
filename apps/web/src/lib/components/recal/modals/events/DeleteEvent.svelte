@@ -11,7 +11,7 @@
     import { type SupabaseClient } from "@supabase/supabase-js";
     import StdModal from "$lib/components/ui/StdModal.svelte";
 
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
 
     const supabase: SupabaseClient = getContext("supabase");
 
@@ -24,11 +24,13 @@
     });
 
     // While it should be impossible for this to be null, it's better to be safe
-    $: event = $deleteCandidateEvent
-        ? $deleteCandidateEvent
-        : {
-              title: "ERROR"
-          };
+    let event = $derived(
+        $deleteCandidateEvent
+            ? $deleteCandidateEvent
+            : {
+                  title: "ERROR"
+              }
+    );
 
     // Delete the event from the stores and close the modal
     const handleDelete = async () => {
@@ -52,30 +54,31 @@
 </script>
 
 <StdModal title="Delete Custom Event" stdClose={false} {showModal}>
-    <div slot="main">
+    {#snippet main()}
         <p>
             Are you sure you want to delete custom event <span
                 class="font-bold">
                 {event.title}</span
             >? This action cannot be undone.
         </p>
-    </div>
+    {/snippet}
 
-    <div
-        slot="buttons"
-        class="flex gap-2 border-t-2 mt-2 pt-2
-            border-zinc-200 dark:border-zinc-600">
-        <StdButton
-            scheme="-1"
-            message="Cancel"
-            onClick={() => {
-                modalStore.pop();
-                deleteCandidateEvent.set(null);
-            }} />
-        <StdButton
-            scheme="4"
-            message="Delete"
-            onClick={handleDelete}
-            submit={true} />
-    </div>
+    {#snippet buttons()}
+        <div
+            class="flex gap-2 border-t-2 mt-2 pt-2
+                border-zinc-200 dark:border-zinc-600">
+            <StdButton
+                scheme="-1"
+                message="Cancel"
+                onClick={() => {
+                    modalStore.pop();
+                    deleteCandidateEvent.set(null);
+                }} />
+            <StdButton
+                scheme="4"
+                message="Delete"
+                onClick={handleDelete}
+                submit={true} />
+        </div>
+    {/snippet}
 </StdModal>

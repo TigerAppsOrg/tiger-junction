@@ -28,9 +28,11 @@
     class="{style} std-area"
     bind:this={dialog}
     onclose={() => modalStore.pop()}
-    onclick={(e) => { if (e.target === dialog) dialog?.close(); }}>
+    onclick={e => {
+        if (e.target === dialog) dialog?.close();
+    }}>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div onclick={(e) => e.stopPropagation()}>
+    <div onclick={e => e.stopPropagation()}>
         {@render children?.()}
     </div>
 </dialog>

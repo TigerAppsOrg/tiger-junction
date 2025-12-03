@@ -63,7 +63,10 @@
                 "--bg-light",
                 $bgColors.light
             );
-            document.documentElement.style.setProperty("--bg-dark", $bgColors.dark);
+            document.documentElement.style.setProperty(
+                "--bg-dark",
+                $bgColors.dark
+            );
         }
     });
 

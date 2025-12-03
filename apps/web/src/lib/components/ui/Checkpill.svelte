@@ -1,24 +1,30 @@
 <script lang="ts">
     import { searchSettings } from "$lib/stores/recal";
     import { calColors, getStyles, type CalColors } from "$lib/stores/styles";
-    export let name: string = "";
-    export let category: string;
-    export let scheme: keyof CalColors = "0";
 
-    let cssVarStyles: string;
-    $: {
-        $calColors;
-        cssVarStyles = getStyles(scheme);
-    }
+    let {
+        name = "",
+        category,
+        scheme = "0" as keyof CalColors
+    }: {
+        name?: string;
+        category: string;
+        scheme?: keyof CalColors;
+    } = $props();
+
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // trigger reactivity on color changes
+        return getStyles(scheme);
+    });
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <label
     tabindex="0"
     for={name}
     style={cssVarStyles}
-    on:keydown={event => {
+    onkeydown={event => {
         if (event.key === "Enter" || event.key === " ") {
             category === "filters"
                 ? ($searchSettings.filters[name].enabled =

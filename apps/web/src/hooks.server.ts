@@ -13,9 +13,12 @@ export const handle: Handle = async ({ event, resolve }) => {
         {
             cookies: {
                 getAll: () => event.cookies.getAll(),
-                setAll: (cookiesToSet) => {
+                setAll: cookiesToSet => {
                     cookiesToSet.forEach(({ name, value, options }) => {
-                        event.cookies.set(name, value, { ...options, path: "/" });
+                        event.cookies.set(name, value, {
+                            ...options,
+                            path: "/"
+                        });
                     });
                 }
             }
@@ -45,7 +48,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
-            return name === "content-range" || name === "x-supabase-api-version";
+            return (
+                name === "content-range" || name === "x-supabase-api-version"
+            );
         }
     });
 };

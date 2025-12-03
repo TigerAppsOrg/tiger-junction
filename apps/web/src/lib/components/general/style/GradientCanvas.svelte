@@ -128,7 +128,8 @@
 
     .grid-overlay {
         @apply absolute inset-0 pointer-events-none opacity-20;
-        background-image: linear-gradient(
+        background-image:
+            linear-gradient(
                 to right,
                 theme(colors.zinc.400) 1px,
                 transparent 1px

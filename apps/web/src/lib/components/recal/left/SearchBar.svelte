@@ -67,7 +67,7 @@
 
     // Re-run when calColors changes (getStyles uses get() internally)
     let cssVarStyles: string;
-    $: $calColors, (cssVarStyles = getStyles("2"));
+    $: ($calColors, (cssVarStyles = getStyles("2")));
 
     // Adjust gradient colors: darken in light mode, lighten in dark mode
     $: adj = $darkTheme ? -25 : 15;

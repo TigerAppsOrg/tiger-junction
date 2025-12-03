@@ -2,10 +2,21 @@
     import Modal from "$lib/components/ui/Modal.svelte";
     import { modalStore } from "$lib/stores/modal";
     import StdButton from "./StdButton.svelte";
+    import type { Snippet } from "svelte";
 
-    export let title: string = "Modal";
-    export let stdClose: boolean = true;
-    export let showModal: boolean = false;
+    let {
+        title = "Modal",
+        stdClose = true,
+        showModal = false,
+        main,
+        buttons
+    }: {
+        title?: string;
+        stdClose?: boolean;
+        showModal?: boolean;
+        main?: Snippet;
+        buttons?: Snippet;
+    } = $props();
 </script>
 
 <Modal {showModal}>
@@ -13,7 +24,7 @@
         <h1 class="text-xl font-bold mb-2">{title}</h1>
 
         <div>
-            <slot name="main" />
+            {@render main?.()}
         </div>
 
         {#if stdClose}
@@ -23,7 +34,7 @@
                 <StdButton message="Close" onClick={() => modalStore.pop()} />
             </div>
         {:else}
-            <slot name="buttons" />
+            {@render buttons?.()}
         {/if}
     </div>
 </Modal>

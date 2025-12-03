@@ -16,11 +16,8 @@
 
 <style>
     main {
-        background-image: radial-gradient(
-                18% 28% at 24% 50%,
-                #ff6b6b00 7%,
-                #ff6b6b00 100%
-            ),
+        background-image:
+            radial-gradient(18% 28% at 24% 50%, #ff6b6b00 7%, #ff6b6b00 100%),
             radial-gradient(18% 28% at 18% 71%, #ffffff9c 6%, #ff6b6b00 100%),
             radial-gradient(70% 53% at 36% 76%, #4ecdc4ff 0%, #ff6b6b00 100%),
             radial-gradient(42% 53% at 15% 94%, #ffffffff 7%, #ff6b6b00 100%),
