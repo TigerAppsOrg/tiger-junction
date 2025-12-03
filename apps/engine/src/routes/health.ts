@@ -1,5 +1,5 @@
 // src/routes/health.ts
-// Author(s): Joshua Lau
+// Author(s): Joshua Lau '26
 
 import { type FastifyPluginAsync } from "fastify";
 import os from "os";

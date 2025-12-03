@@ -1,5 +1,5 @@
 // src/main.ts
-// Author(s): Joshua Lau
+// Author(s): Joshua Lau '26, Sai Nallani '29
 
 import Fastify, { type FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
@@ -16,6 +16,7 @@ import eventsRoutes from "./routes/api/events.ts";
 import feedbackRoutes from "./routes/api/feedback.ts";
 import instructorsRoutes from "./routes/api/instructors.ts";
 import redisPlugin from "./plugins/redis.ts";
+import dbPlugin from "./plugins/db.ts";
 
 async function build(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -71,9 +72,12 @@ async function build(): Promise<FastifyInstance> {
     }
     return reply.send(spec);
   });
-  // Route groups
-  // Register Redis plugin so routes can use `app.redis`
+
+  // Register plugins so routes can use `app.redis` and `app.db`
+  await app.register(dbPlugin);
   await app.register(redisPlugin);
+
+  // Route groups
   app.register(healthRoutes, { prefix: "/health" });
   app.register(coursesRoutes, { prefix: "/api/courses" });
   app.register(sectionsRoutes, { prefix: "/api/sections" });
@@ -82,6 +86,7 @@ async function build(): Promise<FastifyInstance> {
   app.register(eventsRoutes, { prefix: "/api/events" });
   app.register(feedbackRoutes, { prefix: "/api/feedback" });
   app.register(instructorsRoutes, { prefix: "/api/instructors" });
+
   return app;
 }
 
