@@ -1,23 +1,31 @@
-<!-- 
+<!--
     Standard button component
 -->
 
 <script lang="ts">
     import { getStyles, type CalColors } from "$lib/stores/styles";
 
-    export let scheme: keyof CalColors = "0";
-    export let message = "DEFAULT MESSAGE";
-    export let onClick = () => {};
-    export let submit = false;
-    export let className = "";
+    let {
+        scheme = "0" as keyof CalColors,
+        message = "DEFAULT MESSAGE",
+        onClick = () => {},
+        submit = false,
+        className = ""
+    }: {
+        scheme?: keyof CalColors;
+        message?: string;
+        onClick?: () => void;
+        submit?: boolean;
+        className?: string;
+    } = $props();
 
     // Handle theme changes
-    $: cssVarStyles = getStyles(scheme);
+    let cssVarStyles = $derived(getStyles(scheme));
 </script>
 
 <button
     class={scheme + " " + className}
-    on:click={onClick}
+    onclick={onClick}
     style={cssVarStyles}
     type={submit ? "submit" : "button"}>
     {message}

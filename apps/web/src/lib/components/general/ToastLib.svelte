@@ -8,7 +8,7 @@
         {#each $toastStore as toast (toast.id)}
             <Toast
                 type={toast.type}
-                on:dismiss={() => toastStore.remove(toast.id)}>
+                ondismiss={() => toastStore.remove(toast.id)}>
                 {toast.message}
             </Toast>
         {/each}

@@ -1,24 +1,37 @@
 <script lang="ts">
     import { modalStore } from "$lib/stores/modal";
+    import type { Snippet } from "svelte";
 
-    export let showModal: boolean;
-    export let style: string = "";
+    let {
+        showModal,
+        style = "",
+        children
+    }: {
+        showModal: boolean;
+        style?: string;
+        children?: Snippet;
+    } = $props();
 
-    let dialog: HTMLDialogElement;
+    let dialog: HTMLDialogElement | undefined = $state();
 
-    $: if (dialog && showModal) dialog.showModal();
-    $: if (dialog && !showModal) dialog.close();
+    $effect(() => {
+        if (dialog && showModal) dialog.showModal();
+    });
+
+    $effect(() => {
+        if (dialog && !showModal) dialog.close();
+    });
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_noninteractive_element_interactions -->
 <dialog
     class="{style} std-area"
     bind:this={dialog}
-    on:close={() => modalStore.pop()}
-    on:click|self={() => dialog.close()}>
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div on:click|stopPropagation>
-        <slot />
+    onclose={() => modalStore.pop()}
+    onclick={(e) => { if (e.target === dialog) dialog?.close(); }}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div onclick={(e) => e.stopPropagation()}>
+        {@render children?.()}
     </div>
 </dialog>
 
