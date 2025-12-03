@@ -4,7 +4,7 @@
 import { type FastifyPluginAsync } from "fastify";
 import DB from "../../db/index.js";
 import * as schema from "../../db/schema.js";
-import { eq, asc, sql } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 const coursesRoutes: FastifyPluginAsync = async (app) => {
   const db = new DB();
