@@ -35,75 +35,80 @@
 
     const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
-    // Determine color of card
-    const styles = {
-        color: "",
-        text: "",
-        hoverColor: "",
-        hoverText: "",
-        alpha: "1",
-        border: "",
-        trans: "hidden",
-        stripes: `repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(0, 0, 0, 0.05) 5px,
-        rgba(0, 0, 0, 0.05) 10px);`
-    };
+    // Helper to compute text/hover colors from base color
+    const computeDerivedColors = (baseColor: string) => {
+        if (!baseColor) return { text: "", hoverColor: "", hoverText: "" };
 
-    const fillStyles = () => {
-        if (styles.color === "") return;
-
-        if (parseInt(styles.color.split(",")[2].split("%")[0]) > 50) {
-            styles.text = darkenHSL(styles.color, 60);
-            styles.hoverColor = darkenHSL(styles.color, 10);
-            styles.hoverText = darkenHSL(styles.color, 70);
+        const lightness = parseInt(baseColor.split(",")[2]?.split("%")[0] || "50");
+        if (lightness > 50) {
+            return {
+                text: darkenHSL(baseColor, 60),
+                hoverColor: darkenHSL(baseColor, 10),
+                hoverText: darkenHSL(baseColor, 70)
+            };
         } else {
-            styles.text = darkenHSL(styles.color, -60);
-            styles.hoverColor = darkenHSL(styles.color, -10);
-            styles.hoverText = darkenHSL(styles.color, -70);
+            return {
+                text: darkenHSL(baseColor, -60),
+                hoverColor: darkenHSL(baseColor, -10),
+                hoverText: darkenHSL(baseColor, -70)
+            };
         }
     };
 
-    // Search result styling
-    if (category === "search") {
-        styles.stripes = "";
-        if ($darkTheme) {
-            styles.color = "hsl(0, 0%, 10%)";
-            styles.text = "hsl(0, 0%, 90%)";
-            styles.hoverColor = "hsl(0, 0%, 10%)";
-            styles.hoverText = "hsl(0, 0%, 100%)";
+    // Make styles reactive to theme and color changes
+    let styles = $derived.by(() => {
+        const baseStyles = {
+            color: "",
+            text: "",
+            hoverColor: "",
+            hoverText: "",
+            alpha: "1",
+            border: "",
+            trans: "hidden",
+            stripes: `repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.05) 10px);`
+        };
+
+        // Search result styling
+        if (category === "search") {
+            baseStyles.stripes = "";
+            if ($darkTheme) {
+                baseStyles.color = "hsl(0, 0%, 10%)";
+                baseStyles.text = "hsl(0, 0%, 90%)";
+                baseStyles.hoverColor = "hsl(0, 0%, 10%)";
+                baseStyles.hoverText = "hsl(0, 0%, 100%)";
+            } else {
+                baseStyles.color = "hsl(0, 0%,100%)";
+                const derived = computeDerivedColors(baseStyles.color);
+                Object.assign(baseStyles, derived);
+            }
         } else {
-            styles.color = "hsl(0, 0%,100%)";
-            fillStyles();
+            // Dynamic color (saved courses)
+            const meta = $scheduleCourseMeta[$currentSchedule]?.[course.id];
+            if (!meta) return baseStyles;
+
+            const baseColor = $calColors[meta.color as unknown as keyof CalColors];
+            baseStyles.color = baseColor;
+            const derived = computeDerivedColors(baseColor);
+            Object.assign(baseStyles, derived);
+            baseStyles.trans = "solid";
+
+            if (meta.complete) {
+                baseStyles.stripes = "";
+                baseStyles.border = darkenHSL(baseColor, 40);
+            } else {
+                baseStyles.color = darkenHSL(baseColor, -10);
+                baseStyles.alpha = "0.8";
+                baseStyles.border = darkenHSL(baseColor, 20);
+            }
         }
 
-        // Dynamic color (saved courses)
-    } else {
-        const meta = $scheduleCourseMeta[$currentSchedule][course.id];
-        styles.color = $calColors[meta.color as unknown as keyof CalColors];
-        fillStyles();
-        styles.trans = "solid";
-
-        if (meta.complete) {
-            styles.stripes = "";
-            styles.border = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                40
-            );
-        } else {
-            styles.color = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                -10
-            );
-            styles.alpha = "0.8";
-            styles.border = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                20
-            );
-        }
-    }
+        return baseStyles;
+    });
 
     let flipped: boolean = $state(false);
 

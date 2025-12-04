@@ -14,15 +14,20 @@
     let headerEl: HTMLElement | undefined = $state();
     let scrollContainerEl: HTMLElement | undefined = $state();
 
+    // Use toSorted() to avoid mutating the original array (returns new array reference)
     let saved = $derived(
         $savedCourses[$currentSchedule]
-            ? $savedCourses[$currentSchedule].sort((a, b) =>
+            ? [...$savedCourses[$currentSchedule]].sort((a, b) =>
                   a.code.localeCompare(b.code)
               )
             : []
     );
 
-    let colorChange = $derived($calColors);
+    // Create a stable key that changes when courses change
+    let savedKey = $derived(saved.map(c => c.id).join(","));
+
+    // Create a key for color changes (serialize the object)
+    let colorKey = $derived(JSON.stringify($calColors));
 
     // Measure content height after DOM updates when content changes
     $effect(() => {
@@ -36,7 +41,7 @@
     });
 </script>
 
-{#key saved && $recal}
+{#key savedKey + $recal}
     {#if saved && $ready}
         <div
             bind:this={headerEl}
@@ -72,8 +77,8 @@
                     bind:this={scrollContainerEl}
                     class="overflow-y-auto flex-1"
                     style="scrollbar-gutter: stable;">
-                    {#key saved && colorChange}
-                        {#each saved as course}
+                    {#key savedKey + colorKey}
+                        {#each saved as course (course.id)}
                             <CourseCard {course} category="saved" />
                         {/each}
                     {/key}

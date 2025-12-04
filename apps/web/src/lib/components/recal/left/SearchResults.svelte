@@ -11,7 +11,8 @@
     let headerEl: HTMLElement | undefined = $state();
     let scrollContainerEl: HTMLElement | undefined = $state();
 
-    let resetKey = $derived([$searchResults, $darkTheme, $research]);
+    // Create a stable string key for the #each block
+    let resetKey = $derived($searchResults.map(c => c.id).join(",") + $darkTheme + $research);
 
     // Measure content height after DOM updates when content changes
     $effect(() => {
@@ -43,7 +44,7 @@
             class="overflow-y-auto flex-1"
             style="scrollbar-gutter: stable;">
             {#key resetKey}
-                {#each $searchResults as course}
+                {#each $searchResults as course (course.id)}
                     <CourseCard {course} />
                 {/each}
             {/key}

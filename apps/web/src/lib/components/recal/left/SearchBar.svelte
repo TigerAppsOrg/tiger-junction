@@ -24,7 +24,8 @@
     };
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { getContext } from "svelte";
+    import { getContext, untrack } from "svelte";
+    import { get } from "svelte/store";
     import { hoveredCourse } from "../../../scripts/ReCal+/calendar";
 
     const supabase = getContext("supabase") as SupabaseClient;
@@ -44,24 +45,28 @@
         $currentSchedule;
         $research;
         $scheduleCourseMeta;
-        triggerSearch();
+        // Use untrack to prevent infinite loop - triggerSearch reads $searchResults after writing
+        untrack(() => triggerSearch());
     });
 
     const triggerSearch = () => {
         if (!inputBar || inputBar.value === undefined) return;
         searchResults.search(inputBar.value, $currentTerm, $searchSettings);
 
+        // Use get() to read without reactive tracking (search() already updates isResult)
+        const results = get(searchResults);
+
         // Handle isResult flag
-        if ($searchResults.length > 0) isResult.set(true);
+        if (results.length > 0) isResult.set(true);
         else {
             isResult.set(false);
             hoveredCourse.set(null);
         }
 
         // If results are less than threshold, add sections
-        if ($searchResults.length < THRESHOLD)
-            for (let i = 0; i < $searchResults.length; i++)
-                sectionData.add(supabase, $currentTerm, $searchResults[i].id);
+        if (results.length < THRESHOLD)
+            for (let i = 0; i < results.length; i++)
+                sectionData.add(supabase, $currentTerm, results[i].id);
     };
 
     // Re-run when calColors changes (getStyles uses get() internally)
