@@ -21,12 +21,12 @@
     import { recal } from "$lib/stores/recal";
 
     const supabase: SupabaseClient = getContext("supabase");
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
 
     const DAYS = ["M", "T", "W", "R", "F"];
 
-    let title: string = "";
-    let titleError = "";
+    let title: string = $state("");
+    let titleError = $state("");
 
     type TempTime = {
         start: string | null;
@@ -34,9 +34,9 @@
         days: string[];
         errors: string[];
     };
-    let times: TempTime[] = [];
-    let timeBlockError = "";
-    let refreshErrors = 0;
+    let times: TempTime[] = $state([]);
+    let timeBlockError = $state("");
+    let refreshErrors = $state(0);
 
     // Save the event in the store and db and close the modal
     const createEvent = async () => {
@@ -201,7 +201,7 @@
         }
     });
 
-    $: cssVarStyles = getStyles("2");
+    let cssVarStyles = $derived(getStyles("2"));
 </script>
 
 <Modal {showModal}>
@@ -209,7 +209,7 @@
         <h1 class="text-xl font-bold mb-2">
             {$editEvent ? "Edit Custom Event" : "New Custom Event"}
         </h1>
-        <form on:submit|preventDefault>
+        <form onsubmit={(e: Event) => e.preventDefault()}>
             <div class="flex flex-col gap-2">
                 <div class="settings-area">
                     <div class="flex items-cente justify-between">
@@ -220,7 +220,7 @@
                     </div>
                     <input
                         bind:value={title}
-                        on:input={() => (titleError = "")}
+                        oninput={() => (titleError = "")}
                         type="text"
                         placeholder="Title"
                         name="title"
@@ -243,7 +243,7 @@
                             <!-- Delete Button -->
                             <button
                                 type="button"
-                                on:click={() => {
+                                onclick={() => {
                                     // If only one time block, reset it
                                     if (times.length === 1) {
                                         timeBlockError =
@@ -279,7 +279,7 @@
                                     <input
                                         type="time"
                                         bind:value={time.start}
-                                        on:change={() => validateTimes(i)}
+                                        onchange={() => validateTimes(i)}
                                         class="p-2 h-10 w-32 rounded-sm" />
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -287,7 +287,7 @@
                                     <input
                                         type="time"
                                         bind:value={time.end}
-                                        on:change={() => validateTimes(i)}
+                                        onchange={() => validateTimes(i)}
                                         class="p-2 h-10 w-32 rounded-sm mr-6" />
                                 </div>
                             </div>
@@ -298,7 +298,7 @@
                                     <h2 class="font-bold">Days:</h2>
                                     {#each DAYS as day}
                                         <button
-                                            on:click={() => {
+                                            onclick={() => {
                                                 if (time.days.includes(day)) {
                                                     time.days =
                                                         time.days.filter(

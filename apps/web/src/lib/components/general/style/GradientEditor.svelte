@@ -1,20 +1,22 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import type { GradientConfig, GradientShape } from "$lib/stores/styles";
     import { hslToRGB, rgbToHSL } from "$lib/scripts/convert";
 
-    export let gradient: GradientConfig;
-
-    const dispatch = createEventDispatcher<{
-        update: GradientConfig;
-        delete: { id: string };
-    }>();
+    let {
+        gradient,
+        onupdate,
+        ondelete
+    }: {
+        gradient: GradientConfig;
+        onupdate?: (config: GradientConfig) => void;
+        ondelete?: (detail: { id: string }) => void;
+    } = $props();
 
     function updateField<K extends keyof GradientConfig>(
         key: K,
         value: GradientConfig[K]
     ) {
-        dispatch("update", { ...gradient, [key]: value });
+        onupdate?.({ ...gradient, [key]: value });
     }
 
     function handleColorChange(e: Event) {
@@ -24,7 +26,7 @@
     }
 
     function handleDelete() {
-        dispatch("delete", { id: gradient.id });
+        ondelete?.({ id: gradient.id });
     }
 </script>
 
@@ -34,7 +36,7 @@
         <button
             type="button"
             class="delete-btn"
-            on:click={handleDelete}
+            onclick={handleDelete}
             title="Delete gradient">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +58,7 @@
             <input
                 type="color"
                 value={hslToRGB(gradient.color)}
-                on:input={handleColorChange}
+                oninput={handleColorChange}
                 class="color-input" />
             <div
                 class="color-display"
@@ -75,7 +77,7 @@
                 max="100"
                 step="1"
                 value={gradient.x}
-                on:input={e => updateField("x", Number(e.currentTarget.value))}
+                oninput={e => updateField("x", Number(e.currentTarget.value))}
                 class="slider" />
             <span class="slider-value">{Math.round(gradient.x)}%</span>
         </label>
@@ -91,7 +93,7 @@
                 max="100"
                 step="1"
                 value={gradient.y}
-                on:input={e => updateField("y", Number(e.currentTarget.value))}
+                oninput={e => updateField("y", Number(e.currentTarget.value))}
                 class="slider" />
             <span class="slider-value">{Math.round(gradient.y)}%</span>
         </label>
@@ -107,7 +109,7 @@
                 max="100"
                 step="1"
                 value={gradient.size}
-                on:input={e =>
+                oninput={e =>
                     updateField("size", Number(e.currentTarget.value))}
                 class="slider" />
             <span class="slider-value">{Math.round(gradient.size)}%</span>
@@ -124,7 +126,7 @@
                 max="1"
                 step="0.05"
                 value={gradient.opacity}
-                on:input={e =>
+                oninput={e =>
                     updateField("opacity", Number(e.currentTarget.value))}
                 class="slider" />
             <span class="slider-value"
@@ -142,7 +144,7 @@
                 max="100"
                 step="1"
                 value={gradient.blur}
-                on:input={e =>
+                oninput={e =>
                     updateField("blur", Number(e.currentTarget.value))}
                 class="slider" />
             <span class="slider-value">{Math.round(gradient.blur)}%</span>
@@ -157,14 +159,14 @@
                 type="button"
                 class="shape-btn"
                 class:active={gradient.shape === "ellipse"}
-                on:click={() => updateField("shape", "ellipse")}>
+                onclick={() => updateField("shape", "ellipse")}>
                 Ellipse
             </button>
             <button
                 type="button"
                 class="shape-btn"
                 class:active={gradient.shape === "circle"}
-                on:click={() => updateField("shape", "circle")}>
+                onclick={() => updateField("shape", "circle")}>
                 Circle
             </button>
         </div>

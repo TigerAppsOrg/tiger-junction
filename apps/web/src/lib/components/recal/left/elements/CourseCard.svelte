@@ -22,8 +22,10 @@
     } from "../../../../scripts/ReCal+/calendar";
     import CardLinkButton from "./CardLinkButton.svelte";
 
-    export let course: CourseData;
-    export let category: string = "search";
+    let {
+        course,
+        category = "search"
+    }: { course: CourseData; category?: string } = $props();
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -103,19 +105,23 @@
         }
     }
 
-    let flipped: boolean = false;
+    let flipped: boolean = $state(false);
 
     // Handle section loading on view
-    let isInView: boolean;
+    let isInView: boolean = $state(false);
     const options = {};
 
-    $: if (isInView) {
-        sectionData.add(supabase, $currentTerm, course.id);
-    }
+    $effect(() => {
+        if (isInView) {
+            sectionData.add(supabase, $currentTerm, course.id);
+        }
+    });
 
-    $: cssVarStyles = Object.entries(styles)
-        .map(([key, value]) => `--${key}:${value}`)
-        .join(";");
+    let cssVarStyles = $derived(
+        Object.entries(styles)
+            .map(([key, value]) => `--${key}:${value}`)
+            .join(";")
+    );
 
     const handleHover = async () => {
         await sectionData.add(supabase, $currentTerm, course.id);
@@ -134,26 +140,26 @@
     };
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     id="card"
     transition:slide={{ duration: 150, axis: "y" }}
     class="duration-100 border-b-[1px] dark:border-zinc-800
     {category === 'saved' && 'dark:border-black'}"
     style={cssVarStyles}
-    on:mouseenter={handleHover}
-    on:mouseleave={handleLeave}
-    on:blur={handleLeave}
-    on:focus={handleHover}
+    onmouseenter={handleHover}
+    onmouseleave={handleLeave}
+    onblur={handleLeave}
+    onfocus={handleHover}
     use:inview={options}
-    on:inview_enter={e => (isInView = e.detail.inView)}>
+    oninview_enter={(e: CustomEvent) => (isInView = e.detail.inView)}>
     <div
         id="topcard"
         class="flex justify-between items-stretch duration-75
         {$courseHoverRev === course.id ? 'tchover' : ''}">
         <button
             class="text-xs font-light text-left w-[75%] p-1"
-            on:click={() => (flipped = !flipped)}>
+            onclick={() => (flipped = !flipped)}>
             <div class="font-normal serif-lowercase">
                 {code}
             </div>
@@ -212,7 +218,7 @@
                     class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                    on:click={() => {
+                    onclick={() => {
                         cf.removeCourseFromSaved(supabase, course);
                     }}>
                     <svg
@@ -233,7 +239,7 @@
                     class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                    on:click={() => {
+                    onclick={() => {
                         cf.saveCourseFromSearch(supabase, course);
                     }}>
                     <svg

@@ -1,26 +1,29 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import type { GradientConfig } from "$lib/stores/styles";
     import { MAX_GRADIENTS } from "$lib/stores/styles";
     import { hslToRGB } from "$lib/scripts/convert";
 
-    export let gradients: GradientConfig[] = [];
-    export let selectedId: string | null = null;
-
-    const dispatch = createEventDispatcher<{
-        select: { id: string };
-        add: void;
-    }>();
+    let {
+        gradients = [],
+        selectedId = null,
+        onselect,
+        onadd
+    }: {
+        gradients?: GradientConfig[];
+        selectedId?: string | null;
+        onselect?: (detail: { id: string }) => void;
+        onadd?: () => void;
+    } = $props();
 
     function handleSelect(id: string) {
-        dispatch("select", { id });
+        onselect?.({ id });
     }
 
     function handleAdd() {
-        dispatch("add");
+        onadd?.();
     }
 
-    $: canAdd = gradients.length < MAX_GRADIENTS;
+    let canAdd = $derived(gradients.length < MAX_GRADIENTS);
 </script>
 
 <div class="list-container">
@@ -35,7 +38,7 @@
                 type="button"
                 class="gradient-item"
                 class:selected={gradient.id === selectedId}
-                on:click={() => handleSelect(gradient.id)}>
+                onclick={() => handleSelect(gradient.id)}>
                 <div
                     class="gradient-swatch"
                     style="background-color: {hslToRGB(gradient.color)}">
@@ -45,7 +48,7 @@
         {/each}
 
         {#if canAdd}
-            <button type="button" class="add-btn" on:click={handleAdd}>
+            <button type="button" class="add-btn" onclick={handleAdd}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"

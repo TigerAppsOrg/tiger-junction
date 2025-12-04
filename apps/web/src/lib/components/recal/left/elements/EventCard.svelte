@@ -18,8 +18,10 @@
 
     const supabase: SupabaseClient = getContext("supabase");
 
-    export let customEvent: UserCustomEvent;
-    export let isSelected: boolean = false;
+    let {
+        customEvent,
+        isSelected = false
+    }: { customEvent: UserCustomEvent; isSelected?: boolean } = $props();
 
     const handleHover = () => {
         eventHover.set(customEvent.id);
@@ -31,21 +33,23 @@
         hoveredEvent.set(null);
     };
 
-    $: baseStyles = getStyles("E");
-    $: cssVarStyles = `${baseStyles};--border:${darkenHSL($calColors["E"], 40)}`;
+    let baseStyles = $derived(getStyles("E"));
+    let cssVarStyles = $derived(
+        `${baseStyles};--border:${darkenHSL($calColors["E"], 40)}`
+    );
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     style={cssVarStyles}
     id="main"
     class="flex items-center justify-between border-zinc-300 h-10 duration-100 border-b-2
     {isSelected ? 'selected' : 'hover:bg-zinc-200 dark:hover:bg-zinc-800'}"
     class:tchover={$eventHoverRev === customEvent.id}
-    on:mouseenter={handleHover}
-    on:focus={handleHover}
-    on:blur={handleLeave}
-    on:mouseleave={handleLeave}>
+    onmouseenter={handleHover}
+    onfocus={handleHover}
+    onblur={handleLeave}
+    onmouseleave={handleLeave}>
     <div class="w-[60%]">
         <p
             id="title"
@@ -59,7 +63,7 @@
     <div class="w-[30%] flex h-full">
         <button
             class="hover:bg-purple-500 hover:dark:bg-purple-700"
-            on:click={() => {
+            onclick={() => {
                 editEvent.set(customEvent);
                 modalStore.push("editEvent");
             }}>
@@ -80,7 +84,7 @@
             <!-- Remove -->
             <button
                 class="hover:bg-red-500 hover:dark:bg-red-700"
-                on:click={() =>
+                onclick={() =>
                     scheduleEventMap.removeFromSchedule(
                         supabase,
                         $currentSchedule,
@@ -103,7 +107,7 @@
             <!-- Add -->
             <button
                 class="hover:bg-blue-500 hover:dark:bg-blue-700"
-                on:click={() =>
+                onclick={() =>
                     scheduleEventMap.addToSchedule(
                         supabase,
                         $currentSchedule,

@@ -9,16 +9,16 @@
     import { sectionRatio, isMobile, isEventOpen } from "$lib/stores/styles";
 
     // Element refs
-    let sectionEl: HTMLElement;
-    let eventsWrapperEl: HTMLElement;
+    let sectionEl: HTMLElement | undefined = $state();
+    let eventsWrapperEl: HTMLElement | undefined = $state();
 
     // Height tracking
-    let availableHeight = 0;
+    let availableHeight = $state(0);
 
     // Content heights from children (dynamic measurement)
-    let savedContentHeight = 0;
-    let searchContentHeight = 0;
-    let eventsHeight = 0;
+    let savedContentHeight = $state(0);
+    let searchContentHeight = $state(0);
+    let eventsHeight = $state(0);
 
     // Constants
     const HANDLEBAR_HEIGHT = 16;
@@ -42,41 +42,52 @@
             }
         });
 
-        resizeObserver.observe(sectionEl);
+        if (sectionEl) resizeObserver.observe(sectionEl);
         return () => resizeObserver.disconnect();
     });
 
     // Measure events section when it changes (collapsed/expanded)
-    $: if (eventsWrapperEl && $isEventOpen !== undefined) {
-        tick().then(() => {
-            eventsHeight = eventsWrapperEl?.offsetHeight ?? 0;
-        });
-    }
+    $effect(() => {
+        if (eventsWrapperEl && $isEventOpen !== undefined) {
+            tick().then(() => {
+                eventsHeight = eventsWrapperEl?.offsetHeight ?? 0;
+            });
+        }
+    });
 
     // Calculate total content heights from dynamic measurements
-    $: topContentHeight = eventsHeight + INNER_GAP + savedContentHeight;
-    $: bottomContentHeight = searchContentHeight;
+    let topContentHeight = $derived(
+        eventsHeight + INNER_GAP + savedContentHeight
+    );
+    let bottomContentHeight = $derived(searchContentHeight);
 
     // Show handlebar when there are search results AND content would overflow
-    $: hasSearchResults = $searchResults.length > 0;
-    $: totalContent = topContentHeight + bottomContentHeight + INNER_GAP;
-    $: showHandlebar =
-        !$isMobile && hasSearchResults && totalContent > availableHeight;
+    let hasSearchResults = $derived($searchResults.length > 0);
+    let totalContent = $derived(
+        topContentHeight + bottomContentHeight + INNER_GAP
+    );
+    let showHandlebar = $derived(
+        !$isMobile && hasSearchResults && totalContent > availableHeight
+    );
 
     // Calculate usable height (minus handlebar and gaps when shown)
-    $: usableHeight = showHandlebar
-        ? Math.max(0, availableHeight - HANDLEBAR_HEIGHT - GAP_SIZE)
-        : availableHeight;
+    let usableHeight = $derived(
+        showHandlebar
+            ? Math.max(0, availableHeight - HANDLEBAR_HEIGHT - GAP_SIZE)
+            : availableHeight
+    );
 
     // Content-based ratio constraints (using measured heights)
-    $: maxRatio =
+    let maxRatio = $derived(
         usableHeight > 0
             ? Math.min(BASE_MAX_RATIO, topContentHeight / usableHeight)
-            : BASE_MAX_RATIO;
-    $: minRatio =
+            : BASE_MAX_RATIO
+    );
+    let minRatio = $derived(
         usableHeight > 0
             ? Math.max(BASE_MIN_RATIO, 1 - bottomContentHeight / usableHeight)
-            : BASE_MIN_RATIO;
+            : BASE_MIN_RATIO
+    );
 
     // Default ratio for handlebar position (0.5 = middle)
     function getDefaultRatio(): number {
@@ -84,43 +95,50 @@
     }
 
     // Get effective ratio (user-set or default), clamped to valid range
-    $: effectiveRatio = Math.max(
-        minRatio,
-        Math.min(maxRatio, $sectionRatio ?? getDefaultRatio())
+    let effectiveRatio = $derived(
+        Math.max(
+            minRatio,
+            Math.min(maxRatio, $sectionRatio ?? getDefaultRatio())
+        )
     );
 
     // Calculate heights
-    $: rawTopHeight = Math.round(usableHeight * effectiveRatio);
+    let rawTopHeight = $derived(Math.round(usableHeight * effectiveRatio));
 
     // Cap at measured content height to prevent gaps
-    $: topHeight = Math.min(rawTopHeight, topContentHeight);
-    $: bottomHeight = Math.min(usableHeight - topHeight, bottomContentHeight);
+    let topHeight = $derived(Math.min(rawTopHeight, topContentHeight));
+    let bottomHeight = $derived(
+        Math.min(usableHeight - topHeight, bottomContentHeight)
+    );
 
     // Hide handlebar if content actually fits after capping
-    $: actuallyShowHandlebar =
-        showHandlebar && topHeight + bottomHeight >= usableHeight - 10;
+    let actuallyShowHandlebar = $derived(
+        showHandlebar && topHeight + bottomHeight >= usableHeight - 10
+    );
 
     // Style strings
-    $: topSectionStyle = actuallyShowHandlebar ? `height: ${topHeight}px;` : "";
-    $: bottomSectionStyle = actuallyShowHandlebar
-        ? `height: ${bottomHeight}px;`
-        : "";
+    let topSectionStyle = $derived(
+        actuallyShowHandlebar ? `height: ${topHeight}px;` : ""
+    );
+    let bottomSectionStyle = $derived(
+        actuallyShowHandlebar ? `height: ${bottomHeight}px;` : ""
+    );
 
-    function handleResize(e: CustomEvent<{ ratio: number }>) {
-        if (e.detail.ratio === -1) {
+    function handleResize(detail: { ratio: number }) {
+        if (detail.ratio === -1) {
             sectionRatio.reset();
         } else {
             // Constrain to content-based bounds
             const clampedRatio = Math.max(
                 minRatio,
-                Math.min(maxRatio, e.detail.ratio)
+                Math.min(maxRatio, detail.ratio)
             );
             sectionRatio.set(clampedRatio);
         }
     }
 </script>
 
-<svelte:window on:resize={handleWindowResize} />
+<svelte:window onresize={handleWindowResize} />
 
 <div class="w-full flex flex-col h-full overflow-y-hidden">
     <div>
@@ -144,9 +162,7 @@
 
         <!-- Handlebar -->
         {#if actuallyShowHandlebar}
-            <Handlebar
-                on:resize={handleResize}
-                containerHeight={usableHeight} />
+            <Handlebar onresize={handleResize} containerHeight={usableHeight} />
         {/if}
 
         <!-- Bottom Section: SearchResults -->

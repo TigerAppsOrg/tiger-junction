@@ -4,23 +4,25 @@
     import { darkTheme } from "$lib/stores/styles";
     import CourseCard from "./elements/CourseCard.svelte";
 
-    // Export for parent to read content height
-    export let contentHeight: number = 0;
+    // Export for parent to read content height (bindable)
+    let { contentHeight = $bindable(0) }: { contentHeight?: number } = $props();
 
     // Element refs for measurement
-    let headerEl: HTMLElement;
-    let scrollContainerEl: HTMLElement;
+    let headerEl: HTMLElement | undefined = $state();
+    let scrollContainerEl: HTMLElement | undefined = $state();
 
-    $: resetKey = [$searchResults, $darkTheme, $research];
+    let resetKey = $derived([$searchResults, $darkTheme, $research]);
 
     // Measure content height after DOM updates when content changes
-    $: if ($searchResults.length > 0 && headerEl) {
-        tick().then(() => {
-            const headerHeight = headerEl?.offsetHeight ?? 0;
-            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
-            contentHeight = headerHeight + cardsHeight;
-        });
-    }
+    $effect(() => {
+        if ($searchResults.length > 0 && headerEl) {
+            tick().then(() => {
+                const headerHeight = headerEl?.offsetHeight ?? 0;
+                const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+                contentHeight = headerHeight + cardsHeight;
+            });
+        }
+    });
 </script>
 
 {#if $searchResults.length > 0}

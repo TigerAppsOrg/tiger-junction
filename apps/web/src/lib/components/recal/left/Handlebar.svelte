@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    let {
+        containerHeight,
+        onresize
+    }: {
+        containerHeight: number;
+        onresize?: (detail: { ratio: number }) => void;
+    } = $props();
 
-    export let containerHeight: number;
-
-    const dispatch = createEventDispatcher<{
-        resize: { ratio: number };
-    }>();
-
-    let isDragging = false;
-    let isHovering = false;
-    let handlebarEl: HTMLElement;
+    let isDragging = $state(false);
+    let isHovering = $state(false);
+    let handlebarEl: HTMLElement | undefined = $state();
 
     function handlePointerDown(e: PointerEvent) {
         isDragging = true;
@@ -37,7 +37,7 @@
         // Clamp ratio to prevent sections from being too small
         newRatio = Math.max(0.15, Math.min(0.85, newRatio));
 
-        dispatch("resize", { ratio: newRatio });
+        onresize?.({ ratio: newRatio });
     }
 
     function handlePointerUp(e: PointerEvent) {
@@ -63,20 +63,20 @@
     }
 
     function handleDoubleClick() {
-        dispatch("resize", { ratio: -1 }); // -1 signals reset to auto
+        onresize?.({ ratio: -1 }); // -1 signals reset to auto
     }
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     bind:this={handlebarEl}
     class="handlebar-zone"
-    on:pointerenter={() => (isHovering = true)}
-    on:pointerleave={() => {
+    onpointerenter={() => (isHovering = true)}
+    onpointerleave={() => {
         if (!isDragging) isHovering = false;
     }}
-    on:pointerdown={handlePointerDown}
-    on:dblclick={handleDoubleClick}>
+    onpointerdown={handlePointerDown}
+    ondblclick={handleDoubleClick}>
     <!-- Full-width horizontal line -->
     <div class="handlebar-line"></div>
 

@@ -6,7 +6,7 @@
     import { modalStore } from "$lib/stores/modal";
     import { DEFAULT_SETTINGS, searchSettings } from "$lib/stores/recal";
 
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
 
     // Filters with expandable sub-options
     const EXPANDABLE_FILTERS = [
@@ -46,8 +46,8 @@
         "No Cancelled": "Hide cancelled courses"
     };
 
-    let minInput: number = $searchSettings.filters["Rating"].min;
-    let maxInput: number = $searchSettings.filters["Rating"].max;
+    let minInput: number = $state($searchSettings.filters["Rating"].min);
+    let maxInput: number = $state($searchSettings.filters["Rating"].max);
 
     const saveSettings = () => modalStore.pop();
 
@@ -133,7 +133,7 @@
                                         bind:value={minInput}
                                         placeholder="Min"
                                         class="p-1 h-6 std-area w-14 text-xs"
-                                        on:input={e =>
+                                        oninput={e =>
                                             handleRatingInput(e, true)} />
                                     <span class="text-xs text-zinc-400"
                                         >to</span>
@@ -145,11 +145,11 @@
                                         bind:value={maxInput}
                                         placeholder="Max"
                                         class="p-1 h-6 std-area w-14 text-xs"
-                                        on:input={e =>
+                                        oninput={e =>
                                             handleRatingInput(e, false)} />
                                     <button
                                         class="quick-btn"
-                                        on:click={resetRating}>Reset</button>
+                                        onclick={resetRating}>Reset</button>
                                     <span class="text-xs text-zinc-400"
                                         >(no rating = 0)</span>
                                 {:else if hasValues(filter)}
@@ -166,12 +166,12 @@
                                     {#if filter !== "No Conflicts"}
                                         <button
                                             class="quick-btn"
-                                            on:click={() =>
+                                            onclick={() =>
                                                 setAllValues(filter, true)}
                                             >All</button>
                                         <button
                                             class="quick-btn"
-                                            on:click={() =>
+                                            onclick={() =>
                                                 setAllValues(filter, false)}
                                             >None</button>
                                     {/if}

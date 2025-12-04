@@ -13,20 +13,22 @@
     import { toastStore } from "$lib/stores/toast";
     import { slide } from "svelte/transition";
 
-    let scheduleEvents: UserCustomEvent[] = [];
-    $: scheduleEvents =
+    let scheduleEvents = $derived(
         $scheduleEventMap &&
-        $currentSchedule &&
-        $customEvents &&
-        Object.keys($scheduleEventMap).length > 0
+            $currentSchedule &&
+            $customEvents &&
+            Object.keys($scheduleEventMap).length > 0
             ? scheduleEventMap.getSchedule($currentSchedule)
-            : [];
-
-    $: notInSchedule = $customEvents.filter(
-        event => !scheduleEvents.some(e => e.id === event.id)
+            : []
     );
 
-    $: cssVarStyles = getStyles("6");
+    let notInSchedule = $derived(
+        $customEvents.filter(
+            event => !scheduleEvents.some(e => e.id === event.id)
+        )
+    );
+
+    let cssVarStyles = $derived(getStyles("6"));
 </script>
 
 {#if $ready}
@@ -39,7 +41,7 @@
             {scheduleEvents.length === 1 ? "Event" : "Events"}
         </span>
         <button
-            on:click={() => ($isEventOpen = !$isEventOpen)}
+            onclick={() => ($isEventOpen = !$isEventOpen)}
             class="flex items-center gap-[1px] text-sm">
             {#if $isEventOpen}
                 <svg
@@ -86,7 +88,7 @@
                 id="addButton"
                 class="w-full text-sm py-1 mt-1 duration-150
                 mb-2 flex items-center gap-2 justify-center rounded-full"
-                on:click={() => {
+                onclick={() => {
                     if (customEvents.isAtMax()) {
                         toastStore.add(
                             "error",

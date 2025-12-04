@@ -29,24 +29,23 @@
 
     const supabase = getContext("supabase") as SupabaseClient;
 
-    let inputBar: HTMLInputElement;
-    let searchFocused = false;
+    let inputBar: HTMLInputElement | undefined = $state();
+    let searchFocused = $state(false);
 
     // Number of results, under which sections are added automatically
     const THRESHOLD = 20;
 
     // Update search results when params change
-    $: autoTrig(
-        $searchSettings,
-        $searchCourseData,
-        $currentTerm,
-        $currentSchedule,
-        $research,
-        $scheduleCourseMeta
-    );
-    const autoTrig = (...params: unknown[]) => {
+    $effect(() => {
+        // Track these dependencies
+        $searchSettings;
+        $searchCourseData;
+        $currentTerm;
+        $currentSchedule;
+        $research;
+        $scheduleCourseMeta;
         triggerSearch();
-    };
+    });
 
     const triggerSearch = () => {
         if (!inputBar || inputBar.value === undefined) return;
@@ -66,18 +65,20 @@
     };
 
     // Re-run when calColors changes (getStyles uses get() internally)
-    let cssVarStyles: string;
-    $: ($calColors, (cssVarStyles = getStyles("2")));
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // track dependency
+        return getStyles("2");
+    });
 
     // Adjust gradient colors: darken in light mode, lighten in dark mode
-    $: adj = $darkTheme ? -25 : 15;
-    $: gradColors = [
+    let adj = $derived($darkTheme ? -25 : 15);
+    let gradColors = $derived([
         adjustLightness($calColors["0"], adj),
         adjustLightness($calColors["1"], adj),
         adjustLightness($calColors["2"], adj),
         adjustLightness($calColors["4"], adj),
         adjustLightness($calColors["5"], adj)
-    ];
+    ]);
 </script>
 
 <div class="flex flex-col justify-between h-16" style={cssVarStyles}>
@@ -87,7 +88,7 @@
         <button
             class="togglebutton
         {$searchSettings.filters['Show All'].enabled ? 'enabled' : 'disabled'}"
-            on:click={() =>
+            onclick={() =>
                 ($searchSettings.filters["Show All"].enabled =
                     !$searchSettings.filters["Show All"].enabled)}>
             Show All
@@ -97,7 +98,7 @@
         {$searchSettings.filters['No Conflicts'].enabled
                 ? 'enabled'
                 : 'disabled'}"
-            on:click={() =>
+            onclick={() =>
                 ($searchSettings.filters["No Conflicts"].enabled =
                     !$searchSettings.filters["No Conflicts"].enabled)}>
             No Conflicts
@@ -109,12 +110,12 @@
             placeholder="Search..."
             class="search-input std-area rounded-md section-header serif-lowercase text-sm"
             bind:this={inputBar}
-            on:input={triggerSearch}
-            on:focus={() => (searchFocused = true)}
-            on:blur={() => (searchFocused = false)} />
+            oninput={triggerSearch}
+            onfocus={() => (searchFocused = true)}
+            onblur={() => (searchFocused = false)} />
         <button
             class="adv-search {searchFocused ? 'focused' : ''}"
-            on:click={() => {
+            onclick={() => {
                 if (!$ready)
                     toastStore.add("error", "Please wait for the data to load");
                 else modalStore.push("adv");

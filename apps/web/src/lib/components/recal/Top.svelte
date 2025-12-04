@@ -153,13 +153,14 @@
     };
 
     // Handle theme changes (reference $calColors to establish reactive dependency)
-    let cssVarStyles: string;
-    let eventStyles: string;
-    $: {
-        $calColors;
-        cssVarStyles = getStyles("0");
-        eventStyles = getStyles("6");
-    }
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // track dependency
+        return getStyles("0");
+    });
+    let eventStyles = $derived.by(() => {
+        $calColors; // track dependency
+        return getStyles("6");
+    });
 </script>
 
 <div
@@ -176,7 +177,7 @@
                     class="card
                 {$currentTerm === activeTerm ? '' : 'termchoice'}"
                     class:selected={$currentTerm === activeTerm}
-                    on:click={() => handleTermChange(activeTerm)}>
+                    onclick={() => handleTermChange(activeTerm)}>
                     {#if $isMobile}
                         {ACTIVE_TERMS[activeTerm].mobile_name}
                     {:else}
@@ -189,7 +190,7 @@
         <div class="flex gap-2">
             {#if $isMobile}
                 <button
-                    on:click={() => modalStore.push("manageEvents")}
+                    onclick={() => modalStore.push("manageEvents")}
                     style={eventStyles}
                     id="events"
                     class="h-6 w-20 rounded-sm duration-150
@@ -209,7 +210,7 @@
                     Events
                 </button>
                 <button
-                    on:click={() => ($showCal = !$showCal)}
+                    onclick={() => ($showCal = !$showCal)}
                     class="h-6 w-20 rounded-sm flex items-center
                     justify-center
                     border-2 border-zinc-200 dark:border-zinc-700
@@ -224,7 +225,7 @@
                 </button>
             {:else}
                 <button
-                    on:click={() => modalStore.push("manageEvents")}
+                    onclick={() => modalStore.push("manageEvents")}
                     style={eventStyles}
                     id="events"
                     class="h-8 w-36 rounded-sm duration-150
@@ -267,8 +268,8 @@
                                 borderRadius: "2px"
                             }
                         }}
-                        on:consider={handleDndConsider}
-                        on:finalize={handleDndFinalize}>
+                        onconsider={handleDndConsider}
+                        onfinalize={handleDndFinalize}>
                         {#each $schedules[$currentTerm] as schedule (schedule.id)}
                             <button
                                 animate:flip={{ duration: flipDurationMs }}
@@ -277,7 +278,7 @@
                                     : 'termchoice'}"
                                 class:selected={$currentSchedule ===
                                     schedule.id}
-                                on:click={() =>
+                                onclick={() =>
                                     $currentSchedule === schedule.id
                                         ? modalStore.push("editSchedule")
                                         : handleScheduleChange(schedule.id)}>
@@ -302,7 +303,7 @@
                     </div>
                     <button
                         class="card add-button"
-                        on:click={() => {
+                        onclick={() => {
                             handleAddSchedule();
                         }}>
                         <svg
@@ -321,7 +322,7 @@
                 {:catch}
                     <button
                         class="card add-button"
-                        on:click={() => modalStore.push("addSchedule")}>
+                        onclick={() => modalStore.push("addSchedule")}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -345,7 +346,7 @@
         <!-- https://en.m.wikipedia.org/wiki/File:Cartoon_steamer_duck_walking_animation.gif -->
         <div class="h-6 relative cursor-default ml-[-10%] w-[120%]">
             <button
-                on:click={invokeFun}
+                onclick={invokeFun}
                 id="duck"
                 class="w-12 h-12 absolute bottom-[6px] cursor-default">
                 <img src={duck} alt="duck" />

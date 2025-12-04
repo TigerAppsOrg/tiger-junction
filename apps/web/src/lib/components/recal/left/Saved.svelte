@@ -7,29 +7,33 @@
     import Loader from "$lib/components/ui/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
 
-    // Export for parent to read content height
-    export let contentHeight: number = 0;
+    // Export for parent to read content height (bindable)
+    let { contentHeight = $bindable(0) }: { contentHeight?: number } = $props();
 
     // Element refs for measurement
-    let headerEl: HTMLElement;
-    let scrollContainerEl: HTMLElement;
+    let headerEl: HTMLElement | undefined = $state();
+    let scrollContainerEl: HTMLElement | undefined = $state();
 
-    $: saved = $savedCourses[$currentSchedule]
-        ? $savedCourses[$currentSchedule].sort((a, b) =>
-              a.code.localeCompare(b.code)
-          )
-        : [];
+    let saved = $derived(
+        $savedCourses[$currentSchedule]
+            ? $savedCourses[$currentSchedule].sort((a, b) =>
+                  a.code.localeCompare(b.code)
+              )
+            : []
+    );
 
-    $: colorChange = $calColors;
+    let colorChange = $derived($calColors);
 
     // Measure content height after DOM updates when content changes
-    $: if (saved && headerEl) {
-        tick().then(() => {
-            const headerHeight = headerEl?.offsetHeight ?? 0;
-            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
-            contentHeight = headerHeight + cardsHeight;
-        });
-    }
+    $effect(() => {
+        if (saved && headerEl) {
+            tick().then(() => {
+                const headerHeight = headerEl?.offsetHeight ?? 0;
+                const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+                contentHeight = headerHeight + cardsHeight;
+            });
+        }
+    });
 </script>
 
 {#key saved && $recal}
@@ -43,7 +47,7 @@
                 {saved.length === 1 ? "Course" : "Courses"}
             </span>
             <button
-                on:click={() => modalStore.push("exportCal")}
+                onclick={() => modalStore.push("exportCal")}
                 class="flex items-center gap-1 text-sm">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

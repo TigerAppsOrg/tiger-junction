@@ -38,5 +38,6 @@
 </script>
 
 {#if currentModal}
-    <svelte:component this={currentModal} showModal={true} />
+    {@const Modal = currentModal}
+    <Modal showModal={true} />
 {/if}

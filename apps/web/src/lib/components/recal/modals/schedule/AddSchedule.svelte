@@ -14,10 +14,10 @@
     import { getContext } from "svelte";
     import { goto } from "$app/navigation";
 
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
     const supabase = getContext("supabase") as SupabaseClient;
 
-    let input: string = "";
+    let input: string = $state("");
 
     // Save schedule and close modal
     const saveSchedule = async () => {
@@ -101,7 +101,7 @@
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl">
         <h1 class="text-xl font-bold mb-2">Create New Schedule</h1>
-        <form on:submit|preventDefault>
+        <form onsubmit={(e: Event) => e.preventDefault()}>
             <div class="flex flex-col gap-2">
                 <div class="settings-area" id="name">
                     <h2 class="text-lg font-bold mb-2">Title</h2>
