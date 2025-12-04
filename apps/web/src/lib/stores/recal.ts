@@ -256,7 +256,7 @@ export const searchResults = {
                         x,
                         conflictList,
                         settings.filters["No Conflicts"].values[
-                            "Only Available Sections"
+                        "Only Available Sections"
                         ],
                         settings.filters["Days"]
                     )
@@ -686,7 +686,7 @@ export const DEFAULT_SETTINGS: SearchSettings = {
         // "Show Weighted Rating": false,
         // "Show # of Comments": false,
         "Show Instructors": false,
-        "Show Enrollment": false,
+        "Show Capacity": false,
         "Always Show Calendar Box Info": false,
         // "Show Tooltips": true,
         "Show Time Marks": false,

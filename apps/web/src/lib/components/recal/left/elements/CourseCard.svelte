@@ -185,7 +185,7 @@
                 {#if $searchSettings.style["Show Weighted Rating"]}
                     [{course.adj_rating} adj]
                 {/if}
-                {#if $searchSettings.style["Show Enrollment"]}
+                {#if $searchSettings.style["Show Capacity"]}
                     {@const sections =
                         $sectionData[$currentTerm]?.[course.id] || []}
                     {@const priority = ["L", "S", "C", "P", "B", "D", "U"]}

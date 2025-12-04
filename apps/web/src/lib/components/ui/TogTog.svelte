@@ -4,7 +4,11 @@
 
     let { name = "" }: { name?: string } = $props();
 
-    let sortParam = $derived($searchSettings.sortBy[name]);
+    // Derive individual properties to ensure reactivity
+    let enabled = $derived($searchSettings.sortBy[name]?.enabled ?? false);
+    let value = $derived($searchSettings.sortBy[name]?.value ?? 0);
+    let options = $derived($searchSettings.sortBy[name]?.options ?? []);
+
     let cssVarStyles = $derived.by(() => {
         $calColors; // track dependency
         return getStyles("0");
@@ -26,7 +30,7 @@
                 param.enabled = true;
                 currentSortBy.set(name);
             }
-            return settings;
+            return { ...settings };
         });
         $research = !$research;
     };
@@ -37,7 +41,7 @@
             searchSettings.update(settings => {
                 settings.sortBy[name].enabled = false;
                 settings.sortBy[name].value = 0;
-                return settings;
+                return { ...settings };
             });
         }
     });
@@ -45,10 +49,10 @@
 
 <button
     class="info select-none"
-    class:checked={sortParam.enabled}
+    class:checked={enabled}
     style={cssVarStyles}
     onclick={handleToggle}>
-    {name}{sortParam.enabled ? " — " + sortParam.options[sortParam.value] : ""}
+    {name}{enabled ? " — " + options[value] : ""}
 </button>
 
 <style lang="postcss">
