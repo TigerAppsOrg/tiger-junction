@@ -256,7 +256,7 @@ export const searchResults = {
                         x,
                         conflictList,
                         settings.filters["No Conflicts"].values[
-                        "Only Available Sections"
+                            "Only Available Sections"
                         ],
                         settings.filters["Days"]
                     )
