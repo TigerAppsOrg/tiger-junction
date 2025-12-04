@@ -8,7 +8,7 @@
     } from "$lib/stores/events";
     import { currentSchedule, ready } from "$lib/stores/recal";
     import EventCard from "./elements/EventCard.svelte";
-    import { getStyles, isEventOpen } from "$lib/stores/styles";
+    import { calColors, getStyles, isEventOpen } from "$lib/stores/styles";
     import Loader from "$lib/components/ui/Loader.svelte";
     import { toastStore } from "$lib/stores/toast";
     import { slide } from "svelte/transition";
@@ -28,7 +28,10 @@
         )
     );
 
-    let cssVarStyles = $derived(getStyles("6"));
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // Track dependency for reactivity
+        return getStyles("6");
+    });
 </script>
 
 {#if $ready}

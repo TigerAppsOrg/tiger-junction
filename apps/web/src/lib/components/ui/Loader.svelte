@@ -10,8 +10,11 @@
         width: 24px;
         height: 24px;
         animation: spin 0.5s linear infinite;
-        @apply border-8 border-zinc-600/30 border-t-8 
-    dark:border-zinc-300/60;
+        @apply border-8 border-zinc-600/30 border-t-8;
+    }
+
+    :global(.dark) .loader {
+        @apply border-zinc-300/60;
     }
 
     @keyframes spin {

@@ -364,15 +364,15 @@
                 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
                 Typography
             </h3>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-3">
                 {#each FONT_OPTIONS as font}
                     <button
                         onclick={() => appFont.set(font.name)}
                         class="font-button {$appFont === font.name
-                            ? 'ring-2 ring-offset-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item border-transparent'
                             : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}"
                         style={$appFont === font.name
-                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            ? `--ring-color: ${$calColors["0"]}`
                             : ""}>
                         <span
                             class="text-3xl dark:text-zinc-100"
@@ -398,10 +398,10 @@
                 {#each Object.entries(colorPalettes) as [name, palette]}
                     <button
                         class="palette-card {lastSelectedTheme?.name === name
-                            ? 'ring-2 ring-offset-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item border-transparent'
                             : ''}"
                         style={lastSelectedTheme?.name === name
-                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            ? `--ring-color: ${$calColors["0"]}`
                             : ""}
                         onclick={() => applyPalette(name, palette)}>
                         <div class="flex flex-col">
@@ -723,17 +723,25 @@
 <style lang="postcss">
     .palette-card {
         @apply rounded-lg overflow-hidden border-2
-               border-zinc-200 dark:border-zinc-700
-               hover:border-zinc-400 dark:hover:border-zinc-500
+               border-zinc-200 
+               hover:border-zinc-400
                transition-colors cursor-pointer;
+    }
+
+    :global(.dark) .palette-card {
+        @apply bg-zinc-800/50 border-zinc-500 hover:border-zinc-400;
     }
 
     .font-button {
         @apply flex flex-col items-center justify-center
                p-2 rounded-lg border-2
-               bg-zinc-50 dark:bg-zinc-800/50
+               bg-zinc-50
                transition-all cursor-pointer;
         aspect-ratio: 1;
+    }
+
+    :global(.dark) .font-button {
+        @apply bg-zinc-800/50;
     }
 
     .selected-item {
@@ -782,7 +790,11 @@
 
     .slider {
         @apply w-full h-1.5 rounded-full appearance-none cursor-pointer
-               bg-zinc-300 dark:bg-zinc-600;
+               bg-zinc-300;
+    }
+
+    :global(.dark) .slider {
+        @apply bg-zinc-600;
     }
 
     .slider::-webkit-slider-thumb {

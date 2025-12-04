@@ -212,8 +212,11 @@
     }
 
     .area {
-        @apply p-4 rounded-lg border-[1px] border-zinc-200
-    dark:border-zinc-700;
+        @apply p-4 rounded-lg border-[1px] border-zinc-200;
+    }
+
+    :global(.dark) .area {
+        @apply border-zinc-700;
     }
 
     .area-std {
