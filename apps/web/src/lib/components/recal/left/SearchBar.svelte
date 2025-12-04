@@ -202,16 +202,21 @@
     }
 
     .togglebutton {
-        @apply flex-1 h-full rounded-sm duration-100;
+        @apply flex-1 h-full rounded-sm;
     }
 
     .enabled {
         background-color: var(--bg);
         color: var(--text);
+        @apply duration-100;
     }
 
     .enabled:hover {
         background-color: var(--bg-hover);
+    }
+
+    .disabled:hover {
+        @apply duration-100;
     }
 
     .disabled {
