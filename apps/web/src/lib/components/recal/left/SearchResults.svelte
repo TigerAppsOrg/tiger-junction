@@ -12,7 +12,9 @@
     let scrollContainerEl: HTMLElement | undefined = $state();
 
     // Create a stable string key for the #each block
-    let resetKey = $derived($searchResults.map(c => c.id).join(",") + $darkTheme + $research);
+    let resetKey = $derived(
+        $searchResults.map(c => c.id).join(",") + $darkTheme + $research
+    );
 
     // Measure content height after DOM updates when content changes
     $effect(() => {

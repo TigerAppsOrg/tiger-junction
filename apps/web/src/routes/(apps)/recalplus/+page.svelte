@@ -21,7 +21,9 @@
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { onMount } from "svelte";
 
-    let { data }: {
+    let {
+        data
+    }: {
         data: {
             supabase: SupabaseClient;
             body: {

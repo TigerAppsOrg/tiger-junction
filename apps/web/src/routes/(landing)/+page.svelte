@@ -1,395 +1,725 @@
 <script lang="ts">
     import { handleLogin } from "$lib/scripts/supabase.js";
+    import { onMount } from "svelte";
+    import { animate, stagger } from "animejs";
     import LandingFooter from "./LandingFooter.svelte";
-    import LandingHeader from "./LandingHeader.svelte";
-
-    let currentFeature = $state("conflict");
-    const FEATURE_MAP: Record<string, Record<string, string>> = {
-        conflict: {
-            title: "Conflict Avoidance",
-            description:
-                "Avoid scheduling conflicts by filtering courses based on your existing schedule."
-        },
-        search: {
-            title: "Advanced Search",
-            description:
-                "Filter by distribution requirement, level, days, and more to find the perfect courses for your schedule."
-        },
-        themes: {
-            title: "Beautiful Themes",
-            description:
-                "Customize your experience with a variety of themes, including a 1-click dark mode."
-        },
-        ratings: {
-            title: "Integrated Ratings",
-            description: "View course ratings directly within the app."
-        },
-        events: {
-            title: "Custom Events",
-            description:
-                "Add custom events to your schedule, such as office hours, club meetings, and more. Integrates with conflict avoideance to ensure you never schedule over your activities."
-        }
-    };
+    import FloatingShapes from "$lib/components/landing/animations/FloatingShapes.svelte";
+    import MorphingBlob from "$lib/components/landing/animations/MorphingBlob.svelte";
+    import Calendar3D from "$lib/components/landing/animations/Calendar3D.svelte";
 
     let { data }: { data: any } = $props();
+
+    let scrollY = $state(0);
+    let mouseX = $state(0);
+    let mouseY = $state(0);
+    let windowHeight = $state(800);
+    let mounted = $state(false);
+
+    // Scroll progress (0 = top, 1 = one viewport down, etc.)
+    let scrollProgress = $derived(mounted ? scrollY / windowHeight : 0);
+
+    // Parallax values for different elements
+    let heroOpacity = $derived(Math.max(0, 1 - scrollProgress * 1.5));
+    let heroScale = $derived(1 - scrollProgress * 0.1);
+    let heroY = $derived(scrollProgress * 100);
+
+    // Feature section animations (start at 0.3 scroll progress)
+    let featureProgress = $derived(
+        Math.max(0, Math.min(1, (scrollProgress - 0.3) * 2))
+    );
+
+    // Individual feature animations with stagger
+    let feature1Progress = $derived(
+        Math.max(0, Math.min(1, (scrollProgress - 0.4) * 3))
+    );
+    let feature2Progress = $derived(
+        Math.max(0, Math.min(1, (scrollProgress - 0.6) * 3))
+    );
+    let feature3Progress = $derived(
+        Math.max(0, Math.min(1, (scrollProgress - 0.8) * 3))
+    );
+
+    // CTA section (starts at 1.2 scroll progress)
+    let ctaProgress = $derived(
+        Math.max(0, Math.min(1, (scrollProgress - 1.0) * 2))
+    );
+
+    function handleMouseMove(e: MouseEvent) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    }
+
+    onMount(() => {
+        mounted = true;
+        windowHeight = window.innerHeight;
+
+        // Entrance animations
+        animate(".hero-title span", {
+            translateY: ["100%", "0%"],
+            opacity: [0, 1],
+            delay: stagger(100),
+            duration: 800,
+            ease: "outQuart"
+        });
+
+        animate(".hero-subtitle", {
+            opacity: [0, 1],
+            translateY: ["20px", "0px"],
+            delay: 600,
+            duration: 600,
+            ease: "outQuart"
+        });
+
+        animate(".hero-cta", {
+            opacity: [0, 1],
+            delay: 900,
+            duration: 600
+        });
+
+        const handleResize = () => {
+            windowHeight = window.innerHeight;
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    });
 </script>
 
+<svelte:window bind:scrollY on:mousemove={handleMouseMove} />
+
 <svelte:head>
-    <title>TigerJunction</title>
+    <title>TigerJunction | Next-Gen Course Planning</title>
     <meta
         name="description"
-        content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed." />
-    <meta property="og:title" content="TigerJunction" />
-    <meta
-        property="og:description"
-        content="TigerJunction is a platform for effortless course planning at Princeton University. Experience a seamless blend of modern design and integrated features, simplifying your academic journey. Explore, plan, and succeed." />
-    <meta
-        property="og:image"
-        content="https://junction.tigerapps.org/tjlogo.png" />
-    <meta property="og:url" content="https://junction.tigerapps.org/" />
+        content="TigerJunction is a platform for effortless course planning at Princeton University." />
 </svelte:head>
 
-<section class="bg-white w-screen flex" id="main">
-    <div class="overlay flex-1 pt-4 flex flex-col items-center">
-        <LandingHeader supabase={data.supabase} />
+<div class="landing-page">
+    <!-- Fixed header -->
+    <header
+        class="fixed-header"
+        style="opacity: {Math.min(1, 0.3 + scrollProgress * 0.7)}">
+        <a href="/" class="logo">
+            <img src="/tjlogonew.png" alt="TigerJunction" class="logo-img" />
+            <span class="logo-text">TigerJunction</span>
+        </a>
+        <button class="login-link" onclick={() => handleLogin(data.supabase)}>
+            Log In
+        </button>
+    </header>
 
-        <div class="max-w-7xl w-full px-4 sm:px-6 lg:px-8 mt-24">
-            <div class="text-center">
-                <h1
-                    class="py-2 max-w-4xl text-4xl sm:text-6xl
-                font-extrabold uppercase mx-auto">
-                    <span class="text-pink-500"> Next </span>
-                    <span class="text-indigo-500"> Generation </span>
-                    <span class="text-blue-500"> Course </span>
-                    <span class="text-purple-500"> Planning </span>
-                </h1>
-                <p
-                    class="mt-2 max-w-2xl text-lg sm:text-xl lg:text-2xl
-                 text-zinc-600 mx-auto">
-                    Princeton's premier academic planning platform. Explore
-                    courses, plan your schedule, and succeed.
-                </p>
-            </div>
-
-            <div
-                class="flex gap-4 mt-6 justify-center items-center
-            text-sm sm:text-base">
-                <!-- <div class="flex justify-start lg:justify-center">
-                    <a
-                        href={EMAIL_LIST_FORM_LINK}
-                        target="_blank"
-                        class="blankbutton">
-                        Join Email List
-                    </a>
-                </div> -->
-                <div class="flex justify-start lg:justify-center">
-                    <button
-                        onclick={() => handleLogin(data.supabase)}
-                        class="bg-indigo-600 hover:bg-indigo-500 text-white
-                    text-center py-2 px-12 rounded-lg font-bold
-                     duration-100
-                    ">
-                        Get Started
-                    </button>
-                </div>
-                <!-- <div class="flex justify-start lg:justify-center">
-                    <a href="about" class="blankbutton">
-                        Learn More
-                    </a>
-                </div> -->
-            </div>
-        </div>
-
+    <!-- Hero Section -->
+    <section class="hero-section">
         <div
-            class="max-w-4xl w-11/12 mt-12 rounded-xl overflow-hidden
-            shadow-2xl glassy">
-            <img
-                src="/recalplusscreenshot.png"
-                alt="Screenshot of the app"
-                class="w-full h-full
-                object-cover object-center rounded-xl
-                " />
-        </div>
-        <div class="flex-1"></div>
+            class="hero-parallax"
+            style="
+                opacity: {heroOpacity};
+                transform: scale({heroScale}) translateY({heroY}px);
+            ">
+            <FloatingShapes />
+            <MorphingBlob
+                class="blob-top-right"
+                color1="hsl(330, 100%, 85%)"
+                color2="hsl(280, 60%, 80%)"
+                size={600} />
+            <MorphingBlob
+                class="blob-bottom-left"
+                color1="hsl(197, 50%, 80%)"
+                color2="hsl(160, 50%, 75%)"
+                size={500} />
 
-        <!-- <LandingFooter /> -->
-    </div>
-</section>
-
-<section id="about" class="bg-indigo-50 py-32">
-    <div class="max-w-7xl p-4 mx-auto h-full">
-        <h2 class="text-4xl font-semibold text-zinc-800 text-center mb-8">
-            How it Works
-        </h2>
-        <div>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div id="explore" class="flex-1 rounded-3xl">
-                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
-                        <h4>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-8 h-8">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                            </svg>
-                        </h4>
-                        <h3 class="text-2xl font-semibold text-zinc-800">
-                            Explore
-                        </h3>
-                        <p class="text-zinc-800 text-lg">
-                            Browse through the lightning-fast course search to
-                            find the perfect courses for your schedule. Use
-                            built-in ratings to make informed decisions, and
-                            powerful filters to narrow down your search.
-                        </p>
-                    </div>
-                </div>
-                <div id="plan" class="flex-1 rounded-3xl">
-                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
-                        <h4>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-8 h-8">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                            </svg>
-                        </h4>
-                        <h3 class="text-2xl font-semibold text-zinc-800">
-                            Plan
-                        </h3>
-                        <p class="text-zinc-800 text-lg">
-                            Add courses to your schedule to visualize your
-                            semester. Use the conflict avoidance feature to
-                            ensure you never double-book yourself.
-                        </p>
-                    </div>
-                </div>
-                <div id="export" class="flex-1 rounded-3xl">
-                    <div class="p-6 space-y-2 bg-white/70 rounded-3xl h-full">
-                        <h4>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-8 h-8">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                            </svg>
-                        </h4>
-                        <h3 class="text-2xl font-semibold text-zinc-800">
-                            Export
-                        </h3>
-                        <p class="text-zinc-800 text-lg">
-                            Export your schedule to your favorite calendar app.
-                            Any changes you make will be periodically synced.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="features" class="bg-blue-200">
-    <div class="w-full h-full p-4 py-12 bg-white/40">
-        <div class="max-w-7xl p-4 mx-auto h-full">
-            <div class="text-center">
-                <h2 class="text-4xl font-semibold text-zinc-800">
-                    Features Students Love
-                </h2>
-                <p class="text-zinc-800 text-lg mt-2">
-                    Developed in collaboration with the student body,
-                    TigerJunction contains the features that students wanted to
-                    see.
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-line"
+                        ><span>Course planning,</span></span>
+                    <span class="title-line"><span>reimagined.</span></span>
+                </h1>
+                <p class="hero-subtitle">
+                    The modern way to explore, plan, and organize your Princeton
+                    schedule.
                 </p>
-            </div>
-
-            <div
-                id="feature-grid"
-                class="flex md:flex-row flex-col-reverse w-full gap-4 md:gap-8 mt-12">
-                <div
-                    class="rounded-3xl bg-white p-4 flex flex-col
-                    justify-between md:w-80 w-full h-72">
+                <div class="hero-cta">
                     <button
-                        onclick={() => (currentFeature = "conflict")}
-                        class="feature-select
-                        {currentFeature === 'conflict'
-                            ? 'bg-gradient-to-br from-emerald-100 to-emerald-200'
-                            : 'hover:bg-zinc-100'}
-                        ">
-                        Conflict Avoidance
+                        class="cta-primary"
+                        onclick={() => handleLogin(data.supabase)}>
+                        <span>Get Started</span>
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
                     </button>
-                    <button
-                        onclick={() => (currentFeature = "search")}
-                        class="feature-select
-                        {currentFeature === 'search'
-                            ? 'bg-gradient-to-br from-fuchsia-100 to-fuchsia-200'
-                            : 'hover:bg-zinc-100'}
-                    ">
-                        Advanced Search
-                    </button>
-                    <button
-                        onclick={() => (currentFeature = "themes")}
-                        class="feature-select
-                        {currentFeature === 'themes'
-                            ? 'bg-gradient-to-br from-violet-100 to-violet-200'
-                            : 'hover:bg-zinc-100'}
-                    ">
-                        Beautiful Themes
-                    </button>
-                    <button
-                        onclick={() => (currentFeature = "ratings")}
-                        class="feature-select
-                        {currentFeature === 'ratings'
-                            ? 'bg-gradient-to-br from-sky-100 to-sky-200'
-                            : 'hover:bg-zinc-100'}
-                    ">
-                        Integrated Ratings
-                    </button>
-                    <button
-                        onclick={() => (currentFeature = "events")}
-                        class="feature-select
-                            {currentFeature === 'events'
-                            ? 'bg-gradient-to-br from-teal-100 to-teal-200'
-                            : 'hover:bg-zinc-100'}
-                        ">
-                        Custom Events
-                    </button>
-                </div>
-                <div class="rounded-3xl p-4 bg-white flex-1 flex gap-4 h-72">
-                    <div class="w-1/3">
-                        <h3 class="text-2xl font-semibold text-zinc-800">
-                            {FEATURE_MAP[currentFeature].title}
-                        </h3>
-                        <p class="text-zinc-800 mt-1">
-                            {FEATURE_MAP[currentFeature].description}
-                        </p>
-                    </div>
-                    <div class="flex-1">
-                        <img
-                            src={`/feature/${currentFeature}.png`}
-                            alt="Feature screenshot"
-                            class="w-full h-full object-contain object-center rounded-lg" />
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<section id="contact" class="bg-indigo-50 py-12 px-4">
-    <div id="cool-grad" class="rounded-3xl max-w-7xl mx-auto px-8 py-12">
-        <div class="mx-auto flex flex-col items-center gap-4">
-            <h2 class="text-3xl font-semibold text-zinc-800 text-center">
-                Join thousands of students in seamless academic planning.
-            </h2>
+        <div class="scroll-hint" style="opacity: {1 - scrollProgress * 3}">
+            <span>Scroll to explore</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Features Section - Flowing layout with scroll animations -->
+    <section class="features-section">
+        <!-- Feature 1: Explore -->
+        <div
+            class="feature-block"
+            style="
+                opacity: {feature1Progress};
+                transform: translateY({(1 - feature1Progress) * 60}px);
+            ">
+            <div class="feature-inner">
+                <div class="feature-visual">
+                    <div class="visual-grid">
+                        {#each Array(12) as _, i}
+                            <div
+                                class="grid-item"
+                                style="
+                                    --delay: {i * 50}ms;
+                                    --hue: {(i * 30) % 360};
+                                    transform: translateY({(1 -
+                                    feature1Progress) *
+                                    (20 + i * 5)}px) rotate({feature1Progress *
+                                    5}deg);
+                                ">
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+                <div class="feature-text">
+                    <span class="feature-label">Explore</span>
+                    <p class="feature-description">
+                        Lightning-fast search across every course. Filter by
+                        distribution, level, days, and ratings.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2: Plan -->
+        <div
+            class="feature-block alt"
+            style="
+                opacity: {feature2Progress};
+                transform: translateY({(1 - feature2Progress) * 60}px);
+            ">
+            <div class="feature-inner reverse">
+                <div class="feature-visual">
+                    <div
+                        class="calendar-container"
+                        style="transform: perspective(1000px) rotateY({(feature2Progress -
+                            0.5) *
+                            10}deg)">
+                        <Calendar3D {mouseX} {mouseY} />
+                    </div>
+                </div>
+                <div class="feature-text">
+                    <span class="feature-label">Plan</span>
+                    <p class="feature-description">
+                        Build your perfect schedule visually. Automatic conflict
+                        detection keeps you on track.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3: Export -->
+        <div
+            class="feature-block"
+            style="
+                opacity: {feature3Progress};
+                transform: translateY({(1 - feature3Progress) * 60}px);
+            ">
+            <div class="feature-inner">
+                <div class="feature-visual">
+                    <div class="export-visual">
+                        <div
+                            class="export-icon"
+                            style="transform: scale({0.8 +
+                                feature3Progress * 0.2})">
+                            <svg
+                                width="80"
+                                height="80"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M12 5v14M5 12l7 7 7-7" />
+                                <rect
+                                    x="3"
+                                    y="19"
+                                    width="18"
+                                    height="2"
+                                    rx="1"
+                                    fill="currentColor"
+                                    stroke="none" />
+                            </svg>
+                        </div>
+                        <div class="export-rings">
+                            {#each [0, 1, 2] as ring}
+                                <div
+                                    class="ring"
+                                    style="
+                                        animation-delay: {ring * 0.3}s;
+                                        opacity: {feature3Progress};
+                                    ">
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-text">
+                    <span class="feature-label">Export</span>
+                    <p class="feature-description">
+                        Sync to Google Calendar or iCal. Your schedule,
+                        everywhere you need it.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section
+        class="cta-section"
+        style="
+            opacity: {ctaProgress};
+            transform: translateY({(1 - ctaProgress) * 40}px);
+        ">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to plan smarter?</h2>
             <button
-                onclick={() => handleLogin(data.supabase)}
-                class="bg-indigo-600 hover:bg-indigo-500 text-white
-                text-center py-2 px-8 font-bold
-                duration-100 rounded-lg
-                ">
-                Get Started
+                class="cta-final"
+                onclick={() => handleLogin(data.supabase)}>
+                <span>Start Planning</span>
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
             </button>
         </div>
-    </div>
-</section>
+    </section>
 
-<LandingFooter />
+    <LandingFooter />
+</div>
 
 <style lang="postcss">
-    #features {
-        background-image: url("/bg/feat.jpg");
-        background-size: cover;
-        background-position: center;
+    .landing-page {
+        background: white;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    .feature-select {
-        @apply w-full p-2 rounded-xl border border-zinc-200 text-zinc-800;
+    /* Fixed header */
+    .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 40px;
+        pointer-events: none;
+        background: linear-gradient(to bottom, white 0%, transparent 100%);
     }
 
-    #cool-grad {
-        /* Blue to pink to purple  */
-        background-image: linear-gradient(
-            125deg,
-            #aba3ff65 5%,
-            rgba(255, 148, 237, 0.395) 50%,
-            rgba(197, 89, 255, 0.308) 950%
-        );
+    .fixed-header > * {
+        pointer-events: auto;
     }
 
-    #main {
-        background-image:
-            radial-gradient(18% 28% at 24% 50%, #ff6b6b00 7%, #ff6b6b00 100%),
-            radial-gradient(18% 28% at 18% 71%, #ffffff9c 6%, #ff6b6b00 100%),
-            radial-gradient(
-                70% 53% at 36% 76%,
-                rgb(36, 45, 227) 0%,
-                #ff6b6b00 100%
-            ),
-            radial-gradient(42% 53% at 15% 94%, #ffffffff 7%, #ff6b6b00 100%),
-            radial-gradient(42% 53% at 34% 72%, #ffffffff 7%, #ff6b6b00 100%),
-            radial-gradient(18% 28% at 35% 87%, #f245c1cc 7%, #ff6b6b00 100%),
-            radial-gradient(31% 43% at 7% 98%, #ffffffff 24%, #ff6b6b00 100%),
-            radial-gradient(21% 37% at 72% 23%, #ff31eeaa 24%, #ff6b6b00 100%),
-            radial-gradient(35% 56% at 91% 74%, #c44effcc 9%, #ff6b6b00 100%),
-            radial-gradient(74% 86% at 67% 38%, #4ecdc4ff 24%, #ff6b6b00 100%),
-            linear-gradient(125deg, #ff6b6bcc 1%, #ffffffff 100%);
-        background-size: 200% 200%;
-        animation: gradient 20s ease infinite;
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: black;
     }
 
-    @keyframes gradient {
-        0% {
-            background-position: 0% 50%;
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logo-text {
+        font-family: "Inter", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .login-link {
+        font-family: "Inter", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: black;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px 0;
+        position: relative;
+    }
+
+    .login-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: black;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .login-link:hover::after {
+        transform: scaleX(1);
+    }
+
+    /* Hero Section */
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 40px;
+    }
+
+    .hero-parallax {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        will-change: transform, opacity;
+    }
+
+    :global(.blob-top-right) {
+        top: -150px;
+        right: -150px;
+    }
+
+    :global(.blob-bottom-left) {
+        bottom: -100px;
+        left: -150px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 800px;
+    }
+
+    .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 24px;
+    }
+
+    .title-line {
+        display: block;
+        overflow: hidden;
+    }
+
+    .title-line span {
+        display: inline-block;
+    }
+
+    .hero-subtitle {
+        font-family: "Inter", sans-serif;
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    .hero-cta {
+        display: flex;
+        justify-content: center;
+    }
+
+    .cta-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "Inter", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #6485fd;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 12px 0;
+        transition: gap 0.3s ease;
+    }
+
+    .cta-primary:hover {
+        gap: 20px;
+    }
+
+    .cta-primary:hover svg {
+        transform: translateX(4px);
+    }
+
+    .cta-primary svg {
+        transition: transform 0.3s ease;
+    }
+
+    .scroll-hint {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        will-change: opacity;
+    }
+
+    .scroll-hint span {
+        font-family: "Inter", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #999;
+    }
+
+    .scroll-line {
+        width: 1px;
+        height: 40px;
+        background: linear-gradient(to bottom, #999, transparent);
+        animation: scroll-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-pulse {
+        0%,
+        100% {
+            opacity: 1;
+            transform: scaleY(1);
         }
         50% {
-            background-position: 100% 50%;
+            opacity: 0.5;
+            transform: scaleY(0.6);
+        }
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 100px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 120px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .feature-block {
+        will-change: transform, opacity;
+    }
+
+    .feature-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .feature-inner.reverse {
+        direction: rtl;
+    }
+
+    .feature-inner.reverse > * {
+        direction: ltr;
+    }
+
+    .feature-visual {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feature-text {
+        max-width: 400px;
+    }
+
+    .feature-label {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        display: block;
+        margin-bottom: 16px;
+    }
+
+    .feature-description {
+        font-family: "Inter", sans-serif;
+        font-size: 1.1rem;
+        color: #666;
+        line-height: 1.7;
+    }
+
+    /* Visual Grid */
+    .visual-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .grid-item {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: hsl(var(--hue), 70%, 80%);
+        will-change: transform;
+    }
+
+    /* Calendar container */
+    .calendar-container {
+        will-change: transform;
+    }
+
+    /* Export visual */
+    .export-visual {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .export-icon {
+        color: #6485fd;
+        z-index: 1;
+    }
+
+    .export-rings {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ring {
+        position: absolute;
+        border: 2px solid #6485fd;
+        border-radius: 50%;
+        animation: ring-pulse 2s ease-out infinite;
+    }
+
+    .ring:nth-child(1) {
+        width: 100px;
+        height: 100px;
+    }
+    .ring:nth-child(2) {
+        width: 140px;
+        height: 140px;
+    }
+    .ring:nth-child(3) {
+        width: 180px;
+        height: 180px;
+    }
+
+    @keyframes ring-pulse {
+        0% {
+            transform: scale(0.8);
+            opacity: 0.8;
         }
         100% {
-            background-position: 0% 50%;
+            transform: scale(1.2);
+            opacity: 0;
         }
     }
 
-    .overlay {
-        @apply bg-gradient-to-b from-white/40 to-indigo-50 from-40%;
+    /* CTA Section */
+    .cta-section {
+        padding: 120px 40px;
+        text-align: center;
+        background: linear-gradient(135deg, #6485fd 0%, #f245c1 100%);
+        will-change: transform, opacity;
     }
 
-    .glassy {
-        background-color: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
-        @apply p-2 sm:p-6 rounded-3xl;
+    .cta-content {
+        max-width: 600px;
+        margin: 0 auto;
     }
 
-    #explore {
-        background-image: url("/bg/explore.jpg");
-        background-size: cover;
+    .cta-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        color: white;
+        margin-bottom: 32px;
     }
 
-    #plan {
-        background-image: url("/bg/plan.jpg");
-        background-size: cover;
+    .cta-final {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "Inter", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: white;
+        background: transparent;
+        border: 2px solid white;
+        border-radius: 50px;
+        padding: 16px 32px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    #export {
-        background-image: url("/bg/export.jpg");
-        background-size: cover;
+    .cta-final:hover {
+        background: white;
+        color: #6485fd;
+        gap: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+        .feature-inner {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            text-align: center;
+        }
+
+        .feature-inner.reverse {
+            direction: ltr;
+        }
+
+        .feature-text {
+            max-width: 100%;
+        }
+
+        .features-section {
+            padding: 80px 24px;
+            gap: 80px;
+        }
+
+        .fixed-header {
+            padding: 16px 20px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .logo-text {
+            display: none;
+        }
+
+        .hero-section {
+            padding: 0 24px;
+        }
     }
 </style>

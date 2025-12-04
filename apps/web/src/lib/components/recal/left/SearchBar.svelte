@@ -181,8 +181,11 @@
     }
 
     .adv-search {
-        @apply h-10 w-10 flex justify-center items-center
-        dark:text-zinc-100;
+        @apply h-10 w-10 flex justify-center items-center;
+    }
+
+    :global(.dark) .adv-search {
+        @apply text-zinc-100;
     }
 
     .adv-search:hover svg {
@@ -213,11 +216,12 @@
 
     .disabled {
         background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
-        @apply text-zinc-700 dark:text-zinc-300;
+        @apply text-zinc-700;
     }
 
     :global(.dark) .disabled {
         background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
+        @apply text-zinc-300;
     }
 
     .disabled:hover {

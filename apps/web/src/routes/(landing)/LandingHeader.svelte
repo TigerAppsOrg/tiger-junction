@@ -7,93 +7,184 @@
     let { supabase }: { supabase: SupabaseClient } = $props();
 </script>
 
-<div
-    class="max-w-7xl mx-4 px-4 py-2 w-11/12 bg-white rounded-2xl
-    fixed shadow-md z-50">
-    <nav class="flex justify-between sm:grid sm:grid-cols-3">
-        <a
-            href="/"
-            onclick={(e) => {
-                e.preventDefault();
-                if ($page.url.pathname === "/") {
-                    document.getElementById("main")?.scrollIntoView({
-                        behavior: "smooth"
-                    });
-                } else {
-                    goto("/");
-                }
-            }}
-            class="flex items-center flex-shrink-0 gap-1 text-black mr-6">
-            <img
-                src="/tjlogonew.png"
-                alt="Tiger Junction logo"
-                class="w-10 h-10" />
-            <span class="font-semibold text-xl tracking-tight"
-                >TigerJunction</span>
-        </a>
-        <div class="items-center justify-center lg:gap-8 gap-4 hidden sm:flex">
-            {#if $page.url.pathname === "/"}
-                <a
-                    href="/#about"
-                    onclick={(e) => {
-                        e.preventDefault();
-                        document.getElementById("about")?.scrollIntoView({
+<header class="header-wrapper">
+    <div class="header-inner">
+        <nav class="header-nav">
+            <!-- Logo -->
+            <a
+                href="/"
+                onclick={e => {
+                    e.preventDefault();
+                    if ($page.url.pathname === "/") {
+                        document.getElementById("hero")?.scrollIntoView({
                             behavior: "smooth"
                         });
-                    }}
-                    class="nav-link">
-                    About
-                </a>
-                <a
-                    href="/#features"
-                    onclick={(e) => {
-                        e.preventDefault();
-                        document.getElementById("features")?.scrollIntoView({
-                            behavior: "smooth"
-                        });
-                    }}
-                    class="nav-link">
-                    Features
-                </a>
-            {/if}
-        </div>
-        <div class="flex items-center justify-end">
-            <button
-                onclick={() => handleLogin(supabase)}
-                class="bg-indigo-600 hover:bg-indigo-500 text-white
-                    text-center px-4 py-2 rounded-lg font-bold
-                     duration-100">
-                Log In
-            </button>
-        </div>
-    </nav>
-</div>
+                    } else {
+                        goto("/");
+                    }
+                }}
+                class="logo-link">
+                <img
+                    src="/tjlogonew.png"
+                    alt="Tiger Junction logo"
+                    class="logo-img" />
+                <span class="logo-text">TigerJunction</span>
+            </a>
+
+            <!-- Nav Links -->
+            <div class="nav-links">
+                {#if $page.url.pathname === "/"}
+                    <a
+                        href="/#features"
+                        onclick={e => {
+                            e.preventDefault();
+                            document
+                                .getElementById("features")
+                                ?.scrollIntoView({
+                                    behavior: "smooth"
+                                });
+                        }}
+                        class="nav-link">
+                        Features
+                    </a>
+                {/if}
+            </div>
+
+            <!-- Login Button -->
+            <div class="nav-actions">
+                <button onclick={() => handleLogin(supabase)} class="login-btn">
+                    Log In
+                </button>
+            </div>
+        </nav>
+    </div>
+</header>
 
 <style lang="postcss">
-    nav {
-        grid-template-columns: 1fr 1fr 1fr;
+    .header-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 16px 20px;
+    }
+
+    .header-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border: 3px solid black;
+        padding: 12px 24px;
+    }
+
+    .header-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* Logo */
+    .logo-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: black;
+    }
+
+    .logo-img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .logo-text {
+        font-family: "Inter", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    /* Nav Links */
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 32px;
     }
 
     .nav-link {
-        position: relative;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: black;
         text-decoration: none;
+        position: relative;
+        padding: 4px 0;
     }
 
     .nav-link::after {
         content: "";
         position: absolute;
-        width: 100%;
-        height: 2px;
         bottom: 0;
         left: 0;
+        width: 100%;
+        height: 2px;
+        background: black;
         transform: scaleX(0);
-        transform-origin: bottom right;
-        transition: transform 0.3s ease-out;
-        @apply bg-indigo-600;
+        transform-origin: right;
+        transition: transform 0.2s ease;
     }
 
     .nav-link:hover::after {
         transform: scaleX(1);
-        transform-origin: bottom left;
+        transform-origin: left;
+    }
+
+    /* Login Button - Brutalist Style */
+    .login-btn {
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: black;
+        color: white;
+        border: 2px solid black;
+        padding: 10px 24px;
+        cursor: pointer;
+        transition:
+            background 0.15s ease,
+            color 0.15s ease;
+    }
+
+    .login-btn:hover {
+        background: white;
+        color: black;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+        .header-wrapper {
+            padding: 12px 16px;
+        }
+
+        .header-inner {
+            padding: 10px 16px;
+        }
+
+        .logo-text {
+            display: none;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .login-btn {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
     }
 </style>

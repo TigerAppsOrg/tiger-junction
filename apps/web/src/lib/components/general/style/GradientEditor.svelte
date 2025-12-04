@@ -176,7 +176,11 @@
 <style lang="postcss">
     .editor-container {
         @apply mt-3 pt-3 space-y-2;
-        @apply border-t border-zinc-200 dark:border-zinc-700;
+        @apply border-t border-zinc-200;
+    }
+
+    :global(.dark) .editor-container {
+        @apply border-zinc-700;
     }
 
     .editor-header {
@@ -184,13 +188,21 @@
     }
 
     .editor-title {
-        @apply text-xs font-medium text-zinc-600 dark:text-zinc-400;
+        @apply text-xs font-medium text-zinc-600;
+    }
+
+    :global(.dark) .editor-title {
+        @apply text-zinc-400;
     }
 
     .delete-btn {
         @apply p-1 rounded text-zinc-400 hover:text-red-500;
-        @apply hover:bg-red-50 dark:hover:bg-red-900/20;
+        @apply hover:bg-red-50;
         @apply transition-colors;
+    }
+
+    :global(.dark) .delete-btn:hover {
+        @apply bg-red-900/20;
     }
 
     .field-row {
@@ -198,7 +210,11 @@
     }
 
     .field-label {
-        @apply text-[10px] text-zinc-500 dark:text-zinc-400 w-16 shrink-0;
+        @apply text-[10px] text-zinc-500 w-16 shrink-0;
+    }
+
+    :global(.dark) .field-label {
+        @apply text-zinc-400;
     }
 
     .color-input-wrapper {
@@ -210,8 +226,12 @@
     }
 
     .color-display {
-        @apply w-full h-full rounded border border-zinc-300 dark:border-zinc-600;
+        @apply w-full h-full rounded border border-zinc-300;
         @apply pointer-events-none;
+    }
+
+    :global(.dark) .color-display {
+        @apply border-zinc-600;
     }
 
     .slider-wrapper {
@@ -220,7 +240,11 @@
 
     .slider {
         @apply flex-1 h-1.5 rounded-full appearance-none cursor-pointer;
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        @apply bg-zinc-300;
+    }
+
+    :global(.dark) .slider {
+        @apply bg-zinc-600;
     }
 
     .slider::-webkit-slider-thumb {
@@ -232,7 +256,11 @@
     }
 
     .slider-value {
-        @apply text-[10px] text-zinc-500 dark:text-zinc-400 w-8 text-right;
+        @apply text-[10px] text-zinc-500 w-8 text-right;
+    }
+
+    :global(.dark) .slider-value {
+        @apply text-zinc-400;
     }
 
     .shape-toggle {
@@ -241,9 +269,14 @@
 
     .shape-btn {
         @apply flex-1 py-1 px-2 text-[10px] rounded;
-        @apply bg-zinc-100 dark:bg-zinc-700;
-        @apply text-zinc-600 dark:text-zinc-400;
+        @apply bg-zinc-100;
+        @apply text-zinc-600;
         @apply transition-colors;
+    }
+
+    :global(.dark) .shape-btn {
+        @apply bg-zinc-700;
+        @apply text-zinc-400;
     }
 
     .shape-btn.active {

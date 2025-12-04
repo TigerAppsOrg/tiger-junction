@@ -233,7 +233,11 @@
     /**
      * Handle gradient position change (from canvas drag)
      */
-    const handleGradientMove = (detail: { id: string; x: number; y: number }) => {
+    const handleGradientMove = (detail: {
+        id: string;
+        x: number;
+        y: number;
+    }) => {
         const { id, x, y } = detail;
         const updatedGradients = $bgEffects.glows.gradients.map(g =>
             g.id === id ? { ...g, x, y } : g
@@ -365,7 +369,7 @@
                     <button
                         onclick={() => appFont.set(font.name)}
                         class="font-button {$appFont === font.name
-                            ? 'ring-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item'
                             : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}"
                         style={$appFont === font.name
                             ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
@@ -394,7 +398,7 @@
                 {#each Object.entries(colorPalettes) as [name, palette]}
                     <button
                         class="palette-card {lastSelectedTheme?.name === name
-                            ? 'ring-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item'
                             : ''}"
                         style={lastSelectedTheme?.name === name
                             ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
@@ -404,7 +408,8 @@
                             {#each sortPaletteColors(palette) as color}
                                 <div
                                     class="h-3 w-full"
-                                    style="background-color: {color}"></div>
+                                    style="background-color: {color}">
+                                </div>
                             {/each}
                         </div>
                         <span
@@ -733,6 +738,11 @@
 
     .selected-item {
         --tw-ring-color: var(--ring-color);
+        --tw-ring-offset-color: #fff;
+    }
+
+    :global(.dark) .selected-item {
+        --tw-ring-offset-color: var(--bg-dark);
     }
 
     .color-swatch {

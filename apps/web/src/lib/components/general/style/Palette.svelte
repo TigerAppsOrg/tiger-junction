@@ -75,12 +75,18 @@
 
 <style lang="postcss">
     .border {
-        @apply border-2 rounded-md overflow-clip
-    border-zinc-600/30 dark:border-zinc-200/30;
+        @apply border-2 rounded-md overflow-clip border-zinc-600/30;
+    }
+
+    :global(.dark) .border {
+        @apply border-zinc-200/30;
     }
 
     .border:hover {
-        @apply border-zinc-600/50 dark:border-zinc-200/50
-    transform  duration-150;
+        @apply border-zinc-600/50 transform duration-150;
+    }
+
+    :global(.dark) .border:hover {
+        @apply border-zinc-200/50;
     }
 </style>

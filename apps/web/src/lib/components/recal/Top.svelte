@@ -374,7 +374,11 @@
     }
 
     .termchoice:hover {
-        @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
+        @apply bg-zinc-200 duration-150;
+    }
+
+    :global(.dark) .termchoice:hover {
+        @apply bg-zinc-700;
     }
 
     .add-button:hover {
@@ -398,7 +402,11 @@
     }
 
     .btn-icon {
-        @apply h-5 w-5 dark:text-zinc-300 text-zinc-500;
+        @apply h-5 w-5 text-zinc-500;
+    }
+
+    :global(.dark) .btn-icon {
+        @apply text-zinc-300;
     }
 
     #duck {

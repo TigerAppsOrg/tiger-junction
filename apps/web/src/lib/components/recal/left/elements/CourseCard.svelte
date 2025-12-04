@@ -39,7 +39,9 @@
     const computeDerivedColors = (baseColor: string) => {
         if (!baseColor) return { text: "", hoverColor: "", hoverText: "" };
 
-        const lightness = parseInt(baseColor.split(",")[2]?.split("%")[0] || "50");
+        const lightness = parseInt(
+            baseColor.split(",")[2]?.split("%")[0] || "50"
+        );
         if (lightness > 50) {
             return {
                 text: darkenHSL(baseColor, 60),
@@ -91,7 +93,8 @@
             const meta = $scheduleCourseMeta[$currentSchedule]?.[course.id];
             if (!meta) return baseStyles;
 
-            const baseColor = $calColors[meta.color as unknown as keyof CalColors];
+            const baseColor =
+                $calColors[meta.color as unknown as keyof CalColors];
             baseStyles.color = baseColor;
             const derived = computeDerivedColors(baseColor);
             Object.assign(baseStyles, derived);
@@ -149,8 +152,8 @@
 <div
     id="card"
     transition:slide={{ duration: 150, axis: "y" }}
-    class="duration-100 border-b-[1px] dark:border-zinc-800
-    {category === 'saved' && 'dark:border-black'}"
+    class="duration-100 border-b-[1px] border-zinc-200 dark:border-zinc-700
+    {category === 'saved' ? 'dark:border-zinc-900' : ''}"
     style={cssVarStyles}
     onmouseenter={handleHover}
     onmouseleave={handleLeave}
@@ -354,15 +357,27 @@
     }
 
     #buttons {
-        @apply border-b-[2px] dark:border-zinc-800;
+        @apply border-b-[2px];
+    }
+
+    :global(.dark) #buttons {
+        @apply border-zinc-800;
     }
 
     .add-button:hover {
-        @apply bg-green-500 dark:bg-green-700;
+        @apply bg-green-500;
+    }
+
+    :global(.dark) .add-button:hover {
+        @apply bg-green-700;
     }
 
     .remove-button:hover {
-        @apply bg-red-500 dark:bg-red-700;
+        @apply bg-red-500;
+    }
+
+    :global(.dark) .remove-button:hover {
+        @apply bg-red-700;
     }
 
     .cardlink {
@@ -378,6 +393,10 @@
     }
 
     .ic {
-        @apply w-5 h-5 invert-[.5] dark:invert-[.7];
+        @apply w-5 h-5 invert-[.5];
+    }
+
+    :global(.dark) .ic {
+        @apply invert-[.7];
     }
 </style>

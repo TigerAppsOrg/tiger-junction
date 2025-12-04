@@ -381,26 +381,40 @@
 
 <style lang="postcss">
     input {
-        @apply bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200;
+        @apply bg-white text-zinc-700;
     }
 
-    input[type="time"]::-webkit-calendar-picker-indicator {
-        @apply dark:invert;
+    :global(.dark) input {
+        @apply bg-zinc-900 text-zinc-200;
+    }
+
+    :global(.dark) input[type="time"]::-webkit-calendar-picker-indicator {
+        @apply invert;
     }
 
     .settings-area {
-        @apply p-4 border-t-2
-        border-zinc-600/30 dark:border-zinc-200/30;
+        @apply p-4 border-t-2 border-zinc-600/30;
+    }
+
+    :global(.dark) .settings-area {
+        @apply border-zinc-200/30;
     }
 
     .day-toggle {
         @apply w-8 h-8 rounded-full p-1 duration-100 text-sm select-none
-        border-2 border-zinc-600/30 dark:border-zinc-200/30;
+        border-2 border-zinc-600/30;
+    }
+
+    :global(.dark) .day-toggle {
+        @apply border-zinc-200/30;
     }
 
     .day-toggle:hover {
-        @apply bg-zinc-200 dark:bg-zinc-700 border-zinc-600/30
-        dark:border-zinc-200/30;
+        @apply bg-zinc-200 border-zinc-600/30;
+    }
+
+    :global(.dark) .day-toggle:hover {
+        @apply bg-zinc-700 border-zinc-200/30;
     }
 
     .checked {

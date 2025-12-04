@@ -72,11 +72,19 @@
     }
 
     .list-title {
-        @apply text-[10px] font-medium text-zinc-500 dark:text-zinc-400;
+        @apply text-[10px] font-medium text-zinc-500;
+    }
+
+    :global(.dark) .list-title {
+        @apply text-zinc-400;
     }
 
     .list-count {
-        @apply text-[10px] text-zinc-400 dark:text-zinc-500;
+        @apply text-[10px] text-zinc-400;
+    }
+
+    :global(.dark) .list-count {
+        @apply text-zinc-500;
     }
 
     .gradient-items {
@@ -85,8 +93,12 @@
 
     .gradient-item {
         @apply relative w-8 h-8 rounded-lg overflow-hidden;
-        @apply border border-zinc-300 dark:border-zinc-600;
+        @apply border border-zinc-300;
         @apply transition-all duration-100;
+    }
+
+    :global(.dark) .gradient-item {
+        @apply border-zinc-600;
     }
 
     .gradient-item:hover {
@@ -113,10 +125,15 @@
 
     .add-btn {
         @apply w-8 h-8 rounded-lg;
-        @apply border border-dashed border-zinc-300 dark:border-zinc-600;
+        @apply border border-dashed border-zinc-300;
         @apply flex items-center justify-center;
-        @apply text-zinc-400 dark:text-zinc-500;
+        @apply text-zinc-400;
         @apply hover:border-blue-500 hover:text-blue-500;
         @apply transition-colors;
+    }
+
+    :global(.dark) .add-btn {
+        @apply border-zinc-600;
+        @apply text-zinc-500;
     }
 </style>

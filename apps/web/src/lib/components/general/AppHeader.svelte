@@ -2,7 +2,12 @@
     import { goto } from "$app/navigation";
     import { modalStore } from "$lib/stores/modal";
     import { panelStore } from "$lib/stores/panel";
-    import { calColors, darkTheme, getStyles, isMobile } from "$lib/stores/styles";
+    import {
+        calColors,
+        darkTheme,
+        getStyles,
+        isMobile
+    } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
 
@@ -140,11 +145,19 @@ dark:border-zinc-700 border-zinc-200"
 
 <style lang="postcss">
     .btn-circ {
-        @apply flex items-center gap-1 dark:text-zinc-100;
+        @apply flex items-center gap-1;
+    }
+
+    :global(.dark) .btn-circ {
+        @apply text-zinc-100;
     }
 
     .btn-circ:hover {
-        @apply text-zinc-600 dark:text-zinc-300 duration-150;
+        @apply text-zinc-600 duration-150;
+    }
+
+    :global(.dark) .btn-circ:hover {
+        @apply text-zinc-300;
     }
 
     .btn-icon {

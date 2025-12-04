@@ -94,11 +94,15 @@
 {/key}
 
 <style lang="postcss">
-    .calbut {
-        @apply dark:text-zinc-100;
+    :global(.dark) .calbut {
+        @apply text-zinc-100;
     }
 
     .calbut:hover {
-        @apply text-zinc-600 duration-150 dark:text-zinc-300;
+        @apply text-zinc-600 duration-150;
+    }
+
+    :global(.dark) .calbut:hover {
+        @apply text-zinc-300;
     }
 </style>

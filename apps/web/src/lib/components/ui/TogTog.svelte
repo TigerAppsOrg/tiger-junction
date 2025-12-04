@@ -1,32 +1,44 @@
 <script lang="ts">
     import { currentSortBy, research, searchSettings } from "$lib/stores/recal";
-    import { getStyles } from "$lib/stores/styles";
+    import { calColors, getStyles } from "$lib/stores/styles";
 
     let { name = "" }: { name?: string } = $props();
 
     let sortParam = $derived($searchSettings.sortBy[name]);
-    let cssVarStyles = $derived(getStyles("0"));
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // track dependency
+        return getStyles("0");
+    });
 
     const handleToggle = () => {
-        if (sortParam.enabled) {
-            if (sortParam.value === sortParam.options.length - 1) {
-                sortParam.value = 0;
-                sortParam.enabled = false;
-                currentSortBy.set(null);
-            } else sortParam.value++;
-        } else {
-            sortParam.value = 0;
-            sortParam.enabled = true;
-            currentSortBy.set(name);
-        }
+        searchSettings.update(settings => {
+            const param = settings.sortBy[name];
+            if (param.enabled) {
+                if (param.value === param.options.length - 1) {
+                    param.value = 0;
+                    param.enabled = false;
+                    currentSortBy.set(null);
+                } else {
+                    param.value++;
+                }
+            } else {
+                param.value = 0;
+                param.enabled = true;
+                currentSortBy.set(name);
+            }
+            return settings;
+        });
         $research = !$research;
     };
 
     $effect(() => {
         const s = $currentSortBy;
         if (s == null || s !== name) {
-            sortParam.enabled = false;
-            sortParam.value = 0;
+            searchSettings.update(settings => {
+                settings.sortBy[name].enabled = false;
+                settings.sortBy[name].value = 0;
+                return settings;
+            });
         }
     });
 </script>
@@ -41,12 +53,19 @@
 
 <style lang="postcss">
     .info {
-        @apply rounded-md px-2.5 py-1 text-sm border border-zinc-300
-            dark:border-zinc-600;
+        @apply rounded-md px-2.5 py-1 text-sm border border-zinc-300;
+    }
+
+    :global(.dark) .info {
+        @apply border-zinc-600;
     }
 
     .info:hover {
-        @apply bg-zinc-200 dark:bg-zinc-700 duration-150;
+        @apply bg-zinc-200 duration-150;
+    }
+
+    :global(.dark) .info:hover {
+        @apply bg-zinc-700;
     }
 
     .checked {

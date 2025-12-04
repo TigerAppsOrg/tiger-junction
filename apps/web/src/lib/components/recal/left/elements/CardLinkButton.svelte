@@ -38,8 +38,8 @@
 </a>
 
 <style lang="postcss">
-    a {
-        @apply dark:border-zinc-800;
+    :global(.dark) a {
+        @apply border-zinc-800;
     }
 
     a:hover {

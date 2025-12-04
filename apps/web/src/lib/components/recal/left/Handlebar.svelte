@@ -105,20 +105,32 @@
 
     .handlebar-line {
         @apply absolute left-0 right-0 top-1/2 -translate-y-1/2;
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        @apply bg-zinc-300;
         @apply transition-opacity duration-150;
         height: 2px;
     }
 
+    :global(.dark) .handlebar-line {
+        @apply bg-zinc-600;
+    }
+
     .handlebar-pill {
         @apply relative z-10 flex items-center justify-center rounded-full;
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        @apply bg-zinc-300;
         @apply transition-opacity duration-150;
         width: 36px;
         height: 12px;
     }
 
+    :global(.dark) .handlebar-pill {
+        @apply bg-zinc-600;
+    }
+
     .handlebar-pill svg {
-        @apply text-zinc-500 dark:text-zinc-400;
+        @apply text-zinc-500;
+    }
+
+    :global(.dark) .handlebar-pill svg {
+        @apply text-zinc-400;
     }
 </style>
