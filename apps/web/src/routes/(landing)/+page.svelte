@@ -13,6 +13,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>TigerJunction</title>
+</svelte:head>
+
 <svg style="position: absolute; width: 0; height: 0;">
     <defs>
         <filter id="landingNoise">
