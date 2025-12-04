@@ -22,8 +22,10 @@
     } from "../../../../scripts/ReCal+/calendar";
     import CardLinkButton from "./CardLinkButton.svelte";
 
-    export let course: CourseData;
-    export let category: string = "search";
+    let {
+        course,
+        category = "search"
+    }: { course: CourseData; category?: string } = $props();
 
     const supabase = getContext("supabase") as SupabaseClient;
 
@@ -33,89 +35,101 @@
 
     const { registrar, tigersnatch, princetoncourses } = getLinks(course);
 
-    // Determine color of card
-    const styles = {
-        color: "",
-        text: "",
-        hoverColor: "",
-        hoverText: "",
-        alpha: "1",
-        border: "",
-        trans: "hidden",
-        stripes: `repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 5px,
-        rgba(0, 0, 0, 0.05) 5px,
-        rgba(0, 0, 0, 0.05) 10px);`
-    };
+    // Helper to compute text/hover colors from base color
+    const computeDerivedColors = (baseColor: string) => {
+        if (!baseColor) return { text: "", hoverColor: "", hoverText: "" };
 
-    const fillStyles = () => {
-        if (styles.color === "") return;
-
-        if (parseInt(styles.color.split(",")[2].split("%")[0]) > 50) {
-            styles.text = darkenHSL(styles.color, 60);
-            styles.hoverColor = darkenHSL(styles.color, 10);
-            styles.hoverText = darkenHSL(styles.color, 70);
+        const lightness = parseInt(
+            baseColor.split(",")[2]?.split("%")[0] || "50"
+        );
+        if (lightness > 50) {
+            return {
+                text: darkenHSL(baseColor, 60),
+                hoverColor: darkenHSL(baseColor, 10),
+                hoverText: darkenHSL(baseColor, 70)
+            };
         } else {
-            styles.text = darkenHSL(styles.color, -60);
-            styles.hoverColor = darkenHSL(styles.color, -10);
-            styles.hoverText = darkenHSL(styles.color, -70);
+            return {
+                text: darkenHSL(baseColor, -60),
+                hoverColor: darkenHSL(baseColor, -10),
+                hoverText: darkenHSL(baseColor, -70)
+            };
         }
     };
 
-    // Search result styling
-    if (category === "search") {
-        styles.stripes = "";
-        if ($darkTheme) {
-            styles.color = "hsl(0, 0%, 10%)";
-            styles.text = "hsl(0, 0%, 90%)";
-            styles.hoverColor = "hsl(0, 0%, 10%)";
-            styles.hoverText = "hsl(0, 0%, 100%)";
+    // Make styles reactive to theme and color changes
+    let styles = $derived.by(() => {
+        const baseStyles = {
+            color: "",
+            text: "",
+            hoverColor: "",
+            hoverText: "",
+            alpha: "1",
+            border: "",
+            trans: "hidden",
+            stripes: `repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.05) 10px);`
+        };
+
+        // Search result styling
+        if (category === "search") {
+            baseStyles.stripes = "";
+            if ($darkTheme) {
+                baseStyles.color = "hsl(0, 0%, 10%)";
+                baseStyles.text = "hsl(0, 0%, 90%)";
+                baseStyles.hoverColor = "hsl(0, 0%, 10%)";
+                baseStyles.hoverText = "hsl(0, 0%, 100%)";
+            } else {
+                baseStyles.color = "hsl(0, 0%,100%)";
+                const derived = computeDerivedColors(baseStyles.color);
+                Object.assign(baseStyles, derived);
+            }
         } else {
-            styles.color = "hsl(0, 0%,100%)";
-            fillStyles();
+            // Dynamic color (saved courses)
+            const meta = $scheduleCourseMeta[$currentSchedule]?.[course.id];
+            if (!meta) return baseStyles;
+
+            const baseColor =
+                $calColors[meta.color as unknown as keyof CalColors];
+            baseStyles.color = baseColor;
+            const derived = computeDerivedColors(baseColor);
+            Object.assign(baseStyles, derived);
+            baseStyles.trans = "solid";
+
+            if (meta.complete) {
+                baseStyles.stripes = "";
+                baseStyles.border = darkenHSL(baseColor, 40);
+            } else {
+                baseStyles.color = darkenHSL(baseColor, -10);
+                baseStyles.alpha = "0.8";
+                baseStyles.border = darkenHSL(baseColor, 20);
+            }
         }
 
-        // Dynamic color (saved courses)
-    } else {
-        const meta = $scheduleCourseMeta[$currentSchedule][course.id];
-        styles.color = $calColors[meta.color as unknown as keyof CalColors];
-        fillStyles();
-        styles.trans = "solid";
+        return baseStyles;
+    });
 
-        if (meta.complete) {
-            styles.stripes = "";
-            styles.border = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                40
-            );
-        } else {
-            styles.color = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                -10
-            );
-            styles.alpha = "0.8";
-            styles.border = darkenHSL(
-                $calColors[meta.color as unknown as keyof CalColors],
-                20
-            );
-        }
-    }
-
-    let flipped: boolean = false;
+    let flipped: boolean = $state(false);
 
     // Handle section loading on view
-    let isInView: boolean;
+    let isInView: boolean = $state(false);
     const options = {};
 
-    $: if (isInView) {
-        sectionData.add(supabase, $currentTerm, course.id);
-    }
+    $effect(() => {
+        if (isInView) {
+            sectionData.add(supabase, $currentTerm, course.id);
+        }
+    });
 
-    $: cssVarStyles = Object.entries(styles)
-        .map(([key, value]) => `--${key}:${value}`)
-        .join(";");
+    let cssVarStyles = $derived(
+        Object.entries(styles)
+            .map(([key, value]) => `--${key}:${value}`)
+            .join(";")
+    );
 
     const handleHover = async () => {
         await sectionData.add(supabase, $currentTerm, course.id);
@@ -134,26 +148,26 @@
     };
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     id="card"
     transition:slide={{ duration: 150, axis: "y" }}
-    class="duration-100 border-b-[1px] dark:border-zinc-800
-    {category === 'saved' && 'dark:border-black'}"
+    class="duration-100 border-b-[1px] border-zinc-200 dark:border-zinc-700
+    {category === 'saved' ? 'dark:border-zinc-900' : ''}"
     style={cssVarStyles}
-    on:mouseenter={handleHover}
-    on:mouseleave={handleLeave}
-    on:blur={handleLeave}
-    on:focus={handleHover}
+    onmouseenter={handleHover}
+    onmouseleave={handleLeave}
+    onblur={handleLeave}
+    onfocus={handleHover}
     use:inview={options}
-    on:inview_enter={e => (isInView = e.detail.inView)}>
+    oninview_enter={(e: CustomEvent) => (isInView = e.detail.inView)}>
     <div
         id="topcard"
         class="flex justify-between items-stretch duration-75
         {$courseHoverRev === course.id ? 'tchover' : ''}">
         <button
             class="text-xs font-light text-left w-[75%] p-1"
-            on:click={() => (flipped = !flipped)}>
+            onclick={() => (flipped = !flipped)}>
             <div class="font-normal serif-lowercase">
                 {code}
             </div>
@@ -171,7 +185,7 @@
                 {#if $searchSettings.style["Show Weighted Rating"]}
                     [{course.adj_rating} adj]
                 {/if}
-                {#if $searchSettings.style["Show Enrollment"]}
+                {#if $searchSettings.style["Show Capacity"]}
                     {@const sections =
                         $sectionData[$currentTerm]?.[course.id] || []}
                     {@const priority = ["L", "S", "C", "P", "B", "D", "U"]}
@@ -212,7 +226,7 @@
                     class="remove-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                    on:click={() => {
+                    onclick={() => {
                         cf.removeCourseFromSaved(supabase, course);
                     }}>
                     <svg
@@ -233,7 +247,7 @@
                     class="add-button
                 z-50 h-full w-full flex items-center justify-center
                 duration-100"
-                    on:click={() => {
+                    onclick={() => {
                         cf.saveCourseFromSearch(supabase, course);
                     }}>
                     <svg
@@ -343,15 +357,27 @@
     }
 
     #buttons {
-        @apply border-b-[2px] dark:border-zinc-800;
+        @apply border-b-[2px];
+    }
+
+    :global(.dark) #buttons {
+        @apply border-zinc-800;
     }
 
     .add-button:hover {
-        @apply bg-green-500 dark:bg-green-700;
+        @apply bg-green-500;
+    }
+
+    :global(.dark) .add-button:hover {
+        @apply bg-green-700;
     }
 
     .remove-button:hover {
-        @apply bg-red-500 dark:bg-red-700;
+        @apply bg-red-500;
+    }
+
+    :global(.dark) .remove-button:hover {
+        @apply bg-red-700;
     }
 
     .cardlink {
@@ -367,6 +393,10 @@
     }
 
     .ic {
-        @apply w-5 h-5 invert-[.5] dark:invert-[.7];
+        @apply w-5 h-5 invert-[.5];
+    }
+
+    :global(.dark) .ic {
+        @apply invert-[.7];
     }
 </style>

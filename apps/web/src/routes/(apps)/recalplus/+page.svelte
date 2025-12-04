@@ -21,18 +21,22 @@
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { onMount } from "svelte";
 
-    export let data: {
-        supabase: SupabaseClient;
-        body: {
-            courses: CourseData[];
-            sections: SectionData[];
-            schedules: any[];
-            associations: any[];
-            doneFeedback: boolean;
-            events: UserCustomEvent[];
-            eventAssociations: Record<number, number[]>;
+    let {
+        data
+    }: {
+        data: {
+            supabase: SupabaseClient;
+            body: {
+                courses: CourseData[];
+                sections: SectionData[];
+                schedules: any[];
+                associations: any[];
+                doneFeedback: boolean;
+                events: UserCustomEvent[];
+                eventAssociations: Record<number, number[]>;
+            };
         };
-    };
+    } = $props();
 
     onMount(async () => {
         // if (!data.body.doneFeedback) {

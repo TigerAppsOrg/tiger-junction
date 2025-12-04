@@ -2,7 +2,12 @@
     import { goto } from "$app/navigation";
     import { modalStore } from "$lib/stores/modal";
     import { panelStore } from "$lib/stores/panel";
-    import { darkTheme, getStyles, isMobile } from "$lib/stores/styles";
+    import {
+        calColors,
+        darkTheme,
+        getStyles,
+        isMobile
+    } from "$lib/stores/styles";
     import type { SupabaseClient } from "@supabase/supabase-js";
     import { getContext } from "svelte";
 
@@ -13,10 +18,15 @@
         goto("/");
     };
 
-    $: cssVarStyles = getStyles("0");
+    // Make reactive to color/theme changes
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // track dependency
+        $darkTheme; // track dependency
+        return getStyles("0");
+    });
 
     // Spinning animation state for theme toggle
-    let spinning = false;
+    let spinning = $state(false);
 
     const toggleTheme = () => {
         spinning = true;
@@ -43,7 +53,7 @@ dark:border-zinc-700 border-zinc-200"
         </div>
 
         <div id="right" class="sm:space-x-6 space-x-4 flex items-center">
-            <button on:click={toggleTheme} class="btn-circ">
+            <button onclick={toggleTheme} class="btn-circ">
                 {#if $darkTheme}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +83,7 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
-            <button class="btn-circ" on:click={() => panelStore.open("theme")}>
+            <button class="btn-circ" onclick={() => panelStore.open("theme")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -93,7 +103,7 @@ dark:border-zinc-700 border-zinc-200"
 
             <button
                 class="btn-circ"
-                on:click={() => modalStore.push("feedback")}>
+                onclick={() => modalStore.push("feedback")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -111,7 +121,7 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
-            <button class="btn-circ" on:click={handleLogout}>
+            <button class="btn-circ" onclick={handleLogout}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -135,11 +145,19 @@ dark:border-zinc-700 border-zinc-200"
 
 <style lang="postcss">
     .btn-circ {
-        @apply flex items-center gap-1 dark:text-zinc-100;
+        @apply flex items-center gap-1;
+    }
+
+    :global(.dark) .btn-circ {
+        @apply text-zinc-100;
     }
 
     .btn-circ:hover {
-        @apply text-zinc-600 dark:text-zinc-300 duration-150;
+        @apply text-zinc-600 duration-150;
+    }
+
+    :global(.dark) .btn-circ:hover {
+        @apply text-zinc-300;
     }
 
     .btn-icon {

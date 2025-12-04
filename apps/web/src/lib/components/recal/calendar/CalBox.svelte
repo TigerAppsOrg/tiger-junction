@@ -20,7 +20,7 @@
 
     const supabase = getContext("supabase") as SupabaseClient;
 
-    export let params: BoxParam;
+    let { params }: { params: BoxParam } = $props();
 
     let courseCode: string;
     let border: string;
@@ -48,7 +48,7 @@
         stripes = "";
     }
 
-    let hovered: boolean = false;
+    let hovered: boolean = $state(false);
 
     let styles = {
         bg: $calColors[params.color],
@@ -75,9 +75,11 @@
         styles.hoverText = darkenHSL(styles.text, -70);
     }
 
-    $: cssVarStyles = Object.entries(styles)
-        .map(([key, value]) => `--${key}:${value}`)
-        .join(";");
+    let cssVarStyles = $derived(
+        Object.entries(styles)
+            .map(([key, value]) => `--${key}:${value}`)
+            .join(";")
+    );
 
     // Toggle section choice and modify db and ui
     const handleClick = () => {
@@ -134,7 +136,7 @@
             });
     };
 
-    $: isHovered = () => {
+    let isHovered = $derived.by(() => {
         if (hovered) return true;
         if (isCourseBox(params)) {
             return (
@@ -144,17 +146,17 @@
         } else {
             return $eventHover === params.id || $eventHoverRev === params.id;
         }
-    };
+    });
 </script>
 
 <!-- Height is on scale from 0 to 90 -->
 <button
     id="box"
     class="absolute text-left flex p-[1px] cursor-pointer rounded-sm duration-75 overflow-visible"
-    class:hovered={isHovered()}
+    class:hovered={isHovered}
     style={cssVarStyles}
-    on:click={handleClick}
-    on:mouseenter={() => {
+    onclick={handleClick}
+    onmouseenter={() => {
         hovered = true;
         if (isCourseBox(params)) {
             $courseHoverRev = params.section.course_id;
@@ -162,7 +164,7 @@
             $eventHoverRev = params.id;
         }
     }}
-    on:mouseleave={() => {
+    onmouseleave={() => {
         hovered = false;
         if (isCourseBox(params)) {
             $courseHoverRev = null;

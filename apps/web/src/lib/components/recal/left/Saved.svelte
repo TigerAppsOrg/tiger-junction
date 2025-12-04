@@ -7,32 +7,41 @@
     import Loader from "$lib/components/ui/Loader.svelte";
     import { modalStore } from "$lib/stores/modal";
 
-    // Export for parent to read content height
-    export let contentHeight: number = 0;
+    // Export for parent to read content height (bindable)
+    let { contentHeight = $bindable(0) }: { contentHeight?: number } = $props();
 
     // Element refs for measurement
-    let headerEl: HTMLElement;
-    let scrollContainerEl: HTMLElement;
+    let headerEl: HTMLElement | undefined = $state();
+    let scrollContainerEl: HTMLElement | undefined = $state();
 
-    $: saved = $savedCourses[$currentSchedule]
-        ? $savedCourses[$currentSchedule].sort((a, b) =>
-              a.code.localeCompare(b.code)
-          )
-        : [];
+    // Use toSorted() to avoid mutating the original array (returns new array reference)
+    let saved = $derived(
+        $savedCourses[$currentSchedule]
+            ? [...$savedCourses[$currentSchedule]].sort((a, b) =>
+                  a.code.localeCompare(b.code)
+              )
+            : []
+    );
 
-    $: colorChange = $calColors;
+    // Create a stable key that changes when courses change
+    let savedKey = $derived(saved.map(c => c.id).join(","));
+
+    // Create a key for color changes (serialize the object)
+    let colorKey = $derived(JSON.stringify($calColors));
 
     // Measure content height after DOM updates when content changes
-    $: if (saved && headerEl) {
-        tick().then(() => {
-            const headerHeight = headerEl?.offsetHeight ?? 0;
-            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
-            contentHeight = headerHeight + cardsHeight;
-        });
-    }
+    $effect(() => {
+        if (saved && headerEl) {
+            tick().then(() => {
+                const headerHeight = headerEl?.offsetHeight ?? 0;
+                const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+                contentHeight = headerHeight + cardsHeight;
+            });
+        }
+    });
 </script>
 
-{#key saved && $recal}
+{#key savedKey + $recal}
     {#if saved && $ready}
         <div
             bind:this={headerEl}
@@ -43,7 +52,7 @@
                 {saved.length === 1 ? "Course" : "Courses"}
             </span>
             <button
-                on:click={() => modalStore.push("exportCal")}
+                onclick={() => modalStore.push("exportCal")}
                 class="flex items-center gap-1 text-sm">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -68,8 +77,8 @@
                     bind:this={scrollContainerEl}
                     class="overflow-y-auto flex-1"
                     style="scrollbar-gutter: stable;">
-                    {#key saved && colorChange}
-                        {#each saved as course}
+                    {#key savedKey + colorKey}
+                        {#each saved as course (course.id)}
                             <CourseCard {course} category="saved" />
                         {/each}
                     {/key}
@@ -85,11 +94,15 @@
 {/key}
 
 <style lang="postcss">
-    .calbut {
-        @apply dark:text-zinc-100;
+    :global(.dark) .calbut {
+        @apply text-zinc-100;
     }
 
     .calbut:hover {
-        @apply text-zinc-600 duration-150 dark:text-zinc-300;
+        @apply text-zinc-600 duration-150;
+    }
+
+    :global(.dark) .calbut:hover {
+        @apply text-zinc-300;
     }
 </style>

@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    let {
+        containerHeight,
+        onresize
+    }: {
+        containerHeight: number;
+        onresize?: (detail: { ratio: number }) => void;
+    } = $props();
 
-    export let containerHeight: number;
-
-    const dispatch = createEventDispatcher<{
-        resize: { ratio: number };
-    }>();
-
-    let isDragging = false;
-    let isHovering = false;
-    let handlebarEl: HTMLElement;
+    let isDragging = $state(false);
+    let isHovering = $state(false);
+    let handlebarEl: HTMLElement | undefined = $state();
 
     function handlePointerDown(e: PointerEvent) {
         isDragging = true;
@@ -37,7 +37,7 @@
         // Clamp ratio to prevent sections from being too small
         newRatio = Math.max(0.15, Math.min(0.85, newRatio));
 
-        dispatch("resize", { ratio: newRatio });
+        onresize?.({ ratio: newRatio });
     }
 
     function handlePointerUp(e: PointerEvent) {
@@ -63,20 +63,20 @@
     }
 
     function handleDoubleClick() {
-        dispatch("resize", { ratio: -1 }); // -1 signals reset to auto
+        onresize?.({ ratio: -1 }); // -1 signals reset to auto
     }
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     bind:this={handlebarEl}
     class="handlebar-zone"
-    on:pointerenter={() => (isHovering = true)}
-    on:pointerleave={() => {
+    onpointerenter={() => (isHovering = true)}
+    onpointerleave={() => {
         if (!isDragging) isHovering = false;
     }}
-    on:pointerdown={handlePointerDown}
-    on:dblclick={handleDoubleClick}>
+    onpointerdown={handlePointerDown}
+    ondblclick={handleDoubleClick}>
     <!-- Full-width horizontal line -->
     <div class="handlebar-line"></div>
 
@@ -105,20 +105,32 @@
 
     .handlebar-line {
         @apply absolute left-0 right-0 top-1/2 -translate-y-1/2;
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        @apply bg-zinc-300;
         @apply transition-opacity duration-150;
         height: 2px;
     }
 
+    :global(.dark) .handlebar-line {
+        @apply bg-zinc-600;
+    }
+
     .handlebar-pill {
         @apply relative z-10 flex items-center justify-center rounded-full;
-        @apply bg-zinc-300 dark:bg-zinc-600;
+        @apply bg-zinc-300;
         @apply transition-opacity duration-150;
         width: 36px;
         height: 12px;
     }
 
+    :global(.dark) .handlebar-pill {
+        @apply bg-zinc-600;
+    }
+
     .handlebar-pill svg {
-        @apply text-zinc-500 dark:text-zinc-400;
+        @apply text-zinc-500;
+    }
+
+    :global(.dark) .handlebar-pill svg {
+        @apply text-zinc-400;
     }
 </style>

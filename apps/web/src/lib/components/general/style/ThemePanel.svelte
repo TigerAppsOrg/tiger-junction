@@ -25,10 +25,10 @@
     import GradientEditor from "./GradientEditor.svelte";
     import GradientList from "./GradientList.svelte";
 
-    $: open = $panelStore === "theme";
+    let open = $derived($panelStore === "theme");
 
     // Spinning animation state for theme toggle
-    let spinning = false;
+    let spinning = $state(false);
 
     const toggleTheme = () => {
         spinning = true;
@@ -56,7 +56,7 @@
         name: string;
         colors: CalColors;
         bgColors: BgColors;
-    } | null = null;
+    } | null = $state(null);
 
     // Load last selected theme from localStorage on mount
     if (typeof window !== "undefined") {
@@ -217,26 +217,28 @@
     };
 
     // Selected gradient for editing
-    let selectedGradientId: string | null = null;
+    let selectedGradientId: string | null = $state(null);
 
-    $: selectedGradient = $bgEffects.glows.gradients.find(
-        g => g.id === selectedGradientId
+    let selectedGradient = $derived(
+        $bgEffects.glows.gradients.find(g => g.id === selectedGradientId)
     );
 
     /**
-     * Handle gradient selection
+     * Handle gradient selection (callback prop pattern)
      */
-    const handleGradientSelect = (e: CustomEvent<{ id: string }>) => {
-        selectedGradientId = e.detail.id || null;
+    const handleGradientSelect = (detail: { id: string }) => {
+        selectedGradientId = detail.id || null;
     };
 
     /**
      * Handle gradient position change (from canvas drag)
      */
-    const handleGradientMove = (
-        e: CustomEvent<{ id: string; x: number; y: number }>
-    ) => {
-        const { id, x, y } = e.detail;
+    const handleGradientMove = (detail: {
+        id: string;
+        x: number;
+        y: number;
+    }) => {
+        const { id, x, y } = detail;
         const updatedGradients = $bgEffects.glows.gradients.map(g =>
             g.id === id ? { ...g, x, y } : g
         );
@@ -246,8 +248,7 @@
     /**
      * Handle gradient update (from editor)
      */
-    const handleGradientUpdate = (e: CustomEvent<GradientConfig>) => {
-        const updated = e.detail;
+    const handleGradientUpdate = (updated: GradientConfig) => {
         const updatedGradients = $bgEffects.glows.gradients.map(g =>
             g.id === updated.id ? updated : g
         );
@@ -257,8 +258,8 @@
     /**
      * Handle gradient delete
      */
-    const handleGradientDelete = (e: CustomEvent<{ id: string }>) => {
-        const { id } = e.detail;
+    const handleGradientDelete = (detail: { id: string }) => {
+        const { id } = detail;
         const updatedGradients = $bgEffects.glows.gradients.filter(
             g => g.id !== id
         );
@@ -305,7 +306,7 @@
     {open}
     title="Theme Settings"
     width="340px"
-    on:close={() => panelStore.close()}>
+    onclose={() => panelStore.close()}>
     <div class="p-4 space-y-6">
         <!-- Dark Mode Toggle -->
         <div class="flex items-center justify-between">
@@ -344,7 +345,7 @@
                 <span class="font-medium dark:text-zinc-100">Dark Mode</span>
             </div>
             <button
-                on:click={toggleTheme}
+                onclick={toggleTheme}
                 class="relative w-11 h-6 rounded-full transition-colors
                        {$darkTheme
                     ? 'bg-blue-600'
@@ -363,15 +364,15 @@
                 class="text-sm font-semibold text-zinc-600 dark:text-zinc-400 mb-2">
                 Typography
             </h3>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-3">
                 {#each FONT_OPTIONS as font}
                     <button
-                        on:click={() => appFont.set(font.name)}
+                        onclick={() => appFont.set(font.name)}
                         class="font-button {$appFont === font.name
-                            ? 'ring-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item border-transparent'
                             : 'border-zinc-300 dark:border-zinc-600 hover:border-zinc-400 dark:hover:border-zinc-500'}"
                         style={$appFont === font.name
-                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            ? `--ring-color: ${$calColors["0"]}`
                             : ""}>
                         <span
                             class="text-3xl dark:text-zinc-100"
@@ -397,17 +398,18 @@
                 {#each Object.entries(colorPalettes) as [name, palette]}
                     <button
                         class="palette-card {lastSelectedTheme?.name === name
-                            ? 'ring-2 selected-item'
+                            ? 'ring-2 ring-offset-2 selected-item border-transparent'
                             : ''}"
                         style={lastSelectedTheme?.name === name
-                            ? `--ring-color: ${$calColors["0"]}; border-color: ${$calColors["0"]}`
+                            ? `--ring-color: ${$calColors["0"]}`
                             : ""}
-                        on:click={() => applyPalette(name, palette)}>
+                        onclick={() => applyPalette(name, palette)}>
                         <div class="flex flex-col">
                             {#each sortPaletteColors(palette) as color}
                                 <div
                                     class="h-3 w-full"
-                                    style="background-color: {color}" />
+                                    style="background-color: {color}">
+                                </div>
                             {/each}
                         </div>
                         <span
@@ -434,7 +436,7 @@
                         <input
                             type="color"
                             value={hslToRGB($bgColors.light)}
-                            on:input={e =>
+                            oninput={e =>
                                 updateBgColor("light", e.currentTarget.value)}
                             class="color-input" />
                         <div
@@ -453,7 +455,7 @@
                         <input
                             type="color"
                             value={hslToRGB($bgColors.dark)}
-                            on:input={e =>
+                            oninput={e =>
                                 updateBgColor("dark", e.currentTarget.value)}
                             class="color-input" />
                         <div
@@ -471,7 +473,7 @@
             <div class="flex gap-2 mt-2">
                 {#if lastSelectedTheme?.bgColors}
                     <button
-                        on:click={resetBgToTheme}
+                        onclick={resetBgToTheme}
                         class="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium
                                bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
                                hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
@@ -479,7 +481,7 @@
                     </button>
                 {/if}
                 <button
-                    on:click={resetBgColors}
+                    onclick={resetBgColors}
                     class="flex-1 py-1.5 px-3 rounded-lg text-xs font-medium
                            bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
                            hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
@@ -508,7 +510,7 @@
                             <input
                                 type="color"
                                 value={hslToRGB($calColors[colorKey])}
-                                on:input={e =>
+                                oninput={e =>
                                     updateColor(
                                         colorKey,
                                         e.currentTarget.value
@@ -547,7 +549,7 @@
                             Noise Texture
                         </span>
                         <button
-                            on:click={() =>
+                            onclick={() =>
                                 updateNoise(
                                     "enabled",
                                     !$bgEffects.noise.enabled
@@ -580,7 +582,7 @@
                                     max="1"
                                     step="0.05"
                                     value={$bgEffects.noise.opacity}
-                                    on:input={e =>
+                                    oninput={e =>
                                         updateNoise(
                                             "opacity",
                                             parseFloat(e.currentTarget.value)
@@ -600,7 +602,7 @@
                                     max="3"
                                     step="0.1"
                                     value={$bgEffects.noise.baseFrequency}
-                                    on:input={e =>
+                                    oninput={e =>
                                         updateNoise(
                                             "baseFrequency",
                                             parseFloat(e.currentTarget.value)
@@ -619,7 +621,7 @@
                             Gradient Glows
                         </span>
                         <button
-                            on:click={() =>
+                            onclick={() =>
                                 updateGlow(
                                     "enabled",
                                     !$bgEffects.glows.enabled
@@ -643,22 +645,22 @@
                             gradients={$bgEffects.glows.gradients}
                             selectedId={selectedGradientId}
                             globalOpacity={$bgEffects.glows.globalOpacity}
-                            on:select={handleGradientSelect}
-                            on:move={handleGradientMove} />
+                            onselect={handleGradientSelect}
+                            onmove={handleGradientMove} />
 
                         <!-- Gradient List -->
                         <GradientList
                             gradients={$bgEffects.glows.gradients}
                             selectedId={selectedGradientId}
-                            on:select={handleGradientSelect}
-                            on:add={handleAddGradient} />
+                            onselect={handleGradientSelect}
+                            onadd={handleAddGradient} />
 
                         <!-- Selected Gradient Editor -->
                         {#if selectedGradient}
                             <GradientEditor
                                 gradient={selectedGradient}
-                                on:update={handleGradientUpdate}
-                                on:delete={handleGradientDelete} />
+                                onupdate={handleGradientUpdate}
+                                ondelete={handleGradientDelete} />
                         {/if}
 
                         <!-- Global Intensity -->
@@ -676,7 +678,7 @@
                                 max="0.5"
                                 step="0.02"
                                 value={$bgEffects.glows.globalOpacity}
-                                on:input={e =>
+                                oninput={e =>
                                     updateGlow(
                                         "globalOpacity",
                                         parseFloat(e.currentTarget.value)
@@ -687,10 +689,10 @@
                 </div>
 
                 <button
-                    on:click={resetEffects}
+                    onclick={resetEffects}
                     class="w-full py-1.5 px-3 rounded-lg text-xs font-medium
-                               bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
-                               hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                           bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400
+                           hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
                     Reset Effects
                 </button>
             </div>
@@ -700,7 +702,7 @@
         <div class="flex gap-2">
             {#if lastSelectedTheme}
                 <button
-                    on:click={resetToTheme}
+                    onclick={resetToTheme}
                     class="flex-1 py-2 px-3 rounded-lg text-sm font-medium
                            bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300
                            hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
@@ -708,7 +710,7 @@
                 </button>
             {/if}
             <button
-                on:click={resetToDefault}
+                onclick={resetToDefault}
                 class="flex-1 py-2 px-3 rounded-lg text-sm font-medium
                        bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300
                        hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
@@ -721,21 +723,34 @@
 <style lang="postcss">
     .palette-card {
         @apply rounded-lg overflow-hidden border-2
-               border-zinc-200 dark:border-zinc-700
-               hover:border-zinc-400 dark:hover:border-zinc-500
+               border-zinc-200 
+               hover:border-zinc-400
                transition-colors cursor-pointer;
+    }
+
+    :global(.dark) .palette-card {
+        @apply bg-zinc-800/50 border-zinc-500 hover:border-zinc-400;
     }
 
     .font-button {
         @apply flex flex-col items-center justify-center
                p-2 rounded-lg border-2
-               bg-zinc-50 dark:bg-zinc-800/50
+               bg-zinc-50
                transition-all cursor-pointer;
         aspect-ratio: 1;
     }
 
+    :global(.dark) .font-button {
+        @apply bg-zinc-800/50;
+    }
+
     .selected-item {
         --tw-ring-color: var(--ring-color);
+        --tw-ring-offset-color: #fff;
+    }
+
+    :global(.dark) .selected-item {
+        --tw-ring-offset-color: var(--bg-dark);
     }
 
     .color-swatch {
@@ -775,7 +790,11 @@
 
     .slider {
         @apply w-full h-1.5 rounded-full appearance-none cursor-pointer
-               bg-zinc-300 dark:bg-zinc-600;
+               bg-zinc-300;
+    }
+
+    :global(.dark) .slider {
+        @apply bg-zinc-600;
     }
 
     .slider::-webkit-slider-thumb {

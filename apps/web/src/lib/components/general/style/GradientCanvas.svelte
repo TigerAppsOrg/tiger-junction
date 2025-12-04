@@ -1,24 +1,28 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import type { GradientConfig } from "$lib/stores/styles";
     import { hslToRGB, hslToRGBComponents } from "$lib/scripts/convert";
 
-    export let gradients: GradientConfig[] = [];
-    export let selectedId: string | null = null;
-    export let globalOpacity: number = 0.15;
+    let {
+        gradients = [],
+        selectedId = null,
+        globalOpacity = 0.15,
+        onselect,
+        onmove
+    }: {
+        gradients?: GradientConfig[];
+        selectedId?: string | null;
+        globalOpacity?: number;
+        onselect?: (detail: { id: string }) => void;
+        onmove?: (detail: { id: string; x: number; y: number }) => void;
+    } = $props();
 
-    const dispatch = createEventDispatcher<{
-        select: { id: string };
-        move: { id: string; x: number; y: number };
-    }>();
-
-    let canvasEl: HTMLElement;
-    let isDragging = false;
-    let draggedGradientId: string | null = null;
-    let justFinishedDragging = false;
+    let canvasEl: HTMLElement | undefined = $state();
+    let isDragging = $state(false);
+    let draggedGradientId: string | null = $state(null);
+    let justFinishedDragging = $state(false);
 
     // Generate preview gradient CSS
-    $: previewCSS =
+    let previewCSS = $derived(
         gradients.length > 0
             ? gradients
                   .map(g => {
@@ -27,13 +31,14 @@
                       return `radial-gradient(${g.shape} at ${g.x}% ${g.y}%, rgba(${rgb}, ${globalOpacity * g.opacity}) 0%, transparent ${scaledBlur}%)`;
                   })
                   .join(", ")
-            : "none";
+            : "none"
+    );
 
     function handlePointerDown(e: PointerEvent, gradientId: string) {
         e.stopPropagation();
         isDragging = true;
         draggedGradientId = gradientId;
-        dispatch("select", { id: gradientId });
+        onselect?.({ id: gradientId });
 
         document.body.style.cursor = "grabbing";
         document.body.style.userSelect = "none";
@@ -56,7 +61,7 @@
             Math.min(100, ((e.clientY - rect.top) / rect.height) * 100)
         );
 
-        dispatch("move", { id: draggedGradientId, x, y });
+        onmove?.({ id: draggedGradientId, x, y });
     }
 
     function handlePointerUp() {
@@ -80,18 +85,18 @@
     function handleCanvasClick(e: MouseEvent) {
         // Only deselect if clicking on canvas background and not just finished dragging
         if (e.target === canvasEl && !justFinishedDragging) {
-            dispatch("select", { id: "" });
+            onselect?.({ id: "" });
         }
     }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     bind:this={canvasEl}
     class="canvas-container"
     style="background: {previewCSS};"
-    on:click={handleCanvasClick}>
+    onclick={handleCanvasClick}>
     <!-- Grid overlay -->
     <div class="grid-overlay"></div>
 
@@ -107,7 +112,7 @@
                 top: {gradient.y}%;
                 background-color: {hslToRGB(gradient.color)};
             "
-            on:pointerdown={e => handlePointerDown(e, gradient.id)}>
+            onpointerdown={e => handlePointerDown(e, gradient.id)}>
             <span class="sr-only">Gradient {gradient.id}</span>
         </button>
     {/each}
@@ -128,7 +133,8 @@
 
     .grid-overlay {
         @apply absolute inset-0 pointer-events-none opacity-20;
-        background-image: linear-gradient(
+        background-image:
+            linear-gradient(
                 to right,
                 theme(colors.zinc.400) 1px,
                 transparent 1px

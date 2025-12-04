@@ -8,10 +8,11 @@
     import { goto } from "$app/navigation";
 
     const supabase = getContext("supabase") as SupabaseClient;
-    export let showModal: boolean = false;
 
-    let feedback: string = "";
-    let isError: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
+
+    let feedback: string = $state("");
+    let isError: boolean = $state(false);
 
     // Submit feedback to the database
     const submitFeedback = async () => {
@@ -40,7 +41,7 @@
 </script>
 
 <StdModal title="Feedback" stdClose={true} {showModal}>
-    <div slot="main">
+    {#snippet main()}
         <div>
             <p class="mb-2">
                 We always love to hear any feedback about TigerJunction! Whether
@@ -72,5 +73,5 @@
             className="w-full"
             scheme="1"
             onClick={submitFeedback} />
-    </div>
+    {/snippet}
 </StdModal>

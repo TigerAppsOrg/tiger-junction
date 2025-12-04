@@ -1,19 +1,25 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
+    import type { Snippet } from "svelte";
 
-    const dispatch = createEventDispatcher();
-
-    export let type = "success";
+    let {
+        type = "success",
+        ondismiss,
+        children
+    }: {
+        type?: string;
+        ondismiss?: () => void;
+        children?: Snippet;
+    } = $props();
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <article
     class={type}
     in:fade={{ duration: 150 }}
     out:fade={{ duration: 300 }}
-    on:click={() => dispatch("dismiss")}>
+    onclick={() => ondismiss?.()}>
     {#if type === "info"}
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +75,7 @@
     {/if}
 
     <div class="ml-4">
-        <slot />
+        {@render children?.()}
     </div>
 </article>
 

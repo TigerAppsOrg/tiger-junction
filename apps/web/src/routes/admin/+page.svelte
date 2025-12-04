@@ -105,7 +105,7 @@
                         </button>
                     </div>
                 </form>
-                <!-- <button class="btn btn-green" on:click={() => {
+                <!-- <button class="btn btn-green" onclick={() => {
                 fetch("/api/server/refresh/ical")
             }}>
                 API Test
@@ -161,7 +161,7 @@
                                     </div>
                                     <button
                                         class="btn btn-green mt-2 w-full"
-                                        on:click={() =>
+                                        onclick={() =>
                                             resolveFeedback(feedback)}>
                                         Resolve
                                     </button>
@@ -212,8 +212,11 @@
     }
 
     .area {
-        @apply p-4 rounded-lg border-[1px] border-zinc-200
-    dark:border-zinc-700;
+        @apply p-4 rounded-lg border-[1px] border-zinc-200;
+    }
+
+    :global(.dark) .area {
+        @apply border-zinc-700;
     }
 
     .area-std {

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -114,4 +114,67 @@ body.font-playfair .serif-lowercase {
 /* JetBrains Mono: smaller section headers */
 body.font-jetbrains .section-header {
     font-size: 0.8rem;
+}
+
+/* ============================================
+   BRUTALIST LANDING PAGE STYLES
+   ============================================ */
+
+/* Massive headline typography */
+.headline-massive {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3rem, 12vw, 10rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+}
+
+.headline-large {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Rotated text for sideways labels */
+.rotated-text {
+    font-family: "Inter", sans-serif;
+    font-size: clamp(0.65rem, 1vw, 0.85rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+/* Body text using Inter */
+.body-inter {
+    font-family: "Inter", sans-serif;
+}
+
+/* 3D perspective container */
+.perspective-container {
+    perspective: 1000px;
+    perspective-origin: 50% 50%;
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Brutalist borders */
+.brutalist-border {
+    border: 4px solid black;
+}
+
+.brutalist-border-thin {
+    border: 2px solid black;
 }

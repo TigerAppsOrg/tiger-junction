@@ -4,7 +4,7 @@ import { createEvents, type DateArray, type EventAttributes } from "ics";
 import { calculateStart, valueToRRule } from "$lib/scripts/ReCal+/ical";
 import { CALENDAR_INFO } from "$lib/changeme.js";
 import { config } from "dotenv";
-import { Database } from "$lib/types/supabaseTypes";
+import type { Database } from "$lib/types/supabaseTypes";
 
 export async function handler() {
     config();

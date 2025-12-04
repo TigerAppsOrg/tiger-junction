@@ -34,17 +34,19 @@
     }
 
     // Save preference to localStorage when it changes
-    $: if (browser) {
-        localStorage.setItem(
-            TIME_MARKS_KEY,
-            String($searchSettings.style["Show Time Marks"])
-        );
-    }
+    $effect(() => {
+        if (browser) {
+            localStorage.setItem(
+                TIME_MARKS_KEY,
+                String($searchSettings.style["Show Time Marks"])
+            );
+        }
+    });
 
-    let toRender: BoxParam[] = [];
+    let toRender: BoxParam[] = $state([]);
 
-    let prevSchedule: number = -1;
-    let prevTerm: number = -1;
+    let prevSchedule: number = $state(-1);
+    let prevTerm: number = $state(-1);
 
     const MARKERS = [
         "8AM",
@@ -64,17 +66,19 @@
         "10PM"
     ];
 
-    $: triggerRender(
-        $currentSchedule,
-        $currentTerm,
-        $savedCourses[$currentSchedule],
-        $hoveredCourse,
-        $hoveredEvent,
-        $ready,
-        $recal,
-        $calColors,
-        $scheduleEventMap[$currentSchedule]
-    );
+    $effect(() => {
+        triggerRender(
+            $currentSchedule,
+            $currentTerm,
+            $savedCourses[$currentSchedule],
+            $hoveredCourse,
+            $hoveredEvent,
+            $ready,
+            $recal,
+            $calColors,
+            $scheduleEventMap[$currentSchedule]
+        );
+    });
 
     /**
      * Trigger render if schedule or term or args change
@@ -372,7 +376,7 @@
             <button
                 class="absolute top-0 left-0 z-10 h-[4%] w-7 flex items-center justify-center
                  dark:text-zinc-100 hover:text-zinc-600 hover:dark:text-zinc-300 hover:duration-150"
-                on:click={() =>
+                onclick={() =>
                     ($searchSettings.style["Show Time Marks"] =
                         !$searchSettings.style["Show Time Marks"])}
                 title="Toggle time marks">

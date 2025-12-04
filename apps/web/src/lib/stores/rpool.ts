@@ -3,7 +3,7 @@
 import { getCurrentTerm } from "$lib/scripts/ReCal+/getters";
 import type { CourseData } from "$lib/types/dbTypes";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Invalidator, Subscriber, Unsubscriber } from "svelte/motion";
+import type { Subscriber, Unsubscriber } from "svelte/store";
 import { writable } from "svelte/store";
 import {
     rawCourseData,
@@ -24,8 +24,7 @@ type CoursePool = {
     ) => void;
     subscribe: (
         this: void,
-        run: Subscriber<Record<number, CourseData[]>>,
-        invalidate?: Invalidator<Record<number, CourseData[]>>
+        run: Subscriber<Record<number, CourseData[]>>
     ) => Unsubscriber;
     add: (
         supabase: SupabaseClient,

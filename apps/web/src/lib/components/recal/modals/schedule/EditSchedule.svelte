@@ -17,10 +17,10 @@
     } from "@supabase/supabase-js";
     import { getContext, onMount } from "svelte";
 
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
     const supabase = getContext("supabase") as SupabaseClient;
 
-    let input: string = "";
+    let input: string = $state("");
 
     onMount(() => {
         let schedule = $schedules[$currentTerm].find(
@@ -268,7 +268,7 @@
 <Modal {showModal}>
     <div class="p-6 w-[80vw] max-w-2xl">
         <h1 class="text-xl font-bold mb-2">Edit Schedule</h1>
-        <form on:submit|preventDefault>
+        <form onsubmit={(e: Event) => e.preventDefault()}>
             <div class="flex flex-col gap-2">
                 <div class="settings-area" id="name">
                     <h2 class="text-lg font-bold mb-2">Title</h2>
@@ -290,7 +290,7 @@
                     scheme="-1" />
 
                 <!-- Hidden Button for Enter Submission -->
-                <button type="submit" class="default" on:click={saveSchedule}>
+                <button type="submit" class="default" onclick={saveSchedule}>
                 </button>
 
                 <!-- Disallow delete if only 1 schedule -->

@@ -1,14 +1,25 @@
 <script lang="ts">
-    export let href = "";
-    export let title = "";
-    export let hoverColor: string = "rgba(0, 0, 0, 0.1)";
-    export let hoverText: string = "rgba(0, 0, 0, 0.1)";
-    export let borderColor: string = "rgba(0, 0, 0, 0.1)";
+    import type { Snippet } from "svelte";
 
-    let cssHoverColor = `--hoverColor:${hoverColor}`;
-    let cssHoverText = `--hoverText:${hoverText}`;
-    let cssBorder = `--borderColor:${borderColor}`;
-    let css = `${cssHoverColor};${cssHoverText};${cssBorder}`;
+    let {
+        href = "",
+        title = "",
+        hoverColor = "rgba(0, 0, 0, 0.1)",
+        hoverText = "rgba(0, 0, 0, 0.1)",
+        borderColor = "rgba(0, 0, 0, 0.1)",
+        children
+    }: {
+        href?: string;
+        title?: string;
+        hoverColor?: string;
+        hoverText?: string;
+        borderColor?: string;
+        children?: Snippet;
+    } = $props();
+
+    let css = $derived(
+        `--hoverColor:${hoverColor};--hoverText:${hoverText};--borderColor:${borderColor}`
+    );
 </script>
 
 <a
@@ -21,14 +32,14 @@
             {title}
         </div>
         <div>
-            <slot></slot>
+            {@render children?.()}
         </div>
     </div>
 </a>
 
 <style lang="postcss">
-    a {
-        @apply dark:border-zinc-800;
+    :global(.dark) a {
+        @apply border-zinc-800;
     }
 
     a:hover {

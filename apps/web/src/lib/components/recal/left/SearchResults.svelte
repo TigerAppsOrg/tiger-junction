@@ -4,23 +4,28 @@
     import { darkTheme } from "$lib/stores/styles";
     import CourseCard from "./elements/CourseCard.svelte";
 
-    // Export for parent to read content height
-    export let contentHeight: number = 0;
+    // Export for parent to read content height (bindable)
+    let { contentHeight = $bindable(0) }: { contentHeight?: number } = $props();
 
     // Element refs for measurement
-    let headerEl: HTMLElement;
-    let scrollContainerEl: HTMLElement;
+    let headerEl: HTMLElement | undefined = $state();
+    let scrollContainerEl: HTMLElement | undefined = $state();
 
-    $: resetKey = [$searchResults, $darkTheme, $research];
+    // Create a stable string key for the #each block
+    let resetKey = $derived(
+        $searchResults.map(c => c.id).join(",") + $darkTheme + $research
+    );
 
     // Measure content height after DOM updates when content changes
-    $: if ($searchResults.length > 0 && headerEl) {
-        tick().then(() => {
-            const headerHeight = headerEl?.offsetHeight ?? 0;
-            const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
-            contentHeight = headerHeight + cardsHeight;
-        });
-    }
+    $effect(() => {
+        if ($searchResults.length > 0 && headerEl) {
+            tick().then(() => {
+                const headerHeight = headerEl?.offsetHeight ?? 0;
+                const cardsHeight = scrollContainerEl?.scrollHeight ?? 0;
+                contentHeight = headerHeight + cardsHeight;
+            });
+        }
+    });
 </script>
 
 {#if $searchResults.length > 0}
@@ -41,7 +46,7 @@
             class="overflow-y-auto flex-1"
             style="scrollbar-gutter: stable;">
             {#key resetKey}
-                {#each $searchResults as course}
+                {#each $searchResults as course (course.id)}
                     <CourseCard {course} />
                 {/each}
             {/key}

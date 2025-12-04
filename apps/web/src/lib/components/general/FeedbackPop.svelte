@@ -5,11 +5,11 @@
     import { getStyles } from "$lib/stores/styles";
     import { getContext } from "svelte";
 
-    export let showModal: boolean = false;
+    let { showModal = false }: { showModal?: boolean } = $props();
     const supabase = getContext("supabase") as SupabaseClient;
 
-    let feedback: string = "";
-    let isError: boolean = false;
+    let feedback: string = $state("");
+    let isError: boolean = $state(false);
 
     // Submit feedback to the database
     const submitFeedback = () => {
@@ -33,12 +33,12 @@
         showModal = false;
     };
 
-    $: declineStyle = getStyles("-1");
-    $: submitStyle = getStyles("0");
+    let declineStyle = $derived(getStyles("-1"));
+    let submitStyle = $derived(getStyles("0"));
 </script>
 
 <StdModal title="TigerJunction needs feedback!" stdClose={false} {showModal}>
-    <div slot="main">
+    {#snippet main()}
         <div>
             <p class="mb-2">
                 With the original
@@ -64,18 +64,20 @@
                 class="w-full p-2 rounded-sm border-2 dark:bg-zinc-900
             border-zinc-300 dark:border-zinc-700"></textarea>
         </div>
-    </div>
-    <div class="flex gap-2 w-full items-center" slot="buttons">
-        <button
-            class="w-1/3 min-w-24"
-            on:click={declineFeedback}
-            style={declineStyle}>
-            Decline :(
-        </button>
-        <button class="flex-1" on:click={submitFeedback} style={submitStyle}>
-            Submit
-        </button>
-    </div>
+    {/snippet}
+    {#snippet buttons()}
+        <div class="flex gap-2 w-full items-center">
+            <button
+                class="w-1/3 min-w-24"
+                onclick={declineFeedback}
+                style={declineStyle}>
+                Decline :(
+            </button>
+            <button class="flex-1" onclick={submitFeedback} style={submitStyle}>
+                Submit
+            </button>
+        </div>
+    {/snippet}
 </StdModal>
 
 <style lang="postcss">

@@ -24,60 +24,66 @@
     };
     import { toastStore } from "$lib/stores/toast";
     import type { SupabaseClient } from "@supabase/supabase-js";
-    import { getContext } from "svelte";
+    import { getContext, untrack } from "svelte";
+    import { get } from "svelte/store";
     import { hoveredCourse } from "../../../scripts/ReCal+/calendar";
 
     const supabase = getContext("supabase") as SupabaseClient;
 
-    let inputBar: HTMLInputElement;
-    let searchFocused = false;
+    let inputBar: HTMLInputElement | undefined = $state();
+    let searchFocused = $state(false);
 
     // Number of results, under which sections are added automatically
     const THRESHOLD = 20;
 
     // Update search results when params change
-    $: autoTrig(
-        $searchSettings,
-        $searchCourseData,
-        $currentTerm,
-        $currentSchedule,
-        $research,
-        $scheduleCourseMeta
-    );
-    const autoTrig = (...params: unknown[]) => {
-        triggerSearch();
-    };
+    $effect(() => {
+        // Track these dependencies
+        $searchSettings;
+        $searchCourseData;
+        $currentTerm;
+        $currentSchedule;
+        $research;
+        $scheduleCourseMeta;
+        // Use untrack to prevent infinite loop - triggerSearch reads $searchResults after writing
+        untrack(() => triggerSearch());
+    });
 
     const triggerSearch = () => {
         if (!inputBar || inputBar.value === undefined) return;
         searchResults.search(inputBar.value, $currentTerm, $searchSettings);
 
+        // Use get() to read without reactive tracking (search() already updates isResult)
+        const results = get(searchResults);
+
         // Handle isResult flag
-        if ($searchResults.length > 0) isResult.set(true);
+        if (results.length > 0) isResult.set(true);
         else {
             isResult.set(false);
             hoveredCourse.set(null);
         }
 
         // If results are less than threshold, add sections
-        if ($searchResults.length < THRESHOLD)
-            for (let i = 0; i < $searchResults.length; i++)
-                sectionData.add(supabase, $currentTerm, $searchResults[i].id);
+        if (results.length < THRESHOLD)
+            for (let i = 0; i < results.length; i++)
+                sectionData.add(supabase, $currentTerm, results[i].id);
     };
 
     // Re-run when calColors changes (getStyles uses get() internally)
-    let cssVarStyles: string;
-    $: $calColors, (cssVarStyles = getStyles("2"));
+    let cssVarStyles = $derived.by(() => {
+        $calColors; // track dependency
+        return getStyles("2");
+    });
 
     // Adjust gradient colors: darken in light mode, lighten in dark mode
-    $: adj = $darkTheme ? -25 : 15;
-    $: gradColors = [
+    let adj = $derived($darkTheme ? -25 : 15);
+    let gradColors = $derived([
         adjustLightness($calColors["0"], adj),
         adjustLightness($calColors["1"], adj),
         adjustLightness($calColors["2"], adj),
         adjustLightness($calColors["4"], adj),
         adjustLightness($calColors["5"], adj)
-    ];
+    ]);
 </script>
 
 <div class="flex flex-col justify-between h-16" style={cssVarStyles}>
@@ -87,7 +93,7 @@
         <button
             class="togglebutton
         {$searchSettings.filters['Show All'].enabled ? 'enabled' : 'disabled'}"
-            on:click={() =>
+            onclick={() =>
                 ($searchSettings.filters["Show All"].enabled =
                     !$searchSettings.filters["Show All"].enabled)}>
             Show All
@@ -97,7 +103,7 @@
         {$searchSettings.filters['No Conflicts'].enabled
                 ? 'enabled'
                 : 'disabled'}"
-            on:click={() =>
+            onclick={() =>
                 ($searchSettings.filters["No Conflicts"].enabled =
                     !$searchSettings.filters["No Conflicts"].enabled)}>
             No Conflicts
@@ -109,12 +115,12 @@
             placeholder="Search..."
             class="search-input std-area rounded-md section-header serif-lowercase text-sm"
             bind:this={inputBar}
-            on:input={triggerSearch}
-            on:focus={() => (searchFocused = true)}
-            on:blur={() => (searchFocused = false)} />
+            oninput={triggerSearch}
+            onfocus={() => (searchFocused = true)}
+            onblur={() => (searchFocused = false)} />
         <button
             class="adv-search {searchFocused ? 'focused' : ''}"
-            on:click={() => {
+            onclick={() => {
                 if (!$ready)
                     toastStore.add("error", "Please wait for the data to load");
                 else modalStore.push("adv");
@@ -175,8 +181,11 @@
     }
 
     .adv-search {
-        @apply h-10 w-10 flex justify-center items-center
-        dark:text-zinc-100;
+        @apply h-10 w-10 flex justify-center items-center;
+    }
+
+    :global(.dark) .adv-search {
+        @apply text-zinc-100;
     }
 
     .adv-search:hover svg {
@@ -193,25 +202,31 @@
     }
 
     .togglebutton {
-        @apply flex-1 h-full rounded-sm duration-100;
+        @apply flex-1 h-full rounded-sm;
     }
 
     .enabled {
         background-color: var(--bg);
         color: var(--text);
+        @apply duration-100;
     }
 
     .enabled:hover {
         background-color: var(--bg-hover);
     }
 
+    .disabled:hover {
+        @apply duration-100;
+    }
+
     .disabled {
         background-color: color-mix(in srgb, var(--bg-light) 90%, #000);
-        @apply text-zinc-700 dark:text-zinc-300;
+        @apply text-zinc-700;
     }
 
     :global(.dark) .disabled {
         background-color: color-mix(in srgb, var(--bg-dark) 85%, #fff);
+        @apply text-zinc-300;
     }
 
     .disabled:hover {
