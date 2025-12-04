@@ -144,7 +144,7 @@
                         placeholder="Enter term"
                         class="textinput"
                         bind:value={term} />
-                    <button class="button-85" on:click={() => handleInit()}>
+                    <button class="button-85" onclick={() => handleInit()}>
                         Start
                     </button>
                 </div>
@@ -229,17 +229,17 @@
             <div class="flex gap-2">
                 <button
                     class="handlerButton bg-orange-400 hover:bg-orange-500"
-                    on:click={handlePreviousCourse}>
+                    onclick={handlePreviousCourse}>
                     Previous
                 </button>
                 <input
                     type="text"
                     class="textinput flex-1"
                     placeholder="Go to index"
-                    on:keydown={handleEnter} />
+                    onkeydown={handleEnter} />
                 <button
                     class="handlerButton bg-blue-400 hover:bg-blue-500"
-                    on:click={handleNextCourse}>
+                    onclick={handleNextCourse}>
                     Next
                 </button>
             </div>

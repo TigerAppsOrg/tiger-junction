@@ -4,7 +4,7 @@
     import { page } from "$app/stores";
     import { goto } from "$app/navigation";
 
-    export let supabase: SupabaseClient;
+    let { supabase }: { supabase: SupabaseClient } = $props();
 </script>
 
 <div
@@ -13,7 +13,8 @@
     <nav class="flex justify-between sm:grid sm:grid-cols-3">
         <a
             href="/"
-            on:click|preventDefault={() => {
+            onclick={(e) => {
+                e.preventDefault();
                 if ($page.url.pathname === "/") {
                     document.getElementById("main")?.scrollIntoView({
                         behavior: "smooth"
@@ -34,7 +35,8 @@
             {#if $page.url.pathname === "/"}
                 <a
                     href="/#about"
-                    on:click|preventDefault={() => {
+                    onclick={(e) => {
+                        e.preventDefault();
                         document.getElementById("about")?.scrollIntoView({
                             behavior: "smooth"
                         });
@@ -44,7 +46,8 @@
                 </a>
                 <a
                     href="/#features"
-                    on:click|preventDefault={() => {
+                    onclick={(e) => {
+                        e.preventDefault();
                         document.getElementById("features")?.scrollIntoView({
                             behavior: "smooth"
                         });
@@ -56,7 +59,7 @@
         </div>
         <div class="flex items-center justify-end">
             <button
-                on:click={() => handleLogin(supabase)}
+                onclick={() => handleLogin(supabase)}
                 class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center px-4 py-2 rounded-lg font-bold
                      duration-100">

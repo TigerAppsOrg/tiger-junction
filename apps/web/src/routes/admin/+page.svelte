@@ -105,7 +105,7 @@
                         </button>
                     </div>
                 </form>
-                <!-- <button class="btn btn-green" on:click={() => {
+                <!-- <button class="btn btn-green" onclick={() => {
                 fetch("/api/server/refresh/ical")
             }}>
                 API Test
@@ -161,7 +161,7 @@
                                     </div>
                                     <button
                                         class="btn btn-green mt-2 w-full"
-                                        on:click={() =>
+                                        onclick={() =>
                                             resolveFeedback(feedback)}>
                                         Resolve
                                     </button>

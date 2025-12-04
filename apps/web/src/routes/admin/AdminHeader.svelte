@@ -17,7 +17,7 @@
 dark:border-zinc-700 border-zinc-200">
     <div class="flex justify-between items-center px-4">
         <div id="left">
-            <button on:click={() => goto("/admin")} class="flex items-center">
+            <button onclick={() => goto("/admin")} class="flex items-center">
                 <img src={logo} alt="Tiger Junction logo" class="w-10 h-10" />
                 <span class="text-xl dark:text-zinc-100"
                     >TigerJunction Admin</span>
@@ -25,9 +25,7 @@ dark:border-zinc-700 border-zinc-200">
         </div>
 
         <div id="right" class="space-x-6 flex items-center">
-            <button
-                on:click={() => ($darkTheme = !$darkTheme)}
-                class="btn-circ">
+            <button onclick={() => ($darkTheme = !$darkTheme)} class="btn-circ">
                 {#if $darkTheme}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +55,7 @@ dark:border-zinc-700 border-zinc-200">
                 {/if}
             </button>
 
-            <button class="btn-circ" on:click={() => goto("/admin/prereqs")}>
+            <button class="btn-circ" onclick={() => goto("/admin/prereqs")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -73,7 +71,7 @@ dark:border-zinc-700 border-zinc-200">
                 <span class="hidden md:block"> Prereqs </span>
             </button>
 
-            <button class="btn-circ" on:click={handleLogout}>
+            <button class="btn-circ" onclick={handleLogout}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

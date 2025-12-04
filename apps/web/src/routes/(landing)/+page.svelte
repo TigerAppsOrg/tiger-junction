@@ -3,7 +3,7 @@
     import LandingFooter from "./LandingFooter.svelte";
     import LandingHeader from "./LandingHeader.svelte";
 
-    let currentFeature = "conflict";
+    let currentFeature = $state("conflict");
     const FEATURE_MAP: Record<string, Record<string, string>> = {
         conflict: {
             title: "Conflict Avoidance",
@@ -31,7 +31,7 @@
         }
     };
 
-    export let data;
+    let { data }: { data: any } = $props();
 </script>
 
 <svelte:head>
@@ -84,7 +84,7 @@
                 </div> -->
                 <div class="flex justify-start lg:justify-center">
                     <button
-                        on:click={() => handleLogin(data.supabase)}
+                        onclick={() => handleLogin(data.supabase)}
                         class="bg-indigo-600 hover:bg-indigo-500 text-white
                     text-center py-2 px-12 rounded-lg font-bold
                      duration-100
@@ -227,7 +227,7 @@
                     class="rounded-3xl bg-white p-4 flex flex-col
                     justify-between md:w-80 w-full h-72">
                     <button
-                        on:click={() => (currentFeature = "conflict")}
+                        onclick={() => (currentFeature = "conflict")}
                         class="feature-select
                         {currentFeature === 'conflict'
                             ? 'bg-gradient-to-br from-emerald-100 to-emerald-200'
@@ -236,7 +236,7 @@
                         Conflict Avoidance
                     </button>
                     <button
-                        on:click={() => (currentFeature = "search")}
+                        onclick={() => (currentFeature = "search")}
                         class="feature-select
                         {currentFeature === 'search'
                             ? 'bg-gradient-to-br from-fuchsia-100 to-fuchsia-200'
@@ -245,7 +245,7 @@
                         Advanced Search
                     </button>
                     <button
-                        on:click={() => (currentFeature = "themes")}
+                        onclick={() => (currentFeature = "themes")}
                         class="feature-select
                         {currentFeature === 'themes'
                             ? 'bg-gradient-to-br from-violet-100 to-violet-200'
@@ -254,7 +254,7 @@
                         Beautiful Themes
                     </button>
                     <button
-                        on:click={() => (currentFeature = "ratings")}
+                        onclick={() => (currentFeature = "ratings")}
                         class="feature-select
                         {currentFeature === 'ratings'
                             ? 'bg-gradient-to-br from-sky-100 to-sky-200'
@@ -263,7 +263,7 @@
                         Integrated Ratings
                     </button>
                     <button
-                        on:click={() => (currentFeature = "events")}
+                        onclick={() => (currentFeature = "events")}
                         class="feature-select
                             {currentFeature === 'events'
                             ? 'bg-gradient-to-br from-teal-100 to-teal-200'
@@ -300,7 +300,7 @@
                 Join thousands of students in seamless academic planning.
             </h2>
             <button
-                on:click={() => handleLogin(data.supabase)}
+                onclick={() => handleLogin(data.supabase)}
                 class="bg-indigo-600 hover:bg-indigo-500 text-white
                 text-center py-2 px-8 font-bold
                 duration-100 rounded-lg

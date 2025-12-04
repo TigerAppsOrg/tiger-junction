@@ -1,14 +1,15 @@
-<script>
+<script lang="ts">
     import LandingFooter from "../LandingFooter.svelte";
     import LandingHeader from "../LandingHeader.svelte";
+    import type { Snippet } from "svelte";
 
-    export let data;
+    let { data, children }: { data: any; children?: Snippet } = $props();
 </script>
 
 <main class="max-w-screen min-h-screen flex">
     <div class="overlay w-full flex-1 flex flex-col pt-2 items-center">
         <LandingHeader supabase={data.supabase} />
-        <slot />
+        {@render children?.()}
         <div class="flex-1"></div>
         <LandingFooter />
     </div>
