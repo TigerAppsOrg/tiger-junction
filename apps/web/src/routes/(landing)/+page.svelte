@@ -43,9 +43,12 @@
     onmousemove={handleMouseMove}
     role="presentation">
     <header class="flex justify-between items-start">
-        <span class="text-[10px] tracking-[0.3em] uppercase text-zinc-400">
-            Est. 2023
-        </span>
+        <div class="flex items-center gap-3">
+            <img src="/tjlogonew.png" alt="TigerJunction" class="w-8 h-8" />
+            <span class="text-xs tracking-[0.3em] uppercase text-zinc-500">
+                Est. 2023
+            </span>
+        </div>
         <button
             onclick={() => handleLogin(data.supabase)}
             class="px-6 py-3 bg-black text-white text-xs tracking-[0.2em] uppercase
@@ -90,7 +93,7 @@
             href="https://tigerapps.org"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-[10px] tracking-[0.3em] uppercase text-zinc-400 hover:text-black transition-colors">
+            class="text-[10px] tracking-[0.3em] uppercase text-zinc-500 hover:text-black transition-colors">
             Princeton TigerApps
         </a>
     </footer>
