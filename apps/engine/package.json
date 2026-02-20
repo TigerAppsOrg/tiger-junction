@@ -4,6 +4,7 @@
     "start": "bun ./src/main.ts",
     "dev": "bun ./src/main.ts",
     "cli": "bun ./src/cli.ts",
+    "test": "bun test src/tests/",
     "format": "prettier --write .",
     "lint": "eslint .",
     "db:generate": "drizzle-kit generate",
