@@ -206,4 +206,74 @@ export default class DB implements I_DB {
       throw error;
     }
   }
+
+  public async updateEvals() {
+    await this.testConnection();
+
+    const oit = new OIT();
+
+    // Get all unique listing IDs from courses in the database
+    const courses = await this.db
+      .select({ id: schema.courses.id, listingId: schema.courses.listingId })
+      .from(schema.courses);
+
+    const uniqueListingIds = [...new Set(courses.map((c) => c.listingId))];
+    console.log(`Scraping evaluations for ${uniqueListingIds.length} unique courses...`);
+
+    let successCount = 0;
+    let skipCount = 0;
+    let errorCount = 0;
+
+    for (let i = 0; i < uniqueListingIds.length; i++) {
+      const listingId = uniqueListingIds[i];
+      if (i % 25 === 0) {
+        console.log(`Progress: ${i}/${uniqueListingIds.length} courses processed...`);
+      }
+
+      try {
+        const evalsByTerm = await oit.getCourseEvals(listingId);
+        const termKeys = Object.keys(evalsByTerm);
+
+        if (termKeys.length === 0) {
+          skipCount++;
+          continue;
+        }
+
+        for (const term of termKeys) {
+          const courseId = `${listingId}-${term}`;
+          const evals = evalsByTerm[term];
+          if (!evals || evals.length === 0) continue;
+
+          const evalData = evals[0];
+
+          // Find any course row that matches this listing + term
+          const matchingCourses = courses.filter((c) => c.id === courseId);
+          const targetCourseId = matchingCourses.length > 0 ? courseId : `${listingId}-${term}`;
+
+          await this.db
+            .insert(schema.evaluations)
+            .values({
+              courseId: targetCourseId,
+              numComments: evalData.numComments,
+              comments: evalData.comments,
+              rating: evalData.rating,
+              ratingSource: evalData.ratingSource,
+            })
+            .onConflictDoNothing();
+
+          successCount++;
+        }
+      } catch (e) {
+        errorCount++;
+        // Don't abort on individual failures — log and continue
+        if (i < 5 || errorCount % 50 === 0) {
+          console.warn(`  Failed to scrape evals for ${listingId}: ${(e as Error).message}`);
+        }
+      }
+    }
+
+    console.log(
+      `Evaluations update complete! success=${successCount}, skipped=${skipCount}, errors=${errorCount}`
+    );
+  }
 }

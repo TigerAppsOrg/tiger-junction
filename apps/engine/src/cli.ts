@@ -24,12 +24,18 @@ switch (command) {
   case "update": {
     const db = new DB();
     await db.updateOitData();
-    break;
+    process.exit(0);
+  }
+  case "evals": {
+    const db = new DB();
+    await db.updateEvals();
+    process.exit(0);
   }
   default: {
     console.log("Usage: bun cli <command>\n");
     console.log("Commands:");
     console.log("  update    Fetch latest OIT data and update the database");
+    console.log("  evals     Scrape course evaluations and write them to the database");
     console.log("  seed      Seed test users, schedules, events, and feedback");
     break;
   }

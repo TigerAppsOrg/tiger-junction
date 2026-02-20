@@ -11,4 +11,10 @@ export interface I_DB {
    * This includes courses, sections, and instructors.
    */
   updateOitData(): Promise<void>;
+
+  /**
+   * Scrapes course evaluations from the registrar and writes them
+   * to the evaluations table for all courses currently in the database.
+   */
+  updateEvals(): Promise<void>;
 }
