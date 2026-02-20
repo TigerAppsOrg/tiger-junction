@@ -26,6 +26,7 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
                   properties: {
                     id: { type: "number" },
                     courseId: { type: "string" },
+                    evalTerm: { type: "string" },
                     numComments: { type: "number", nullable: true },
                     comments: {
                       type: "array",
@@ -105,6 +106,7 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
                 properties: {
                   id: { type: "number" },
                   courseId: { type: "string" },
+                  evalTerm: { type: "string" },
                   numComments: { type: "number", nullable: true },
                   comments: {
                     type: "array",

@@ -292,13 +292,23 @@ export default class DB implements I_DB {
             .insert(schema.evaluations)
             .values({
               courseId: dbCourseId,
+              evalTerm: term,
               numComments: evalData.numComments,
               comments: evalData.comments,
               rating: evalData.rating,
               ratingSource: evalData.ratingSource,
-              metadata: { evalTerm: term, listingId },
+              metadata: { listingId },
             })
-            .onConflictDoNothing();
+            .onConflictDoUpdate({
+              target: [schema.evaluations.courseId, schema.evaluations.evalTerm],
+              set: {
+                numComments: evalData.numComments,
+                comments: evalData.comments,
+                rating: evalData.rating,
+                ratingSource: evalData.ratingSource,
+                metadata: { listingId },
+              },
+            });
 
           successCount++;
         }
