@@ -12,6 +12,7 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "bun cli seed",
     "db:evals": "bun cli evals",
+    "db:update-historical": "bun cli update-historical",
     "db:schema": "bun src/db/generate-dbml.ts",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
