@@ -192,6 +192,11 @@ export default class OIT_API implements I_OIT_API {
     return terms.length > 0 ? terms[0].code : null;
   }
 
+  async getAllTermCodes(): Promise<string[]> {
+    const terms = await this.__oit_getTerms();
+    return terms.map((t) => t.code);
+  }
+
   async getCourseDetails(term: string, courseId: string): Promise<t.OIT_CourseDetails> {
     const params = new URLSearchParams({
       course_id: courseId,

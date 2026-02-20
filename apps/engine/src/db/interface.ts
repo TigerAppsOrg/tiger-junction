@@ -13,6 +13,12 @@ export interface I_DB {
   updateOitData(): Promise<void>;
 
   /**
+   * Fetches and upserts course data for ALL available terms from the OIT API.
+   * This populates historical course data needed before running eval imports.
+   */
+  updateHistoricalOitData(): Promise<void>;
+
+  /**
    * Scrapes course evaluations from the registrar and writes them
    * to the evaluations table for all courses currently in the database.
    */

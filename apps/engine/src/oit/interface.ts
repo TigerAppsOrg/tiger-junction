@@ -47,6 +47,12 @@ export interface I_OIT_API {
   getLatestTermCode(): Promise<string | null>;
 
   /**
+   * Get all available term codes from the OIT API
+   * @return List of term codes sorted newest-first (e.g., ["1264", "1262", "1254", ...])
+   */
+  getAllTermCodes(): Promise<string[]>;
+
+  /**
    * Get courses for a specific department in a term
    * @param term - 4-digit term code (e.g., "1202")
    * @param dept - 3-letter department code (e.g., "COS")
