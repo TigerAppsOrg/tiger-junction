@@ -1,8 +1,8 @@
 // src/cli.ts
 // Author(s): Joshua Lau
 
-// import OIT_API from "./oit";
 import DB from "./db";
+import { seed } from "./db/seed";
 import util from "util";
 
 // Override console.log to print objects with full depth
@@ -14,9 +14,23 @@ console.log = function (...args) {
   originalLog(...inspectedArgs);
 };
 
-// const api = new OIT_API();
-// const d = await api.getAllCourseData("1262");
-// console.log(d);
+const command = process.argv[2];
 
-const db = new DB();
-await db.updateOitData();
+switch (command) {
+  case "seed": {
+    await seed();
+    break;
+  }
+  case "update": {
+    const db = new DB();
+    await db.updateOitData();
+    break;
+  }
+  default: {
+    console.log("Usage: bun cli <command>\n");
+    console.log("Commands:");
+    console.log("  update    Fetch latest OIT data and update the database");
+    console.log("  seed      Seed test users, schedules, events, and feedback");
+    break;
+  }
+}

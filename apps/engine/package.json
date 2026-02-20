@@ -9,6 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
+    "db:seed": "bun cli seed",
     "db:schema": "bun src/db/generate-dbml.ts",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
