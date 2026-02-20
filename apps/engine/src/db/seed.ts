@@ -205,4 +205,5 @@ export async function seed() {
   console.log(`  Created ${FEEDBACK_MESSAGES.length} feedback entries`);
 
   console.log("Seeding complete!");
+  process.exit(0);
 }
