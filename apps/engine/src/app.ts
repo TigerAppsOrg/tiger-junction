@@ -20,6 +20,7 @@ import evaluationsRoutes from "./routes/api/evaluations.ts";
 import redisPlugin from "./plugins/redis.ts";
 import dbPlugin from "./plugins/db.ts";
 import snatchRoutes from "./routes/snatch.ts";
+import mcpRoutes from "./routes/mcp.ts";
 
 export async function build(opts?: { logger?: boolean }): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts?.logger ?? true });
@@ -85,6 +86,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   app.register(instructorsRoutes, { prefix: "/api/instructors" });
   app.register(evaluationsRoutes, { prefix: "/api/evaluations" });
   app.register(snatchRoutes, { prefix: "/snatch" });
+  app.register(mcpRoutes, { prefix: "/mcp" });
 
   return app;
 }
