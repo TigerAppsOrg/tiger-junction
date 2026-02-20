@@ -16,6 +16,7 @@ import usersRoutes from "./routes/api/users.ts";
 import eventsRoutes from "./routes/api/events.ts";
 import feedbackRoutes from "./routes/api/feedback.ts";
 import instructorsRoutes from "./routes/api/instructors.ts";
+import evaluationsRoutes from "./routes/api/evaluations.ts";
 import redisPlugin from "./plugins/redis.ts";
 import dbPlugin from "./plugins/db.ts";
 import snatchRoutes from "./routes/snatch.ts";
@@ -47,6 +48,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
         { name: "Events", description: "Custom event endpoints" },
         { name: "Feedback", description: "User feedback endpoints" },
         { name: "Instructors", description: "Instructor data endpoints" },
+        { name: "Evaluations", description: "Course evaluation data endpoints" },
         { name: "Snatch", description: "TigerSnatch integration endpoints" },
       ],
     },
@@ -81,6 +83,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   app.register(eventsRoutes, { prefix: "/api/events" });
   app.register(feedbackRoutes, { prefix: "/api/feedback" });
   app.register(instructorsRoutes, { prefix: "/api/instructors" });
+  app.register(evaluationsRoutes, { prefix: "/api/evaluations" });
   app.register(snatchRoutes, { prefix: "/snatch" });
 
   return app;
