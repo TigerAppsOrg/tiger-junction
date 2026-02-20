@@ -233,44 +233,26 @@ export default class DB implements I_DB {
     console.log(`\nHistorical update complete! Processed ${totalCourses} courses across ${terms.length} terms.`);
   }
 
-  public async updateEvals(opts: { skipMissing?: boolean } = {}) {
+  public async updateEvals() {
     await this.testConnection();
 
     const oit = new OIT();
 
     const courses = await this.db
-      .select({ id: schema.courses.id, listingId: schema.courses.listingId })
+      .select({ listingId: schema.courses.listingId })
       .from(schema.courses);
 
-    // Build a map from listingId -> course row ID in the DB (picks the first match)
-    const listingToCourseId = new Map<string, string>();
-    for (const c of courses) {
-      if (!listingToCourseId.has(c.listingId)) {
-        listingToCourseId.set(c.listingId, c.id);
-      }
-    }
-
-    const uniqueListingIds = [...listingToCourseId.keys()];
+    const uniqueListingIds = [...new Set(courses.map((c) => c.listingId))];
     console.log(`Scraping evaluations for ${uniqueListingIds.length} unique courses...`);
-    if (opts.skipMissing) {
-      console.log(`--skip enabled: skipping evals for course-term combos not in the database`);
-    }
 
     let successCount = 0;
     let noEvalsCount = 0;
-    let fkSkipCount = 0;
     let errorCount = 0;
 
     for (let i = 0; i < uniqueListingIds.length; i++) {
       const listingId = uniqueListingIds[i];
       if (i % 25 === 0) {
         console.log(`Progress: ${i}/${uniqueListingIds.length} courses processed...`);
-      }
-
-      const dbCourseId = listingToCourseId.get(listingId);
-      if (!dbCourseId) {
-        fkSkipCount++;
-        continue;
       }
 
       try {
@@ -291,22 +273,20 @@ export default class DB implements I_DB {
           await this.db
             .insert(schema.evaluations)
             .values({
-              courseId: dbCourseId,
+              listingId,
               evalTerm: term,
               numComments: evalData.numComments,
               comments: evalData.comments,
               rating: evalData.rating,
               ratingSource: evalData.ratingSource,
-              metadata: { listingId },
             })
             .onConflictDoUpdate({
-              target: [schema.evaluations.courseId, schema.evaluations.evalTerm],
+              target: [schema.evaluations.listingId, schema.evaluations.evalTerm],
               set: {
                 numComments: evalData.numComments,
                 comments: evalData.comments,
                 rating: evalData.rating,
                 ratingSource: evalData.ratingSource,
-                metadata: { listingId },
               },
             });
 
@@ -320,8 +300,8 @@ export default class DB implements I_DB {
       }
     }
 
-    const parts = [`inserted=${successCount}`, `no_evals=${noEvalsCount}`, `errors=${errorCount}`];
-    if (opts.skipMissing) parts.push(`skipped_orphan=${fkSkipCount}`);
-    console.log(`Evaluations update complete! ${parts.join(", ")}`);
+    console.log(
+      `Evaluations update complete! inserted=${successCount}, no_evals=${noEvalsCount}, errors=${errorCount}`
+    );
   }
 }

@@ -5,6 +5,29 @@ import { type FastifyPluginAsync } from "fastify";
 import * as schema from "../../db/schema.js";
 import { eq, asc } from "drizzle-orm";
 
+const evalResponseSchema = {
+  type: "object",
+  properties: {
+    id: { type: "number" },
+    listingId: { type: "string" },
+    evalTerm: { type: "string" },
+    numComments: { type: "number", nullable: true },
+    comments: {
+      type: "array",
+      items: { type: "string" },
+      nullable: true,
+    },
+    summary: { type: "string", nullable: true },
+    rating: { type: "number", nullable: true },
+    ratingSource: { type: "string", nullable: true },
+    metadata: {
+      type: "object",
+      additionalProperties: true,
+      nullable: true,
+    },
+  },
+};
+
 const evaluationsRoutes: FastifyPluginAsync = async (app) => {
   // GET /api/evaluations - Get all evaluations
   app.get(
@@ -21,28 +44,7 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
               count: { type: "number" },
               data: {
                 type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { type: "number" },
-                    courseId: { type: "string" },
-                    evalTerm: { type: "string" },
-                    numComments: { type: "number", nullable: true },
-                    comments: {
-                      type: "array",
-                      items: { type: "string" },
-                      nullable: true,
-                    },
-                    summary: { type: "string", nullable: true },
-                    rating: { type: "number", nullable: true },
-                    ratingSource: { type: "string", nullable: true },
-                    metadata: {
-                      type: "object",
-                      additionalProperties: true,
-                      nullable: true,
-                    },
-                  },
-                },
+                items: evalResponseSchema,
               },
             },
           },
@@ -61,7 +63,7 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
         const evals = await app.db.db
           .select()
           .from(schema.evaluations)
-          .orderBy(asc(schema.evaluations.courseId));
+          .orderBy(asc(schema.evaluations.listingId));
 
         return reply.code(200).send({
           success: true,
@@ -78,50 +80,33 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
     }
   );
 
-  // GET /api/evaluations/:courseId - Get evaluations for a specific course
+  // GET /api/evaluations/:listingId - Get all evaluations for a course listing
   app.get(
-    "/:courseId",
+    "/:listingId",
     {
       schema: {
-        description: "Get evaluations for a specific course by course ID",
+        description:
+          "Get all evaluations for a course listing across all terms",
         tags: ["Evaluations"],
         params: {
           type: "object",
           properties: {
-            courseId: {
+            listingId: {
               type: "string",
-              description: "Course ID (e.g., '002051-1252')",
+              description: "Course listing ID (e.g., '002051')",
             },
           },
-          required: ["courseId"],
+          required: ["listingId"],
         },
         response: {
           200: {
             type: "object",
             properties: {
               success: { type: "boolean" },
+              count: { type: "number" },
               data: {
-                type: "object",
-                nullable: true,
-                properties: {
-                  id: { type: "number" },
-                  courseId: { type: "string" },
-                  evalTerm: { type: "string" },
-                  numComments: { type: "number", nullable: true },
-                  comments: {
-                    type: "array",
-                    items: { type: "string" },
-                    nullable: true,
-                  },
-                  summary: { type: "string", nullable: true },
-                  rating: { type: "number", nullable: true },
-                  ratingSource: { type: "string", nullable: true },
-                  metadata: {
-                    type: "object",
-                    additionalProperties: true,
-                    nullable: true,
-                  },
-                },
+                type: "array",
+                items: evalResponseSchema,
               },
             },
           },
@@ -143,24 +128,26 @@ const evaluationsRoutes: FastifyPluginAsync = async (app) => {
       },
     },
     async (request, reply) => {
-      const { courseId } = request.params as { courseId: string };
+      const { listingId } = request.params as { listingId: string };
 
       try {
         const results = await app.db.db
           .select()
           .from(schema.evaluations)
-          .where(eq(schema.evaluations.courseId, courseId));
+          .where(eq(schema.evaluations.listingId, listingId))
+          .orderBy(asc(schema.evaluations.evalTerm));
 
         if (results.length === 0) {
           return reply.code(404).send({
             success: false,
-            error: `No evaluations found for course ${courseId}`,
+            error: `No evaluations found for listing ${listingId}`,
           });
         }
 
         return reply.code(200).send({
           success: true,
-          data: results[0],
+          count: results.length,
+          data: results,
         });
       } catch (error) {
         app.log.error(error);

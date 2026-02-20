@@ -25,18 +25,20 @@ describe("GET /api/evaluations", () => {
     if (body.data.length > 0) {
       const evaluation = body.data[0];
       expect(evaluation.id).toBeDefined();
-      expect(evaluation.courseId).toBeDefined();
-      expect(typeof evaluation.courseId).toBe("string");
+      expect(evaluation.listingId).toBeDefined();
+      expect(typeof evaluation.listingId).toBe("string");
+      expect(evaluation.evalTerm).toBeDefined();
+      expect(typeof evaluation.evalTerm).toBe("string");
     }
   });
 });
 
-describe("GET /api/evaluations/:courseId", () => {
-  test("returns 404 for a non-existent course", async () => {
+describe("GET /api/evaluations/:listingId", () => {
+  test("returns 404 for a non-existent listing", async () => {
     const app = await getApp();
     const res = await app.inject({
       method: "GET",
-      url: "/api/evaluations/nonexistent-0000",
+      url: "/api/evaluations/nonexistent",
     });
 
     expect(res.statusCode).toBe(404);
@@ -45,24 +47,27 @@ describe("GET /api/evaluations/:courseId", () => {
     expect(body.error).toContain("No evaluations found");
   });
 
-  test("returns evaluation for a known course if data exists", async () => {
+  test("returns evaluations for a known listing if data exists", async () => {
     const app = await getApp();
 
     const allRes = await app.inject({ method: "GET", url: "/api/evaluations" });
     const allBody = allRes.json();
 
     if (allBody.data.length > 0) {
-      const courseId = allBody.data[0].courseId;
+      const listingId = allBody.data[0].listingId;
       const res = await app.inject({
         method: "GET",
-        url: `/api/evaluations/${courseId}`,
+        url: `/api/evaluations/${listingId}`,
       });
 
       expect(res.statusCode).toBe(200);
       const body = res.json();
       expect(body.success).toBe(true);
-      expect(body.data).toBeDefined();
-      expect(body.data.courseId).toBe(courseId);
+      expect(body.count).toBeGreaterThan(0);
+      expect(Array.isArray(body.data)).toBe(true);
+      for (const evaluation of body.data) {
+        expect(evaluation.listingId).toBe(listingId);
+      }
     }
   });
 });
