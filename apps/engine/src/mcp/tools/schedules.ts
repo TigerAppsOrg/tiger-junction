@@ -15,6 +15,11 @@ function timeSlotsOverlap(a: TimeSlot, b: TimeSlot): boolean {
   return a.startTime < b.endTime && b.startTime < a.endTime;
 }
 
+function sectionTypePrefix(title: string): string {
+  const match = title.match(/^([A-Z]+)/);
+  return match ? match[1] : title;
+}
+
 export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
     "get_user_schedules",
@@ -103,6 +108,7 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
       const conflicts: string[] = [];
       for (let i = 0; i < allSections.length; i++) {
         for (let j = i + 1; j < allSections.length; j++) {
+          if (allSections[i].courseCode === allSections[j].courseCode) continue;
           if (timeSlotsOverlap(allSections[i], allSections[j])) {
             conflicts.push(
               `${allSections[i].courseCode} (${allSections[i].sectionTitle}) overlaps with ${allSections[j].courseCode} (${allSections[j].sectionTitle})`
@@ -182,15 +188,27 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
         if (existingCourseIds.some((e) => e.courseId === candidate.id)) continue;
 
         const sections = await db
-          .select({ days: schema.sections.days, startTime: schema.sections.startTime, endTime: schema.sections.endTime })
+          .select({
+            title: schema.sections.title,
+            days: schema.sections.days,
+            startTime: schema.sections.startTime,
+            endTime: schema.sections.endTime,
+          })
           .from(schema.sections)
           .where(eq(schema.sections.courseId, candidate.id));
 
-        const hasConflict = sections.some((s) =>
-          occupiedSlots.some((o) => timeSlotsOverlap(s, o))
+        const byType = new Map<string, typeof sections>();
+        for (const s of sections) {
+          const type = sectionTypePrefix(s.title);
+          if (!byType.has(type)) byType.set(type, []);
+          byType.get(type)!.push(s);
+        }
+
+        const fits = [...byType.values()].every((group) =>
+          group.some((s) => !occupiedSlots.some((o) => timeSlotsOverlap(s, o)))
         );
 
-        if (!hasConflict) {
+        if (fits) {
           fitting.push(candidate);
         }
 
