@@ -64,63 +64,71 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
 
   server.tool(
     "find_top_rated_courses",
-    "Find the highest-rated courses by average evaluation score. Optionally filter by department or distribution area.",
+    "Find the highest-rated courses by recency-weighted average evaluation score. The 2 most recent terms get full weight; older terms are downweighted to 0.5. Optionally filter by department or distribution area.",
     {
       department: z.string().optional().describe("Department code (e.g., COS)"),
       dist: z.string().optional().describe("Distribution area (e.g., LA, QCR)"),
-      minRating: z.number().optional().describe("Minimum rating threshold (default 4.0)"),
+      minRating: z.number().optional().describe("Minimum weighted rating threshold (default 4.0)"),
       limit: z.number().optional().describe("Max results (default 20)"),
     },
     async ({ department, dist, minRating, limit: maxResults }) => {
       const threshold = minRating ?? 4.0;
       const resultLimit = maxResults ?? 20;
 
-      const conditions = [];
-      conditions.push(sql`${schema.evaluations.rating} >= ${threshold}`);
-
+      const filterClauses: ReturnType<typeof sql>[] = [];
       if (department) {
-        conditions.push(
-          sql`${schema.evaluations.listingId} IN (
-            SELECT DISTINCT ${schema.courses.listingId} FROM ${schema.courses}
-            WHERE ${schema.courses.code} ILIKE ${department + "%"}
-          )`
+        filterClauses.push(
+          sql`listing_id IN (SELECT DISTINCT listing_id FROM courses WHERE code ILIKE ${department + "%"})`
         );
       }
-
       if (dist) {
-        conditions.push(
-          sql`${schema.evaluations.listingId} IN (
-            SELECT DISTINCT ${schema.courses.listingId} FROM ${schema.courses}
-            WHERE ${dist} = ANY(${schema.courses.dists})
-          )`
+        filterClauses.push(
+          sql`listing_id IN (SELECT DISTINCT listing_id FROM courses WHERE ${dist} = ANY(dists))`
         );
       }
 
-      const topEvals = await db
-        .select({
-          listingId: schema.evaluations.listingId,
-          avgRating: sql<number>`AVG(${schema.evaluations.rating})`.as("avg_rating"),
-          termCount: sql<number>`COUNT(*)`.as("term_count"),
-        })
-        .from(schema.evaluations)
-        .where(conditions.length > 0 ? and(...conditions) : undefined)
-        .groupBy(schema.evaluations.listingId)
-        .orderBy(desc(sql`AVG(${schema.evaluations.rating})`))
-        .limit(resultLimit);
+      const whereClause =
+        filterClauses.length > 0
+          ? sql`WHERE rating IS NOT NULL AND ${sql.join(filterClauses, sql` AND `)}`
+          : sql`WHERE rating IS NOT NULL`;
+
+      const topEvals = await db.execute<{
+        listing_id: string;
+        weighted_avg: number;
+        term_count: number;
+      }>(sql`
+        SELECT listing_id, 
+          SUM(rating * weight) / SUM(weight) AS weighted_avg,
+          COUNT(*) AS term_count
+        FROM (
+          SELECT listing_id, rating, eval_term,
+            CASE WHEN ROW_NUMBER() OVER (
+              PARTITION BY listing_id ORDER BY eval_term DESC
+            ) <= 2 THEN 1.0 ELSE 0.5 END AS weight
+          FROM evaluations
+          ${whereClause}
+        ) ranked
+        GROUP BY listing_id
+        HAVING SUM(rating * weight) / SUM(weight) >= ${threshold}
+        ORDER BY weighted_avg DESC
+        LIMIT ${resultLimit}
+      `);
+
+      const rows = topEvals.rows ?? topEvals;
 
       const enriched = await Promise.all(
-        topEvals.map(async (e) => {
+        (rows as { listing_id: string; weighted_avg: number; term_count: number }[]).map(async (e) => {
           const course = await db
             .select({ code: schema.courses.code, title: schema.courses.title })
             .from(schema.courses)
-            .where(eq(schema.courses.listingId, e.listingId))
+            .where(eq(schema.courses.listingId, e.listing_id))
             .limit(1);
           return {
-            listingId: e.listingId,
+            listingId: e.listing_id,
             code: course[0]?.code ?? "Unknown",
             title: course[0]?.title ?? "Unknown",
-            avgRating: Number(e.avgRating).toFixed(2),
-            termCount: e.termCount,
+            weightedAvgRating: Number(e.weighted_avg).toFixed(2),
+            termCount: Number(e.term_count),
           };
         })
       );
