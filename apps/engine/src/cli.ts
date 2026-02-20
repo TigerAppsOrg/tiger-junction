@@ -25,18 +25,29 @@ switch (command) {
     const db = new DB();
     await db.updateOitData();
     process.exit(0);
+    break;
   }
   case "evals": {
+    const skipMissing = process.argv.includes("--skip");
     const db = new DB();
-    await db.updateEvals();
+    await db.updateEvals({ skipMissing });
     process.exit(0);
+    break;
+  }
+  case "update-historical": {
+    const db = new DB();
+    await db.updateHistoricalOitData();
+    process.exit(0);
+    break;
   }
   default: {
     console.log("Usage: bun cli <command>\n");
     console.log("Commands:");
-    console.log("  update    Fetch latest OIT data and update the database");
-    console.log("  evals     Scrape course evaluations and write them to the database");
-    console.log("  seed      Seed test users, schedules, events, and feedback");
+    console.log("  update             Fetch latest term OIT data and update the database");
+    console.log("  update-historical  Fetch ALL historical terms from OIT and populate the database");
+    console.log("  evals [--skip]     Scrape course evaluations and write them to the database");
+    console.log("                     --skip: skip evals for course-term combos not in the DB");
+    console.log("  seed               Seed test users, schedules, events, and feedback");
     break;
   }
 }
