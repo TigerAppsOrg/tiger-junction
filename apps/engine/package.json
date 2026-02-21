@@ -26,13 +26,15 @@
     "@fastify/swagger": "^9.5.2",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/websocket": "^11.2.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
     "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
     "jsdom": "^26.1.0",
     "pg": "^8.16.3",
-    "redis": "^4.6.0"
+    "redis": "^4.6.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
