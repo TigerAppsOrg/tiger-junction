@@ -25,10 +25,10 @@ todos:
     status: completed
   - id: register-route
     content: Register /mcp route in src/app.ts
-    status: pending
+    status: completed
   - id: test-mcp
     content: Add src/tests/mcp.test.ts with basic MCP endpoint tests
-    status: pending
+    status: completed
 isProject: false
 ---
 
