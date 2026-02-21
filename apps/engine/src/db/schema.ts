@@ -14,6 +14,7 @@ import {
   jsonb,
   timestamp,
   primaryKey,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 //----------------------------------------------------------------------
@@ -144,15 +145,12 @@ export const courses = pgTable("courses", {
   hasFinal: boolean("has_final"),
 });
 
-export const courseRelations = relations(courses, ({ one, many }) => ({
+export const courseRelations = relations(courses, ({ many }) => ({
   courseInstructorMap: many(courseInstructorMap),
   scheduleCourseMap: many(scheduleCourseMap),
   courseDepartmentMap: many(courseDepartmentMap),
   sections: many(sections),
-  evaluations: one(evaluations, {
-    fields: [courses.id],
-    references: [evaluations.courseId],
-  }),
+  evaluations: many(evaluations),
 }));
 
 export const sections = pgTable("sections", {
@@ -214,24 +212,24 @@ export const instructorRelations = relations(instructors, ({ one, many }) => ({
   }),
 }));
 
-export const evaluations = pgTable("evaluations", {
-  id: serial("id").primaryKey().notNull(),
-  courseId: text("course_id")
-    .notNull()
-    .references(() => courses.id),
-  numComments: integer("num_comments"),
-  comments: text("comments").array(),
-  summary: text("summary"),
-  rating: real("rating"),
-  ratingSource: text("rating_source"),
-  metadata: jsonb("metadata"),
-});
+export const evaluations = pgTable(
+  "evaluations",
+  {
+    id: serial("id").primaryKey().notNull(),
+    listingId: text("listing_id").notNull(),
+    evalTerm: text("eval_term").notNull(),
+    numComments: integer("num_comments"),
+    comments: text("comments").array(),
+    summary: text("summary"),
+    rating: real("rating"),
+    ratingSource: text("rating_source"),
+    metadata: jsonb("metadata"),
+  },
+  (table) => [uniqueIndex("evaluations_listing_id_eval_term_idx").on(table.listingId, table.evalTerm)]
+);
 
-export const evaluationRelations = relations(evaluations, ({ one }) => ({
-  course: one(courses, {
-    fields: [evaluations.courseId],
-    references: [courses.id],
-  }),
+export const evaluationRelations = relations(evaluations, ({ many }) => ({
+  courses: many(courses),
 }));
 
 export const scheduleCourseMap = pgTable(
