@@ -30,6 +30,12 @@ export default {
         job: {
           function: {
             handler: "src/lib/functions/refreshCals.handler",
+            timeout: "5 minutes",
+            memorySize: 512,
+            environment: {
+              PUBLIC_SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL ?? "",
+              SERVICE_KEY: process.env.SERVICE_KEY ?? "",
+            },
           }
         }
       });
