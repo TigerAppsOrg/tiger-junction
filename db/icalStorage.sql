@@ -14,15 +14,5 @@ CREATE POLICY "Interact: user" ON public.icals
     USING (auth.uid() = user_id)
     WITH CHECK (auth.uid() = user_id);
 
--- Delete old ical storage entry when db row is delete
-CREATE OR REPLACE FUNCTION public.handle_ical_deletion()
-RETURNS TRIGGER AS $$
-BEGIN
-    DELETE FROM storage.objects WHERE bucket_id = 'calendars' AND NAME = concat(OLD.id, '.ics');
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql security definer;
-CREATE TRIGGER on_ical_deleted
-    AFTER DELETE ON public.icals
-    FOR EACH ROW
-    EXECUTE PROCEDURE public.handle_ical_deletion();
+-- Storage file cleanup is handled in application code via the Supabase Storage API.
+-- Direct SQL deletes on storage.objects are blocked by Supabase's protect_objects_delete trigger.
