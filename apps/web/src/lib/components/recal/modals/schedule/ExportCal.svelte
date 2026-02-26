@@ -139,10 +139,16 @@
 
             // Delete old calendar (if exists)
             if (curCal && curCal.length > 0) {
+                const oldId = curCal[0].id;
+
+                await supabase.storage
+                    .from("calendars")
+                    .remove([`${oldId}.ics`]);
+
                 const { error: supabaseError3 } = await supabase
                     .from("icals")
                     .delete()
-                    .eq("id", curCal[0].id);
+                    .eq("id", oldId);
 
                 if (supabaseError3) {
                     console.log(supabaseError3);
