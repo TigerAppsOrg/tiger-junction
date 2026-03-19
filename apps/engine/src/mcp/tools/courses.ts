@@ -12,7 +12,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     "search_courses",
     "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status.",
     {
-      term: z.number().optional().describe("Term code (e.g., 1264)"),
+      term: z.number().optional().describe("Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
       department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
       query: z.string().optional().describe("Text to search in course title or description"),
       dist: z.string().optional().describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
@@ -60,7 +60,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     "get_course_details",
     "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam.",
     {
-      courseId: z.string().optional().describe("Course ID (e.g., '002051-1264')"),
+      courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
       code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
     },
     async ({ courseId, code }) => {
@@ -105,7 +105,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     "get_course_sections",
     "Get all sections for a course including meeting times, rooms, enrollment, and capacity.",
     {
-      courseId: z.string().optional().describe("Course ID (e.g., '002051-1264')"),
+      courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
       code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
     },
     async ({ courseId, code }) => {
