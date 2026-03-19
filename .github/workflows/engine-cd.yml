@@ -1,0 +1,52 @@
+name: Engine CD
+
+on:
+  push:
+    paths:
+      - "apps/engine/**"
+      - ".github/workflows/engine-cd.yml"
+    branches:
+      - main
+
+concurrency:
+  group: engine-deploy-${{ github.ref }}
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        working-directory: apps/engine
+        run: bun install --frozen-lockfile
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/junction-engine.pem
+          chmod 600 ~/.ssh/junction-engine.pem
+          ssh-keyscan -H 52.45.218.243 >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            apps/engine/ ec2-user@52.45.218.243:/opt/junction-engine/ \
+            -e "ssh -i ~/.ssh/junction-engine.pem"
+
+      - name: Install dependencies and restart
+        run: |
+          ssh -i ~/.ssh/junction-engine.pem ec2-user@52.45.218.243 << 'EOF'
+            cd /opt/junction-engine
+            ~/.bun/bin/bun install --frozen-lockfile
+            sudo systemctl restart junction-engine
+            sleep 2
+            sudo systemctl is-active junction-engine
+          EOF
