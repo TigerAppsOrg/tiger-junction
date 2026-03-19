@@ -18,15 +18,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: "1.3.10"
-
-      - name: Install dependencies
-        working-directory: apps/engine
-        run: bun install --frozen-lockfile
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -47,7 +38,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/junction-engine.pem ec2-user@52.45.218.243 << 'EOF'
             cd /opt/junction-engine
-            ~/.bun/bin/bun install --frozen-lockfile
+            ~/.bun/bin/bun install
             sudo systemctl restart junction-engine
             sleep 2
             sudo systemctl is-active junction-engine
