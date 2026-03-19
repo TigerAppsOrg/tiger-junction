@@ -63,22 +63,22 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
 
   server.tool(
     "get_course_details",
-    "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam.",
+    "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam. Provide EITHER courseId OR code, not both.",
     {
       courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
+      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
     },
     async ({ courseId, code }) => {
       let course;
-      if (courseId) {
-        const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, courseId));
-        course = rows[0];
-      } else if (code) {
+      if (code) {
         const rows = await db
           .select()
           .from(schema.courses)
           .where(ilike(schema.courses.code, `%${code}%`))
           .limit(1);
+        course = rows[0];
+      } else if (courseId) {
+        const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, courseId));
         course = rows[0];
       }
 
@@ -108,20 +108,30 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
 
   server.tool(
     "get_course_sections",
-    "Get all sections for a course including meeting times, rooms, enrollment, and capacity.",
+    "Get all sections for a course including meeting times, rooms, enrollment, and capacity. Provide EITHER courseId OR code, not both.",
     {
       courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
+      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
     },
     async ({ courseId, code }) => {
-      let targetId = courseId;
-      if (!targetId && code) {
+      let targetId: string | undefined;
+      let courseCode: string | undefined;
+      if (code) {
         const rows = await db
-          .select({ id: schema.courses.id })
+          .select({ id: schema.courses.id, code: schema.courses.code })
           .from(schema.courses)
           .where(ilike(schema.courses.code, `%${code}%`))
           .limit(1);
         targetId = rows[0]?.id;
+        courseCode = rows[0]?.code;
+      } else if (courseId) {
+        targetId = courseId;
+        const rows = await db
+          .select({ code: schema.courses.code })
+          .from(schema.courses)
+          .where(eq(schema.courses.id, courseId))
+          .limit(1);
+        courseCode = rows[0]?.code;
       }
 
       if (!targetId) {
@@ -140,7 +150,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ courseId: targetId, count: formatted.length, sections: formatted }, null, 2),
+            text: JSON.stringify({ courseId: targetId, code: courseCode, count: formatted.length, sections: formatted }, null, 2),
           },
         ],
       };
