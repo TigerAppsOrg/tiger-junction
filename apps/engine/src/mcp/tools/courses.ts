@@ -5,6 +5,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, sql, asc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { formatSection } from "../helpers.js";
 
 export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
@@ -128,11 +129,13 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         .where(eq(schema.sections.courseId, targetId))
         .orderBy(asc(schema.sections.id));
 
+      const formatted = sections.map(formatSection);
+
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ courseId: targetId, count: sections.length, sections }, null, 2),
+            text: JSON.stringify({ courseId: targetId, count: formatted.length, sections: formatted }, null, 2),
           },
         ],
       };

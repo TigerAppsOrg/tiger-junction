@@ -3,6 +3,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, and, asc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { formatSection } from "../helpers.js";
 
 interface TimeSlot {
   days: number;
@@ -125,7 +126,7 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
               {
                 schedule: schedule[0],
                 courses: courseMappings,
-                sections: allSections,
+                sections: allSections.map(formatSection),
                 conflicts: conflicts.length > 0 ? conflicts : "No conflicts detected",
               },
               null,
