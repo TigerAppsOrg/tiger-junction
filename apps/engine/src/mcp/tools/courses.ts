@@ -10,21 +10,25 @@ import { formatSection } from "../helpers.js";
 export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
     "search_courses",
-    "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status.",
+    "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department).",
     {
       term: z.number().optional().describe("Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
       department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
-      query: z.string().optional().describe("Text to search in course title or description"),
+      query: z.string().optional().describe("Text to search in course title, description, or number. Use this to find specific courses (e.g., '418' to find COS 418)."),
       dist: z.string().optional().describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
+      limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
+      offset: z.number().optional().describe("Number of results to skip for pagination (default 0)"),
     },
-    async ({ term, department, query, dist }) => {
+    async ({ term, department, query, dist, limit: maxResults, offset }) => {
+      const resultLimit = Math.min(maxResults ?? 50, 200);
+      const resultOffset = offset ?? 0;
       const conditions = [];
 
       if (term) conditions.push(eq(schema.courses.term, term));
       if (department) conditions.push(ilike(schema.courses.code, `${department}%`));
       if (query) {
         conditions.push(
-          sql`(${schema.courses.title} ILIKE ${"%" + query + "%"} OR ${schema.courses.description} ILIKE ${"%" + query + "%"})`
+          sql`(${schema.courses.code} ILIKE ${"%" + query + "%"} OR ${schema.courses.title} ILIKE ${"%" + query + "%"} OR ${schema.courses.description} ILIKE ${"%" + query + "%"})`
         );
       }
       if (dist) conditions.push(sql`${dist} = ANY(${schema.courses.dists})`);
@@ -43,7 +47,8 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         .from(schema.courses)
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(asc(schema.courses.code))
-        .limit(50);
+        .offset(resultOffset)
+        .limit(resultLimit);
 
       return {
         content: [
