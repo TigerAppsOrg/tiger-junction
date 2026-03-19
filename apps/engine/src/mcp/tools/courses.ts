@@ -95,11 +95,24 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         .innerJoin(schema.instructors, eq(schema.courseInstructorMap.instructorId, schema.instructors.netid))
         .where(eq(schema.courseInstructorMap.courseId, course.id));
 
+      const sections = await db
+        .select({
+          title: schema.sections.title,
+          days: schema.sections.days,
+          startTime: schema.sections.startTime,
+          endTime: schema.sections.endTime,
+        })
+        .from(schema.sections)
+        .where(eq(schema.sections.courseId, course.id))
+        .orderBy(asc(schema.sections.id));
+
+      const meetingTimes = sections.map(formatSection);
+
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ ...course, instructors }, null, 2),
+            text: JSON.stringify({ ...course, instructors, meetingTimes }, null, 2),
           },
         ],
       };
