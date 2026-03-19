@@ -38,8 +38,13 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       if (dist) conditions.push(sql`${dist} = ANY(${schema.courses.dists})`);
       if (days) {
         const mask = daysToBitmask(days.split(",").map((d) => d.trim()));
+        // Exclude courses that have ANY section meeting on days outside the mask
         conditions.push(
-          sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${~mask & 31}) = 0 AND ${schema.sections.days} != 0)`
+          sql`${schema.courses.id} NOT IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${~mask & 31}) != 0)`
+        );
+        // Ensure the course has at least one non-TBA section
+        conditions.push(
+          sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE ${schema.sections.days} != 0)`
         );
       }
       if (startAfter) {
