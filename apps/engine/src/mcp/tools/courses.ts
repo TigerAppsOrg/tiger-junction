@@ -16,14 +16,15 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
       query: z.string().optional().describe("Text to search in course title, description, or number. Use this to find specific courses (e.g., '418' to find COS 418)."),
       dist: z.string().optional().describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
-      days: z.string().optional().describe("Day filter: comma-separated day codes (M,T,W,Th,F). Returns courses meeting ONLY on these days. E.g., 'T,Th' for Tuesday/Thursday courses."),
+      days: z.string().optional().describe("Day filter: comma-separated day codes (M,T,W,Th,F). E.g., 'T,Th' for Tuesday/Thursday courses. Behavior depends on daysMatch."),
+      daysMatch: z.enum(["exact", "includes"]).optional().describe("How to match days. 'exact' (default): ALL sections meet only on the specified days. 'includes': course has at least one section on any of the specified days."),
       startAfter: z.string().optional().describe("Earliest start time, e.g. '10:00 AM'. Excludes courses starting before this time."),
       startBefore: z.string().optional().describe("Latest start time, e.g. '2:00 PM'. Excludes courses starting after this time."),
       instructor: z.string().optional().describe("Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."),
       limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
       offset: z.number().optional().describe("Number of results to skip for pagination (default 0)"),
     },
-    async ({ term, department, query, dist, days, startAfter, startBefore, instructor, limit: maxResults, offset }) => {
+    async ({ term, department, query, dist, days, daysMatch, startAfter, startBefore, instructor, limit: maxResults, offset }) => {
       const resultLimit = Math.min(maxResults ?? 50, 200);
       const resultOffset = offset ?? 0;
       const conditions = [];
@@ -38,14 +39,20 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       if (dist) conditions.push(sql`${dist} = ANY(${schema.courses.dists})`);
       if (days) {
         const mask = daysToBitmask(days.split(",").map((d) => d.trim()));
-        // Exclude courses that have ANY section meeting on days outside the mask
-        conditions.push(
-          sql`${schema.courses.id} NOT IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${~mask & 31}) != 0)`
-        );
-        // Ensure the course has at least one non-TBA section
-        conditions.push(
-          sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE ${schema.sections.days} != 0)`
-        );
+        if (daysMatch === "includes") {
+          // Fuzzy: course has at least one section on any of the specified days
+          conditions.push(
+            sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${mask}) != 0)`
+          );
+        } else {
+          // Exact (default): ALL sections meet only on the specified days
+          conditions.push(
+            sql`${schema.courses.id} NOT IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${~mask & 31}) != 0)`
+          );
+          conditions.push(
+            sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE ${schema.sections.days} != 0)`
+          );
+        }
       }
       if (startAfter) {
         const val = timeToValue(startAfter);
