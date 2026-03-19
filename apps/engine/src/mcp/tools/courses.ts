@@ -3,9 +3,9 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
-import { eq, ilike, sql, asc, and } from "drizzle-orm";
+import { eq, ilike, sql, asc, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
-import { formatSection } from "../helpers.js";
+import { formatSection, termCodeToName, daysToBitmask, timeToValue } from "../helpers.js";
 
 export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
@@ -16,10 +16,14 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
       query: z.string().optional().describe("Text to search in course title, description, or number. Use this to find specific courses (e.g., '418' to find COS 418)."),
       dist: z.string().optional().describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
+      days: z.string().optional().describe("Day filter: comma-separated day codes (M,T,W,Th,F). Returns courses meeting ONLY on these days. E.g., 'T,Th' for Tuesday/Thursday courses."),
+      startAfter: z.string().optional().describe("Earliest start time, e.g. '10:00 AM'. Excludes courses starting before this time."),
+      startBefore: z.string().optional().describe("Latest start time, e.g. '2:00 PM'. Excludes courses starting after this time."),
+      instructor: z.string().optional().describe("Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."),
       limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
       offset: z.number().optional().describe("Number of results to skip for pagination (default 0)"),
     },
-    async ({ term, department, query, dist, limit: maxResults, offset }) => {
+    async ({ term, department, query, dist, days, startAfter, startBefore, instructor, limit: maxResults, offset }) => {
       const resultLimit = Math.min(maxResults ?? 50, 200);
       const resultOffset = offset ?? 0;
       const conditions = [];
@@ -32,6 +36,29 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         );
       }
       if (dist) conditions.push(sql`${dist} = ANY(${schema.courses.dists})`);
+      if (days) {
+        const mask = daysToBitmask(days.split(",").map((d) => d.trim()));
+        conditions.push(
+          sql`${schema.courses.id} IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE (${schema.sections.days} & ${~mask & 31}) = 0 AND ${schema.sections.days} != 0)`
+        );
+      }
+      if (startAfter) {
+        const val = timeToValue(startAfter);
+        conditions.push(
+          sql`${schema.courses.id} NOT IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE ${schema.sections.startTime} < ${val} AND ${schema.sections.startTime} != -420)`
+        );
+      }
+      if (startBefore) {
+        const val = timeToValue(startBefore);
+        conditions.push(
+          sql`${schema.courses.id} NOT IN (SELECT DISTINCT ${schema.sections.courseId} FROM ${schema.sections} WHERE ${schema.sections.startTime} > ${val} AND ${schema.sections.startTime} != -420)`
+        );
+      }
+      if (instructor) {
+        conditions.push(
+          sql`${schema.courses.id} IN (SELECT ${schema.courseInstructorMap.courseId} FROM ${schema.courseInstructorMap} INNER JOIN ${schema.instructors} ON ${schema.courseInstructorMap.instructorId} = ${schema.instructors.netid} WHERE ${schema.instructors.fullName} ILIKE ${"%" + instructor + "%"})`
+        );
+      }
 
       const courses = await db
         .select({
@@ -40,6 +67,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
           term: schema.courses.term,
           code: schema.courses.code,
           title: schema.courses.title,
+          description: schema.courses.description,
           status: schema.courses.status,
           dists: schema.courses.dists,
           hasFinal: schema.courses.hasFinal,
@@ -67,14 +95,18 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     {
       courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
       code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
+      term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
     },
-    async ({ courseId, code }) => {
+    async ({ courseId, code, term }) => {
       let course;
       if (code) {
+        const conditions = [ilike(schema.courses.code, `%${code}%`)];
+        if (term) conditions.push(eq(schema.courses.term, term));
         const rows = await db
           .select()
           .from(schema.courses)
-          .where(ilike(schema.courses.code, `%${code}%`))
+          .where(and(...conditions))
+          .orderBy(desc(schema.courses.term))
           .limit(1);
         course = rows[0];
       } else if (courseId) {
@@ -125,15 +157,19 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     {
       courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
       code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
+      term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
     },
-    async ({ courseId, code }) => {
+    async ({ courseId, code, term }) => {
       let targetId: string | undefined;
       let courseCode: string | undefined;
       if (code) {
+        const conditions = [ilike(schema.courses.code, `%${code}%`)];
+        if (term) conditions.push(eq(schema.courses.term, term));
         const rows = await db
           .select({ id: schema.courses.id, code: schema.courses.code })
           .from(schema.courses)
-          .where(ilike(schema.courses.code, `%${code}%`))
+          .where(and(...conditions))
+          .orderBy(desc(schema.courses.term))
           .limit(1);
         targetId = rows[0]?.id;
         courseCode = rows[0]?.code;
@@ -198,13 +234,15 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       filter: z
         .enum(["new", "small_seminar", "no_final", "open"])
         .describe("Discovery filter to apply"),
+      term: z.number().optional().describe("Term code to limit results to a specific semester (e.g., 1264 for Spring 2026)."),
       department: z.string().optional().describe("Limit to a department (e.g., COS)"),
       limit: z.number().optional().describe("Max results (default 25)"),
     },
-    async ({ filter, department, limit: maxResults }) => {
+    async ({ filter, term, department, limit: maxResults }) => {
       const resultLimit = maxResults ?? 25;
       const conditions = [];
 
+      if (term) conditions.push(eq(schema.courses.term, term));
       if (department) conditions.push(ilike(schema.courses.code, `${department}%`));
 
       if (filter === "new") {
@@ -241,6 +279,182 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
           {
             type: "text" as const,
             text: JSON.stringify({ filter, count: courses.length, courses }, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
+  server.tool(
+    "list_terms",
+    "List all academic terms available in the database with their human-readable names.",
+    {},
+    async () => {
+      const terms = await db
+        .select({ term: schema.courses.term })
+        .from(schema.courses)
+        .groupBy(schema.courses.term)
+        .orderBy(asc(schema.courses.term));
+
+      const termList = terms.map((t) => ({
+        term: t.term,
+        name: termCodeToName(t.term),
+      }));
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify({ count: termList.length, terms: termList }, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
+  server.tool(
+    "compare_courses",
+    "Compare 2-5 courses side by side. Returns details, instructors, meeting times, ratings, and enrollment for each.",
+    {
+      codes: z.array(z.string()).min(2).max(5).describe("Array of course codes to compare (e.g., ['COS 226', 'COS 217'])"),
+      term: z.number().optional().describe("Term code. If omitted, uses the most recent term each course was offered."),
+    },
+    async ({ codes, term }) => {
+      const comparisons = await Promise.all(
+        codes.map(async (code) => {
+          const conditions = [ilike(schema.courses.code, `%${code}%`)];
+          if (term) conditions.push(eq(schema.courses.term, term));
+
+          const rows = await db
+            .select()
+            .from(schema.courses)
+            .where(and(...conditions))
+            .orderBy(desc(schema.courses.term))
+            .limit(1);
+          const course = rows[0];
+          if (!course) return { code, error: "Course not found" };
+
+          const instructors = await db
+            .select({ netid: schema.instructors.netid, name: schema.instructors.name })
+            .from(schema.courseInstructorMap)
+            .innerJoin(schema.instructors, eq(schema.courseInstructorMap.instructorId, schema.instructors.netid))
+            .where(eq(schema.courseInstructorMap.courseId, course.id));
+
+          const sections = await db
+            .select()
+            .from(schema.sections)
+            .where(eq(schema.sections.courseId, course.id))
+            .orderBy(asc(schema.sections.id));
+
+          const totalEnrolled = sections.reduce((sum, s) => sum + (s.tot ?? 0), 0);
+          const totalCapacity = sections.reduce((sum, s) => sum + (s.cap ?? 0), 0);
+
+          const evals = await db
+            .select({ rating: schema.evaluations.rating, evalTerm: schema.evaluations.evalTerm })
+            .from(schema.evaluations)
+            .where(eq(schema.evaluations.listingId, course.listingId))
+            .orderBy(desc(schema.evaluations.evalTerm))
+            .limit(1);
+
+          return {
+            code: course.code,
+            title: course.title,
+            term: course.term,
+            termName: termCodeToName(course.term),
+            description: course.description,
+            dists: course.dists,
+            gradingBasis: course.gradingBasis,
+            hasFinal: course.hasFinal,
+            instructors,
+            meetingTimes: sections.map(formatSection),
+            enrollment: { enrolled: totalEnrolled, capacity: totalCapacity, percentFull: totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A" },
+            latestRating: evals[0]?.rating ?? null,
+          };
+        })
+      );
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify({ count: comparisons.length, courses: comparisons }, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
+  server.tool(
+    "get_enrollment_stats",
+    "Get enrollment statistics for a course: per-section enrolled/capacity breakdown and overall percentage full.",
+    {
+      courseId: z.string().optional().describe("Course ID (e.g., '002051-1264')"),
+      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
+      term: z.number().optional().describe("Term code to disambiguate when searching by code."),
+    },
+    async ({ courseId, code, term }) => {
+      let targetId: string | undefined;
+      let courseCode: string | undefined;
+      if (code) {
+        const conditions = [ilike(schema.courses.code, `%${code}%`)];
+        if (term) conditions.push(eq(schema.courses.term, term));
+        const rows = await db
+          .select({ id: schema.courses.id, code: schema.courses.code })
+          .from(schema.courses)
+          .where(and(...conditions))
+          .orderBy(desc(schema.courses.term))
+          .limit(1);
+        targetId = rows[0]?.id;
+        courseCode = rows[0]?.code;
+      } else if (courseId) {
+        targetId = courseId;
+        const rows = await db
+          .select({ code: schema.courses.code })
+          .from(schema.courses)
+          .where(eq(schema.courses.id, courseId))
+          .limit(1);
+        courseCode = rows[0]?.code;
+      }
+
+      if (!targetId) {
+        return { content: [{ type: "text" as const, text: "Course not found." }], isError: true };
+      }
+
+      const sections = await db
+        .select({
+          title: schema.sections.title,
+          tot: schema.sections.tot,
+          cap: schema.sections.cap,
+          status: schema.sections.status,
+        })
+        .from(schema.sections)
+        .where(eq(schema.sections.courseId, targetId))
+        .orderBy(asc(schema.sections.id));
+
+      const totalEnrolled = sections.reduce((sum, s) => sum + (s.tot ?? 0), 0);
+      const totalCapacity = sections.reduce((sum, s) => sum + (s.cap ?? 0), 0);
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(
+              {
+                courseId: targetId,
+                code: courseCode,
+                totalEnrolled,
+                totalCapacity,
+                percentFull: totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A",
+                sections: sections.map((s) => ({
+                  title: s.title,
+                  enrolled: s.tot,
+                  capacity: s.cap,
+                  status: s.status,
+                })),
+              },
+              null,
+              2
+            ),
           },
         ],
       };

@@ -145,8 +145,10 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
       scheduleId: z.number().describe("Schedule ID to check against"),
       department: z.string().optional().describe("Department code (e.g., COS)"),
       dist: z.string().optional().describe("Distribution area (e.g., LA)"),
+      limit: z.number().optional().describe("Max results to return (default 30, max 100)"),
     },
-    async ({ scheduleId, department, dist }) => {
+    async ({ scheduleId, department, dist, limit: maxResults }) => {
+      const resultLimit = Math.min(maxResults ?? 30, 100);
       const schedule = await db
         .select()
         .from(schema.schedules)
@@ -213,7 +215,7 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
           fitting.push(candidate);
         }
 
-        if (fitting.length >= 30) break;
+        if (fitting.length >= resultLimit) break;
       }
 
       return {
