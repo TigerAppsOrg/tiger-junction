@@ -27,7 +27,7 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
     "Get all schedules for a user, optionally filtered by term.",
     {
       userId: z.number().describe("User ID"),
-      term: z.number().optional().describe("Term code to filter by"),
+      term: z.number().optional().describe("Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
     },
     async ({ userId, term }) => {
       const conditions = [eq(schema.schedules.userId, userId)];

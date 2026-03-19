@@ -150,7 +150,7 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
     {
       listingId: z.string().optional().describe("Listing ID"),
       code: z.string().optional().describe("Course code (e.g., 'COS 126')"),
-      term: z.string().optional().describe("Specific eval term (e.g., '1242'). If omitted, returns all terms."),
+      term: z.string().optional().describe("Specific eval term. If omitted, returns all terms. Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
     },
     async ({ listingId, code, term }) => {
       let targetListingId = listingId;
