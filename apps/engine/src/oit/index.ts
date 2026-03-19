@@ -193,8 +193,14 @@ export default class OIT_API implements I_OIT_API {
   }
 
   async getAllTermCodes(): Promise<string[]> {
-    const terms = await this.__oit_getTerms();
-    return terms.map((t) => t.code);
+    // Hardcoded because the OIT API only returns the current term
+    return [
+      "1232", "1234",
+      "1242", "1244",
+      "1252", "1254",
+      "1262", "1264",
+      "1272",
+    ];
   }
 
   async getCourseDetails(term: string, courseId: string): Promise<t.OIT_CourseDetails> {
