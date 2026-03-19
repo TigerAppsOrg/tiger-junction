@@ -1,13 +1,13 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
-import { eq, ilike, asc } from "drizzle-orm";
+import { eq, ilike, asc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 
 export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
     "get_instructor",
-    "Get details about an instructor by their netid, including name, department, office, and rating.",
+    "Get details about an instructor by their netid, including name, department, office, rating (1-5 scale), numRatings (how many students rated them), and ratingUncertainty.",
     {
       netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
     },
@@ -29,7 +29,7 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
 
   server.tool(
     "search_instructors",
-    "Search for instructors by name. Returns matching instructor profiles.",
+    "Search for instructors by name. Returns matching instructor profiles including rating, numRatings, and department.",
     {
       name: z.string().describe("Name or partial name to search for (e.g., 'Dondero')"),
     },
@@ -54,11 +54,15 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
 
   server.tool(
     "get_instructor_courses",
-    "Get all courses taught by an instructor. Returns course codes, titles, and terms.",
+    "Get all courses taught by an instructor. Returns course codes, titles, and terms. Optionally filter by term.",
     {
       netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
+      term: z.number().optional().describe("Term code to filter by (e.g., 1264 for Spring 2026). If omitted, returns all terms."),
     },
-    async ({ netid }) => {
+    async ({ netid, term }) => {
+      const conditions = [eq(schema.courseInstructorMap.instructorId, netid)];
+      if (term) conditions.push(eq(schema.courses.term, term));
+
       const courses = await db
         .select({
           courseId: schema.courseInstructorMap.courseId,
@@ -68,7 +72,7 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
         })
         .from(schema.courseInstructorMap)
         .innerJoin(schema.courses, eq(schema.courseInstructorMap.courseId, schema.courses.id))
-        .where(eq(schema.courseInstructorMap.instructorId, netid))
+        .where(and(...conditions))
         .orderBy(asc(schema.courses.code));
 
       if (courses.length === 0) {

@@ -3,6 +3,7 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, sql, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
+import { termCodeToName } from "../helpers.js";
 
 export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
@@ -48,9 +49,11 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
                 termCount: evals.length,
                 evaluations: evals.map((e) => ({
                   evalTerm: e.evalTerm,
+                  termName: termCodeToName(e.evalTerm),
                   rating: e.rating,
                   ratingSource: e.ratingSource,
                   numComments: e.numComments,
+                  summary: e.summary,
                 })),
               },
               null,
@@ -182,12 +185,13 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
       }
 
       const allComments: string[] = [];
-      const termRatings: { term: string; rating: number | null; commentCount: number }[] = [];
+      const termRatings: { term: string; termName: string; rating: number | null; commentCount: number }[] = [];
 
       for (const e of evals) {
         if (e.comments) allComments.push(...e.comments);
         termRatings.push({
           term: e.evalTerm,
+          termName: termCodeToName(e.evalTerm),
           rating: e.rating,
           commentCount: e.comments?.length ?? 0,
         });
