@@ -4,16 +4,15 @@ import asyncio
 import json
 import re
 import uuid
-from typing import AsyncIterator, Callable
-
-from pydantic import ValidationError
+from typing import Any, AsyncIterator, Callable
 
 from .config import Settings
 from .llm_client import LlmClientError, OpenAiLlmClient
 from .mcp_client import McpClientError, McpHttpClient
-from .models import AskStreamRequest, PlannerDecision, ToolCall
-from .planner_prompt import AVAILABLE_TOOLS, build_planner_system_prompt, build_planner_user_prompt
+from .models import AskStreamRequest, ToolCall
 from .response_synthesizer import synthesize_final_response
+
+MAX_TOOL_ITERATIONS = 6
 
 
 def sse_event(event: str, data: dict) -> str:
@@ -75,125 +74,182 @@ class ChatService:
         is_disconnected: Callable[[], bool],
         request_id: str | None = None,
     ) -> AsyncIterator[str]:
+        if not self._settings.ask_llm_planner_enabled:
+            async for event in self._stream_deterministic(payload, is_disconnected, request_id):
+                yield event
+            return
+
+        async for event in self._stream_agentic(payload, is_disconnected, request_id):
+            yield event
+
+    async def _stream_agentic(
+        self,
+        payload: AskStreamRequest,
+        is_disconnected: Callable[[], bool],
+        request_id: str | None,
+    ) -> AsyncIterator[str]:
         request_id = request_id or str(uuid.uuid4())
         conversation_id = payload.conversationId or str(uuid.uuid4())
         prompt = payload.messages[-1].content
         mcp_client = McpHttpClient(self._settings)
-        llm_client: OpenAiLlmClient | None = None
-        if self._settings.ask_llm_planner_enabled or self._settings.ask_llm_synthesis_enabled:
-            llm_client = OpenAiLlmClient(self._settings)
+        llm_client = OpenAiLlmClient(self._settings)
         session_id: str | None = None
 
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
-            planner_decision = await self._plan_with_fallback(
-                prompt=prompt,
-                term=payload.term,
-                llm_client=llm_client,
-            )
-            if planner_decision.needs_clarification:
-                clarification_text = (
-                    planner_decision.clarification_question
-                    or "Can you share a bit more detail so I can pick the right course tools?"
-                )
-                yield sse_event("status", {"phase": "streaming", "requestId": request_id})
-                for token in clarification_text.split(" "):
-                    if is_disconnected():
-                        raise asyncio.CancelledError()
-                    yield sse_event("token", {"text": f"{token} "})
-                    await asyncio.sleep(0.005)
-                yield sse_event("status", {"phase": "done", "requestId": request_id})
-                yield sse_event(
-                    "done",
-                    {
-                        "conversationId": conversation_id,
-                        "requestId": request_id,
-                        "usage": {"inputTokens": 0, "outputTokens": len(clarification_text.split())},
-                    },
-                )
-                return
 
-            tool_calls = planner_decision.tool_calls
-            if tool_calls:
-                session_id = await asyncio.wait_for(
-                    mcp_client.initialize(), timeout=self._settings.tool_timeout_seconds
-                )
-            executed_tool_runs: list[dict] = []
+            messages: list[dict[str, Any]] = [m.model_dump() for m in payload.messages]
+            llm_tools = _build_llm_tools()
+            collected_usage: dict[str, Any] | None = None
 
-            for tool_call in tool_calls:
+            for iteration in range(MAX_TOOL_ITERATIONS):
                 if is_disconnected():
                     raise asyncio.CancelledError()
+
+                collected_content = ""
+                collected_reasoning = ""
+                collected_tool_calls: list[dict[str, Any]] = []
+                finish_reason: str | None = None
+
+                async for chunk in llm_client.stream_chat(messages=messages, tools=llm_tools):
+                    if chunk.get("type") == "done":
+                        break
+
+                    if chunk.get("usage"):
+                        collected_usage = chunk["usage"]
+
+                    choices = chunk.get("choices", [])
+                    if not choices:
+                        continue
+
+                    delta = choices[0].get("delta", {})
+                    if choices[0].get("finish_reason") is not None:
+                        finish_reason = choices[0]["finish_reason"]
+
+                    reasoning_text = _extract_reasoning(delta)
+                    if reasoning_text:
+                        collected_reasoning += reasoning_text
+                        yield sse_event("thinking", {"content": reasoning_text})
+
+                    token_content = delta.get("content")
+                    if isinstance(token_content, str) and token_content:
+                        collected_content += token_content
+                        yield sse_event("token", {"text": token_content})
+
+                    if delta.get("tool_calls"):
+                        for tc_delta in delta["tool_calls"]:
+                            idx = tc_delta.get("index", 0)
+                            while len(collected_tool_calls) <= idx:
+                                collected_tool_calls.append(
+                                    {"id": "", "function": {"name": "", "arguments": ""}}
+                                )
+                            tc = collected_tool_calls[idx]
+                            if "id" in tc_delta:
+                                tc["id"] = tc_delta["id"]
+                            if "function" in tc_delta:
+                                fn = tc_delta["function"]
+                                if "name" in fn:
+                                    tc["function"]["name"] += fn["name"]
+                                if "arguments" in fn:
+                                    tc["function"]["arguments"] += fn["arguments"]
+
+                if finish_reason != "tool_calls" or not collected_tool_calls:
+                    if not collected_content.strip():
+                        fallback = "I need a bit more context to answer well. Try specifying course code, term, or preference."
+                        yield sse_event("token", {"text": fallback})
+                        collected_content = fallback
+
+                    usage = {
+                        "inputTokens": (collected_usage or {}).get("prompt_tokens", 0),
+                        "outputTokens": (collected_usage or {}).get("completion_tokens", 0),
+                    }
+                    yield sse_event(
+                        "status",
+                        {
+                            "phase": "done",
+                            "requestId": request_id,
+                            **({"sessionId": session_id} if session_id else {}),
+                        },
+                    )
+                    yield sse_event(
+                        "done",
+                        {
+                            "conversationId": conversation_id,
+                            "requestId": request_id,
+                            **({"sessionId": session_id} if session_id else {}),
+                            "usage": usage,
+                        },
+                    )
+                    return
+
+                if session_id is None:
+                    session_id = await asyncio.wait_for(
+                        mcp_client.initialize(), timeout=self._settings.tool_timeout_seconds
+                    )
 
                 yield sse_event(
                     "status",
                     {"phase": "calling_tool", "requestId": request_id, "sessionId": session_id},
                 )
-                yield sse_event(
-                    "tool_call",
+                for tc in collected_tool_calls:
+                    tool_name = tc["function"]["name"]
+                    try:
+                        tool_args = json.loads(tc["function"]["arguments"] or "{}")
+                    except json.JSONDecodeError:
+                        tool_args = {}
+
+                    yield sse_event(
+                        "tool_call",
+                        {
+                            "name": tool_name,
+                            "arguments": tool_args,
+                            "requestId": request_id,
+                            "sessionId": session_id,
+                        },
+                    )
+                    result = await asyncio.wait_for(
+                        mcp_client.call_tool(tool_name, tool_args),
+                        timeout=self._settings.tool_timeout_seconds,
+                    )
+                    yield sse_event(
+                        "tool_result",
+                        {
+                            "name": tool_name,
+                            "ok": True,
+                            "result": result,
+                            "requestId": request_id,
+                            "sessionId": session_id,
+                        },
+                    )
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tc["id"],
+                            "content": json.dumps(result),
+                        }
+                    )
+
+                messages.append(
                     {
-                        "name": tool_call.name,
-                        "arguments": tool_call.arguments,
-                        "requestId": request_id,
-                        "sessionId": session_id,
-                    },
-                )
-                result = await asyncio.wait_for(
-                    mcp_client.call_tool(tool_call.name, tool_call.arguments),
-                    timeout=self._settings.tool_timeout_seconds,
-                )
-                yield sse_event(
-                    "tool_result",
-                    {
-                        "name": tool_call.name,
-                        "ok": True,
-                        "result": result,
-                        "requestId": request_id,
-                        "sessionId": session_id,
-                    },
-                )
-                executed_tool_runs.append(
-                    {
-                        "name": tool_call.name,
-                        "arguments": tool_call.arguments,
-                        "result": result,
+                        "role": "assistant",
+                        "content": collected_content or None,
+                        "tool_calls": [
+                            {
+                                "id": tc["id"],
+                                "type": "function",
+                                "function": tc["function"],
+                            }
+                            for tc in collected_tool_calls
+                        ],
                     }
                 )
 
             yield sse_event(
-                "status",
+                "error",
                 {
-                    "phase": "streaming",
+                    "code": "upstream_error",
+                    "message": "Max tool call iterations reached.",
                     "requestId": request_id,
-                    **({"sessionId": session_id} if session_id else {}),
-                },
-            )
-            response_text = await synthesize_final_response(
-                prompt=prompt,
-                tool_runs=executed_tool_runs,
-                llm_client=llm_client,
-                llm_enabled=self._settings.ask_llm_synthesis_enabled,
-            )
-            for token in response_text.split(" "):
-                if is_disconnected():
-                    raise asyncio.CancelledError()
-                yield sse_event("token", {"text": f"{token} "})
-                await asyncio.sleep(0.005)
-
-            yield sse_event(
-                "status",
-                {
-                    "phase": "done",
-                    "requestId": request_id,
-                    **({"sessionId": session_id} if session_id else {}),
-                },
-            )
-            yield sse_event(
-                "done",
-                {
-                    "conversationId": conversation_id,
-                    "requestId": request_id,
-                    **({"sessionId": session_id} if session_id else {}),
-                    "usage": {"inputTokens": 0, "outputTokens": len(response_text.split())},
                 },
             )
         except asyncio.CancelledError:
@@ -235,61 +291,140 @@ class ChatService:
             )
         finally:
             await mcp_client.close()
-            if llm_client:
-                await llm_client.close()
+            await llm_client.close()
 
-    async def _plan_with_fallback(
+    async def _stream_deterministic(
         self,
-        *,
-        prompt: str,
-        term: int | None,
-        llm_client: OpenAiLlmClient | None,
-    ) -> PlannerDecision:
-        if self._settings.ask_llm_planner_enabled and llm_client is not None:
-            planner_decision = await _plan_tools_with_llm(
+        payload: AskStreamRequest,
+        is_disconnected: Callable[[], bool],
+        request_id: str | None,
+    ) -> AsyncIterator[str]:
+        request_id = request_id or str(uuid.uuid4())
+        conversation_id = payload.conversationId or str(uuid.uuid4())
+        prompt = payload.messages[-1].content
+        mcp_client = McpHttpClient(self._settings)
+        session_id: str | None = None
+        try:
+            yield sse_event("status", {"phase": "starting", "requestId": request_id})
+            tool_calls = _plan_tools(prompt, payload.term)
+            if tool_calls:
+                session_id = await asyncio.wait_for(
+                    mcp_client.initialize(), timeout=self._settings.tool_timeout_seconds
+                )
+            executed_tool_runs: list[dict] = []
+            for tool_call in tool_calls:
+                if is_disconnected():
+                    raise asyncio.CancelledError()
+                yield sse_event(
+                    "status",
+                    {"phase": "calling_tool", "requestId": request_id, "sessionId": session_id},
+                )
+                yield sse_event(
+                    "tool_call",
+                    {
+                        "name": tool_call.name,
+                        "arguments": tool_call.arguments,
+                        "requestId": request_id,
+                        "sessionId": session_id,
+                    },
+                )
+                result = await asyncio.wait_for(
+                    mcp_client.call_tool(tool_call.name, tool_call.arguments),
+                    timeout=self._settings.tool_timeout_seconds,
+                )
+                yield sse_event(
+                    "tool_result",
+                    {
+                        "name": tool_call.name,
+                        "ok": True,
+                        "result": result,
+                        "requestId": request_id,
+                        "sessionId": session_id,
+                    },
+                )
+                executed_tool_runs.append(
+                    {"name": tool_call.name, "arguments": tool_call.arguments, "result": result}
+                )
+
+            yield sse_event("status", {"phase": "streaming", "requestId": request_id, **({"sessionId": session_id} if session_id else {})})
+            response_text = await synthesize_final_response(
                 prompt=prompt,
-                term=term,
-                llm_client=llm_client,
+                tool_runs=executed_tool_runs,
+                llm_client=None,
+                llm_enabled=False,
             )
-            if planner_decision is not None:
-                return planner_decision
+            for token in response_text.split(" "):
+                if is_disconnected():
+                    raise asyncio.CancelledError()
+                yield sse_event("token", {"text": f"{token} "})
+            yield sse_event("status", {"phase": "done", "requestId": request_id, **({"sessionId": session_id} if session_id else {})})
+            yield sse_event(
+                "done",
+                {
+                    "conversationId": conversation_id,
+                    "requestId": request_id,
+                    **({"sessionId": session_id} if session_id else {}),
+                    "usage": {"inputTokens": 0, "outputTokens": len(response_text.split())},
+                },
+            )
+        except asyncio.CancelledError:
+            yield sse_event(
+                "error",
+                {
+                    "code": "cancelled",
+                    "message": "Client disconnected; stream cancelled.",
+                    "requestId": request_id,
+                },
+            )
+        except asyncio.TimeoutError:
+            yield sse_event(
+                "error",
+                {
+                    "code": "timeout",
+                    "message": "A downstream dependency timed out.",
+                    "requestId": request_id,
+                },
+            )
+        except McpClientError as exc:
+            yield sse_event(
+                "error",
+                {"code": "upstream_error", "message": str(exc), "requestId": request_id},
+            )
+        finally:
+            await mcp_client.close()
 
-        return PlannerDecision(
-            intent="deterministic_fallback",
-            tool_calls=_plan_tools(prompt, term),
-            needs_clarification=False,
-            clarification_question=None,
-        )
+
+def _extract_reasoning(delta: dict[str, Any]) -> str:
+    texts: list[str] = []
+    reasoning_details = delta.get("reasoning_details")
+    if isinstance(reasoning_details, list):
+        for item in reasoning_details:
+            if isinstance(item, dict) and isinstance(item.get("text"), str):
+                texts.append(item["text"])
+    reasoning = delta.get("reasoning")
+    if isinstance(reasoning, str):
+        texts.append(reasoning)
+    return "".join(texts)
 
 
-async def _plan_tools_with_llm(
-    *,
-    prompt: str,
-    term: int | None,
-    llm_client: OpenAiLlmClient,
-) -> PlannerDecision | None:
-    try:
-        raw = await llm_client.complete_json(
-            system_prompt=build_planner_system_prompt(),
-            user_prompt=build_planner_user_prompt(prompt, term),
-        )
-    except LlmClientError:
-        return None
+def _build_llm_tools() -> list[dict[str, Any]]:
+    return [
+        _tool("search_courses", "Search for courses by keywords and filters."),
+        _tool("get_course_details", "Get full details for a specific course by code or courseId."),
+        _tool("get_course_evaluations", "Get course evaluations by code or listingId."),
+        _tool("find_top_rated_courses", "Find highest-rated courses."),
+        _tool("search_instructors", "Search instructors by name."),
+        _tool("list_departments", "List all departments."),
+        _tool("discover_courses", "Discover interesting courses by filter."),
+    ]
 
-    try:
-        parsed = PlannerDecision.model_validate(raw)
-    except ValidationError:
-        return None
 
-    if parsed.needs_clarification:
-        return parsed
-
-    if not parsed.tool_calls:
-        return None
-
-    allowed_tools = set(AVAILABLE_TOOLS)
-    for tool_call in parsed.tool_calls:
-        if tool_call.name not in allowed_tools:
-            return None
-
-    return parsed
+def _tool(name: str, description: str) -> dict[str, Any]:
+    return {
+        "type": "function",
+        "function": {
+            "name": name,
+            "description": description,
+            "parameters": {"type": "object", "additionalProperties": True},
+        },
+    }

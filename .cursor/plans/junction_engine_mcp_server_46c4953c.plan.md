@@ -158,7 +158,7 @@ Each tool handler receives `app.db.db` (Drizzle instance) to query the database 
 
 - **Course lookup by code**: Several tools accept a human-readable `code` like "COS 226" in addition to the internal `courseId`. These do a `LIKE` query on `courses.code`.
 - **Eval lookup by code**: Evaluation tools resolve course codes to `listing_id` by joining with the `courses` table, so students can ask "reviews for COS 226" naturally.
-- `**discover_courses**`: Queries for courses matching filters — `new` checks for high listing IDs (first-time offerings), `small_seminar` filters by low capacity sections, `no_final` uses the `has_final` flag, `open` checks section status.
+- `**discover_courses`**: Queries for courses matching filters — `new` checks for high listing IDs (first-time offerings), `small_seminar` filters by low capacity sections, `no_final` uses the `has_final` flag, `open` checks section status.
 - `**find_courses_that_fit**`: Loads the user's existing schedule sections, computes occupied time slots, then finds courses whose sections don't overlap. Optionally filters by department or distribution area.
 - `**summarize_course_reviews**`: Returns the raw comments array and ratings so the AI client can generate a natural language summary. The tool doesn't summarize itself — it provides the data for the LLM to work with.
 - **Caching**: Course-heavy tools use the existing Redis `getOrSetJson` pattern where appropriate.

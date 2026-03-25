@@ -9,7 +9,7 @@ from app.chat_service import ChatService
 from app.config import Settings
 from app.llm_client import LlmClientError
 from app.mcp_client import McpClientError
-from app.models import AskStreamRequest, ChatMessage, PlannerDecision
+from app.models import AskStreamRequest, ChatMessage
 
 
 def _parse_events(chunks: list[str]) -> list[tuple[str, dict]]:
@@ -65,7 +65,14 @@ async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
@@ -99,7 +106,14 @@ async def test_stream_emits_timeout_error(monkeypatch: pytest.MonkeyPatch) -> No
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", SlowMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=0.001, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=0.001,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="hello")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
@@ -123,7 +137,14 @@ async def test_stream_handles_disconnect(monkeypatch: pytest.MonkeyPatch) -> Non
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="hello")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: True)]
@@ -150,7 +171,14 @@ async def test_stream_handles_empty_course_results(monkeypatch: pytest.MonkeyPat
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
@@ -177,7 +205,14 @@ async def test_stream_handles_malformed_payload(monkeypatch: pytest.MonkeyPatch)
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
@@ -204,7 +239,14 @@ async def test_stream_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> N
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FailingMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
@@ -255,7 +297,14 @@ async def test_stream_course_question_uses_details_and_evaluations(
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    service = ChatService(
+        Settings(
+            tool_timeout_seconds=1,
+            connect_timeout_seconds=1,
+            ask_llm_planner_enabled=False,
+            ask_llm_synthesis_enabled=False,
+        )
+    )
     payload = AskStreamRequest(
         messages=[
             ChatMessage(
@@ -278,34 +327,27 @@ async def test_stream_course_question_uses_details_and_evaluations(
 
 
 @pytest.mark.asyncio
-async def test_stream_llm_clarification_path(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeLlmClient:
         def __init__(self, settings: Settings) -> None:
             self._settings = settings
 
-        async def complete_json(self, *, system_prompt: str, user_prompt: str) -> dict:
-            return {
-                "intent": "clarification",
-                "tool_calls": [],
-                "needs_clarification": True,
-                "clarification_question": "Do you want easiest CS classes or highest-rated CS classes?",
-                "confidence": 0.7,
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+            yield {
+                "choices": [
+                    {
+                        "delta": {"content": "Could you share which department you care about most?"},
+                        "finish_reason": "stop",
+                    }
+                ]
             }
+            yield {"usage": {"prompt_tokens": 12, "completion_tokens": 9}}
+            yield {"type": "done"}
 
         async def close(self) -> None:
             return None
 
-    async def fake_plan_with_llm(**kwargs) -> PlannerDecision | None:
-        return PlannerDecision(
-            intent="clarification",
-            tool_calls=[],
-            needs_clarification=True,
-            clarification_question="Do you want easiest CS classes or highest-rated CS classes?",
-            confidence=0.7,
-        )
-
     monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
-    monkeypatch.setattr("app.chat_service._plan_tools_with_llm", fake_plan_with_llm)
 
     service = ChatService(
         Settings(
@@ -322,11 +364,11 @@ async def test_stream_llm_clarification_path(monkeypatch: pytest.MonkeyPatch) ->
     token_text = _collect_token_text(events)
 
     assert "tool_call" not in names
-    assert "Do you want easiest CS classes" in token_text
+    assert "Could you share which department" in token_text
 
 
 @pytest.mark.asyncio
-async def test_stream_llm_synthesis_failure_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
         def __init__(self, settings: Settings) -> None:
             self._settings = settings
@@ -335,20 +377,7 @@ async def test_stream_llm_synthesis_failure_falls_back(monkeypatch: pytest.Monke
             return "sid"
 
         async def call_tool(self, name: str, arguments: dict) -> dict:
-            payload = {
-                "count": 1,
-                "courses": [
-                    {
-                        "code": "COS 126",
-                        "title": "Computer Science: An Interdisciplinary Approach",
-                        "status": "open",
-                        "term": 1264,
-                        "hasFinal": True,
-                        "rating": 4.6,
-                    }
-                ],
-            }
-            return {"content": [{"type": "text", "text": json.dumps(payload)}]}
+            return {"content": [{"type": "text", "text": json.dumps({"count": 1, "courses": [{"code": "COS 126", "title": "Computer Science"}]})}]}
 
         async def close(self) -> None:
             return None
@@ -357,8 +386,41 @@ async def test_stream_llm_synthesis_failure_falls_back(monkeypatch: pytest.Monke
         def __init__(self, settings: Settings) -> None:
             self._settings = settings
 
-        async def complete_json(self, *, system_prompt: str, user_prompt: str) -> dict:
-            raise LlmClientError("synthesis fail")
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+            has_tool_message = any(m.get("role") == "tool" for m in messages)
+            if not has_tool_message:
+                yield {
+                    "choices": [
+                        {
+                            "delta": {
+                                "tool_calls": [
+                                    {
+                                        "index": 0,
+                                        "id": "call_1",
+                                        "function": {
+                                            "name": "search_courses",
+                                            "arguments": "{\"query\":\"easy cs\",\"limit\":5}",
+                                        },
+                                    }
+                                ]
+                            },
+                            "finish_reason": "tool_calls",
+                        }
+                    ]
+                }
+                yield {"type": "done"}
+                return
+
+            yield {
+                "choices": [
+                    {
+                        "delta": {"content": "I found relevant courses and summarized them."},
+                        "finish_reason": "stop",
+                    }
+                ]
+            }
+            yield {"usage": {"prompt_tokens": 20, "completion_tokens": 10}}
+            yield {"type": "done"}
 
         async def close(self) -> None:
             return None
@@ -377,40 +439,28 @@ async def test_stream_llm_synthesis_failure_falls_back(monkeypatch: pytest.Monke
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
     events = _parse_events(chunks)
+    names = [name for name, _ in events]
     token_text = _collect_token_text(events)
 
-    assert "Direct answer:" in token_text
-    assert "Top picks:" in token_text
+    assert "tool_call" in names
+    assert "tool_result" in names
+    assert "summarized them" in token_text
 
 
 @pytest.mark.asyncio
-async def test_stream_planner_invalid_payload_falls_back(monkeypatch: pytest.MonkeyPatch) -> None:
-    class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
-            self._settings = settings
-
-        async def initialize(self) -> str:
-            return "sid"
-
-        async def call_tool(self, name: str, arguments: dict) -> dict:
-            return {"content": [{"type": "text", "text": json.dumps({"count": 0, "courses": []})}]}
-
-        async def close(self) -> None:
-            return None
-
+async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeLlmClient:
         def __init__(self, settings: Settings) -> None:
             self._settings = settings
 
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+            raise LlmClientError("upstream down")
+            yield {"type": "done"}  # pragma: no cover
+
         async def close(self) -> None:
             return None
 
-    async def fake_plan_with_llm(**kwargs) -> PlannerDecision | None:
-        return None
-
-    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
     monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
-    monkeypatch.setattr("app.chat_service._plan_tools_with_llm", fake_plan_with_llm)
 
     service = ChatService(
         Settings(
@@ -423,5 +473,6 @@ async def test_stream_planner_invalid_payload_falls_back(monkeypatch: pytest.Mon
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
     events = _parse_events(chunks)
 
-    tool_calls = [data["name"] for name, data in events if name == "tool_call"]
-    assert "search_courses" in tool_calls
+    error_events = [data for name, data in events if name == "error"]
+    assert error_events
+    assert error_events[-1]["code"] == "upstream_error"

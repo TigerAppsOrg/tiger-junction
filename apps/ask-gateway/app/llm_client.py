@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, AsyncIterator
 
 import httpx
 
@@ -33,6 +33,64 @@ class OpenAiLlmClient:
         if not isinstance(payload, dict):
             raise LlmClientError("LLM JSON payload was not an object.")
         return payload
+
+    async def stream_chat(
+        self,
+        *,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]] | None = None,
+        model: str | None = None,
+    ) -> AsyncIterator[dict[str, Any]]:
+        if not self._settings.openrouter_api_key:
+            raise LlmClientError("OPENROUTER_API_KEY is missing.")
+
+        request: dict[str, Any] = {
+            "model": model or self._settings.ask_llm_model,
+            "messages": messages,
+            "stream": True,
+        }
+        if tools:
+            request["tools"] = tools
+            request["tool_choice"] = "auto"
+
+        async with self._client.stream(
+            "POST",
+            "/chat/completions",
+            headers={
+                "authorization": f"Bearer {self._settings.openrouter_api_key}",
+                "content-type": "application/json",
+                **(
+                    {"http-referer": self._settings.openrouter_site_url}
+                    if self._settings.openrouter_site_url
+                    else {}
+                ),
+                **(
+                    {"x-title": self._settings.openrouter_app_name}
+                    if self._settings.openrouter_app_name
+                    else {}
+                ),
+            },
+            json=request,
+        ) as response:
+            if response.status_code >= 400:
+                error_body = await response.aread()
+                raise LlmClientError(
+                    f"OpenRouter HTTP error {response.status_code}: {error_body.decode(errors='replace')}"
+                )
+
+            async for line in response.aiter_lines():
+                if not line or not line.startswith("data: "):
+                    continue
+                payload = line[6:].strip()
+                if payload == "[DONE]":
+                    yield {"type": "done"}
+                    break
+                try:
+                    parsed = json.loads(payload)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(parsed, dict):
+                    yield parsed
 
     async def complete_text(
         self,
