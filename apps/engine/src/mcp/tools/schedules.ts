@@ -4,6 +4,7 @@ import { z } from "zod";
 import { eq, ilike, and, asc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName } from "../helpers.js";
+import { resolveCourseInput } from "../resolvers.js";
 
 interface TimeSlot {
   days: number;
@@ -248,8 +249,11 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
 
       // Resolve each course code
       for (const code of courseCodes) {
-        const conditions = [ilike(schema.courses.code, `%${code}%`)];
-        if (term) conditions.push(eq(schema.courses.term, term));
+        const resolved = await resolveCourseInput(db, { code, term });
+        if (!resolved.value) {
+          issues.push(resolved.error ?? `Course not found: "${code}"`);
+          continue;
+        }
 
         const rows = await db
           .select({
@@ -259,16 +263,14 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
             status: schema.courses.status,
           })
           .from(schema.courses)
-          .where(and(...conditions))
-          .orderBy(sql`${schema.courses.term} DESC`)
+          .where(eq(schema.courses.id, resolved.value.id))
           .limit(1);
 
-        if (rows.length === 0) {
-          issues.push(`Course not found: "${code}"${term ? ` in ${termCodeToName(term)}` : ""}`);
+        const course = rows[0];
+        if (!course) {
+          issues.push(`Course not found for resolved id: "${resolved.value.id}"`);
           continue;
         }
-
-        const course = rows[0];
 
         // Check for duplicate courses
         if (resolvedCourses.some((c) => c.courseId === course.id)) {

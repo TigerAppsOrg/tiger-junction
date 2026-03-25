@@ -209,6 +209,76 @@ describe("POST /mcp", () => {
     expect(Array.isArray(data.departments)).toBe(true);
   });
 
+  test("returns deterministic error for malformed courseId", async () => {
+    const app = await getApp();
+    const sessionId = await initializeSession(app);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/mcp",
+      headers: {
+        ...MCP_HEADERS,
+        "mcp-session-id": sessionId,
+        "mcp-protocol-version": "2025-03-26",
+      },
+      payload: {
+        jsonrpc: "2.0",
+        id: 4,
+        method: "tools/call",
+        params: {
+          name: "get_course_details",
+          arguments: {
+            courseId: "bad-id",
+          },
+        },
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const messages = parseSSEMessages(res.body);
+    const callResponse = messages.find((m) => m.id === 4);
+    expect(callResponse).toBeDefined();
+    expect(callResponse!.result).toBeDefined();
+    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const payload = JSON.parse(content[0].text);
+    expect(payload.error).toContain("Invalid courseId");
+  });
+
+  test("returns deterministic error for malformed listingId", async () => {
+    const app = await getApp();
+    const sessionId = await initializeSession(app);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/mcp",
+      headers: {
+        ...MCP_HEADERS,
+        "mcp-session-id": sessionId,
+        "mcp-protocol-version": "2025-03-26",
+      },
+      payload: {
+        jsonrpc: "2.0",
+        id: 5,
+        method: "tools/call",
+        params: {
+          name: "get_course_evaluations",
+          arguments: {
+            listingId: "abc",
+          },
+        },
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const messages = parseSSEMessages(res.body);
+    const callResponse = messages.find((m) => m.id === 5);
+    expect(callResponse).toBeDefined();
+    expect(callResponse!.result).toBeDefined();
+    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const payload = JSON.parse(content[0].text);
+    expect(payload.error).toContain("Invalid listingId");
+  });
+
   test("expires session after ttl", async () => {
     const app = await getApp();
     process.env.MCP_SESSION_TTL_MS = "1";

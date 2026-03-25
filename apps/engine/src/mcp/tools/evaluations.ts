@@ -1,9 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
-import { eq, ilike, sql, desc, and } from "drizzle-orm";
+import { eq, sql, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { termCodeToName } from "../helpers.js";
+import { buildResolutionError, resolveListingId } from "../resolvers.js";
 
 export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
@@ -12,30 +13,22 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
     {
       listingId: z.string().optional().describe("Listing ID (e.g., '002051')"),
       code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
+      term: z.number().optional().describe("Optional term to disambiguate code lookups."),
     },
-    async ({ listingId, code }) => {
-      let targetListingId = listingId;
-      if (!targetListingId && code) {
-        const rows = await db
-          .select({ listingId: schema.courses.listingId })
-          .from(schema.courses)
-          .where(ilike(schema.courses.code, `%${code}%`))
-          .limit(1);
-        targetListingId = rows[0]?.listingId;
-      }
-
-      if (!targetListingId) {
-        return { content: [{ type: "text" as const, text: "Course not found." }], isError: true };
+    async ({ listingId, code, term }) => {
+      const resolvedListing = await resolveListingId(db, { listingId, code, term });
+      if (!resolvedListing.value) {
+        return buildResolutionError(resolvedListing.error ?? "Course not found.", resolvedListing.options);
       }
 
       const evals = await db
         .select()
         .from(schema.evaluations)
-        .where(eq(schema.evaluations.listingId, targetListingId));
+        .where(eq(schema.evaluations.listingId, resolvedListing.value));
 
       if (evals.length === 0) {
         return {
-          content: [{ type: "text" as const, text: `No evaluations found for listing ${targetListingId}.` }],
+          content: [{ type: "text" as const, text: `No evaluations found for listing ${resolvedListing.value}.` }],
         };
       }
 
@@ -45,7 +38,7 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                listingId: targetListingId,
+                listingId: resolvedListing.value,
                 termCount: evals.length,
                 evaluations: evals.map((e) => ({
                   evalTerm: e.evalTerm,
@@ -156,21 +149,13 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
       term: z.string().optional().describe("Specific eval term. If omitted, returns all terms. Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
     },
     async ({ listingId, code, term }) => {
-      let targetListingId = listingId;
-      if (!targetListingId && code) {
-        const rows = await db
-          .select({ listingId: schema.courses.listingId })
-          .from(schema.courses)
-          .where(ilike(schema.courses.code, `%${code}%`))
-          .limit(1);
-        targetListingId = rows[0]?.listingId;
+      const termForCodeLookup = term ? Number.parseInt(term, 10) : undefined;
+      const resolvedListing = await resolveListingId(db, { listingId, code, term: termForCodeLookup });
+      if (!resolvedListing.value) {
+        return buildResolutionError(resolvedListing.error ?? "Course not found.", resolvedListing.options);
       }
 
-      if (!targetListingId) {
-        return { content: [{ type: "text" as const, text: "Course not found." }], isError: true };
-      }
-
-      const conditions = [eq(schema.evaluations.listingId, targetListingId)];
+      const conditions = [eq(schema.evaluations.listingId, resolvedListing.value)];
       if (term) conditions.push(eq(schema.evaluations.evalTerm, term));
 
       const evals = await db
@@ -180,7 +165,7 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
 
       if (evals.length === 0) {
         return {
-          content: [{ type: "text" as const, text: `No reviews found for listing ${targetListingId}.` }],
+          content: [{ type: "text" as const, text: `No reviews found for listing ${resolvedListing.value}.` }],
         };
       }
 
@@ -203,7 +188,7 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                listingId: targetListingId,
+                listingId: resolvedListing.value,
                 termRatings,
                 totalComments: allComments.length,
                 comments: allComments,
