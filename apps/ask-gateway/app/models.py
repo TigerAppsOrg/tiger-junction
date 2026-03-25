@@ -19,3 +19,11 @@ class AskStreamRequest(BaseModel):
 class ToolCall(BaseModel):
     name: str
     arguments: dict[str, Any]
+
+
+class PlannerDecision(BaseModel):
+    intent: str = "course_search"
+    tool_calls: list[ToolCall] = Field(default_factory=list)
+    needs_clarification: bool = False
+    clarification_question: str | None = None
+    confidence: float | None = None

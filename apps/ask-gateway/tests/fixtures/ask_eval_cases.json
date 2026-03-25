@@ -1,0 +1,134 @@
+[
+  {
+    "id": "course_details_with_evals",
+    "prompt": "Tell me about COS 126 workload and evaluations.",
+    "expectedToolsAnyOf": ["get_course_details", "get_course_evaluations"],
+    "minSections": ["Direct answer", "Why"]
+  },
+  {
+    "id": "course_details_alias_code",
+    "prompt": "How is EGR126?",
+    "expectedToolsAnyOf": ["get_course_details"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "easy_cs_no_final",
+    "prompt": "Find easy CS courses with no final.",
+    "expectedToolsAnyOf": ["search_courses"],
+    "minSections": ["Top picks", "Why"]
+  },
+  {
+    "id": "top_rated_courses",
+    "prompt": "What are top rated COS courses?",
+    "expectedToolsAnyOf": ["find_top_rated_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "department_list",
+    "prompt": "Can you list departments?",
+    "expectedToolsAnyOf": ["list_departments"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "instructor_lookup",
+    "prompt": "Find instructor Dondero.",
+    "expectedToolsAnyOf": ["search_instructors"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "ambiguous_short_greeting",
+    "prompt": "yo",
+    "expectedBehavior": "clarification_or_safe_fallback",
+    "minSections": []
+  },
+  {
+    "id": "ambiguous_help",
+    "prompt": "help me pick classes",
+    "expectedBehavior": "clarification_or_search_courses",
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "discover_no_final",
+    "prompt": "Discover courses with no final this term.",
+    "expectedToolsAnyOf": ["discover_courses", "search_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "time_constraint",
+    "prompt": "I need courses that start after 11 AM.",
+    "expectedToolsAnyOf": ["search_courses"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "day_constraint",
+    "prompt": "Find classes on Tuesday and Thursday only.",
+    "expectedToolsAnyOf": ["search_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "distribution_query",
+    "prompt": "Show me LA distribution classes.",
+    "expectedToolsAnyOf": ["search_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "instructor_and_department",
+    "prompt": "Any COS classes taught by Sedgewick?",
+    "expectedToolsAnyOf": ["search_courses", "search_instructors"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "specific_course_followup",
+    "prompt": "What is the grading basis for COS 226?",
+    "expectedToolsAnyOf": ["get_course_details"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "course_reviews_only",
+    "prompt": "How are reviews for ECO 100?",
+    "expectedToolsAnyOf": ["get_course_evaluations", "find_top_rated_courses"],
+    "minSections": ["Why"]
+  },
+  {
+    "id": "open_courses_query",
+    "prompt": "Find open ORF courses right now.",
+    "expectedToolsAnyOf": ["search_courses", "discover_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "small_seminars_query",
+    "prompt": "Any small seminar courses in HIS?",
+    "expectedToolsAnyOf": ["discover_courses", "search_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "rating_comparison_style",
+    "prompt": "Hardest vs easiest CS?",
+    "expectedToolsAnyOf": ["search_courses", "find_top_rated_courses"],
+    "minSections": ["Direct answer", "Top picks"]
+  },
+  {
+    "id": "broad_new_courses",
+    "prompt": "Show me newly offered courses.",
+    "expectedToolsAnyOf": ["discover_courses"],
+    "minSections": ["Top picks"]
+  },
+  {
+    "id": "term_specific_course",
+    "prompt": "Tell me about COS 217 in 1264.",
+    "expectedToolsAnyOf": ["get_course_details"],
+    "minSections": ["Direct answer"]
+  },
+  {
+    "id": "lol_low_signal",
+    "prompt": "lol",
+    "expectedBehavior": "clarification_or_safe_fallback",
+    "minSections": []
+  },
+  {
+    "id": "department_advice",
+    "prompt": "What department should I explore for ethics and policy?",
+    "expectedBehavior": "clarification_or_search_courses",
+    "minSections": ["Direct answer"]
+  }
+]

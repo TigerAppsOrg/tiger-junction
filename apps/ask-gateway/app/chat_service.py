@@ -6,10 +6,14 @@ import re
 import uuid
 from typing import AsyncIterator, Callable
 
+from pydantic import ValidationError
+
 from .config import Settings
+from .llm_client import LlmClientError, OpenAiLlmClient
 from .mcp_client import McpClientError, McpHttpClient
-from .models import AskStreamRequest, ToolCall
-from .response_synthesizer import synthesize_tool_response
+from .models import AskStreamRequest, PlannerDecision, ToolCall
+from .planner_prompt import AVAILABLE_TOOLS, build_planner_system_prompt, build_planner_user_prompt
+from .response_synthesizer import synthesize_final_response
 
 
 def sse_event(event: str, data: dict) -> str:
@@ -74,16 +78,47 @@ class ChatService:
         request_id = request_id or str(uuid.uuid4())
         conversation_id = payload.conversationId or str(uuid.uuid4())
         prompt = payload.messages[-1].content
-        client = McpHttpClient(self._settings)
+        mcp_client = McpHttpClient(self._settings)
+        llm_client: OpenAiLlmClient | None = None
+        if self._settings.ask_llm_planner_enabled or self._settings.ask_llm_synthesis_enabled:
+            llm_client = OpenAiLlmClient(self._settings)
+        session_id: str | None = None
 
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
-            session_id = await asyncio.wait_for(
-                client.initialize(), timeout=self._settings.tool_timeout_seconds
+            planner_decision = await self._plan_with_fallback(
+                prompt=prompt,
+                term=payload.term,
+                llm_client=llm_client,
             )
+            if planner_decision.needs_clarification:
+                clarification_text = (
+                    planner_decision.clarification_question
+                    or "Can you share a bit more detail so I can pick the right course tools?"
+                )
+                yield sse_event("status", {"phase": "streaming", "requestId": request_id})
+                for token in clarification_text.split(" "):
+                    if is_disconnected():
+                        raise asyncio.CancelledError()
+                    yield sse_event("token", {"text": f"{token} "})
+                    await asyncio.sleep(0.005)
+                yield sse_event("status", {"phase": "done", "requestId": request_id})
+                yield sse_event(
+                    "done",
+                    {
+                        "conversationId": conversation_id,
+                        "requestId": request_id,
+                        "usage": {"inputTokens": 0, "outputTokens": len(clarification_text.split())},
+                    },
+                )
+                return
 
-            tool_calls = _plan_tools(prompt, payload.term)
-            synthesized_responses: list[str] = []
+            tool_calls = planner_decision.tool_calls
+            if tool_calls:
+                session_id = await asyncio.wait_for(
+                    mcp_client.initialize(), timeout=self._settings.tool_timeout_seconds
+                )
+            executed_tool_runs: list[dict] = []
 
             for tool_call in tool_calls:
                 if is_disconnected():
@@ -103,7 +138,7 @@ class ChatService:
                     },
                 )
                 result = await asyncio.wait_for(
-                    client.call_tool(tool_call.name, tool_call.arguments),
+                    mcp_client.call_tool(tool_call.name, tool_call.arguments),
                     timeout=self._settings.tool_timeout_seconds,
                 )
                 yield sse_event(
@@ -116,17 +151,27 @@ class ChatService:
                         "sessionId": session_id,
                     },
                 )
-                synthesized_responses.append(
-                    synthesize_tool_response(tool_call.name, prompt, result)
+                executed_tool_runs.append(
+                    {
+                        "name": tool_call.name,
+                        "arguments": tool_call.arguments,
+                        "result": result,
+                    }
                 )
 
             yield sse_event(
                 "status",
-                {"phase": "streaming", "requestId": request_id, "sessionId": session_id},
+                {
+                    "phase": "streaming",
+                    "requestId": request_id,
+                    **({"sessionId": session_id} if session_id else {}),
+                },
             )
-            response_text = (
-                "\n\n".join(synthesized_responses)
-                or "Direct answer: I could not run any tools for this request."
+            response_text = await synthesize_final_response(
+                prompt=prompt,
+                tool_runs=executed_tool_runs,
+                llm_client=llm_client,
+                llm_enabled=self._settings.ask_llm_synthesis_enabled,
             )
             for token in response_text.split(" "):
                 if is_disconnected():
@@ -135,14 +180,19 @@ class ChatService:
                 await asyncio.sleep(0.005)
 
             yield sse_event(
-                "status", {"phase": "done", "requestId": request_id, "sessionId": session_id}
+                "status",
+                {
+                    "phase": "done",
+                    "requestId": request_id,
+                    **({"sessionId": session_id} if session_id else {}),
+                },
             )
             yield sse_event(
                 "done",
                 {
                     "conversationId": conversation_id,
                     "requestId": request_id,
-                    "sessionId": session_id,
+                    **({"sessionId": session_id} if session_id else {}),
                     "usage": {"inputTokens": 0, "outputTokens": len(response_text.split())},
                 },
             )
@@ -169,10 +219,77 @@ class ChatService:
                 "error",
                 {"code": "upstream_error", "message": str(exc), "requestId": request_id},
             )
+        except LlmClientError:
+            yield sse_event(
+                "error",
+                {
+                    "code": "upstream_error",
+                    "message": "The language model dependency failed.",
+                    "requestId": request_id,
+                },
+            )
         except Exception as exc:  # pragma: no cover - defensive fallback
             yield sse_event(
                 "error",
                 {"code": "unknown_error", "message": str(exc), "requestId": request_id},
             )
         finally:
-            await client.close()
+            await mcp_client.close()
+            if llm_client:
+                await llm_client.close()
+
+    async def _plan_with_fallback(
+        self,
+        *,
+        prompt: str,
+        term: int | None,
+        llm_client: OpenAiLlmClient | None,
+    ) -> PlannerDecision:
+        if self._settings.ask_llm_planner_enabled and llm_client is not None:
+            planner_decision = await _plan_tools_with_llm(
+                prompt=prompt,
+                term=term,
+                llm_client=llm_client,
+            )
+            if planner_decision is not None:
+                return planner_decision
+
+        return PlannerDecision(
+            intent="deterministic_fallback",
+            tool_calls=_plan_tools(prompt, term),
+            needs_clarification=False,
+            clarification_question=None,
+        )
+
+
+async def _plan_tools_with_llm(
+    *,
+    prompt: str,
+    term: int | None,
+    llm_client: OpenAiLlmClient,
+) -> PlannerDecision | None:
+    try:
+        raw = await llm_client.complete_json(
+            system_prompt=build_planner_system_prompt(),
+            user_prompt=build_planner_user_prompt(prompt, term),
+        )
+    except LlmClientError:
+        return None
+
+    try:
+        parsed = PlannerDecision.model_validate(raw)
+    except ValidationError:
+        return None
+
+    if parsed.needs_clarification:
+        return parsed
+
+    if not parsed.tool_calls:
+        return None
+
+    allowed_tools = set(AVAILABLE_TOOLS)
+    for tool_call in parsed.tool_calls:
+        if tool_call.name not in allowed_tools:
+            return None
+
+    return parsed

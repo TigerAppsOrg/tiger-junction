@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from .llm_client import LlmClientError, OpenAiLlmClient
+from .synthesis_prompt import build_synthesis_system_prompt, build_synthesis_user_prompt
 
 COURSE_LIST_TOOLS = {"search_courses", "discover_courses", "find_top_rated_courses"}
 TOP_PICK_LIMIT = 5
@@ -22,6 +24,45 @@ def synthesize_tool_response(tool_name: str, prompt: str, result: dict[str, Any]
         return _synthesize_course_list_response(prompt, parsed_payload)
 
     return _synthesize_generic_response(tool_name, parsed_payload)
+
+
+async def synthesize_final_response(
+    *,
+    prompt: str,
+    tool_runs: list[dict[str, Any]],
+    llm_client: OpenAiLlmClient | None,
+    llm_enabled: bool,
+) -> str:
+    deterministic = _compose_deterministic_response(prompt=prompt, tool_runs=tool_runs)
+    if not llm_enabled or llm_client is None:
+        return deterministic
+
+    try:
+        payload = await llm_client.complete_json(
+            system_prompt=build_synthesis_system_prompt(),
+            user_prompt=build_synthesis_user_prompt(prompt=prompt, tool_runs=tool_runs),
+        )
+    except LlmClientError:
+        return deterministic
+
+    response_text = payload.get("response_text")
+    if not isinstance(response_text, str) or not response_text.strip():
+        return deterministic
+    return response_text.strip()
+
+
+def _compose_deterministic_response(*, prompt: str, tool_runs: list[dict[str, Any]]) -> str:
+    parts: list[str] = []
+    for run in tool_runs:
+        tool_name = run.get("name")
+        result = run.get("result")
+        if isinstance(tool_name, str) and isinstance(result, dict):
+            parts.append(synthesize_tool_response(tool_name, prompt, result))
+
+    return (
+        "\n\n".join(parts)
+        or "Direct answer: I could not run any tools for this request."
+    )
 
 
 def _extract_tool_payload(result: dict[str, Any]) -> dict[str, Any] | None:
