@@ -121,6 +121,24 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
+            <button class="btn-circ" onclick={() => goto("/ask-ai")}>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="btn-icon">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 18.75a6 6 0 0 0 5.878-4.802m-11.756 0A6 6 0 0 0 12 18.75m0 0v2.25m0-2.25a6 6 0 0 1-5.878-4.802m11.756 0A6 6 0 0 1 12 18.75m0-12a6 6 0 0 1 5.878 4.802M6.122 11.55A6 6 0 0 1 12 6.75m0 0V4.5m0 2.25a6 6 0 0 0-5.878 4.802m11.756 0A6 6 0 0 0 12 6.75" />
+                </svg>
+                {#if !$isMobile}
+                    Ask AI
+                {/if}
+            </button>
+
             <button class="btn-circ" onclick={handleLogout}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
