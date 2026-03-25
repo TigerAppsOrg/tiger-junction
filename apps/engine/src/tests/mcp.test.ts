@@ -279,6 +279,38 @@ describe("POST /mcp", () => {
     expect(payload.error).toContain("Invalid listingId");
   });
 
+  test("blocks schedule tools without mapped identity context", async () => {
+    const app = await getApp();
+    const sessionId = await initializeSession(app);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/mcp",
+      headers: {
+        ...MCP_HEADERS,
+        "mcp-session-id": sessionId,
+        "mcp-protocol-version": "2025-03-26",
+      },
+      payload: {
+        jsonrpc: "2.0",
+        id: 6,
+        method: "tools/call",
+        params: {
+          name: "get_user_schedules",
+          arguments: { userId: 1 },
+        },
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const messages = parseSSEMessages(res.body);
+    const callResponse = messages.find((m) => m.id === 6);
+    expect(callResponse).toBeDefined();
+    expect(callResponse!.result).toBeDefined();
+    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    expect(content[0].text).toContain("Missing authenticated user context");
+  });
+
   test("expires session after ttl", async () => {
     const app = await getApp();
     process.env.MCP_SESSION_TTL_MS = "1";
