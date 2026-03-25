@@ -6,7 +6,13 @@ import { registerInstructorTools } from "./tools/instructors.js";
 import { registerScheduleTools } from "./tools/schedules.js";
 import type { AuthContext } from "./context.js";
 
-export function createMcpServer(db: NodePgDatabase, authContext?: AuthContext): McpServer {
+export type McpToolScope = "full" | "princetoncourses";
+
+export function createMcpServer(
+  db: NodePgDatabase,
+  authContext?: AuthContext,
+  scope: McpToolScope = "full"
+): McpServer {
   const server = new McpServer({
     name: "junction-engine",
     version: "1.0.0",
@@ -15,7 +21,10 @@ export function createMcpServer(db: NodePgDatabase, authContext?: AuthContext): 
   registerCourseTools(server, db);
   registerEvaluationTools(server, db);
   registerInstructorTools(server, db);
-  registerScheduleTools(server, db, authContext);
+
+  if (scope === "full") {
+    registerScheduleTools(server, db, authContext);
+  }
 
   return server;
 }

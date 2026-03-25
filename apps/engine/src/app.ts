@@ -86,7 +86,8 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   app.register(instructorsRoutes, { prefix: "/api/instructors" });
   app.register(evaluationsRoutes, { prefix: "/api/evaluations" });
   app.register(snatchRoutes, { prefix: "/snatch" });
-  app.register(mcpRoutes, { prefix: "/mcp" });
+  app.register(mcpRoutes, { prefix: "/mcp", scope: "full" });
+  app.register(mcpRoutes, { prefix: "/princetoncourses/mcp", scope: "princetoncourses" });
 
   return app;
 }

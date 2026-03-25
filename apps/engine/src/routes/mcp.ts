@@ -3,6 +3,7 @@ import { type FastifyPluginAsync } from "fastify";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMcpServer } from "../mcp/index.js";
+import type { McpToolScope } from "../mcp/index.js";
 import type { AuthContext } from "../mcp/context.js";
 
 interface McpSession {
@@ -43,7 +44,12 @@ function rpcError(code: number, message: string) {
   };
 }
 
-const mcpRoutes: FastifyPluginAsync = async (app) => {
+interface McpRouteOptions {
+  scope?: McpToolScope;
+}
+
+const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
+  const scope = opts.scope ?? "full";
   const sessions = new Map<string, McpSession>();
   const cleanupExpiredSessions = async (): Promise<void> => {
     const now = Date.now();
@@ -129,7 +135,7 @@ const mcpRoutes: FastifyPluginAsync = async (app) => {
           .send(rpcError(-32009, "Too many active MCP sessions for this client. Close a session and retry."));
       }
 
-      const mcpServer = createMcpServer(app.db.db, auth.authContext);
+      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope);
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
       });

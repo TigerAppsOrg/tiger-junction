@@ -47,9 +47,13 @@ function sleep(ms: number): Promise<void> {
 }
 
 async function initializeSession(app: FastifyInstance): Promise<string> {
+  return initializeSessionAt(app, "/mcp");
+}
+
+async function initializeSessionAt(app: FastifyInstance, baseUrl: string): Promise<string> {
   const res = await app.inject({
     method: "POST",
-    url: "/mcp",
+    url: baseUrl,
     headers: MCP_HEADERS,
     payload: {
       jsonrpc: "2.0",
@@ -67,7 +71,7 @@ async function initializeSession(app: FastifyInstance): Promise<string> {
 
   await app.inject({
     method: "POST",
-    url: "/mcp",
+    url: baseUrl,
     headers: { ...MCP_HEADERS, "mcp-session-id": sessionId },
     payload: {
       jsonrpc: "2.0",
@@ -353,6 +357,44 @@ describe("GET /mcp", () => {
     const app = await getApp();
     const res = await app.inject({ method: "GET", url: "/mcp", headers: MCP_HEADERS });
     expect(res.statusCode).toBe(400);
+  });
+});
+
+describe("POST /princetoncourses/mcp", () => {
+  test("lists only PrincetonCourses scoped tools", async () => {
+    const app = await getApp();
+    const sessionId = await initializeSessionAt(app, "/princetoncourses/mcp");
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/princetoncourses/mcp",
+      headers: {
+        ...MCP_HEADERS,
+        "mcp-session-id": sessionId,
+        "mcp-protocol-version": "2025-03-26",
+      },
+      payload: {
+        jsonrpc: "2.0",
+        id: 7,
+        method: "tools/list",
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const messages = parseSSEMessages(res.body);
+    const toolListResponse = messages.find((m) => m.id === 7);
+    expect(toolListResponse).toBeDefined();
+    const tools = (toolListResponse!.result as Record<string, unknown>).tools as { name: string }[];
+    const toolNames = tools.map((t) => t.name);
+
+    expect(toolNames).toContain("search_courses");
+    expect(toolNames).toContain("get_course_details");
+    expect(toolNames).toContain("get_course_evaluations");
+    expect(toolNames).toContain("search_instructors");
+
+    expect(toolNames).not.toContain("get_user_schedules");
+    expect(toolNames).not.toContain("get_schedule_details");
+    expect(toolNames).not.toContain("find_courses_that_fit");
   });
 });
 
