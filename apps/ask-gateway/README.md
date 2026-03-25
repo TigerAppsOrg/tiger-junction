@@ -30,3 +30,9 @@ uvicorn app.main:app --reload --port 8010
    - `status(starting)` -> `tool_call` -> `tool_result` -> `token` -> `done`
 3. Trigger timeout by setting very low `ASK_TOOL_TIMEOUT_SECONDS` and verify `event:error` with `code=timeout`.
 4. Disconnect the client mid-stream and verify a cancellation error event is emitted.
+
+## Smoke test
+
+```bash
+ASK_GATEWAY_URL=http://localhost:8010 ./scripts/smoke_ask_ai.sh
+```
