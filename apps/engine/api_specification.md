@@ -752,3 +752,51 @@ All endpoints use a consistent error envelope:
 ```
 
 Standard HTTP status codes: `400` (bad request/validation), `404` (not found), `500` (server error).
+
+---
+
+## Ask AI Integration Notes
+
+This section defines the contract between PrincetonCourses, the Ask gateway, and the Engine MCP endpoint.
+
+### MCP Endpoint (`/mcp`)
+
+- Transport: Streamable HTTP (JSON-RPC over HTTP, may return SSE frames).
+- Session: client initializes, then reuses `mcp-session-id` header.
+- Existing behavior:
+  - `POST /mcp`: initialize + RPC requests
+  - `GET /mcp`: SSE stream retrieval for active session
+  - `DELETE /mcp`: close session
+
+### Identifier Semantics
+
+- `courseId`: specific course offering id in engine (`<listingId>-<term>`, e.g. `002051-1264`)
+- `listingId`: course identity across terms (e.g. `002051`)
+- `code`: human-readable course code (e.g. `COS 226`)
+- `scheduleId`: engine schedule integer id
+- `userId`: engine user integer id
+
+Use `courseId` when selecting sections/details for one offering; use `listingId` for cross-term evaluations.
+
+### Disambiguation Policy
+
+- If `code` is provided without `term`, resolve deterministically to the most recent term.
+- If multiple matches remain ambiguous, tools should return explicit disambiguation options.
+- Avoid arbitrary first-match behavior for user-visible answers.
+
+### Security Expectations for Ask AI
+
+- User/schedule tools must enforce authentication + ownership checks.
+- The Ask gateway should call Engine MCP with service credentials or verified bearer identity.
+- Do not expose another user’s schedules/events through guessed IDs.
+
+### Gateway SSE Event Contract (for PrincetonCourses)
+
+When an Ask gateway is introduced, preferred browser stream events are:
+
+- `status` -> `{"phase":"starting|calling_tool|streaming|done"}`
+- `token` -> `{"text":"..."}`
+- `tool_call` -> `{"name":"...","arguments":{...}}`
+- `tool_result` -> `{"name":"...","ok":true,"result":{...}}`
+- `error` -> `{"code":"...","message":"..."}`
+- `done` -> `{"conversationId":"...","usage":{"inputTokens":0,"outputTokens":0}}`
