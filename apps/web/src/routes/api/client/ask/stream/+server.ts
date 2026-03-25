@@ -1,4 +1,4 @@
-import { ASK_GATEWAY_TOKEN, ASK_GATEWAY_URL } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -12,7 +12,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         );
     }
 
-    if (!ASK_GATEWAY_URL) {
+    const askGatewayUrl = env.ASK_GATEWAY_URL;
+    const askGatewayToken = env.ASK_GATEWAY_TOKEN;
+
+    if (!askGatewayUrl) {
         return new Response(
             JSON.stringify({
                 success: false,
@@ -23,13 +26,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     const body = await request.json();
-    const upstream = await fetch(`${ASK_GATEWAY_URL}/ask/stream`, {
+    const upstream = await fetch(`${askGatewayUrl}/ask/stream`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
             accept: "text/event-stream",
-            authorization: ASK_GATEWAY_TOKEN
-                ? `Bearer ${ASK_GATEWAY_TOKEN}`
+            authorization: askGatewayToken
+                ? `Bearer ${askGatewayToken}`
                 : "",
             "x-external-user-id": user.id
         },
