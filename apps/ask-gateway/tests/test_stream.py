@@ -7,6 +7,7 @@ import pytest
 
 from app.chat_service import ChatService
 from app.config import Settings
+from app.mcp_client import McpClientError
 from app.models import AskStreamRequest, ChatMessage
 
 
@@ -22,6 +23,10 @@ def _parse_events(chunks: list[str]) -> list[tuple[str, dict]]:
     return events
 
 
+def _collect_token_text(events: list[tuple[str, dict]]) -> str:
+    return "".join(data["text"] for name, data in events if name == "token")
+
+
 @pytest.mark.asyncio
 async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
@@ -32,14 +37,35 @@ async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
             return "sid"
 
         async def call_tool(self, name: str, arguments: dict) -> dict:
-            return {"content": [{"type": "text", "text": "ok"}], "tool": name}
+            payload = {
+                "count": 2,
+                "courses": [
+                    {
+                        "code": "COS 126",
+                        "title": "Computer Science: An Interdisciplinary Approach",
+                        "status": "open",
+                        "term": 1264,
+                        "hasFinal": False,
+                        "rating": 4.6,
+                    },
+                    {
+                        "code": "COS 217",
+                        "title": "Introduction to Programming Systems",
+                        "status": "closed",
+                        "term": 1264,
+                        "hasFinal": True,
+                        "rating": 4.2,
+                    },
+                ],
+            }
+            return {"content": [{"type": "text", "text": json.dumps(payload)}], "tool": name}
 
         async def close(self) -> None:
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
     service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
-    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="find departments")])
+    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
     events = _parse_events(chunks)
@@ -48,6 +74,14 @@ async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "tool_call" in names
     assert "tool_result" in names
     assert "done" in names
+    tool_result = next(data for name, data in events if name == "tool_result")
+    assert tool_result["name"] == "search_courses"
+    assert tool_result["ok"] is True
+    token_text = _collect_token_text(events)
+    assert "Direct answer:" in token_text
+    assert "Top picks:" in token_text
+    assert "Why:" in token_text
+    assert "Tool search_courses returned data for your request." not in token_text
 
 
 @pytest.mark.asyncio
@@ -97,3 +131,146 @@ async def test_stream_handles_disconnect(monkeypatch: pytest.MonkeyPatch) -> Non
 
     assert error_events
     assert error_events[-1]["code"] == "cancelled"
+
+
+@pytest.mark.asyncio
+async def test_stream_handles_empty_course_results(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeMcpClient:
+        def __init__(self, settings: Settings) -> None:
+            self._settings = settings
+
+        async def initialize(self) -> str:
+            return "sid"
+
+        async def call_tool(self, name: str, arguments: dict) -> dict:
+            return {"content": [{"type": "text", "text": json.dumps({"count": 0, "courses": []})}]}
+
+        async def close(self) -> None:
+            return None
+
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
+    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
+
+    chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
+    events = _parse_events(chunks)
+    token_text = _collect_token_text(events)
+
+    assert "Direct answer: I could not find strong course matches" in token_text
+    assert "No reliable matches were returned." in token_text
+
+
+@pytest.mark.asyncio
+async def test_stream_handles_malformed_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeMcpClient:
+        def __init__(self, settings: Settings) -> None:
+            self._settings = settings
+
+        async def initialize(self) -> str:
+            return "sid"
+
+        async def call_tool(self, name: str, arguments: dict) -> dict:
+            return {"content": [{"type": "text", "text": "{not-json"}]}
+
+        async def close(self) -> None:
+            return None
+
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
+    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
+
+    chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
+    events = _parse_events(chunks)
+    token_text = _collect_token_text(events)
+
+    assert "Direct answer: I could not safely read the tool output" in token_text
+    assert "No reliable recommendations are available yet." in token_text
+
+
+@pytest.mark.asyncio
+async def test_stream_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FailingMcpClient:
+        def __init__(self, settings: Settings) -> None:
+            self._settings = settings
+
+        async def initialize(self) -> str:
+            return "sid"
+
+        async def call_tool(self, name: str, arguments: dict) -> dict:
+            raise McpClientError("boom")
+
+        async def close(self) -> None:
+            return None
+
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FailingMcpClient)
+    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy CS courses")])
+
+    chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
+    events = _parse_events(chunks)
+    error_events = [data for name, data in events if name == "error"]
+
+    assert error_events
+    assert error_events[-1]["code"] == "upstream_error"
+
+
+@pytest.mark.asyncio
+async def test_stream_course_question_uses_details_and_evaluations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FakeMcpClient:
+        def __init__(self, settings: Settings) -> None:
+            self._settings = settings
+
+        async def initialize(self) -> str:
+            return "sid"
+
+        async def call_tool(self, name: str, arguments: dict) -> dict:
+            if name == "get_course_details":
+                payload = {
+                    "courseId": "001234-1264",
+                    "listingId": "001234",
+                    "term": 1264,
+                    "code": "COS 126",
+                    "title": "Computer Science: An Interdisciplinary Approach",
+                    "description": "Foundations of computer science.",
+                    "hasFinal": True,
+                    "gradingBasis": "grade",
+                }
+                return {"content": [{"type": "text", "text": json.dumps(payload)}]}
+            if name == "get_course_evaluations":
+                payload = {
+                    "listingId": "001234",
+                    "termCount": 2,
+                    "evaluations": [
+                        {"evalTerm": "1254", "rating": 4.5, "numComments": 20, "summary": "Workload is moderate."},
+                        {"evalTerm": "1244", "rating": 4.4, "numComments": 18, "summary": "Challenging but fair."},
+                    ],
+                }
+                return {"content": [{"type": "text", "text": json.dumps(payload)}]}
+            return {"content": [{"type": "text", "text": json.dumps({})}]}
+
+        async def close(self) -> None:
+            return None
+
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
+    service = ChatService(Settings(tool_timeout_seconds=1, connect_timeout_seconds=1))
+    payload = AskStreamRequest(
+        messages=[
+            ChatMessage(
+                role="user",
+                content="Tell me about COS126 / EGR126 (Computer Science: An Interdisciplinary Approach). What is the workload like? How are the evaluations?",
+            )
+        ]
+    )
+
+    chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
+    events = _parse_events(chunks)
+
+    tool_calls = [data["name"] for name, data in events if name == "tool_call"]
+    assert "get_course_details" in tool_calls
+    assert "get_course_evaluations" in tool_calls
+
+    token_text = _collect_token_text(events)
+    assert "COS 126" in token_text
+    assert "evaluation" in token_text.lower()
