@@ -14,6 +14,22 @@ from .response_synthesizer import synthesize_final_response
 
 MAX_TOOL_ITERATIONS = 30
 
+_SYSTEM_PROMPT = """\
+You are an AI course assistant for Princeton University students. You help students \
+find courses, understand workload, compare options, and make informed decisions.
+
+You have access to tools that search courses, get course details, evaluations, \
+instructor info, and more. Use them to answer accurately.
+
+Guidelines:
+- Always use tools to look up real data. Do not fabricate course information.
+- After receiving tool results, synthesize a helpful, conversational response.
+- When comparing courses, highlight key differences (rating, workload, schedule).
+- Format course codes as "DEPT NNN" (e.g., COS 226, not COS226).
+- Keep responses concise but thorough. Use bullet points and bold for readability.
+- If a course is not found, say so honestly and suggest alternatives.
+"""
+
 
 def sse_event(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
@@ -108,7 +124,10 @@ class ChatService:
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
 
-            messages: list[dict[str, Any]] = [m.model_dump() for m in payload.messages]
+            messages: list[dict[str, Any]] = [
+                {"role": "system", "content": _SYSTEM_PROMPT},
+                *[m.model_dump() for m in payload.messages],
+            ]
 
             # Fetch tools dynamically from MCP server (cached with 60s TTL)
             llm_tools = await asyncio.wait_for(
@@ -128,7 +147,7 @@ class ChatService:
                 finish_reason: str | None = None
 
                 async for chunk in llm_client.stream_chat(
-                    messages=messages, tools=llm_tools
+                    messages=messages, tools=llm_tools, model=payload.model
                 ):
                     if chunk.get("type") == "done":
                         break
@@ -174,12 +193,9 @@ class ChatService:
                                 if "arguments" in fn:
                                     tc["function"]["arguments"] += fn["arguments"]
 
-                if finish_reason != "tool_calls" or not collected_tool_calls:
-                    if not collected_content.strip():
-                        fallback = "I need a bit more context to answer well. Try specifying course code, term, or preference."
-                        yield sse_event("token", {"text": fallback})
-                        collected_content = fallback
-
+                # If no tool calls were made, we're done (regardless of finish_reason,
+                # since some models like Gemini use "stop" even with tool calls).
+                if not collected_tool_calls:
                     usage = {
                         "inputTokens": (collected_usage or {}).get("prompt_tokens", 0),
                         "outputTokens": (collected_usage or {}).get(

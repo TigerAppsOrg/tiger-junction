@@ -13,6 +13,7 @@ class ChatMessage(BaseModel):
 class AskStreamRequest(BaseModel):
     conversationId: str | None = None
     term: int | None = None
+    model: str | None = None
     messages: list[ChatMessage] = Field(min_length=1)
 
 
