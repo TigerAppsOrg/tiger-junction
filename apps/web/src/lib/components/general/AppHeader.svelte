@@ -121,7 +121,8 @@ dark:border-zinc-700 border-zinc-200"
                 {/if}
             </button>
 
-            <button class="btn-circ" onclick={() => goto("/ask-ai")}>
+            <!-- Ask AI button disabled until feature is ready -->
+            <!-- <button class="btn-circ" onclick={() => goto("/ask-ai")}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -137,7 +138,7 @@ dark:border-zinc-700 border-zinc-200"
                 {#if !$isMobile}
                     Ask AI
                 {/if}
-            </button>
+            </button> -->
 
             <button class="btn-circ" onclick={handleLogout}>
                 <svg
