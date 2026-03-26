@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import re
 import uuid
 from typing import Any, AsyncIterator, Callable
+
+logger = logging.getLogger("ask-gateway.chat")
 
 from .config import Settings
 from .llm_client import LlmClientError, OpenAiLlmClient
@@ -229,45 +232,7 @@ class ChatService:
                         "sessionId": session_id,
                     },
                 )
-                for tc in collected_tool_calls:
-                    tool_name = tc["function"]["name"]
-                    try:
-                        tool_args = json.loads(tc["function"]["arguments"] or "{}")
-                    except json.JSONDecodeError:
-                        tool_args = {}
-                    tool_args = _sanitize_tool_args(tool_args)
-
-                    yield sse_event(
-                        "tool_call",
-                        {
-                            "name": tool_name,
-                            "arguments": tool_args,
-                            "requestId": request_id,
-                            "sessionId": session_id,
-                        },
-                    )
-                    result = await asyncio.wait_for(
-                        mcp_client.call_tool(tool_name, tool_args),
-                        timeout=self._settings.tool_timeout_seconds,
-                    )
-                    yield sse_event(
-                        "tool_result",
-                        {
-                            "name": tool_name,
-                            "ok": True,
-                            "result": result,
-                            "requestId": request_id,
-                            "sessionId": session_id,
-                        },
-                    )
-                    messages.append(
-                        {
-                            "role": "tool",
-                            "tool_call_id": tc["id"],
-                            "content": json.dumps(result),
-                        }
-                    )
-
+                # Append assistant message with tool_calls FIRST (before tool results)
                 messages.append(
                     {
                         "role": "assistant",
@@ -282,6 +247,48 @@ class ChatService:
                         ],
                     }
                 )
+
+                # Execute tools and append results
+                for tc in collected_tool_calls:
+                    tool_name = tc["function"]["name"]
+                    try:
+                        tool_args = json.loads(tc["function"]["arguments"] or "{}")
+                    except json.JSONDecodeError:
+                        tool_args = {}
+                    tool_args = _sanitize_tool_args(tool_args)
+
+                    yield sse_event(
+                        "tool_call",
+                        {
+                            "name": tool_name,
+                            "arguments": tool_args,
+                            "call_id": tc["id"],
+                            "requestId": request_id,
+                            "sessionId": session_id,
+                        },
+                    )
+                    result = await asyncio.wait_for(
+                        mcp_client.call_tool(tool_name, tool_args),
+                        timeout=self._settings.tool_timeout_seconds,
+                    )
+                    yield sse_event(
+                        "tool_result",
+                        {
+                            "name": tool_name,
+                            "call_id": tc["id"],
+                            "ok": True,
+                            "result": result,
+                            "requestId": request_id,
+                            "sessionId": session_id,
+                        },
+                    )
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tc["id"],
+                            "content": json.dumps(result),
+                        }
+                    )
 
             yield sse_event(
                 "error",
@@ -318,16 +325,18 @@ class ChatService:
                     "requestId": request_id,
                 },
             )
-        except LlmClientError:
+        except LlmClientError as exc:
+            logger.exception("LLM client error for request %s: %s", request_id, exc)
             yield sse_event(
                 "error",
                 {
                     "code": "upstream_error",
-                    "message": "The language model dependency failed.",
+                    "message": f"LLM error: {exc}",
                     "requestId": request_id,
                 },
             )
         except Exception as exc:  # pragma: no cover - defensive fallback
+            logger.exception("Unexpected error for request %s: %s", request_id, exc)
             yield sse_event(
                 "error",
                 {"code": "unknown_error", "message": str(exc), "requestId": request_id},
