@@ -12,7 +12,7 @@ from .mcp_client import McpClientError, McpHttpClient
 from .models import AskStreamRequest, ToolCall
 from .response_synthesizer import synthesize_final_response
 
-MAX_TOOL_ITERATIONS = 6
+MAX_TOOL_ITERATIONS = 30
 
 
 def sse_event(event: str, data: dict) -> str:
@@ -24,7 +24,15 @@ def _plan_tools(prompt: str, term: int | None) -> list[ToolCall]:
     detected_codes = _extract_course_codes(prompt)
     asks_course_feedback = any(
         keyword in lowered
-        for keyword in ("evaluation", "evaluations", "review", "reviews", "rating", "ratings", "workload")
+        for keyword in (
+            "evaluation",
+            "evaluations",
+            "review",
+            "reviews",
+            "rating",
+            "ratings",
+            "workload",
+        )
     )
 
     if detected_codes:
@@ -75,7 +83,9 @@ class ChatService:
         request_id: str | None = None,
     ) -> AsyncIterator[str]:
         if not self._settings.ask_llm_planner_enabled:
-            async for event in self._stream_deterministic(payload, is_disconnected, request_id):
+            async for event in self._stream_deterministic(
+                payload, is_disconnected, request_id
+            ):
                 yield event
             return
 
@@ -99,7 +109,13 @@ class ChatService:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
 
             messages: list[dict[str, Any]] = [m.model_dump() for m in payload.messages]
-            llm_tools = _build_llm_tools()
+
+            # Fetch tools dynamically from MCP server (cached with 60s TTL)
+            llm_tools = await asyncio.wait_for(
+                mcp_client.list_tools(), timeout=self._settings.tool_timeout_seconds
+            )
+            # list_tools initializes the session, so capture it
+            session_id = mcp_client._session_id
             collected_usage: dict[str, Any] | None = None
 
             for iteration in range(MAX_TOOL_ITERATIONS):
@@ -111,7 +127,9 @@ class ChatService:
                 collected_tool_calls: list[dict[str, Any]] = []
                 finish_reason: str | None = None
 
-                async for chunk in llm_client.stream_chat(messages=messages, tools=llm_tools):
+                async for chunk in llm_client.stream_chat(
+                    messages=messages, tools=llm_tools
+                ):
                     if chunk.get("type") == "done":
                         break
 
@@ -141,7 +159,10 @@ class ChatService:
                             idx = tc_delta.get("index", 0)
                             while len(collected_tool_calls) <= idx:
                                 collected_tool_calls.append(
-                                    {"id": "", "function": {"name": "", "arguments": ""}}
+                                    {
+                                        "id": "",
+                                        "function": {"name": "", "arguments": ""},
+                                    }
                                 )
                             tc = collected_tool_calls[idx]
                             if "id" in tc_delta:
@@ -161,7 +182,9 @@ class ChatService:
 
                     usage = {
                         "inputTokens": (collected_usage or {}).get("prompt_tokens", 0),
-                        "outputTokens": (collected_usage or {}).get("completion_tokens", 0),
+                        "outputTokens": (collected_usage or {}).get(
+                            "completion_tokens", 0
+                        ),
                     }
                     yield sse_event(
                         "status",
@@ -182,14 +205,13 @@ class ChatService:
                     )
                     return
 
-                if session_id is None:
-                    session_id = await asyncio.wait_for(
-                        mcp_client.initialize(), timeout=self._settings.tool_timeout_seconds
-                    )
-
                 yield sse_event(
                     "status",
-                    {"phase": "calling_tool", "requestId": request_id, "sessionId": session_id},
+                    {
+                        "phase": "calling_tool",
+                        "requestId": request_id,
+                        "sessionId": session_id,
+                    },
                 )
                 for tc in collected_tool_calls:
                     tool_name = tc["function"]["name"]
@@ -197,6 +219,7 @@ class ChatService:
                         tool_args = json.loads(tc["function"]["arguments"] or "{}")
                     except json.JSONDecodeError:
                         tool_args = {}
+                    tool_args = _sanitize_tool_args(tool_args)
 
                     yield sse_event(
                         "tool_call",
@@ -273,7 +296,11 @@ class ChatService:
         except McpClientError as exc:
             yield sse_event(
                 "error",
-                {"code": "upstream_error", "message": str(exc), "requestId": request_id},
+                {
+                    "code": "upstream_error",
+                    "message": str(exc),
+                    "requestId": request_id,
+                },
             )
         except LlmClientError:
             yield sse_event(
@@ -317,7 +344,11 @@ class ChatService:
                     raise asyncio.CancelledError()
                 yield sse_event(
                     "status",
-                    {"phase": "calling_tool", "requestId": request_id, "sessionId": session_id},
+                    {
+                        "phase": "calling_tool",
+                        "requestId": request_id,
+                        "sessionId": session_id,
+                    },
                 )
                 yield sse_event(
                     "tool_call",
@@ -343,10 +374,21 @@ class ChatService:
                     },
                 )
                 executed_tool_runs.append(
-                    {"name": tool_call.name, "arguments": tool_call.arguments, "result": result}
+                    {
+                        "name": tool_call.name,
+                        "arguments": tool_call.arguments,
+                        "result": result,
+                    }
                 )
 
-            yield sse_event("status", {"phase": "streaming", "requestId": request_id, **({"sessionId": session_id} if session_id else {})})
+            yield sse_event(
+                "status",
+                {
+                    "phase": "streaming",
+                    "requestId": request_id,
+                    **({"sessionId": session_id} if session_id else {}),
+                },
+            )
             response_text = await synthesize_final_response(
                 prompt=prompt,
                 tool_runs=executed_tool_runs,
@@ -357,14 +399,24 @@ class ChatService:
                 if is_disconnected():
                     raise asyncio.CancelledError()
                 yield sse_event("token", {"text": f"{token} "})
-            yield sse_event("status", {"phase": "done", "requestId": request_id, **({"sessionId": session_id} if session_id else {})})
+            yield sse_event(
+                "status",
+                {
+                    "phase": "done",
+                    "requestId": request_id,
+                    **({"sessionId": session_id} if session_id else {}),
+                },
+            )
             yield sse_event(
                 "done",
                 {
                     "conversationId": conversation_id,
                     "requestId": request_id,
                     **({"sessionId": session_id} if session_id else {}),
-                    "usage": {"inputTokens": 0, "outputTokens": len(response_text.split())},
+                    "usage": {
+                        "inputTokens": 0,
+                        "outputTokens": len(response_text.split()),
+                    },
                 },
             )
         except asyncio.CancelledError:
@@ -388,43 +440,45 @@ class ChatService:
         except McpClientError as exc:
             yield sse_event(
                 "error",
-                {"code": "upstream_error", "message": str(exc), "requestId": request_id},
+                {
+                    "code": "upstream_error",
+                    "message": str(exc),
+                    "requestId": request_id,
+                },
             )
         finally:
             await mcp_client.close()
 
 
+def _sanitize_tool_args(args: dict[str, Any]) -> dict[str, Any]:
+    """Strip leading/trailing punctuation from string arguments.
+
+    Some models (e.g. Kimi K2.5) prepend a period to arguments like
+    ".ANT238" instead of "ANT238".
+    """
+    cleaned: dict[str, Any] = {}
+    for key, value in args.items():
+        if isinstance(value, str):
+            cleaned[key] = value.strip().lstrip(".,;:!?")
+        else:
+            cleaned[key] = value
+    return cleaned
+
+
 def _extract_reasoning(delta: dict[str, Any]) -> str:
-    texts: list[str] = []
+    # Prefer reasoning_details (structured) over reasoning (flat string)
+    # to avoid duplication when models send both with the same content.
     reasoning_details = delta.get("reasoning_details")
     if isinstance(reasoning_details, list):
+        texts: list[str] = []
         for item in reasoning_details:
             if isinstance(item, dict) and isinstance(item.get("text"), str):
                 texts.append(item["text"])
+        if texts:
+            return "".join(texts)
     reasoning = delta.get("reasoning")
     if isinstance(reasoning, str):
-        texts.append(reasoning)
-    return "".join(texts)
+        return reasoning
+    return ""
 
 
-def _build_llm_tools() -> list[dict[str, Any]]:
-    return [
-        _tool("search_courses", "Search for courses by keywords and filters."),
-        _tool("get_course_details", "Get full details for a specific course by code or courseId."),
-        _tool("get_course_evaluations", "Get course evaluations by code or listingId."),
-        _tool("find_top_rated_courses", "Find highest-rated courses."),
-        _tool("search_instructors", "Search instructors by name."),
-        _tool("list_departments", "List all departments."),
-        _tool("discover_courses", "Discover interesting courses by filter."),
-    ]
-
-
-def _tool(name: str, description: str) -> dict[str, Any]:
-    return {
-        "type": "function",
-        "function": {
-            "name": name,
-            "description": description,
-            "parameters": {"type": "object", "additionalProperties": True},
-        },
-    }

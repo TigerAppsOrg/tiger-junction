@@ -1,11 +1,20 @@
 from __future__ import annotations
 
 import json
+import logging
+import time
 from typing import Any
 
 import httpx
 
 from .config import Settings
+
+logger = logging.getLogger("ask-gateway.mcp")
+
+_TOOLS_CACHE_TTL = 60.0  # seconds
+
+# Module-level cache: mcp_url -> (openai_tools, mcp_tools, timestamp)
+_tools_cache: dict[str, tuple[list[dict[str, Any]], list[dict[str, Any]], float]] = {}
 
 
 class McpClientError(Exception):
@@ -38,6 +47,41 @@ class McpHttpClient:
             raise McpClientError("MCP initialize succeeded but no mcp-session-id header was returned.")
         await self._post({"jsonrpc": "2.0", "method": "notifications/initialized"})
         return self._session_id
+
+    async def list_tools(self) -> list[dict[str, Any]]:
+        """Fetch tools from MCP server and return in OpenAI function-calling format.
+
+        Results are cached for 60 seconds to avoid redundant calls.
+        Initializes a session if one doesn't exist yet.
+        """
+        # Always ensure session exists (each client instance needs its own)
+        if self._session_id is None:
+            await self.initialize()
+
+        cache_key = self._settings.mcp_url
+        cached = _tools_cache.get(cache_key)
+        if cached is not None:
+            openai_tools, _, ts = cached
+            if time.monotonic() - ts < _TOOLS_CACHE_TTL:
+                return openai_tools
+
+        payload = {
+            "jsonrpc": "2.0",
+            "id": self._next(),
+            "method": "tools/list",
+            "params": {},
+        }
+        response = await self._post(payload)
+        message = _extract_jsonrpc(response.text, expected_id=payload["id"])
+        if "error" in message:
+            raise McpClientError(f"MCP tools/list failed: {message['error']}")
+
+        mcp_tools = message.get("result", {}).get("tools", [])
+        openai_tools = _mcp_tools_to_openai(mcp_tools)
+
+        logger.info("list_tools: fetched %d tools from %s", len(openai_tools), cache_key)
+        _tools_cache[cache_key] = (openai_tools, mcp_tools, time.monotonic())
+        return openai_tools
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         payload = {
@@ -91,6 +135,24 @@ class McpHttpClient:
             headers["mcp-session-id"] = self._session_id
             headers["mcp-protocol-version"] = self._settings.mcp_protocol_version
         return headers
+
+
+def _mcp_tools_to_openai(mcp_tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Convert MCP tool definitions to OpenAI function-calling format."""
+    openai_tools: list[dict[str, Any]] = []
+    for tool in mcp_tools:
+        name = tool.get("name", "")
+        if not name:
+            continue
+        openai_tools.append({
+            "type": "function",
+            "function": {
+                "name": name,
+                "description": tool.get("description", ""),
+                "parameters": tool.get("inputSchema", {"type": "object", "properties": {}}),
+            },
+        })
+    return openai_tools
 
 
 def _extract_jsonrpc(raw: str, expected_id: int) -> dict[str, Any]:
