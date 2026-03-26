@@ -28,11 +28,21 @@ In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTM
 
 ## Step 4: Populate the Database
 
-Run `npm run dev` in the terminal to start the development server. Once the server is running, go to `localhost:5173/admin` in your browser. This may require you to login, in which case you will have to replace `junction.tigerapps.org` with `localhost:5173` in the URL when the login page redirects you (you will receive an error if not already logged in on localhost). If you do not have admin access, grant yourself admin access by going to the `private_profiles` table in Supabase and setting the `is_admin` column to `true` for your user. _PLEASE BE CAREFUL TO NOT ACCIDENTLY GRANT ADMIN ACCESS TO SOMEONE ELSE_.
+Database population is done via CLI scripts in `apps/database`. Make sure your `apps/database/.env` file is configured with the required environment variables (see `apps/database/.env.example`): `PUBLIC_SUPABASE_URL`, `SERVICE_ROLE_KEY`, `API_ACCESS_TOKEN`, `REDIS_PASSWORD`, and `REG_COOKIE`.
 
-Once you are on the admin page, input the term you are adding into the term field, and click `Push Listings`. This should take less than a minute to complete. Once it is done, input the term again and check the `Refresh Grading` checkbox. Then, click `Push Courses` and wait for it to complete. This will take a while (around 30 minutes). Finally, input the term again and click `Push Ratings`. This shoudl take less than a minute to complete. Once all of these are done, you can close the server.
+Before running the scripts, add the new term code to the `TERMS` array in `apps/database/src/scripts/supabase/shared.ts`, or the scripts will reject it as invalid.
 
-_Make sure to do this on localhost and not on the production site, it will timeout_.
+From the `apps/database` directory, run the following commands in order:
+
+1. **Push Listings + Courses + Redis:** `bun run update-supabase <term> --grading`
+   - This populates listings, courses (with grading info), and syncs to Redis in one step.
+   - The `--grading` (or `-g`) flag refreshes grading fields. Omit it if you don't need to update grading.
+   - This will take a while (~30 minutes).
+
+2. **Push Ratings:** `bun run ratings-supabase <term>`
+   - This scrapes course evaluation ratings and updates them in Supabase, then syncs to Redis.
+   - Requires `REG_COOKIE` to be set (a valid `PHPSESSID` cookie from the registrar evaluations site).
+   - You can optionally pass a `startIndex` as a second argument to resume from a specific course if the script is interrupted.
 
 ## Step 5: Test and Deploy
 

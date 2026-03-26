@@ -6,6 +6,7 @@ import { z } from "zod";
 import { eq, ilike, sql, asc, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName, daysToBitmask, timeToValue } from "../helpers.js";
+import { buildResolutionError, resolveCourseInput } from "../resolvers.js";
 
 export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
   server.tool(
@@ -110,28 +111,12 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
     },
     async ({ courseId, code, term }) => {
-      let course;
-      if (code) {
-        const conditions = [ilike(schema.courses.code, `%${code}%`)];
-        if (term) conditions.push(eq(schema.courses.term, term));
-        const rows = await db
-          .select()
-          .from(schema.courses)
-          .where(and(...conditions))
-          .orderBy(desc(schema.courses.term))
-          .limit(1);
-        course = rows[0];
-      } else if (courseId) {
-        const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, courseId));
-        course = rows[0];
-      }
+      const resolved = await resolveCourseInput(db, { courseId, code, term });
+      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
-      if (!course) {
-        return {
-          content: [{ type: "text" as const, text: "Course not found." }],
-          isError: true,
-        };
-      }
+      const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, resolved.value.id)).limit(1);
+      const course = rows[0];
+      if (!course) return buildResolutionError("Course not found.");
 
       const instructors = await db
         .select({ netid: schema.instructors.netid, name: schema.instructors.name })
@@ -156,7 +141,18 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ ...course, instructors, meetingTimes }, null, 2),
+            text: JSON.stringify(
+              {
+                courseId: course.id,
+                listingId: course.listingId,
+                term: course.term,
+                ...course,
+                instructors,
+                meetingTimes,
+              },
+              null,
+              2
+            ),
           },
         ],
       };
@@ -172,37 +168,13 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
     },
     async ({ courseId, code, term }) => {
-      let targetId: string | undefined;
-      let courseCode: string | undefined;
-      if (code) {
-        const conditions = [ilike(schema.courses.code, `%${code}%`)];
-        if (term) conditions.push(eq(schema.courses.term, term));
-        const rows = await db
-          .select({ id: schema.courses.id, code: schema.courses.code })
-          .from(schema.courses)
-          .where(and(...conditions))
-          .orderBy(desc(schema.courses.term))
-          .limit(1);
-        targetId = rows[0]?.id;
-        courseCode = rows[0]?.code;
-      } else if (courseId) {
-        targetId = courseId;
-        const rows = await db
-          .select({ code: schema.courses.code })
-          .from(schema.courses)
-          .where(eq(schema.courses.id, courseId))
-          .limit(1);
-        courseCode = rows[0]?.code;
-      }
-
-      if (!targetId) {
-        return { content: [{ type: "text" as const, text: "Course not found." }], isError: true };
-      }
+      const resolved = await resolveCourseInput(db, { courseId, code, term });
+      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
       const sections = await db
         .select()
         .from(schema.sections)
-        .where(eq(schema.sections.courseId, targetId))
+        .where(eq(schema.sections.courseId, resolved.value.id))
         .orderBy(asc(schema.sections.id));
 
       const formatted = sections.map(formatSection);
@@ -211,7 +183,18 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ courseId: targetId, code: courseCode, count: formatted.length, sections: formatted }, null, 2),
+            text: JSON.stringify(
+              {
+                courseId: resolved.value.id,
+                listingId: resolved.value.listingId,
+                term: resolved.value.term,
+                code: resolved.value.code,
+                count: formatted.length,
+                sections: formatted,
+              },
+              null,
+              2
+            ),
           },
         ],
       };
@@ -334,15 +317,16 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
     async ({ codes, term }) => {
       const comparisons = await Promise.all(
         codes.map(async (code) => {
-          const conditions = [ilike(schema.courses.code, `%${code}%`)];
-          if (term) conditions.push(eq(schema.courses.term, term));
+          const resolved = await resolveCourseInput(db, { code, term });
+          if (!resolved.value) {
+            return {
+              code,
+              error: resolved.error ?? "Course not found",
+              options: resolved.options ?? [],
+            };
+          }
 
-          const rows = await db
-            .select()
-            .from(schema.courses)
-            .where(and(...conditions))
-            .orderBy(desc(schema.courses.term))
-            .limit(1);
+          const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, resolved.value.id)).limit(1);
           const course = rows[0];
           if (!course) return { code, error: "Course not found" };
 
@@ -405,32 +389,8 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       term: z.number().optional().describe("Term code to disambiguate when searching by code."),
     },
     async ({ courseId, code, term }) => {
-      let targetId: string | undefined;
-      let courseCode: string | undefined;
-      if (code) {
-        const conditions = [ilike(schema.courses.code, `%${code}%`)];
-        if (term) conditions.push(eq(schema.courses.term, term));
-        const rows = await db
-          .select({ id: schema.courses.id, code: schema.courses.code })
-          .from(schema.courses)
-          .where(and(...conditions))
-          .orderBy(desc(schema.courses.term))
-          .limit(1);
-        targetId = rows[0]?.id;
-        courseCode = rows[0]?.code;
-      } else if (courseId) {
-        targetId = courseId;
-        const rows = await db
-          .select({ code: schema.courses.code })
-          .from(schema.courses)
-          .where(eq(schema.courses.id, courseId))
-          .limit(1);
-        courseCode = rows[0]?.code;
-      }
-
-      if (!targetId) {
-        return { content: [{ type: "text" as const, text: "Course not found." }], isError: true };
-      }
+      const resolved = await resolveCourseInput(db, { courseId, code, term });
+      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
       const sections = await db
         .select({
@@ -440,7 +400,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
           status: schema.sections.status,
         })
         .from(schema.sections)
-        .where(eq(schema.sections.courseId, targetId))
+        .where(eq(schema.sections.courseId, resolved.value.id))
         .orderBy(asc(schema.sections.id));
 
       const totalEnrolled = sections.reduce((sum, s) => sum + (s.tot ?? 0), 0);
@@ -452,8 +412,10 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
             type: "text" as const,
             text: JSON.stringify(
               {
-                courseId: targetId,
-                code: courseCode,
+                courseId: resolved.value.id,
+                listingId: resolved.value.listingId,
+                term: resolved.value.term,
+                code: resolved.value.code,
                 totalEnrolled,
                 totalCapacity,
                 percentFull: totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A",

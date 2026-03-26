@@ -5,6 +5,10 @@ import type { RawSectionData } from "./stores/rsections";
 
 // Add the new term at the top of the list
 export const TERM_MAP: Record<number, Record<string, string>> = {
+    1272: {
+        name: "Fall 2026",
+        mobile_name: "F26"
+    },
     1264: {
         name: "Spring 2026",
         mobile_name: "S26"
@@ -73,6 +77,7 @@ export const TERM_MAP: Record<number, Record<string, string>> = {
 
 // Add the new term at the top of the list
 export const EVALS_TERM_MAP: Record<number, string> = {
+    1272: "2026-2027 Fall Course Evaluation Results",
     1264: "2025-2026 Spring Course Evaluation Results",
     1262: "2025-2026 Fall Course Evaluation Results",
     1254: "2024-2025 Spring Course Evaluation Results",
@@ -97,6 +102,13 @@ export const EVALS_TERM_MAP: Record<number, string> = {
 // Ignore exclusions for now, they're not used, set to []
 // Delete the old term at the bottom of the list
 export const CALENDAR_INFO: Record<string, Calendar_Info> = {
+    "1272": {
+        name: "Fall 2026",
+        start: [2026, 9, 2],
+        start_day: 3,
+        end: [2026, 12, 4],
+        exclusions: []
+    },
     "1264": {
         name: "Spring 2026",
         start: [2026, 1, 26],
@@ -132,28 +144,18 @@ export const CALENDAR_INFO: Record<string, Calendar_Info> = {
         end: [2024, 4, 26],
         exclusions: [[2024, 3, 4]]
     },
-    "1242": {
-        name: "Fall 2023",
-        start: [2023, 9, 5],
-        start_day: 2,
-        end: [2023, 12, 8],
-        exclusions: [
-            [2023, 10, 16, 6],
-            [2023, 11, 22, 4]
-        ]
-    }
 } as const;
 
 // Add the new term and delete the oldest term (be careful!)
-export type ActiveTerms = 1264 | 1254 | 1262;
+export type ActiveTerms = 1272 | 1264 | 1262;
 
 // Add the new term at the top of the list
 // Set the most recent term to true, and the rest to false
 // Delete the oldest term (at the bottom)
 export const sectionDone = writable({
     1262: false,
-    1254: false,
-    1264: true
+    1264: false,
+    1272: true
 });
 
 //----------------------------------------------------------------------

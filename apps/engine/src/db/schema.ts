@@ -41,9 +41,39 @@ export const userRelations = relations(users, ({ one, many }) => ({
   schedules: many(schedules),
   customEvents: many(customEvents),
   analytics: many(analytics),
+  externalUserIdentities: many(externalUserIdentities),
   icals: one(icals, {
     fields: [users.id],
     references: [icals.userId],
+  }),
+}));
+
+export const externalUserIdentities = pgTable(
+  "external_user_identities",
+  {
+    id: serial("id").primaryKey().notNull(),
+    provider: text("provider").notNull(),
+    externalUserId: text("external_user_id").notNull(),
+    engineUserId: integer("engine_user_id")
+      .notNull()
+      .references(() => users.id),
+    netid: text("netid"),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .default(sql`now()`),
+  },
+  (t) => ({
+    providerExternalUserIdUnique: uniqueIndex("external_user_identities_provider_external_user_id_idx").on(
+      t.provider,
+      t.externalUserId
+    ),
+  })
+);
+
+export const externalUserIdentityRelations = relations(externalUserIdentities, ({ one }) => ({
+  user: one(users, {
+    fields: [externalUserIdentities.engineUserId],
+    references: [users.id],
   }),
 }));
 

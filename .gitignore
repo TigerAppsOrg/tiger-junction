@@ -12,3 +12,5 @@ Engine API
 .vscode/settings.json
 apps/engine/src/cache/rediscache.ts.timestamp-*
 apps/engine/.env
+apps/ask-gateway/.venv/
+apps/ask-gateway/**/__pycache__/

@@ -4,6 +4,8 @@ import { z } from "zod";
 import { eq, ilike, and, asc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName } from "../helpers.js";
+import { resolveCourseInput } from "../resolvers.js";
+import type { AuthContext } from "../context.js";
 
 interface TimeSlot {
   days: number;
@@ -21,7 +23,35 @@ function sectionTypePrefix(title: string): string {
   return match ? match[1] : title;
 }
 
-export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
+async function resolveAuthorizedEngineUserId(
+  db: NodePgDatabase,
+  authContext?: AuthContext
+): Promise<{ userId?: number; error?: string }> {
+  if (!authContext?.externalUserId) {
+    return { error: "Missing authenticated user context. Provide x-external-user-id." };
+  }
+
+  const rows = await db
+    .select({ engineUserId: schema.externalUserIdentities.engineUserId })
+    .from(schema.externalUserIdentities)
+    .where(
+      and(
+        eq(schema.externalUserIdentities.provider, "supabase"),
+        eq(schema.externalUserIdentities.externalUserId, authContext.externalUserId)
+      )
+    )
+    .limit(1);
+
+  if (rows.length === 0) {
+    return {
+      error: `No identity mapping found for external user '${authContext.externalUserId}'. Complete onboarding first.`,
+    };
+  }
+
+  return { userId: rows[0].engineUserId };
+}
+
+export function registerScheduleTools(server: McpServer, db: NodePgDatabase, authContext?: AuthContext) {
   server.tool(
     "get_user_schedules",
     "Get all schedules for a user, optionally filtered by term.",
@@ -30,7 +60,18 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
       term: z.number().optional().describe("Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
     },
     async ({ userId, term }) => {
-      const conditions = [eq(schema.schedules.userId, userId)];
+      const auth = await resolveAuthorizedEngineUserId(db, authContext);
+      if (!auth.userId) {
+        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+      }
+      if (auth.userId !== userId) {
+        return {
+          content: [{ type: "text" as const, text: "Forbidden: cannot access schedules for another user." }],
+          isError: true,
+        };
+      }
+
+      const conditions = [eq(schema.schedules.userId, auth.userId)];
       if (term) conditions.push(eq(schema.schedules.term, term));
 
       const userSchedules = await db
@@ -57,6 +98,11 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
       scheduleId: z.number().describe("Schedule ID"),
     },
     async ({ scheduleId }) => {
+      const auth = await resolveAuthorizedEngineUserId(db, authContext);
+      if (!auth.userId) {
+        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+      }
+
       const schedule = await db
         .select()
         .from(schema.schedules)
@@ -64,6 +110,12 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
 
       if (schedule.length === 0) {
         return { content: [{ type: "text" as const, text: "Schedule not found." }], isError: true };
+      }
+      if (schedule[0].userId !== auth.userId) {
+        return {
+          content: [{ type: "text" as const, text: "Forbidden: schedule does not belong to authenticated user." }],
+          isError: true,
+        };
       }
 
       const courseMappings = await db
@@ -149,6 +201,11 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
     },
     async ({ scheduleId, department, dist, limit: maxResults }) => {
       const resultLimit = Math.min(maxResults ?? 30, 100);
+      const auth = await resolveAuthorizedEngineUserId(db, authContext);
+      if (!auth.userId) {
+        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+      }
+
       const schedule = await db
         .select()
         .from(schema.schedules)
@@ -156,6 +213,12 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
 
       if (schedule.length === 0) {
         return { content: [{ type: "text" as const, text: "Schedule not found." }], isError: true };
+      }
+      if (schedule[0].userId !== auth.userId) {
+        return {
+          content: [{ type: "text" as const, text: "Forbidden: schedule does not belong to authenticated user." }],
+          isError: true,
+        };
       }
 
       const existingCourseIds = await db
@@ -248,8 +311,11 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
 
       // Resolve each course code
       for (const code of courseCodes) {
-        const conditions = [ilike(schema.courses.code, `%${code}%`)];
-        if (term) conditions.push(eq(schema.courses.term, term));
+        const resolved = await resolveCourseInput(db, { code, term });
+        if (!resolved.value) {
+          issues.push(resolved.error ?? `Course not found: "${code}"`);
+          continue;
+        }
 
         const rows = await db
           .select({
@@ -259,16 +325,14 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase) {
             status: schema.courses.status,
           })
           .from(schema.courses)
-          .where(and(...conditions))
-          .orderBy(sql`${schema.courses.term} DESC`)
+          .where(eq(schema.courses.id, resolved.value.id))
           .limit(1);
 
-        if (rows.length === 0) {
-          issues.push(`Course not found: "${code}"${term ? ` in ${termCodeToName(term)}` : ""}`);
+        const course = rows[0];
+        if (!course) {
+          issues.push(`Course not found for resolved id: "${resolved.value.id}"`);
           continue;
         }
-
-        const course = rows[0];
 
         // Check for duplicate courses
         if (resolvedCourses.some((c) => c.courseId === course.id)) {

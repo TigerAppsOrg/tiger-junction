@@ -3,30 +3,139 @@ import { type FastifyPluginAsync } from "fastify";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMcpServer } from "../mcp/index.js";
+import type { McpToolScope } from "../mcp/index.js";
+import type { AuthContext } from "../mcp/context.js";
 
 interface McpSession {
   server: McpServer;
   transport: StreamableHTTPServerTransport;
+  authContext: AuthContext;
+  clientKey: string;
+  createdAt: number;
+  lastSeenAt: number;
 }
 
-const mcpRoutes: FastifyPluginAsync = async (app) => {
+function parsePositiveInt(raw: string | undefined, fallback: number): number {
+  if (!raw) return fallback;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function getSessionTtlMs(): number {
+  return parsePositiveInt(process.env.MCP_SESSION_TTL_MS, 30 * 60 * 1000);
+}
+
+function getMaxSessionsPerClient(): number {
+  return parsePositiveInt(process.env.MCP_MAX_SESSIONS_PER_CLIENT, 20);
+}
+
+function extractBearerToken(headerValue: string | undefined): string | null {
+  if (!headerValue) return null;
+  const [scheme, token] = headerValue.trim().split(/\s+/, 2);
+  if (!scheme || !token || scheme.toLowerCase() !== "bearer") return null;
+  return token;
+}
+
+function rpcError(code: number, message: string) {
+  return {
+    jsonrpc: "2.0",
+    error: { code, message },
+    id: null,
+  };
+}
+
+interface McpRouteOptions {
+  scope?: McpToolScope;
+}
+
+const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
+  const scope = opts.scope ?? "full";
   const sessions = new Map<string, McpSession>();
+  const cleanupExpiredSessions = async (): Promise<void> => {
+    const now = Date.now();
+    const ttl = getSessionTtlMs();
+    for (const [sessionId, session] of sessions) {
+      if (now - session.lastSeenAt > ttl) {
+        await session.transport.close();
+        sessions.delete(sessionId);
+      }
+    }
+  };
+
+  const touchSession = (session: McpSession) => {
+    session.lastSeenAt = Date.now();
+  };
+
+  const authenticateRequest = (request: { headers: Record<string, unknown> }) => {
+    const requiredToken = process.env.MCP_ACCESS_TOKEN?.trim();
+    const authHeader = request.headers.authorization;
+    const bearerToken = typeof authHeader === "string" ? extractBearerToken(authHeader) : null;
+
+    if (requiredToken && bearerToken !== requiredToken) {
+      return null;
+    }
+
+    const externalUserIdHeader = request.headers["x-external-user-id"];
+    const netidHeader = request.headers["x-user-netid"];
+    const externalUserId =
+      typeof externalUserIdHeader === "string" && externalUserIdHeader.trim().length > 0
+        ? externalUserIdHeader.trim()
+        : undefined;
+    const netid = typeof netidHeader === "string" && netidHeader.trim().length > 0 ? netidHeader.trim() : undefined;
+
+    const clientKey = externalUserId ?? netid ?? (bearerToken ? `token:${bearerToken.slice(0, 8)}` : "anonymous");
+    return {
+      clientKey,
+      authContext: {
+        externalUserId,
+        netid,
+      } satisfies AuthContext,
+    };
+  };
+
+  const enforceSessionClientBinding = (session: McpSession, clientKey: string) => session.clientKey === clientKey;
+
+  const cleanupInterval = setInterval(() => {
+    void cleanupExpiredSessions();
+  }, 60_000);
 
   app.post("/", {
     config: { rawBody: true },
     schema: { hide: true },
   }, async (request, reply) => {
+    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
+    const auth = authenticateRequest(request);
+    if (!auth) {
+      app.log.warn({ requestId }, "Rejected unauthorized MCP POST request");
+      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
+    }
+
+    await cleanupExpiredSessions();
     const sessionId = request.headers["mcp-session-id"] as string | undefined;
 
     if (sessionId && sessions.has(sessionId)) {
       const session = sessions.get(sessionId)!;
+      if (!enforceSessionClientBinding(session, auth.clientKey)) {
+        app.log.warn({ requestId, sessionId }, "Rejected MCP session access for mismatched client");
+        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
+      }
+      touchSession(session);
+      app.log.info({ requestId, sessionId }, "Handling MCP request on existing session");
       reply.hijack();
       await session.transport.handleRequest(request.raw, reply.raw, request.body);
       return;
     }
 
     try {
-      const mcpServer = createMcpServer(app.db.db);
+      const activeSessionsForClient = [...sessions.values()].filter((s) => s.clientKey === auth.clientKey).length;
+      if (activeSessionsForClient >= getMaxSessionsPerClient()) {
+        app.log.warn({ requestId, clientKey: auth.clientKey }, "Rejected MCP request due to session cap");
+        return reply
+          .code(429)
+          .send(rpcError(-32009, "Too many active MCP sessions for this client. Close a session and retry."));
+      }
+
+      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope);
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
       });
@@ -41,20 +150,45 @@ const mcpRoutes: FastifyPluginAsync = async (app) => {
       await transport.handleRequest(request.raw, reply.raw, request.body);
 
       if (transport.sessionId) {
-        sessions.set(transport.sessionId, { server: mcpServer, transport });
+        const now = Date.now();
+        sessions.set(transport.sessionId, {
+          server: mcpServer,
+          transport,
+          authContext: auth.authContext,
+          clientKey: auth.clientKey,
+          createdAt: now,
+          lastSeenAt: now,
+        });
+        app.log.info(
+          { requestId, sessionId: transport.sessionId, clientKey: auth.clientKey },
+          "Created new MCP session"
+        );
       }
     } catch (err) {
       if (!reply.sent) {
-        app.log.error(err, "MCP request failed");
+        app.log.error({ err, requestId }, "MCP request failed");
         return reply.code(500).send({ error: "Internal MCP error" });
       }
     }
   });
 
   app.get("/", { schema: { hide: true } }, async (request, reply) => {
+    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
+    const auth = authenticateRequest(request);
+    if (!auth) {
+      app.log.warn({ requestId }, "Rejected unauthorized MCP GET request");
+      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
+    }
+
+    await cleanupExpiredSessions();
     const sessionId = request.headers["mcp-session-id"] as string | undefined;
     if (sessionId && sessions.has(sessionId)) {
       const session = sessions.get(sessionId)!;
+      if (!enforceSessionClientBinding(session, auth.clientKey)) {
+        app.log.warn({ requestId, sessionId }, "Rejected MCP GET for mismatched client");
+        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
+      }
+      touchSession(session);
       reply.hijack();
       await session.transport.handleRequest(request.raw, reply.raw);
       return;
@@ -71,11 +205,24 @@ const mcpRoutes: FastifyPluginAsync = async (app) => {
   });
 
   app.delete("/", { schema: { hide: true } }, async (request, reply) => {
+    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
+    const auth = authenticateRequest(request);
+    if (!auth) {
+      app.log.warn({ requestId }, "Rejected unauthorized MCP DELETE request");
+      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
+    }
+
+    await cleanupExpiredSessions();
     const sessionId = request.headers["mcp-session-id"] as string | undefined;
     if (sessionId && sessions.has(sessionId)) {
       const session = sessions.get(sessionId)!;
+      if (!enforceSessionClientBinding(session, auth.clientKey)) {
+        app.log.warn({ requestId, sessionId }, "Rejected MCP DELETE for mismatched client");
+        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
+      }
       await session.transport.close();
       sessions.delete(sessionId);
+      app.log.info({ requestId, sessionId }, "Closed MCP session");
       return reply.code(200).send();
     }
 
@@ -87,6 +234,7 @@ const mcpRoutes: FastifyPluginAsync = async (app) => {
   });
 
   app.addHook("onClose", async () => {
+    clearInterval(cleanupInterval);
     for (const [, session] of sessions) {
       await session.transport.close();
     }
