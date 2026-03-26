@@ -19,6 +19,7 @@ import instructorsRoutes from "./routes/api/instructors.ts";
 import evaluationsRoutes from "./routes/api/evaluations.ts";
 import redisPlugin from "./plugins/redis.ts";
 import dbPlugin from "./plugins/db.ts";
+import supabasePlugin from "./plugins/supabase.ts";
 import snatchRoutes from "./routes/snatch.ts";
 import mcpRoutes from "./routes/mcp.ts";
 
@@ -75,6 +76,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
 
   await app.register(dbPlugin);
   await app.register(redisPlugin);
+  await app.register(supabasePlugin);
 
   app.register(healthRoutes, { prefix: "/health" });
   app.register(coursesRoutes, { prefix: "/api/courses" });
@@ -88,6 +90,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   app.register(snatchRoutes, { prefix: "/snatch" });
   app.register(mcpRoutes, { prefix: "/mcp", scope: "full" });
   app.register(mcpRoutes, { prefix: "/princetoncourses/mcp", scope: "princetoncourses" });
+  app.register(mcpRoutes, { prefix: "/junction/mcp", scope: "junction" });
 
   return app;
 }

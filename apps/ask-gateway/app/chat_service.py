@@ -24,6 +24,9 @@ find courses, understand workload, compare options, and make informed decisions.
 You have access to tools that search courses, get course details, evaluations, \
 instructor info, and more. Use them to answer accurately.
 
+The upcoming term is Fall 2026 (term code 1272). Unless the user specifies otherwise, \
+default to searching and discussing courses for Fall 2026. The current term is Spring 2026 (1264).
+
 Guidelines:
 - Always use tools to look up real data. Do not fabricate course information.
 - After receiving tool results, synthesize a helpful, conversational response.
@@ -31,6 +34,24 @@ Guidelines:
 - Format course codes as "DEPT NNN" (e.g., COS 226, not COS226).
 - Keep responses concise but thorough. Use bullet points and bold for readability.
 - If a course is not found, say so honestly and suggest alternatives.
+- When searching for courses, prefer term 1272 (Fall 2026) unless the user asks about a different term.
+"""
+
+_SCHEDULE_PROMPT_ADDENDUM = """
+
+You also have access to the user's TigerJunction schedule. You can:
+- Get their schedules with get_user_schedules (no userId needed — you are already authenticated)
+- Get full details of a schedule with get_schedule_details
+- Search for courses that don't conflict with their schedule by passing scheduleId to search_courses
+- Verify a proposed schedule with verify_schedule
+- Create a new schedule with create_schedule
+- Add a course with add_course_to_schedule (needs scheduleId and courseCode like "COS 226")
+- Remove a course with remove_course_from_schedule
+- Rename a schedule with rename_schedule
+- Delete a schedule with delete_schedule
+When the user asks about "my schedule", "my courses", or wants to add/remove/manage courses, use these tools.
+Always get the user's schedules first to find the right scheduleId before adding/removing courses or filtering by conflicts.
+When the user wants to find courses that fit their schedule, use search_courses with the scheduleId parameter — this combines all search filters (department, text, days, time, instructor, distribution) with schedule conflict checking.
 """
 
 
@@ -120,15 +141,20 @@ class ChatService:
         request_id = request_id or str(uuid.uuid4())
         conversation_id = payload.conversationId or str(uuid.uuid4())
         prompt = payload.messages[-1].content
-        mcp_client = McpHttpClient(self._settings)
+        mcp_url = self._settings.junction_mcp_url if payload.netid else None
+        mcp_client = McpHttpClient(self._settings, netid=payload.netid, mcp_url=mcp_url)
         llm_client = OpenAiLlmClient(self._settings)
         session_id: str | None = None
 
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
 
+            system_prompt = _SYSTEM_PROMPT
+            if payload.netid:
+                system_prompt += _SCHEDULE_PROMPT_ADDENDUM
+
             messages: list[dict[str, Any]] = [
-                {"role": "system", "content": _SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 *[m.model_dump() for m in payload.messages],
             ]
 
@@ -354,7 +380,8 @@ class ChatService:
         request_id = request_id or str(uuid.uuid4())
         conversation_id = payload.conversationId or str(uuid.uuid4())
         prompt = payload.messages[-1].content
-        mcp_client = McpHttpClient(self._settings)
+        mcp_url = self._settings.junction_mcp_url if payload.netid else None
+        mcp_client = McpHttpClient(self._settings, netid=payload.netid, mcp_url=mcp_url)
         session_id: str | None = None
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})

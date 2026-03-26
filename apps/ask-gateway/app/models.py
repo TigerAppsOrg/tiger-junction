@@ -15,6 +15,7 @@ class AskStreamRequest(BaseModel):
     term: int | None = None
     model: str | None = None
     messages: list[ChatMessage] = Field(min_length=1)
+    netid: str | None = None
 
 
 class ToolCall(BaseModel):

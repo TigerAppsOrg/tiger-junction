@@ -20,6 +20,7 @@ def _env_bool(name: str, default: bool) -> bool:
 class Settings:
     gateway_api_token: str = os.getenv("ASK_GATEWAY_API_TOKEN", "")
     mcp_url: str = os.getenv("JUNCTION_MCP_URL", "http://localhost:3000/mcp")
+    junction_mcp_url: str = os.getenv("JUNCTION_MCP_URL_SCHEDULE", "http://localhost:3000/junction/mcp")
     mcp_token: str = os.getenv("JUNCTION_MCP_TOKEN", "")
     mcp_protocol_version: str = os.getenv("MCP_PROTOCOL_VERSION", "2025-03-26")
     tool_timeout_seconds: float = float(os.getenv("ASK_TOOL_TIMEOUT_SECONDS", "10"))
