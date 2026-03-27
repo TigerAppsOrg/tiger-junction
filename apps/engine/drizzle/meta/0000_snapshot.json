@@ -1,5 +1,5 @@
 {
-  "id": "2342ba65-1079-404b-a097-d3637f25e9d3",
+  "id": "8465e618-3779-4ce5-ae8e-bffaff5708b8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -53,8 +53,12 @@
           "name": "analytics_user_id_users_id_fk",
           "tableFrom": "analytics",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -88,8 +92,12 @@
           "name": "course_department_map_course_id_courses_id_fk",
           "tableFrom": "course_department_map",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -97,8 +105,12 @@
           "name": "course_department_map_department_code_departments_code_fk",
           "tableFrom": "course_department_map",
           "tableTo": "departments",
-          "columnsFrom": ["department_code"],
-          "columnsTo": ["code"],
+          "columnsFrom": [
+            "department_code"
+          ],
+          "columnsTo": [
+            "code"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -106,7 +118,10 @@
       "compositePrimaryKeys": {
         "course_department_map_course_id_department_code_pk": {
           "name": "course_department_map_course_id_department_code_pk",
-          "columns": ["course_id", "department_code"]
+          "columns": [
+            "course_id",
+            "department_code"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -137,8 +152,12 @@
           "name": "course_instructor_map_course_id_courses_id_fk",
           "tableFrom": "course_instructor_map",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -146,8 +165,12 @@
           "name": "course_instructor_map_instructor_id_instructors_netid_fk",
           "tableFrom": "course_instructor_map",
           "tableTo": "instructors",
-          "columnsFrom": ["instructor_id"],
-          "columnsTo": ["netid"],
+          "columnsFrom": [
+            "instructor_id"
+          ],
+          "columnsTo": [
+            "netid"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -155,7 +178,10 @@
       "compositePrimaryKeys": {
         "course_instructor_map_course_id_instructor_id_pk": {
           "name": "course_instructor_map_course_id_instructor_id_pk",
-          "columns": ["course_id", "instructor_id"]
+          "columns": [
+            "course_id",
+            "instructor_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -273,8 +299,12 @@
           "name": "custom_events_user_id_users_id_fk",
           "tableFrom": "custom_events",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -320,8 +350,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "course_id": {
-          "name": "course_id",
+        "listing_id": {
+          "name": "listing_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eval_term": {
+          "name": "eval_term",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -363,14 +399,112 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "evaluations_listing_id_eval_term_idx": {
+          "name": "evaluations_listing_id_eval_term_idx",
+          "columns": [
+            {
+              "expression": "listing_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "eval_term",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.external_user_identities": {
+      "name": "external_user_identities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "external_user_id": {
+          "name": "external_user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "engine_user_id": {
+          "name": "engine_user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "netid": {
+          "name": "netid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "external_user_identities_provider_external_user_id_idx": {
+          "name": "external_user_identities_provider_external_user_id_idx",
+          "columns": [
+            {
+              "expression": "provider",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "external_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
-        "evaluations_course_id_courses_id_fk": {
-          "name": "evaluations_course_id_courses_id_fk",
-          "tableFrom": "evaluations",
-          "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+        "external_user_identities_engine_user_id_users_id_fk": {
+          "name": "external_user_identities_engine_user_id_users_id_fk",
+          "tableFrom": "external_user_identities",
+          "tableTo": "users",
+          "columnsFrom": [
+            "engine_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -424,8 +558,12 @@
           "name": "feedback_user_id_users_id_fk",
           "tableFrom": "feedback",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -471,8 +609,12 @@
           "name": "icals_user_id_users_id_fk",
           "tableFrom": "icals",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -480,8 +622,12 @@
           "name": "icals_schedule_id_schedules_id_fk",
           "tableFrom": "icals",
           "tableTo": "schedules",
-          "columnsFrom": ["schedule_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "schedule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -608,8 +754,12 @@
           "name": "schedule_course_map_schedule_id_schedules_id_fk",
           "tableFrom": "schedule_course_map",
           "tableTo": "schedules",
-          "columnsFrom": ["schedule_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "schedule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -617,8 +767,12 @@
           "name": "schedule_course_map_course_id_courses_id_fk",
           "tableFrom": "schedule_course_map",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -626,7 +780,10 @@
       "compositePrimaryKeys": {
         "schedule_course_map_schedule_id_course_id_pk": {
           "name": "schedule_course_map_schedule_id_course_id_pk",
-          "columns": ["schedule_id", "course_id"]
+          "columns": [
+            "schedule_id",
+            "course_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -657,8 +814,12 @@
           "name": "schedule_event_map_schedule_id_schedules_id_fk",
           "tableFrom": "schedule_event_map",
           "tableTo": "schedules",
-          "columnsFrom": ["schedule_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "schedule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -666,8 +827,12 @@
           "name": "schedule_event_map_custom_event_id_custom_events_id_fk",
           "tableFrom": "schedule_event_map",
           "tableTo": "custom_events",
-          "columnsFrom": ["custom_event_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "custom_event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -675,7 +840,10 @@
       "compositePrimaryKeys": {
         "schedule_event_map_schedule_id_custom_event_id_pk": {
           "name": "schedule_event_map_schedule_id_custom_event_id_pk",
-          "columns": ["schedule_id", "custom_event_id"]
+          "columns": [
+            "schedule_id",
+            "custom_event_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -731,8 +899,12 @@
           "name": "schedules_user_id_users_id_fk",
           "tableFrom": "schedules",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -822,8 +994,12 @@
           "name": "sections_course_id_courses_id_fk",
           "tableFrom": "sections",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -890,7 +1066,11 @@
     "public.status": {
       "name": "status",
       "schema": "public",
-      "values": ["open", "closed", "canceled"]
+      "values": [
+        "open",
+        "closed",
+        "canceled"
+      ]
     }
   },
   "schemas": {},

@@ -47,13 +47,23 @@ CREATE TABLE "departments" (
 --> statement-breakpoint
 CREATE TABLE "evaluations" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"course_id" text NOT NULL,
+	"listing_id" text NOT NULL,
+	"eval_term" text NOT NULL,
 	"num_comments" integer,
 	"comments" text[],
 	"summary" text,
 	"rating" real,
 	"rating_source" text,
 	"metadata" jsonb
+);
+--> statement-breakpoint
+CREATE TABLE "external_user_identities" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"provider" text NOT NULL,
+	"external_user_id" text NOT NULL,
+	"engine_user_id" integer NOT NULL,
+	"netid" text,
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "feedback" (
@@ -137,7 +147,7 @@ ALTER TABLE "course_department_map" ADD CONSTRAINT "course_department_map_depart
 ALTER TABLE "course_instructor_map" ADD CONSTRAINT "course_instructor_map_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "course_instructor_map" ADD CONSTRAINT "course_instructor_map_instructor_id_instructors_netid_fk" FOREIGN KEY ("instructor_id") REFERENCES "public"."instructors"("netid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "custom_events" ADD CONSTRAINT "custom_events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "evaluations" ADD CONSTRAINT "evaluations_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "external_user_identities" ADD CONSTRAINT "external_user_identities_engine_user_id_users_id_fk" FOREIGN KEY ("engine_user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "feedback" ADD CONSTRAINT "feedback_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "icals" ADD CONSTRAINT "icals_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "icals" ADD CONSTRAINT "icals_schedule_id_schedules_id_fk" FOREIGN KEY ("schedule_id") REFERENCES "public"."schedules"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -146,4 +156,6 @@ ALTER TABLE "schedule_course_map" ADD CONSTRAINT "schedule_course_map_course_id_
 ALTER TABLE "schedule_event_map" ADD CONSTRAINT "schedule_event_map_schedule_id_schedules_id_fk" FOREIGN KEY ("schedule_id") REFERENCES "public"."schedules"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "schedule_event_map" ADD CONSTRAINT "schedule_event_map_custom_event_id_custom_events_id_fk" FOREIGN KEY ("custom_event_id") REFERENCES "public"."custom_events"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "schedules" ADD CONSTRAINT "schedules_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "sections" ADD CONSTRAINT "sections_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "sections" ADD CONSTRAINT "sections_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE UNIQUE INDEX "evaluations_listing_id_eval_term_idx" ON "evaluations" USING btree ("listing_id","eval_term");--> statement-breakpoint
+CREATE UNIQUE INDEX "external_user_identities_provider_external_user_id_idx" ON "external_user_identities" USING btree ("provider","external_user_id");

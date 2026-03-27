@@ -133,12 +133,30 @@ beforeAll(async () => {
     [testUser2Id]
   );
 
-  // Pick a real course from the DB to use in tests
-  const courseRow = await pgClient.query(
-    "SELECT id, term FROM courses LIMIT 1"
+  // Insert a minimal department + course + section for testing
+  await pgClient.query(
+    "INSERT INTO departments (code, name) VALUES ('TST', 'Test Department') ON CONFLICT DO NOTHING"
   );
-  testCourseId = courseRow.rows[0].id;
-  const testTerm = courseRow.rows[0].term;
+  testCourseId = "099999-1264";
+  const testTerm = 1264;
+  await pgClient.query(
+    `INSERT INTO courses (id, listing_id, term, code, title, description, status, grading_basis)
+     VALUES ($1, '099999', $2, 'TST 100', 'Test Course', 'A test course for verification.', 'open', 'GRD')
+     ON CONFLICT DO NOTHING`,
+    [testCourseId, testTerm]
+  );
+  await pgClient.query(
+    `INSERT INTO sections (course_id, title, num, tot, cap, days, start_time, end_time, status)
+     VALUES ($1, 'L01', '001', 0, 30, 5, 600, 680, 'open')
+     ON CONFLICT DO NOTHING`,
+    [testCourseId]
+  );
+  await pgClient.query(
+    `INSERT INTO course_department_map (course_id, department_code)
+     VALUES ($1, 'TST')
+     ON CONFLICT DO NOTHING`,
+    [testCourseId]
+  );
 
   // Create schedules for user 1 and user 2
   const s1 = await pgClient.query(
@@ -161,11 +179,15 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Clean up test data
-  await pgClient.query("DELETE FROM schedule_course_map WHERE schedule_id = $1", [testScheduleId]);
+  // Clean up test data (reverse FK order)
+  await pgClient.query("DELETE FROM schedule_course_map WHERE schedule_id IN ($1, $2)", [testScheduleId, testSchedule2Id]);
   await pgClient.query("DELETE FROM schedules WHERE id IN ($1, $2)", [testScheduleId, testSchedule2Id]);
   await pgClient.query("DELETE FROM external_user_identities WHERE engine_user_id IN ($1, $2)", [testUserId, testUser2Id]);
   await pgClient.query("DELETE FROM users WHERE id IN ($1, $2)", [testUserId, testUser2Id]);
+  await pgClient.query("DELETE FROM course_department_map WHERE course_id = $1", [testCourseId]);
+  await pgClient.query("DELETE FROM sections WHERE course_id = $1", [testCourseId]);
+  await pgClient.query("DELETE FROM courses WHERE id = $1", [testCourseId]);
+  await pgClient.query("DELETE FROM departments WHERE code = 'TST'");
   await pgClient.end();
   await closeApp();
 });
