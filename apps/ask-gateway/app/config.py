@@ -34,3 +34,5 @@ class Settings:
     ask_llm_timeout_seconds: float = float(os.getenv("ASK_LLM_TIMEOUT_SECONDS", "12"))
     ask_llm_planner_enabled: bool = _env_bool("ASK_LLM_PLANNER_ENABLED", False)
     ask_llm_synthesis_enabled: bool = _env_bool("ASK_LLM_SYNTHESIS_ENABLED", False)
+    supabase_url: str = os.getenv("SUPABASE_URL", "")
+    supabase_service_role_key: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")

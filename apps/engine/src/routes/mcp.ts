@@ -136,7 +136,8 @@ const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
       }
 
       const supabase = scope === "junction" ? app.supabase : undefined;
-      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope, supabase);
+      const snatchDb = (scope === "junction" || scope === "snatch") ? app.snatchDb : undefined;
+      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope, supabase, snatchDb);
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
       });

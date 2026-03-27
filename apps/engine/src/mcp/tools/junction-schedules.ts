@@ -296,11 +296,13 @@ export function registerJunctionScheduleTools(
       }[] = [];
 
       for (const code of courseCodes) {
-        // Query Supabase courses by code
+        // Query Supabase courses by code (handle both "COS 330" and "COS330")
+        const noSpace = code.replace(/\s+/g, "");
+        const withSpace = code.replace(/([A-Za-z])(\d)/, "$1 $2");
         let courseQuery = supabase
           .from("courses")
           .select("id, code, term, status")
-          .ilike("code", code);
+          .or(`code.ilike.${noSpace},code.ilike.${withSpace}`);
 
         if (term != null) {
           courseQuery = courseQuery.eq("term", term);
@@ -473,10 +475,15 @@ export function registerJunctionScheduleTools(
     code: string,
     term: number
   ): Promise<{ course?: { id: number; code: string; title: string }; error?: string }> {
+    // Supabase stores codes without spaces (e.g., "COS330"), but users type "COS 330".
+    // Try both the original and a no-space version.
+    const noSpace = code.replace(/\s+/g, "");
+    const withSpace = code.replace(/([A-Za-z])(\d)/, "$1 $2");
+
     const { data } = await supabase
       .from("courses")
       .select("id, code, title")
-      .ilike("code", code)
+      .or(`code.ilike.${noSpace},code.ilike.${withSpace}`)
       .eq("term", term)
       .limit(1);
 

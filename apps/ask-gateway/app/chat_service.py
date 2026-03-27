@@ -14,15 +14,18 @@ from .llm_client import LlmClientError, OpenAiLlmClient
 from .mcp_client import McpClientError, McpHttpClient
 from .models import AskStreamRequest, ToolCall
 from .response_synthesizer import synthesize_final_response
+from .usage_tracker import (
+    resolve_model_for_user_async,
+    record_usage_async,
+    get_user_usage_async,
+)
+from . import supabase_store
 
-MAX_TOOL_ITERATIONS = 30
+MAX_TOOL_ITERATIONS = 20
 
 _SYSTEM_PROMPT = """\
 You are an AI course assistant for Princeton University students. You help students \
 find courses, understand workload, compare options, and make informed decisions.
-
-You have access to tools that search courses, get course details, evaluations, \
-instructor info, and more. Use them to answer accurately.
 
 The upcoming term is Fall 2026 (term code 1272). Unless the user specifies otherwise, \
 default to searching and discussing courses for Fall 2026. The current term is Spring 2026 (1264).
@@ -31,26 +34,15 @@ Guidelines:
 - Always use tools to look up real data. Do not fabricate course information.
 - After receiving tool results, synthesize a helpful, conversational response.
 - When comparing courses, highlight key differences (rating, workload, schedule).
-- Format course codes as "DEPT NNN" (e.g., COS 226, not COS226).
 - Keep responses concise but thorough. Use bullet points and bold for readability.
-- If a course is not found, say so honestly and suggest alternatives.
 - When searching for courses, prefer term 1272 (Fall 2026) unless the user asks about a different term.
 """
 
 _SCHEDULE_PROMPT_ADDENDUM = """
 
-You also have access to the user's TigerJunction schedule. You can:
+You also have access to the user's TigerJunction (junction.tigerapps.org) schedule.
 - Get their schedules with get_user_schedules (no userId needed — you are already authenticated)
-- Get full details of a schedule with get_schedule_details
-- Search for courses that don't conflict with their schedule by passing scheduleId to search_courses
-- Verify a proposed schedule with verify_schedule
-- Create a new schedule with create_schedule
-- Add a course with add_course_to_schedule (needs scheduleId and courseCode like "COS 226")
-- Remove a course with remove_course_from_schedule
-- Rename a schedule with rename_schedule
-- Delete a schedule with delete_schedule
-When the user asks about "my schedule", "my courses", or wants to add/remove/manage courses, use these tools.
-Always get the user's schedules first to find the right scheduleId before adding/removing courses or filtering by conflicts.
+When the user asks about "my schedule", "my courses", or wants to add/remove/manage courses, use tools.
 When the user wants to find courses that fit their schedule, use search_courses with the scheduleId parameter — this combines all search filters (department, text, days, time, instructor, distribution) with schedule conflict checking.
 """
 
@@ -146,6 +138,23 @@ class ChatService:
         llm_client = OpenAiLlmClient(self._settings)
         session_id: str | None = None
 
+        # Quota enforcement
+        quota_before: dict | None = None
+        effective_model: str | None = payload.model
+        if payload.netid:
+            quota_before = await resolve_model_for_user_async(payload.netid)
+            if quota_before["blocked"]:
+                yield sse_event(
+                    "quota_exhausted",
+                    {
+                        "percentUsed": 100,
+                        "resetSeconds": quota_before["resetSeconds"],
+                        "requestId": request_id,
+                    },
+                )
+                return
+            effective_model = quota_before["model"]
+
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
 
@@ -165,6 +174,12 @@ class ChatService:
             # list_tools initializes the session, so capture it
             session_id = mcp_client._session_id
             collected_usage: dict[str, Any] | None = None
+            # Accumulate usage across all LLM iterations (tool-calling loop)
+            total_cost = 0.0
+            total_input_tokens = 0
+            total_output_tokens = 0
+            # Track tool calls for persistence
+            persisted_tool_events: list[dict[str, Any]] = []
 
             for iteration in range(MAX_TOOL_ITERATIONS):
                 if is_disconnected():
@@ -176,13 +191,18 @@ class ChatService:
                 finish_reason: str | None = None
 
                 async for chunk in llm_client.stream_chat(
-                    messages=messages, tools=llm_tools, model=payload.model
+                    messages=messages, tools=llm_tools, model=effective_model
                 ):
                     if chunk.get("type") == "done":
                         break
 
                     if chunk.get("usage"):
                         collected_usage = chunk["usage"]
+                        total_cost += collected_usage.get("cost") or 0
+                        total_input_tokens += collected_usage.get("prompt_tokens") or 0
+                        total_output_tokens += (
+                            collected_usage.get("completion_tokens") or 0
+                        )
 
                     choices = chunk.get("choices", [])
                     if not choices:
@@ -226,11 +246,47 @@ class ChatService:
                 # since some models like Gemini use "stop" even with tool calls).
                 if not collected_tool_calls:
                     usage = {
-                        "inputTokens": (collected_usage or {}).get("prompt_tokens", 0),
-                        "outputTokens": (collected_usage or {}).get(
-                            "completion_tokens", 0
-                        ),
+                        "inputTokens": total_input_tokens,
+                        "outputTokens": total_output_tokens,
                     }
+
+                    # Record cost and get updated quota
+                    quota_after: dict | None = None
+                    if payload.netid:
+                        if total_cost > 0:
+                            await record_usage_async(payload.netid, total_cost)
+                        quota_after = await get_user_usage_async(payload.netid)
+
+                        # Save conversation to Supabase
+                        conv_title = (
+                            payload.messages[0].content[:80]
+                            if payload.messages
+                            else "New chat"
+                        )
+                        await supabase_store.save_message(
+                            conversation_id, payload.netid, conv_title, "user", prompt
+                        )
+                        # Save tool calls/results
+                        for te in persisted_tool_events:
+                            await supabase_store.save_message(
+                                conversation_id,
+                                payload.netid,
+                                conv_title,
+                                te["type"],
+                                json.dumps(te, default=str),
+                            )
+                        await supabase_store.save_message(
+                            conversation_id,
+                            payload.netid,
+                            conv_title,
+                            "assistant",
+                            collected_content,
+                            cost=total_cost if total_cost > 0 else None,
+                            input_tokens=total_input_tokens or None,
+                            output_tokens=total_output_tokens or None,
+                            model=effective_model,
+                        )
+
                     yield sse_event(
                         "status",
                         {
@@ -239,15 +295,22 @@ class ChatService:
                             **({"sessionId": session_id} if session_id else {}),
                         },
                     )
-                    yield sse_event(
-                        "done",
-                        {
-                            "conversationId": conversation_id,
-                            "requestId": request_id,
-                            **({"sessionId": session_id} if session_id else {}),
-                            "usage": usage,
-                        },
-                    )
+
+                    done_data: dict[str, Any] = {
+                        "conversationId": conversation_id,
+                        "requestId": request_id,
+                        **({"sessionId": session_id} if session_id else {}),
+                        "usage": usage,
+                    }
+                    if quota_after is not None:
+                        done_data["quota"] = {
+                            "percentUsed": quota_after["percentUsed"],
+                            "tier": quota_after["tier"],
+                            "tierChanged": quota_before is not None
+                            and quota_before["tier"] != quota_after["tier"],
+                            "resetSeconds": quota_after["resetSeconds"],
+                        }
+                    yield sse_event("done", done_data)
                     return
 
                 yield sse_event(
@@ -293,9 +356,24 @@ class ChatService:
                             "sessionId": session_id,
                         },
                     )
+                    persisted_tool_events.append(
+                        {
+                            "type": "tool_call",
+                            "name": tool_name,
+                            "arguments": tool_args,
+                        }
+                    )
                     result = await asyncio.wait_for(
                         mcp_client.call_tool(tool_name, tool_args),
                         timeout=self._settings.tool_timeout_seconds,
+                    )
+                    persisted_tool_events.append(
+                        {
+                            "type": "tool_result",
+                            "name": tool_name,
+                            "ok": True,
+                            "result": result,
+                        }
                     )
                     yield sse_event(
                         "tool_result",
@@ -383,6 +461,21 @@ class ChatService:
         mcp_url = self._settings.junction_mcp_url if payload.netid else None
         mcp_client = McpHttpClient(self._settings, netid=payload.netid, mcp_url=mcp_url)
         session_id: str | None = None
+
+        # Quota enforcement (deterministic doesn't call LLM, but still check)
+        if payload.netid:
+            det_quota = await resolve_model_for_user_async(payload.netid)
+            if det_quota["blocked"]:
+                yield sse_event(
+                    "quota_exhausted",
+                    {
+                        "percentUsed": 100,
+                        "resetSeconds": det_quota["resetSeconds"],
+                        "requestId": request_id,
+                    },
+                )
+                return
+
         try:
             yield sse_event("status", {"phase": "starting", "requestId": request_id})
             tool_calls = _plan_tools(prompt, payload.term)
@@ -459,18 +552,24 @@ class ChatService:
                     **({"sessionId": session_id} if session_id else {}),
                 },
             )
-            yield sse_event(
-                "done",
-                {
-                    "conversationId": conversation_id,
-                    "requestId": request_id,
-                    **({"sessionId": session_id} if session_id else {}),
-                    "usage": {
-                        "inputTokens": 0,
-                        "outputTokens": len(response_text.split()),
-                    },
+            det_done_data: dict[str, Any] = {
+                "conversationId": conversation_id,
+                "requestId": request_id,
+                **({"sessionId": session_id} if session_id else {}),
+                "usage": {
+                    "inputTokens": 0,
+                    "outputTokens": len(response_text.split()),
                 },
-            )
+            }
+            if payload.netid:
+                det_q = await get_user_usage_async(payload.netid)
+                det_done_data["quota"] = {
+                    "percentUsed": det_q["percentUsed"],
+                    "tier": det_q["tier"],
+                    "tierChanged": False,
+                    "resetSeconds": det_q["resetSeconds"],
+                }
+            yield sse_event("done", det_done_data)
         except asyncio.CancelledError:
             yield sse_event(
                 "error",
@@ -532,5 +631,3 @@ def _extract_reasoning(delta: dict[str, Any]) -> str:
     if isinstance(reasoning, str):
         return reasoning
     return ""
-
-

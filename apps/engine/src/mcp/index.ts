@@ -6,15 +6,18 @@ import { registerEvaluationTools } from "./tools/evaluations.js";
 import { registerInstructorTools } from "./tools/instructors.js";
 import { registerScheduleTools } from "./tools/schedules.js";
 import { registerJunctionScheduleTools } from "./tools/junction-schedules.js";
+import { registerSnatchTools } from "./tools/snatch.js";
+import type { Db } from "mongodb";
 import type { AuthContext } from "./context.js";
 
-export type McpToolScope = "full" | "princetoncourses" | "junction";
+export type McpToolScope = "full" | "princetoncourses" | "junction" | "snatch";
 
 export function createMcpServer(
   db: NodePgDatabase,
   authContext?: AuthContext,
   scope: McpToolScope = "full",
-  supabaseClient?: SupabaseClient | null
+  supabaseClient?: SupabaseClient | null,
+  snatchDb?: Db | null
 ): McpServer {
   const server = new McpServer({
     name: "junction-engine",
@@ -32,6 +35,9 @@ export function createMcpServer(
     registerScheduleTools(server, db, authContext);
   } else if (scope === "junction" && supabaseClient) {
     registerJunctionScheduleTools(server, supabaseClient, authContext);
+    registerSnatchTools(server, db, authContext, snatchDb);
+  } else if (scope === "snatch") {
+    registerSnatchTools(server, db, authContext, snatchDb);
   }
 
   return server;
