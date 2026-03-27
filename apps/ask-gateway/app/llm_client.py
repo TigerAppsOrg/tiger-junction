@@ -48,6 +48,7 @@ class OpenAiLlmClient:
             "model": model or self._settings.ask_llm_model,
             "messages": messages,
             "stream": True,
+            "stream_options": {"include_usage": True},
         }
         if tools:
             request["tools"] = tools

@@ -22,8 +22,16 @@ class McpClientError(Exception):
 
 
 class McpHttpClient:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        *,
+        netid: str | None = None,
+        mcp_url: str | None = None,
+    ) -> None:
         self._settings = settings
+        self._netid = netid
+        self._mcp_url = mcp_url or settings.mcp_url
         self._session_id: str | None = None
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(settings.tool_timeout_seconds, connect=settings.connect_timeout_seconds)
@@ -58,7 +66,7 @@ class McpHttpClient:
         if self._session_id is None:
             await self.initialize()
 
-        cache_key = self._settings.mcp_url
+        cache_key = self._mcp_url
         cached = _tools_cache.get(cache_key)
         if cached is not None:
             openai_tools, _, ts = cached
@@ -103,7 +111,7 @@ class McpHttpClient:
         try:
             if self._session_id:
                 await self._client.delete(
-                    self._settings.mcp_url,
+                    self._mcp_url,
                     headers=self._headers(include_session=True),
                 )
         finally:
@@ -116,7 +124,7 @@ class McpHttpClient:
 
     async def _post(self, payload: dict[str, Any]) -> httpx.Response:
         response = await self._client.post(
-            self._settings.mcp_url,
+            self._mcp_url,
             headers=self._headers(include_session=True),
             json=payload,
         )
@@ -131,6 +139,8 @@ class McpHttpClient:
         }
         if self._settings.mcp_token:
             headers["authorization"] = f"Bearer {self._settings.mcp_token}"
+        if self._netid:
+            headers["x-user-netid"] = self._netid
         if include_session and self._session_id:
             headers["mcp-session-id"] = self._session_id
             headers["mcp-protocol-version"] = self._settings.mcp_protocol_version

@@ -10,6 +10,8 @@ from fastapi.responses import StreamingResponse
 from .chat_service import ChatService
 from .config import Settings
 from .models import AskStreamRequest
+from .usage_tracker import get_user_usage_async
+from . import supabase_store
 
 app = FastAPI(title="Ask Gateway", version="1.0.0")
 logger = logging.getLogger("ask-gateway")
@@ -34,6 +36,46 @@ def _validate_gateway_auth(settings: Settings, authorization: str | None) -> Non
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/ask/quota")
+async def get_quota(
+    netid: str,
+    authorization: str | None = Header(default=None),
+    settings: Settings = Depends(get_settings),
+) -> dict:
+    _validate_gateway_auth(settings, authorization)
+    if not netid:
+        raise HTTPException(status_code=400, detail="netid is required")
+    return await get_user_usage_async(netid)
+
+
+@app.get("/ask/conversations")
+async def list_conversations(
+    netid: str,
+    authorization: str | None = Header(default=None),
+    settings: Settings = Depends(get_settings),
+) -> list:
+    _validate_gateway_auth(settings, authorization)
+    if not netid:
+        raise HTTPException(status_code=400, detail="netid is required")
+    return await supabase_store.list_conversations(netid)
+
+
+@app.get("/ask/conversations/{conv_id}/messages")
+async def get_conversation_messages(
+    conv_id: str,
+    netid: str,
+    authorization: str | None = Header(default=None),
+    settings: Settings = Depends(get_settings),
+) -> list:
+    _validate_gateway_auth(settings, authorization)
+    if not netid:
+        raise HTTPException(status_code=400, detail="netid is required")
+    messages = await supabase_store.get_conversation_messages(conv_id, netid)
+    if messages is None:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return messages
 
 
 @app.post("/ask/stream")

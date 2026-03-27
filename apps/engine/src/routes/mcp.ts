@@ -135,7 +135,9 @@ const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
           .send(rpcError(-32009, "Too many active MCP sessions for this client. Close a session and retry."));
       }
 
-      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope);
+      const supabase = scope === "junction" ? app.supabase : undefined;
+      const snatchDb = (scope === "junction" || scope === "snatch") ? app.snatchDb : undefined;
+      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope, supabase, snatchDb);
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
       });

@@ -2,16 +2,23 @@
 
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { eq, ilike, sql, asc, desc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName, daysToBitmask, timeToValue } from "../helpers.js";
 import { buildResolutionError, resolveCourseInput } from "../resolvers.js";
+import type { AuthContext } from "../context.js";
 
-export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
+interface JunctionContext {
+  supabase: SupabaseClient;
+  authContext?: AuthContext;
+}
+
+export function registerCourseTools(server: McpServer, db: NodePgDatabase, junctionCtx?: JunctionContext) {
   server.tool(
     "search_courses",
-    "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department).",
+    "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department). Use scheduleId to exclude courses that conflict with the user's existing schedule.",
     {
       term: z.number().optional().describe("Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
       department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
@@ -22,10 +29,11 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
       startAfter: z.string().optional().describe("Earliest start time, e.g. '10:00 AM'. Excludes courses starting before this time."),
       startBefore: z.string().optional().describe("Latest start time, e.g. '2:00 PM'. Excludes courses starting after this time."),
       instructor: z.string().optional().describe("Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."),
+      scheduleId: z.number().optional().describe("TigerJunction schedule ID. When provided, excludes courses that conflict with the schedule's existing courses. Requires authenticated user (junction scope)."),
       limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
       offset: z.number().optional().describe("Number of results to skip for pagination (default 0)"),
     },
-    async ({ term, department, query, dist, days, daysMatch, startAfter, startBefore, instructor, limit: maxResults, offset }) => {
+    async ({ term, department, query, dist, days, daysMatch, startAfter, startBefore, instructor, scheduleId, limit: maxResults, offset }) => {
       const resultLimit = Math.min(maxResults ?? 50, 200);
       const resultOffset = offset ?? 0;
       const conditions = [];
@@ -73,6 +81,9 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         );
       }
 
+      // Fetch more results when schedule filtering is active (some will be filtered out)
+      const fetchLimit = scheduleId ? resultLimit * 3 : resultLimit;
+
       const courses = await db
         .select({
           id: schema.courses.id,
@@ -89,7 +100,115 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase) {
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(asc(schema.courses.code))
         .offset(resultOffset)
-        .limit(resultLimit);
+        .limit(fetchLimit);
+
+      // If scheduleId is provided and junction context available, post-filter for conflicts
+      if (scheduleId != null && junctionCtx) {
+        const { supabase, authContext } = junctionCtx;
+
+        // Resolve user
+        if (!authContext?.netid) {
+          return {
+            content: [{ type: "text" as const, text: "scheduleId filter requires authenticated user (x-user-netid header)." }],
+            isError: true,
+          };
+        }
+
+        const { data: userId } = await supabase.rpc("get_user_id_by_netid", { netid: authContext.netid });
+        if (!userId) {
+          return {
+            content: [{ type: "text" as const, text: `No TigerJunction account found for NetID '${authContext.netid}'.` }],
+            isError: true,
+          };
+        }
+
+        // Verify schedule ownership
+        const { data: sched } = await supabase
+          .from("schedules")
+          .select("id, user_id")
+          .eq("id", scheduleId)
+          .single();
+
+        if (!sched || sched.user_id !== userId) {
+          return {
+            content: [{ type: "text" as const, text: "Schedule not found or does not belong to authenticated user." }],
+            isError: true,
+          };
+        }
+
+        // Get existing courses in schedule
+        const { data: existingAssocs } = await supabase
+          .from("course_schedule_associations")
+          .select("course_id")
+          .eq("schedule_id", scheduleId);
+
+        const existingCourseIds = new Set((existingAssocs ?? []).map((a: { course_id: number }) => a.course_id));
+
+        // Get occupied time slots from schedule's sections (via engine DB for consistency)
+        const occupiedSlots: { days: number; startTime: number; endTime: number }[] = [];
+        if (existingCourseIds.size > 0) {
+          // Map Supabase course IDs to engine course IDs via listing_id + term
+          const { data: supabaseCourses } = await supabase
+            .from("courses")
+            .select("listing_id, term")
+            .in("id", [...existingCourseIds]);
+
+          for (const sc of supabaseCourses ?? []) {
+            const engineCourseId = `${sc.listing_id}-${sc.term}`;
+            const sections = await db
+              .select({ days: schema.sections.days, startTime: schema.sections.startTime, endTime: schema.sections.endTime })
+              .from(schema.sections)
+              .where(eq(schema.sections.courseId, engineCourseId));
+            occupiedSlots.push(...sections);
+          }
+        }
+
+        // Filter out courses already in schedule and courses that conflict
+        const filtered = [];
+        for (const course of courses) {
+          // Skip courses already in schedule (match by listing_id + term)
+          const sections = await db
+            .select({
+              title: schema.sections.title,
+              days: schema.sections.days,
+              startTime: schema.sections.startTime,
+              endTime: schema.sections.endTime,
+            })
+            .from(schema.sections)
+            .where(eq(schema.sections.courseId, course.id));
+
+          if (sections.length === 0) { filtered.push(course); continue; }
+
+          // Group by section type
+          const byType = new Map<string, typeof sections>();
+          for (const s of sections) {
+            const type = s.title.match(/^([A-Z]+)/)?.[1] ?? s.title;
+            if (!byType.has(type)) byType.set(type, []);
+            byType.get(type)!.push(s);
+          }
+
+          // Course fits if each section type has at least one non-conflicting option
+          const fits = [...byType.values()].every((group) =>
+            group.some((s) =>
+              !occupiedSlots.some((o) =>
+                (s.days & o.days) !== 0 && s.startTime < o.endTime && o.startTime < s.endTime
+              )
+            )
+          );
+
+          if (fits) filtered.push(course);
+          if (filtered.length >= resultLimit) break;
+        }
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify({ count: filtered.length, scheduleFiltered: true, scheduleId, courses: filtered }, null, 2),
+            },
+          ],
+        };
+      }
 
       return {
         content: [
