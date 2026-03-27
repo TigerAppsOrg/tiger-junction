@@ -1,0 +1,2 @@
+ALTER TABLE "evaluations" ADD COLUMN "eval_term" text NOT NULL;--> statement-breakpoint
+CREATE UNIQUE INDEX "evaluations_course_id_eval_term_idx" ON "evaluations" USING btree ("course_id","eval_term");
