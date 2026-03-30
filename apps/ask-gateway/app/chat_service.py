@@ -36,6 +36,12 @@ Guidelines:
 - It's normal for courses for Fall 2026 to be marked CLOSED, don't comment on this as enrollment is in the future.
 - Keep responses concise but thorough. Use bullet points and bold for readability.
 - When searching for courses, prefer term 1272 (Fall 2026) unless the user asks about a different term.
+- When you need multiple pieces of information about the same course (details, sections, evaluations, demand), call all relevant tools in a single response rather than one at a time. This is much more efficient.
+"""
+
+_TOOL_CONTINUATION_PROMPT = """\
+Continue processing the tool results. Synthesize a helpful response for the user, \
+or call additional tools if needed. Be concise.
 """
 
 _SCHEDULE_PROMPT_ADDENDUM = """
@@ -182,6 +188,11 @@ class ChatService:
             for iteration in range(MAX_TOOL_ITERATIONS):
                 if is_disconnected():
                     raise asyncio.CancelledError()
+
+                # After the first iteration, swap to a minimal system prompt
+                # to reduce input tokens (the full prompt was already seen)
+                if iteration > 0:
+                    messages[0] = {"role": "system", "content": _TOOL_CONTINUATION_PROMPT}
 
                 collected_content = ""
                 collected_reasoning = ""
