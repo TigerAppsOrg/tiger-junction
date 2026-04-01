@@ -21,6 +21,7 @@ import redisPlugin from "./plugins/redis.ts";
 import dbPlugin from "./plugins/db.ts";
 import supabasePlugin from "./plugins/supabase.ts";
 import snatchDbPlugin from "./plugins/snatch-db.ts";
+import tigerpathDbPlugin from "./plugins/tigerpath-db.ts";
 import snatchRoutes from "./routes/snatch.ts";
 import mcpRoutes from "./routes/mcp.ts";
 
@@ -79,6 +80,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   await app.register(redisPlugin);
   await app.register(supabasePlugin);
   await app.register(snatchDbPlugin);
+  await app.register(tigerpathDbPlugin);
 
   app.register(healthRoutes, { prefix: "/health" });
   app.register(coursesRoutes, { prefix: "/api/courses" });
@@ -94,6 +96,7 @@ export async function build(opts?: { logger?: boolean }): Promise<FastifyInstanc
   app.register(mcpRoutes, { prefix: "/princetoncourses/mcp", scope: "princetoncourses" });
   app.register(mcpRoutes, { prefix: "/junction/mcp", scope: "junction" });
   app.register(mcpRoutes, { prefix: "/snatch/mcp", scope: "snatch" });
+  app.register(mcpRoutes, { prefix: "/path/mcp", scope: "path" });
 
   return app;
 }
