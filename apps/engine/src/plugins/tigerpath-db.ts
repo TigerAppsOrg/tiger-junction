@@ -20,6 +20,7 @@ const tigerpathDbPlugin: FastifyPluginAsync = async (app) => {
     max: 5,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 5_000,
+    ssl: url.includes("rds.amazonaws.com") ? { rejectUnauthorized: false } : undefined,
   });
 
   // Verify connectivity at startup
