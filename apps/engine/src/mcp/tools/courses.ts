@@ -10,6 +10,39 @@ import { formatSection, termCodeToName, daysToBitmask, timeToValue } from "../he
 import { buildResolutionError, resolveCourseInput } from "../resolvers.js";
 import type { AuthContext } from "../context.js";
 
+/**
+ * Calculate true enrollment by grouping sections by type.
+ * Each student enrolls in one section per type (one lecture, one precept, etc.).
+ * The true enrollment is the sum within the type with the highest total
+ * (typically Lecture, which all students share).
+ */
+function calculateEnrollment(sections: { title: string; tot: number | null; cap: number | null }[]): {
+  enrolled: number;
+  capacity: number;
+} {
+  // Group by section type prefix (L=Lecture, P=Precept, C=Class, S=Seminar, etc.)
+  const byType = new Map<string, { enrolled: number; capacity: number }>();
+  for (const s of sections) {
+    const typeMatch = s.title.match(/^([A-Z]+)/);
+    const type = typeMatch ? typeMatch[1] : s.title;
+    const entry = byType.get(type) ?? { enrolled: 0, capacity: 0 };
+    entry.enrolled += s.tot ?? 0;
+    entry.capacity += s.cap ?? 0;
+    byType.set(type, entry);
+  }
+
+  if (byType.size === 0) return { enrolled: 0, capacity: 0 };
+
+  // Pick the type with the highest total enrollment — that's the true student count
+  // (Lecture sections contain all students; precepts split them into smaller groups)
+  let best = { enrolled: 0, capacity: 0 };
+  for (const entry of byType.values()) {
+    if (entry.enrolled > best.enrolled) best = entry;
+  }
+
+  return best;
+}
+
 interface JunctionContext {
   supabase: SupabaseClient;
   authContext?: AuthContext;
@@ -461,8 +494,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
             .where(eq(schema.sections.courseId, course.id))
             .orderBy(asc(schema.sections.id));
 
-          const totalEnrolled = sections.reduce((sum, s) => sum + (s.tot ?? 0), 0);
-          const totalCapacity = sections.reduce((sum, s) => sum + (s.cap ?? 0), 0);
+          const { enrolled: totalEnrolled, capacity: totalCapacity } = calculateEnrollment(sections);
 
           const evals = await db
             .select({ rating: schema.evaluations.rating, evalTerm: schema.evaluations.evalTerm })
@@ -522,8 +554,7 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
         .where(eq(schema.sections.courseId, resolved.value.id))
         .orderBy(asc(schema.sections.id));
 
-      const totalEnrolled = sections.reduce((sum, s) => sum + (s.tot ?? 0), 0);
-      const totalCapacity = sections.reduce((sum, s) => sum + (s.cap ?? 0), 0);
+      const { enrolled: totalEnrolled, capacity: totalCapacity } = calculateEnrollment(sections);
 
       return {
         content: [

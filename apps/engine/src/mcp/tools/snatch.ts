@@ -7,6 +7,25 @@ import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName } from "../helpers.js";
 import type { AuthContext } from "../context.js";
 
+function calculateEnrollment(sections: { title: string; tot: number | null; cap: number | null }[]): {
+  enrolled: number; capacity: number;
+} {
+  const byType = new Map<string, { enrolled: number; capacity: number }>();
+  for (const s of sections) {
+    const type = s.title.match(/^([A-Z]+)/)?.[1] ?? s.title;
+    const entry = byType.get(type) ?? { enrolled: 0, capacity: 0 };
+    entry.enrolled += s.tot ?? 0;
+    entry.capacity += s.cap ?? 0;
+    byType.set(type, entry);
+  }
+  if (byType.size === 0) return { enrolled: 0, capacity: 0 };
+  let best = { enrolled: 0, capacity: 0 };
+  for (const entry of byType.values()) {
+    if (entry.enrolled > best.enrolled) best = entry;
+  }
+  return best;
+}
+
 function getSnatchConfig(): { url: string; token: string } | null {
   const url = process.env.SNATCH_URL?.trim();
   const token = process.env.SNATCH_TOKEN?.trim();
@@ -385,8 +404,7 @@ export function registerSnatchTools(
           .from(schema.sections)
           .where(eq(schema.sections.courseId, offering.courseId));
 
-        const totalCap = sections.reduce((s, sec) => s + (sec.cap ?? 0), 0);
-        const totalEnrolled = sections.reduce((s, sec) => s + (sec.tot ?? 0), 0);
+        const { enrolled: totalEnrolled, capacity: totalCap } = calculateEnrollment(sections);
         const closedCount = sections.filter((s) => s.status === "closed").length;
         const canceledCount = sections.filter((s) => s.status === "canceled").length;
         const fillRate = totalCap > 0 ? Math.round((totalEnrolled / totalCap) * 100) : 0;
