@@ -254,10 +254,10 @@ export function registerTigerpathTools(
 
       const res = await pool.query(
         `SELECT m.code AS major_code, m.name AS major_name, COUNT(DISTINCT p.id)::int AS student_count
-         FROM tigerpath_userprofile p,
+         FROM tigerpath_userprofile p
+         LEFT JOIN tigerpath_major m ON p.major_id = m.id,
               jsonb_array_elements(p.user_schedule) semester,
               jsonb_array_elements(semester) course
-         LEFT JOIN tigerpath_major m ON p.major_id = m.id
          WHERE course->>'id' = ANY($1)
          GROUP BY m.code, m.name
          ORDER BY student_count DESC`,
