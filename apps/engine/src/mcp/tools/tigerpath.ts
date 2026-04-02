@@ -21,6 +21,57 @@ const SEMESTER_LABELS = [
   "External Credits",
 ];
 
+/**
+ * Given a graduation year, return labels like "Freshman Fall (Fall 2024)" for each semester index.
+ * Index 0 = first fall = (gradYear - 4) fall.
+ */
+function semesterLabelsForYear(gradYear: number): string[] {
+  const startYear = gradYear - 4;
+  return [
+    `Freshman Fall (Fall ${startYear})`,
+    `Freshman Spring (Spring ${startYear + 1})`,
+    `Sophomore Fall (Fall ${startYear + 1})`,
+    `Sophomore Spring (Spring ${startYear + 2})`,
+    `Junior Fall (Fall ${startYear + 2})`,
+    `Junior Spring (Spring ${startYear + 3})`,
+    `Senior Fall (Fall ${startYear + 3})`,
+    `Senior Spring (Spring ${startYear + 4})`,
+    `External Credits`,
+  ];
+}
+
+/**
+ * Resolve a semester name like "Sophomore Fall", "Fall 2025", or "sophomore fall" to a semester index.
+ * Requires the user's graduation year to map absolute terms.
+ */
+function resolveSemesterName(name: string, gradYear: number): number | null {
+  const lower = name.toLowerCase().trim();
+
+  // Direct label match: "freshman fall", "junior spring", etc.
+  const directIdx = SEMESTER_LABELS.findIndex((l) => l.toLowerCase() === lower);
+  if (directIdx !== -1) return directIdx;
+
+  // "external" / "external credits"
+  if (lower.includes("external")) return 8;
+
+  // Absolute term: "Fall 2025", "Spring 2026"
+  const absMatch = lower.match(/^(fall|spring)\s+(\d{4})$/);
+  if (absMatch) {
+    const season = absMatch[1];
+    const termYear = parseInt(absMatch[2]);
+    const startYear = gradYear - 4;
+    // Index 0 = Fall startYear, 1 = Spring startYear+1, 2 = Fall startYear+1, ...
+    for (let i = 0; i < 8; i++) {
+      const isFall = i % 2 === 0;
+      const yr = startYear + Math.floor(i / 2) + (isFall ? 0 : 1);
+      if ((isFall ? "fall" : "spring") === season && yr === termYear) return i;
+    }
+    return null;
+  }
+
+  return null;
+}
+
 function textResult(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
 }
@@ -311,7 +362,7 @@ export function registerTigerpathTools(
 
   server.tool(
     "get_user_schedule",
-    "Get the authenticated TigerPath user's 4-year course plan. Returns 9 semesters (Freshman Fall through External Credits) with enriched course data. Requires x-user-netid header.",
+    "Get the authenticated TigerPath user's 4-year course plan. Returns 9 semesters with actual term labels (e.g., 'Sophomore Fall (Fall 2025)') and enriched course data. Requires x-user-netid header.",
     {},
     async () => {
       const netid = authContext?.netid;
@@ -323,15 +374,15 @@ export function registerTigerpathTools(
       const schedule = user.user_schedule || Array.from({ length: 9 }, () => []);
       const enriched = await enrichSchedule(pool, schedule);
 
+      const labels = user.year ? semesterLabelsForYear(user.year) : SEMESTER_LABELS;
       const semesters: Record<string, any[]> = {};
       for (let i = 0; i < enriched.length; i++) {
-        const label = SEMESTER_LABELS[i] ?? `Semester ${i}`;
-        semesters[label] = enriched[i];
+        semesters[labels[i] ?? `Semester ${i}`] = enriched[i];
       }
 
       return textResult({
         netid,
-        year: user.year,
+        class_year: user.year,
         major: user.major_code ? { code: user.major_code, name: user.major_name } : null,
         semesters,
       });
@@ -340,61 +391,68 @@ export function registerTigerpathTools(
 
   server.tool(
     "update_user_schedule",
-    "Add or remove courses from the authenticated user's TigerPath schedule. Provide the semester and an action (add or remove) with the course code. Requires x-user-netid header.",
+    "Add or remove courses from the authenticated user's TigerPath schedule. Specify the semester by name (e.g., 'Sophomore Fall', 'Fall 2025', 'Junior Spring'). The tool resolves the correct position using the user's class year. Requires x-user-netid header.",
     {
-      semester_index: z.number().min(0).max(8).describe("Semester index: 0=Freshman Fall, 1=Freshman Spring, ..., 7=Senior Spring, 8=External Credits"),
+      semester: z.string().describe("Semester name — either relative (e.g., 'Sophomore Fall', 'Junior Spring', 'External Credits') or absolute (e.g., 'Fall 2025', 'Spring 2026'). Resolved to the correct position using the user's graduation year."),
       action: z.enum(["add", "remove"]).describe("Whether to add or remove the course"),
       dept: z.string().describe("Department code (e.g., 'COS')"),
       number: z.string().describe("Course number (e.g., '226')"),
     },
-    async ({ semester_index, action, dept, number }) => {
+    async ({ semester, action, dept, number }) => {
       const netid = authContext?.netid;
       if (!netid) return errorResult("Authentication required. Provide x-user-netid header.");
 
       const user = await resolveTigerpathUser(pool, netid);
       if (!user) return errorResult(`TigerPath user not found for NetID '${netid}'.`);
 
-      const schedule: any[][] = user.user_schedule || Array.from({ length: 9 }, () => []);
-      // Ensure schedule has 9 semesters
-      while (schedule.length < 9) schedule.push([]);
+      if (!user.year) return errorResult("User's class year is not set in TigerPath. Cannot resolve semester.");
+
+      const semesterIndex = resolveSemesterName(semester, user.year);
+      if (semesterIndex === null) {
+        const labels = semesterLabelsForYear(user.year);
+        return errorResult(`Could not resolve semester '${semester}'. Valid options: ${labels.join(", ")}`);
+      }
+
+      const userSchedule: any[][] = user.user_schedule || Array.from({ length: 9 }, () => []);
+      while (userSchedule.length < 9) userSchedule.push([]);
 
       const registrarIds = await resolveRegistrarId(pool, dept, number);
       if (registrarIds.length === 0) return errorResult(`Course ${dept} ${number} not found in TigerPath catalog`);
       const registrarId = registrarIds[0];
 
+      const labels = semesterLabelsForYear(user.year);
+
       if (action === "add") {
-        // Check for duplicates across all semesters
-        for (let i = 0; i < schedule.length; i++) {
-          if (Array.isArray(schedule[i])) {
-            for (const c of schedule[i]) {
+        for (let i = 0; i < userSchedule.length; i++) {
+          if (Array.isArray(userSchedule[i])) {
+            for (const c of userSchedule[i]) {
               if (typeof c === "object" && c?.id === registrarId) {
-                return errorResult(`${dept} ${number} is already in ${SEMESTER_LABELS[i]}`);
+                return errorResult(`${dept} ${number} is already in ${labels[i]}`);
               }
             }
           }
         }
-        schedule[semester_index].push({ id: registrarId, settled: [] });
+        userSchedule[semesterIndex].push({ id: registrarId, settled: [] });
       } else {
-        const idx = schedule[semester_index].findIndex(
+        const idx = userSchedule[semesterIndex].findIndex(
           (c: any) => typeof c === "object" && c?.id === registrarId
         );
-        if (idx === -1) return errorResult(`${dept} ${number} not found in ${SEMESTER_LABELS[semester_index]}`);
-        schedule[semester_index].splice(idx, 1);
+        if (idx === -1) return errorResult(`${dept} ${number} not found in ${labels[semesterIndex]}`);
+        userSchedule[semesterIndex].splice(idx, 1);
       }
 
-      // Write back
       await pool.query(
         `UPDATE tigerpath_userprofile SET user_schedule = $1
          FROM auth_user
          WHERE tigerpath_userprofile.user_id = auth_user.id AND auth_user.username = $2`,
-        [JSON.stringify(schedule), netid]
+        [JSON.stringify(userSchedule), netid]
       );
 
       return textResult({
         success: true,
         action,
         course: `${dept.toUpperCase()} ${number}`,
-        semester: SEMESTER_LABELS[semester_index],
+        semester: labels[semesterIndex],
       });
     }
   );
