@@ -37,6 +37,10 @@ Guidelines:
 - Keep responses concise but thorough. Use bullet points and bold for readability.
 - When searching for courses, prefer term 1272 (Fall 2026) unless the user asks about a different term.
 - When you need multiple pieces of information about the same course (details, sections, evaluations, demand), call all relevant tools in a single response rather than one at a time. This is much more efficient.
+- You can look up degree requirements for any Princeton major using get_requirement_tree (e.g. COS-BSE, ECO, MAT). Use get_requirement_node to drill into a specific requirement category.
+- You can answer "when do people take X?" using course_timing_distribution, which shows the semester distribution across all students' 4-year plans.
+- You can show what a typical schedule looks like for a major using major_schedule_overview.
+- You can check how popular a course is and which majors take it using course_popularity.
 """
 
 _TOOL_CONTINUATION_PROMPT = """\
@@ -48,6 +52,10 @@ _SCHEDULE_PROMPT_ADDENDUM = """
 You also have access to the user's TigerJunction (junction.tigerapps.org) schedule.
 You can view their schedule and add/remove courses from it, keep this in mind.
 - Get their schedules with get_user_schedules (no userId needed — you are already authenticated)
+
+You also have access to the user's TigerPath (path.tigerapps.org) 4-year degree plan.
+- Get their full plan with get_user_schedule (shows all 8 semesters + external credits)
+- Add or remove courses from their plan with update_user_schedule (specify semester index 0-8 and course code)
 """
 
 
@@ -88,6 +96,27 @@ def _plan_tools(prompt: str, term: int | None) -> list[ToolCall]:
         return [ToolCall(name="search_instructors", arguments={"name": prompt})]
     if "review" in lowered or "rating" in lowered:
         return [ToolCall(name="find_top_rated_courses", arguments={"limit": 10})]
+
+    # TigerPath: requirement lookups
+    req_match = re.search(
+        r"(?:requirements?|major)\s+(?:for\s+)?([A-Za-z]{2,3}(?:-[A-Za-z]{2,3})?)\b",
+        prompt, re.IGNORECASE,
+    )
+    if req_match or any(kw in lowered for kw in ("requirements", "what do i need")):
+        code = req_match.group(1).upper() if req_match else "COS-BSE"
+        return [ToolCall(name="get_requirement_tree", arguments={"major": code, "year": 2027})]
+
+    # TigerPath: when do people take X?
+    if any(kw in lowered for kw in ("when do", "when should", "what semester", "what year")):
+        if detected_codes:
+            dept, number = detected_codes[0].split(" ")
+            return [ToolCall(name="course_timing_distribution", arguments={"dept": dept, "number": number})]
+
+    # TigerPath: typical schedule for a major
+    if "typical schedule" in lowered or "typical plan" in lowered:
+        major_match = re.search(r"([A-Za-z]{2,3}(?:-[A-Za-z]{2,3})?)\s+(?:major|schedule|plan)", prompt, re.IGNORECASE)
+        code = major_match.group(1).upper() if major_match else "COS-BSE"
+        return [ToolCall(name="major_schedule_overview", arguments={"major_code": code})]
 
     args: dict[str, object] = {"query": prompt, "limit": 20}
     if term is not None:

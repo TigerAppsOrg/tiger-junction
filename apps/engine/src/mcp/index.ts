@@ -39,6 +39,15 @@ export function createMcpServer(
   registerEvaluationTools(server, db);
   registerInstructorTools(server, db);
 
+  // TigerPath tools: requirements + analytics for all scopes, schedule R/W only when auth is present
+  if (tigerpathPool) {
+    registerTigerpathTools(
+      server,
+      tigerpathPool,
+      scope === "junction" || scope === "full" ? authContext : undefined,
+    );
+  }
+
   if (scope === "full") {
     registerScheduleTools(server, db, authContext);
   } else if (scope === "junction" && supabaseClient) {
