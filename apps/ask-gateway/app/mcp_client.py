@@ -110,10 +110,20 @@ class McpHttpClient:
     async def close(self) -> None:
         try:
             if self._session_id:
-                await self._client.delete(
-                    self._mcp_url,
-                    headers=self._headers(include_session=True),
-                )
+                # DELETE carries no body, so omit `content-type: application/json`
+                # to avoid a 400 from strict JSON parsers on the server.
+                headers = self._headers(include_session=True)
+                headers.pop("content-type", None)
+                response = await self._client.delete(self._mcp_url, headers=headers)
+                if response.status_code >= 400:
+                    logger.warning(
+                        "MCP session close failed: status=%s session=%s body=%s",
+                        response.status_code,
+                        self._session_id,
+                        response.text[:200],
+                    )
+        except Exception as exc:  # pragma: no cover - close must never raise
+            logger.warning("MCP session close errored for %s: %s", self._session_id, exc)
         finally:
             await self._client.aclose()
 

@@ -51,6 +51,27 @@ interface McpRouteOptions {
 const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
   const scope = opts.scope ?? "full";
   const sessions = new Map<string, McpSession>();
+
+  // Accept empty JSON bodies on this plugin's routes. Without this, DELETE /
+  // requests from clients that set `content-type: application/json` but send
+  // no body (httpx does this on DELETE) are rejected with 400 by Fastify's
+  // default parser, so `transport.close()` never runs and sessions leak until
+  // the TTL sweep.
+  app.removeContentTypeParser("application/json");
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (_req, body, done) => {
+      const raw = typeof body === "string" ? body : body?.toString?.("utf8") ?? "";
+      if (raw.length === 0) return done(null, undefined);
+      try {
+        done(null, JSON.parse(raw));
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    }
+  );
+
   const cleanupExpiredSessions = async (): Promise<void> => {
     const now = Date.now();
     const ttl = getSessionTtlMs();
