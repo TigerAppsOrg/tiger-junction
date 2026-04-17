@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
       SERVICE_ROLE_KEY: ${{ secrets.SERVICE_KEY }}
       API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
