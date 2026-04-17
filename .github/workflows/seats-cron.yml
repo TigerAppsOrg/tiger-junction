@@ -1,0 +1,43 @@
+name: Seats Cron
+
+on:
+  schedule:
+    # Hourly at :00 (GitHub Actions scheduling is best-effort; real delay can be 5-15 min under load).
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      term:
+        description: "Term code (e.g. 1272 for Fall 2026)"
+        required: true
+        default: "1272"
+
+concurrency:
+  group: seats-cron
+  cancel-in-progress: false
+
+jobs:
+  update-seats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+      SERVICE_ROLE_KEY: ${{ secrets.SERVICE_KEY }}
+      API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: apps/database
+        run: bun install --frozen-lockfile
+
+      - name: Update seats + sync Redis
+        working-directory: apps/database
+        run: bun run update:seats:once ${{ github.event.inputs.term || '1272' }}
