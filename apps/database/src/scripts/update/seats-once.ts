@@ -12,6 +12,10 @@ if (Number.isNaN(term) || !TERMS.includes(term)) {
     throw new Error(`Invalid term: ${termArg}`);
 }
 
+// sections.status is a smallint in Supabase (0 = open, 1 = closed/canceled),
+// even though Drizzle's schema.ts types it as a text enum. Map before writing.
+const toStatusInt = (s: string): number => (s === "open" ? 0 : 1);
+
 const BATCH_SIZE = 30;
 const startTime = Date.now();
 
@@ -48,7 +52,7 @@ for (let i = 0; i < courses.length; i += BATCH_SIZE) {
                 .update({
                     cap: section.cap,
                     tot: section.tot,
-                    status: section.status
+                    status: toStatusInt(section.status)
                 })
                 .eq("num", section.num)
                 .eq("course_id", course.id);
@@ -70,5 +74,14 @@ console.log(
 );
 
 await redisTransfer(term);
+
+const total = updateCount + errorCount;
+const failureRate = total > 0 ? errorCount / total : 0;
+if (failureRate > 0.1) {
+    console.error(
+        `Failure rate ${(failureRate * 100).toFixed(1)}% (${errorCount}/${total}) — exiting non-zero`
+    );
+    process.exit(1);
+}
 
 process.exit(0);
