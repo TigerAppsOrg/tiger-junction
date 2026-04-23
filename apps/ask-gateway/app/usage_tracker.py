@@ -1,7 +1,7 @@
 """Per-user usage tracking with tiered quota system, persisted to Supabase.
 
-Tier 1: Claude Sonnet 4.6 — $0.50 budget
-Tier 2: Claude Haiku 4.5 — $0.25 budget (auto-downgrade when Tier 1 exhausted)
+Tier 1: Claude Sonnet 4.6 — $3.00 budget
+Tier 2: Claude Haiku 4.5 — $1.00 budget (auto-downgrade when Tier 1 exhausted)
 Exhausted: No more requests until next 8-hour window
 
 Resets at 12:00 AM, 8:00 AM, 4:00 PM US Eastern.
@@ -20,9 +20,9 @@ logger = logging.getLogger("ask-gateway.usage")
 
 TIER1_MODEL = "anthropic/claude-sonnet-4.6"
 TIER2_MODEL = "anthropic/claude-haiku-4.5"
-TIER1_BUDGET = 0.50
-TIER2_BUDGET = 0.25
-TOTAL_BUDGET = TIER1_BUDGET + TIER2_BUDGET  # $0.75
+TIER1_BUDGET = 3.00
+TIER2_BUDGET = 1.00
+TOTAL_BUDGET = TIER1_BUDGET + TIER2_BUDGET  # $4.00
 WINDOW_HOURS = 8
 
 _ET_OFFSET = timezone(timedelta(hours=-5))
