@@ -308,6 +308,9 @@ export const getAllCourses = async (
             const removedSections = exisSectionNums.filter(
                 x => !newSectionNums.includes(x)
             );
+            const removedSectionIds = exisSections
+                .filter(x => removedSections.includes(x.num))
+                .map(x => x.id);
 
             // Check for duplicate sections and prune them from supabase
             const duplicateSections: number[] = [];
@@ -345,11 +348,11 @@ export const getAllCourses = async (
             // }
 
             // Prune removed sections
-            if (removedSections.length > 0) {
+            if (removedSectionIds.length > 0) {
                 const { error } = await supabase
                     .from("sections")
                     .delete()
-                    .in("num", removedSections);
+                    .in("id", removedSectionIds);
 
                 if (error) {
                     console.log(
