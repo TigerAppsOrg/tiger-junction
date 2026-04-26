@@ -7,6 +7,23 @@ import { getToken } from "./getToken";
 const SUCCESS_MESSAGE = "Successfully populated listings for term ";
 const FAILURE_MESSAGE = "Failed to populate listings for term ";
 
+type RegistrarListing = {
+    course_id: string;
+    subject: string;
+    catnum: string;
+    topic_title: string | null;
+    long_title: string;
+};
+
+const getTermCodesNewestFirst = () =>
+    Object.keys(TERM_MAP).sort((a, b) => Number(b) - Number(a));
+
+const getTermIndex = (term: number | null | undefined, termCodes: string[]) => {
+    if (term === null || term === undefined) return -1;
+    const index = termCodes.indexOf(String(term));
+    return index === -1 ? termCodes.length : index;
+};
+
 // TODO - Stop waiting for fetches sequentially
 
 /**
@@ -16,8 +33,8 @@ const FAILURE_MESSAGE = "Failed to populate listings for term ";
  * @returns success or failure message
  */
 const populateAllListings = async (supabase: SupabaseClient) => {
-    const resultMessage: Record<number, any> = {};
-    for (const term in Object.keys(TERM_MAP)) {
+    const resultMessage: Record<number, unknown> = {};
+    for (const term of getTermCodesNewestFirst()) {
         const termId = parseInt(term);
         const result = await populateListings(supabase, termId);
         resultMessage[termId] = result;
@@ -44,8 +61,8 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
     // Format course data
     const data = await res.json();
-    const courses = data.classes.class;
-    const formatted: Listing[] = courses.map((x: any) => {
+    const courses: RegistrarListing[] = data.classes.class;
+    const formatted: Listing[] = courses.map(x => {
         return {
             id: x.course_id,
             code: x.subject + x.catnum,
@@ -128,10 +145,16 @@ const populateListings = async (supabase: SupabaseClient, term: number) => {
 
             formatted[i].aka = currentListings[index].aka;
 
-            const termCodes = Object.keys(TERM_MAP);
+            const termCodes = getTermCodesNewestFirst();
             const newIndex = termCodes.indexOf(String(term));
-            const ultIndex = termCodes.indexOf(currentListings[index].ult_term);
-            const penIndex = termCodes.indexOf(currentListings[index].pen_term);
+            const ultIndex = getTermIndex(
+                currentListings[index].ult_term,
+                termCodes
+            );
+            const penIndex = getTermIndex(
+                currentListings[index].pen_term,
+                termCodes
+            );
             const newTitle: string = formatted[i].title;
 
             const checkAka = () => {
