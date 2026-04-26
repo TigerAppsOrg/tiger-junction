@@ -6,6 +6,33 @@ import { CALENDAR_INFO } from "$lib/changeme.js";
 import { config } from "dotenv";
 import type { Database } from "$lib/types/supabaseTypes";
 
+type CalendarSection = {
+    start_time: number;
+    end_time: number;
+    days: number;
+    title: string;
+    room: string | null;
+};
+
+type CalendarCourseAssociation = {
+    confirms: Record<string, string | number>;
+    courses: {
+        code: string;
+        title: string;
+        instructors: string[] | null;
+        sections: CalendarSection[];
+    };
+};
+
+type CalendarSchedule = Database["public"]["Tables"]["schedules"]["Row"] & {
+    course_schedule_associations: CalendarCourseAssociation[];
+};
+
+type CalendarExport = Pick<
+    Database["public"]["Tables"]["icals"]["Row"],
+    "id" | "user_id" | "schedule_id"
+>;
+
 export async function handler() {
     config();
     // Environment variables are loaded into AWS Lambda manually
@@ -26,7 +53,7 @@ export async function handler() {
     // Step 1: Fetch all ical records (lightweight query)
     const { data: icals, error: icalsError } = await supabase
         .from("icals")
-        .select("id, schedule_id")
+        .select("id, user_id, schedule_id")
         .not("schedule_id", "is", null);
 
     if (icalsError) {
@@ -39,19 +66,28 @@ export async function handler() {
         return { statusCode: 200, body: "No calendars to refresh." };
     }
 
-    console.log(`Found ${icals.length} ical records in ${(Date.now() - startTime) / 1000}s`);
+    console.log(
+        `Found ${icals.length} ical records in ${(Date.now() - startTime) / 1000}s`
+    );
 
     // Step 2: Fetch schedules with course data in batches by schedule ID
-    const scheduleIds = [...new Set(icals.map(i => i.schedule_id).filter(Boolean))] as number[];
-    const scheduleMap = new Map<number, any>();
+    const scheduleIds = [
+        ...new Set(
+            icals
+                .map(i => i.schedule_id)
+                .filter((id): id is number => id !== null)
+        )
+    ];
+    const scheduleMap = new Map<number, CalendarSchedule>();
     const BATCH_SIZE = 30;
 
     for (let i = 0; i < scheduleIds.length; i += BATCH_SIZE) {
         const batch = scheduleIds.slice(i, i + BATCH_SIZE);
         const { data: schedules, error: schedError } = await supabase
             .from("schedules")
-            .select(`
-                id, term,
+            .select(
+                `
+                id, user_id, term,
                 course_schedule_associations ( metadata->confirms,
                     courses (code, title, instructors,
                         sections (
@@ -59,17 +95,21 @@ export async function handler() {
                         )
                     )
                 )
-            `)
+            `
+            )
             .in("id", batch);
 
         if (schedError) {
-            console.error(`Error fetching schedules batch at ${i}:`, schedError);
+            console.error(
+                `Error fetching schedules batch at ${i}:`,
+                schedError
+            );
             continue;
         }
 
         if (schedules) {
             for (const s of schedules) {
-                scheduleMap.set(s.id, s);
+                scheduleMap.set(s.id, s as CalendarSchedule);
             }
         }
     }
@@ -78,13 +118,45 @@ export async function handler() {
         `Fetched ${scheduleMap.size} schedules in ${(Date.now() - startTime) / 1000}s`
     );
 
-    // Build combined data matching original shape
-    const data = icals
-        .map(ical => ({
-            ...ical,
-            schedules: scheduleMap.get(ical.schedule_id!) ?? null
-        }))
-        .filter(d => d.schedules !== null);
+    const data: (CalendarExport & { schedules: CalendarSchedule })[] = [];
+    const revokedCalendarIds: string[] = [];
+
+    for (const ical of icals) {
+        const schedule = scheduleMap.get(ical.schedule_id!);
+        if (!schedule) continue;
+
+        if (schedule.user_id !== ical.user_id) {
+            revokedCalendarIds.push(ical.id);
+            continue;
+        }
+
+        data.push({ ...ical, schedules: schedule });
+    }
+
+    if (revokedCalendarIds.length > 0) {
+        console.warn(
+            `Deleting ${revokedCalendarIds.length} iCal exports with mismatched schedule owners`
+        );
+        const { error: storageError } = await supabase.storage
+            .from("calendars")
+            .remove(revokedCalendarIds.map(id => `${id}.ics`));
+
+        if (storageError) {
+            console.error("Failed to remove revoked iCal files:", storageError);
+        } else {
+            const { error: deleteError } = await supabase
+                .from("icals")
+                .delete()
+                .in("id", revokedCalendarIds);
+
+            if (deleteError) {
+                console.error(
+                    "Failed to delete revoked iCal rows:",
+                    deleteError
+                );
+            }
+        }
+    }
 
     // Step 3: Generate ICS content for each calendar (CPU-only, no I/O)
     startTime = Date.now();
@@ -99,24 +171,24 @@ export async function handler() {
         const calInfo = CALENDAR_INFO[term];
 
         if (!calInfo) {
-            console.warn(`No calendar info for term ${term}, skipping ${cal.id}`);
+            console.warn(
+                `No calendar info for term ${term}, skipping ${cal.id}`
+            );
             continue;
         }
 
         const events: EventAttributes[] = [];
-        const courses = schedule.course_schedule_associations.map(
-            (csa: { courses: any; confirms: any }) => ({
-                title: csa.courses.title,
-                code: csa.courses.code,
-                instructors: csa.courses.instructors
-                    ? "Instructors: " + csa.courses.instructors.join(", ")
-                    : "",
-                sections: csa.courses.sections.filter(
-                    (section: { title: string }) =>
-                        Object.values(csa.confirms).includes(section.title)
-                )
-            })
-        );
+        const courses = schedule.course_schedule_associations.map(csa => ({
+            title: csa.courses.title,
+            code: csa.courses.code,
+            instructors: csa.courses.instructors
+                ? "Instructors: " + csa.courses.instructors.join(", ")
+                : "",
+            sections: csa.courses.sections.filter(
+                (section: { title: string }) =>
+                    Object.values(csa.confirms).includes(section.title)
+            )
+        }));
 
         for (const course of courses) {
             for (const section of course.sections) {
@@ -125,18 +197,19 @@ export async function handler() {
                     course.instructors !== ""
                         ? course.title + "\n" + course.instructors
                         : course.title;
+                const eventStart = [
+                    ...calculateStart(
+                        calInfo.start,
+                        calInfo.start_day,
+                        section.days
+                    ),
+                    Math.trunc(section.start_time / 6) + 8,
+                    (section.start_time % 6) * 10
+                ] as DateArray;
 
                 const newEvent: EventAttributes = {
                     title: `${course.code.split("/")[0]} - ${section.title}`,
-                    start: [
-                        ...calculateStart(
-                            calInfo.start,
-                            calInfo.start_day,
-                            section.days
-                        ),
-                        Math.trunc(section.start_time / 6) + 8,
-                        (section.start_time % 6) * 10
-                    ] as DateArray,
+                    start: eventStart,
                     duration: {
                         hours: Math.trunc(dur / 6),
                         minutes: (dur % 6) * 10
@@ -153,7 +226,7 @@ export async function handler() {
                     location: section.room ? section.room : "",
                     description: description
                 };
-                if (!newEvent.start.includes(NaN)) {
+                if (!eventStart.includes(NaN)) {
                     events.push(newEvent);
                 }
             }
@@ -166,7 +239,10 @@ export async function handler() {
 
         const { error: icsError, value } = createEvents(events);
         if (icsError || !value) {
-            console.error(`Failed to create ics for calendar ${cal.id}:`, icsError);
+            console.error(
+                `Failed to create ics for calendar ${cal.id}:`,
+                icsError
+            );
             errorCount++;
             continue;
         }
@@ -199,7 +275,10 @@ export async function handler() {
 
         for (let j = 0; j < results.length; j++) {
             if (results[j].error) {
-                console.error(`Upload failed for ${batch[j].id}:`, results[j].error);
+                console.error(
+                    `Upload failed for ${batch[j].id}:`,
+                    results[j].error
+                );
                 errorCount++;
             }
         }
