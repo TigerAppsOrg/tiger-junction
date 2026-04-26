@@ -1,6 +1,7 @@
 import { supabase, TERMS } from "../supabase/shared";
 import { fetchRegSeats } from "../shared/reg-fetchers";
 import { redisTransfer } from "../supabase/redis";
+import type { Status } from "../shared/db-types";
 
 const termArg = process.argv[2];
 if (!termArg) {
@@ -12,9 +13,17 @@ if (Number.isNaN(term) || !TERMS.includes(term)) {
     throw new Error(`Invalid term: ${termArg}`);
 }
 
-// sections.status is a smallint in Supabase (0 = open, 1 = closed/canceled),
-// even though Drizzle's schema.ts types it as a text enum. Map before writing.
-const toStatusInt = (s: string): number => (s === "open" ? 0 : 1);
+type SupabaseStatus = 0 | 1 | 2;
+
+// sections.status is a smallint in Supabase, even though Drizzle's schema.ts
+// types it as a text enum. Map before writing.
+const STATUS_MAP: Record<Status, SupabaseStatus> = {
+    open: 0,
+    closed: 1,
+    canceled: 2
+};
+
+const toStatusInt = (s: Status): SupabaseStatus => STATUS_MAP[s];
 
 const BATCH_SIZE = 30;
 const startTime = Date.now();
