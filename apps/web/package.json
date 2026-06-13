@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
-    "@sveltejs/kit": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@sveltejs/kit": "^2.65.0",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@types/canvas-confetti": "^1.6.4",
     "@types/jsdom": "^21.1.1",
     "autoprefixer": "^10.4.14",
@@ -33,17 +33,17 @@
     "prettier-plugin-svelte": "^3.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sst": "2.43.2",
+    "sst": "4.15.2",
     "supabase": "^1.178.2",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "svelte-kit-sst": "2.43.2",
     "tailwindcss": "^3.3.3",
     "tslib": "^2.4.1",
-    "tsx": "^4.11.0",
+    "tsx": "^4.22.4",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.0.0-alpha.20",
-    "vite": "^5.0.0"
+    "vite": "^8.0.16"
   },
   "type": "module",
   "dependencies": {
