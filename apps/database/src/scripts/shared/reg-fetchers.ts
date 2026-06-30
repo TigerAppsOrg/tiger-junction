@@ -25,14 +25,12 @@ const REG_PUBLIC_URL =
 // API endpoint for the registrar student-app API
 const REG_API_URL = "https://api.princeton.edu/student-app/1.0.3/";
 
-// Gets the API token for use in the course listings API
-const getToken = async () => {
-    const response = await fetch(
-        "https://registrar.princeton.edu/course-offerings"
-    );
-    const text = await response.text();
-    return "Bearer " + text.split('apiToken":"')[1].split('"')[0];
-};
+// The public course-offerings classes API is served from the api.princeton.edu
+// gateway and accepts the same API_ACCESS_TOKEN we use for the student-app API
+// (see fetchRegDeptCourses/fetchRegSeats). We previously scraped a short-lived
+// apiToken from the registrar.princeton.edu website, but that page sits behind a
+// Cloudflare bot challenge that 403s from datacenter IPs (e.g. the cron box), so
+// we authenticate with API_ACCESS_TOKEN instead — no website scrape required.
 
 //----------------------------------------------------------------------
 // Fetcher Functions
@@ -43,7 +41,8 @@ const getToken = async () => {
  * @param term Term code
  */
 export const fetchRegListings = async (term: number): Promise<RegListing[]> => {
-    const token = await getToken();
+    const token = process.env.API_ACCESS_TOKEN;
+    if (!token) throw new Error("API access token not found");
 
     const rawCourseList = await fetch(`${REG_PUBLIC_URL}${term}`, {
         method: "GET",
