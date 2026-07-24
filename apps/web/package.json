@@ -21,7 +21,7 @@
     "@types/canvas-confetti": "^1.6.4",
     "@types/jsdom": "^21.1.1",
     "autoprefixer": "^10.4.14",
-    "aws-cdk-lib": "2.142.1",
+    "aws-cdk-lib": "2.260.0",
     "constructs": "10.3.0",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
