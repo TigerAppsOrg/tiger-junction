@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { Pool } from "pg";
 import { z } from "zod";
 import {
@@ -77,16 +77,16 @@ function textResult(data: unknown) {
 }
 
 function errorResult(msg: string) {
-  return { content: [{ type: "text" as const, text: JSON.stringify({ error: msg }) }], isError: true as const };
+  return {
+    content: [{ type: "text" as const, text: JSON.stringify({ error: msg }) }],
+    isError: true as const,
+  };
 }
 
 // ── User resolution ─────────────────────────────────────────────────────────
 
 async function resolveTigerpathUser(pool: Pool, netid: string) {
-  const userRes = await pool.query(
-    "SELECT id FROM auth_user WHERE username = $1",
-    [netid]
-  );
+  const userRes = await pool.query("SELECT id FROM auth_user WHERE username = $1", [netid]);
   if (userRes.rows.length === 0) return null;
   const userId = userRes.rows[0].id;
 
@@ -118,7 +118,10 @@ async function enrichSchedule(pool: Pool, schedule: any[]): Promise<any[]> {
   const enriched: any[] = [];
   for (let i = 0; i < schedule.length; i++) {
     const sem = schedule[i];
-    if (!Array.isArray(sem)) { enriched.push([]); continue; }
+    if (!Array.isArray(sem)) {
+      enriched.push([]);
+      continue;
+    }
     const courses: any[] = [];
     for (const c of sem) {
       if (typeof c !== "object" || !c) continue;
@@ -161,12 +164,23 @@ export function registerTigerpathTools(
 ) {
   // ── Requirements tools (no DB needed) ───────────────────────────────────
 
-  server.tool(
+  server.registerTool(
     "get_requirement_tree",
-    "Get the full degree requirement tree for a Princeton major. Returns the hierarchical requirement structure with course lists, distribution requirements, and min/max counts. Use this to understand what courses are needed for a major.",
     {
-      major: z.string().describe("Major code (e.g., 'COS-BSE', 'ECO', 'MAT'). Use list_majors to see all available codes."),
-      year: z.number().describe("Class year (graduation year, e.g., 2026). Affects which requirements apply via year-specific switches."),
+      description:
+        "Get the full degree requirement tree for a Princeton major. Returns the hierarchical requirement structure with course lists, distribution requirements, and min/max counts. Use this to understand what courses are needed for a major.",
+      inputSchema: z.object({
+        major: z
+          .string()
+          .describe(
+            "Major code (e.g., 'COS-BSE', 'ECO', 'MAT'). Use list_majors to see all available codes."
+          ),
+        year: z
+          .number()
+          .describe(
+            "Class year (graduation year, e.g., 2026). Affects which requirements apply via year-specific switches."
+          ),
+      }),
     },
     async ({ major, year }) => {
       const tree = getRequirementTree(major, year);
@@ -178,17 +192,25 @@ export function registerTigerpathTools(
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_requirement_node",
-    "Get a specific subtree of a major's requirements by path. Useful for drilling into a particular requirement category like 'Core Courses' or 'Electives'.",
     {
-      major: z.string().describe("Major code (e.g., 'COS-BSE')"),
-      year: z.number().describe("Class year (graduation year)"),
-      path: z.string().describe("Path suffix to match (e.g., 'Core Courses', 'Core Courses//Theoretical Computer Science'). Uses '//' as separator."),
+      description:
+        "Get a specific subtree of a major's requirements by path. Useful for drilling into a particular requirement category like 'Core Courses' or 'Electives'.",
+      inputSchema: z.object({
+        major: z.string().describe("Major code (e.g., 'COS-BSE')"),
+        year: z.number().describe("Class year (graduation year)"),
+        path: z
+          .string()
+          .describe(
+            "Path suffix to match (e.g., 'Core Courses', 'Core Courses//Theoretical Computer Science'). Uses '//' as separator."
+          ),
+      }),
     },
     async ({ major, year, path: pathSuffix }) => {
       const node = getRequirementNode(major, year, pathSuffix);
-      if (!node) return errorResult(`Requirement node not found for path '${pathSuffix}' in ${major}`);
+      if (!node)
+        return errorResult(`Requirement node not found for path '${pathSuffix}' in ${major}`);
       return textResult(node);
     }
   );
@@ -197,12 +219,15 @@ export function registerTigerpathTools(
 
   if (!pool) return;
 
-  server.tool(
+  server.registerTool(
     "course_timing_distribution",
-    "Shows when students typically take a course in their 4-year plan. Returns a distribution across semesters (Freshman Fall through Senior Spring). Answer questions like 'When do most people take COS 226?'",
     {
-      dept: z.string().describe("Department code (e.g., 'COS', 'MAT')"),
-      number: z.string().describe("Course number (e.g., '226', '201')"),
+      description:
+        "Shows when students typically take a course in their 4-year plan. Returns a distribution across semesters (Freshman Fall through Senior Spring). Answer questions like 'When do most people take COS 226?'",
+      inputSchema: z.object({
+        dept: z.string().describe("Department code (e.g., 'COS', 'MAT')"),
+        number: z.string().describe("Course number (e.g., '226', '201')"),
+      }),
     },
     async ({ dept, number }) => {
       const registrarIds = await resolveRegistrarId(pool, dept, number);
@@ -229,16 +254,23 @@ export function registerTigerpathTools(
         total += row.student_count;
       }
 
-      return textResult({ course: `${dept.toUpperCase()} ${number}`, total_students: total, distribution });
+      return textResult({
+        course: `${dept.toUpperCase()} ${number}`,
+        total_students: total,
+        distribution,
+      });
     }
   );
 
-  server.tool(
+  server.registerTool(
     "major_schedule_overview",
-    "Shows the most popular courses per semester for students in a given major. Useful for understanding a typical 4-year plan for a major.",
     {
-      major_code: z.string().describe("Major code (e.g., 'COS-BSE', 'ECO')"),
-      top_n: z.number().optional().describe("Number of top courses per semester (default 5)"),
+      description:
+        "Shows the most popular courses per semester for students in a given major. Useful for understanding a typical 4-year plan for a major.",
+      inputSchema: z.object({
+        major_code: z.string().describe("Major code (e.g., 'COS-BSE', 'ECO')"),
+        top_n: z.number().optional().describe("Number of top courses per semester (default 5)"),
+      }),
     },
     async ({ major_code, top_n }) => {
       const limit = top_n ?? 5;
@@ -292,12 +324,15 @@ export function registerTigerpathTools(
     }
   );
 
-  server.tool(
+  server.registerTool(
     "course_popularity",
-    "Shows how many students have a course in their plan, broken down by major. Answers questions like 'How popular is COS 126?' or 'Which majors take ORF 309?'",
     {
-      dept: z.string().describe("Department code (e.g., 'COS')"),
-      number: z.string().describe("Course number (e.g., '126')"),
+      description:
+        "Shows how many students have a course in their plan, broken down by major. Answers questions like 'How popular is COS 126?' or 'Which majors take ORF 309?'",
+      inputSchema: z.object({
+        dept: z.string().describe("Department code (e.g., 'COS')"),
+        number: z.string().describe("Course number (e.g., '126')"),
+      }),
     },
     async ({ dept, number }) => {
       const registrarIds = await resolveRegistrarId(pool, dept, number);
@@ -328,10 +363,13 @@ export function registerTigerpathTools(
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_major_stats",
-    "Returns aggregate statistics about TigerPath users: student count per major and class year distribution.",
-    {},
+    {
+      description:
+        "Returns aggregate statistics about TigerPath users: student count per major and class year distribution.",
+      inputSchema: z.object({}),
+    },
     async () => {
       const majorRes = await pool.query(
         `SELECT m.code, m.name, m.degree, COUNT(*)::int AS students
@@ -360,10 +398,13 @@ export function registerTigerpathTools(
 
   // ── User schedule tools (auth required) ─────────────────────────────────
 
-  server.tool(
+  server.registerTool(
     "get_user_schedule",
-    "Get the authenticated TigerPath user's 4-year course plan. Returns 9 semesters with actual term labels (e.g., 'Sophomore Fall (Fall 2025)') and enriched course data. Requires x-user-netid header.",
-    {},
+    {
+      description:
+        "Get the authenticated TigerPath user's 4-year course plan. Returns 9 semesters with actual term labels (e.g., 'Sophomore Fall (Fall 2025)') and enriched course data. Requires x-user-netid header.",
+      inputSchema: z.object({}),
+    },
     async () => {
       const netid = authContext?.netid;
       if (!netid) return errorResult("Authentication required. Provide x-user-netid header.");
@@ -389,14 +430,21 @@ export function registerTigerpathTools(
     }
   );
 
-  server.tool(
+  server.registerTool(
     "update_user_schedule",
-    "Add or remove courses from the authenticated user's TigerPath schedule. Specify the semester by name (e.g., 'Sophomore Fall', 'Fall 2025', 'Junior Spring'). The tool resolves the correct position using the user's class year. Requires x-user-netid header.",
     {
-      semester: z.string().describe("Semester name — either relative (e.g., 'Sophomore Fall', 'Junior Spring', 'External Credits') or absolute (e.g., 'Fall 2025', 'Spring 2026'). Resolved to the correct position using the user's graduation year."),
-      action: z.enum(["add", "remove"]).describe("Whether to add or remove the course"),
-      dept: z.string().describe("Department code (e.g., 'COS')"),
-      number: z.string().describe("Course number (e.g., '226')"),
+      description:
+        "Add or remove courses from the authenticated user's TigerPath schedule. Specify the semester by name (e.g., 'Sophomore Fall', 'Fall 2025', 'Junior Spring'). The tool resolves the correct position using the user's class year. Requires x-user-netid header.",
+      inputSchema: z.object({
+        semester: z
+          .string()
+          .describe(
+            "Semester name — either relative (e.g., 'Sophomore Fall', 'Junior Spring', 'External Credits') or absolute (e.g., 'Fall 2025', 'Spring 2026'). Resolved to the correct position using the user's graduation year."
+          ),
+        action: z.enum(["add", "remove"]).describe("Whether to add or remove the course"),
+        dept: z.string().describe("Department code (e.g., 'COS')"),
+        number: z.string().describe("Course number (e.g., '226')"),
+      }),
     },
     async ({ semester, action, dept, number }) => {
       const netid = authContext?.netid;
@@ -405,19 +453,23 @@ export function registerTigerpathTools(
       const user = await resolveTigerpathUser(pool, netid);
       if (!user) return errorResult(`TigerPath user not found for NetID '${netid}'.`);
 
-      if (!user.year) return errorResult("User's class year is not set in TigerPath. Cannot resolve semester.");
+      if (!user.year)
+        return errorResult("User's class year is not set in TigerPath. Cannot resolve semester.");
 
       const semesterIndex = resolveSemesterName(semester, user.year);
       if (semesterIndex === null) {
         const labels = semesterLabelsForYear(user.year);
-        return errorResult(`Could not resolve semester '${semester}'. Valid options: ${labels.join(", ")}`);
+        return errorResult(
+          `Could not resolve semester '${semester}'. Valid options: ${labels.join(", ")}`
+        );
       }
 
       const userSchedule: any[][] = user.user_schedule || Array.from({ length: 9 }, () => []);
       while (userSchedule.length < 9) userSchedule.push([]);
 
       const registrarIds = await resolveRegistrarId(pool, dept, number);
-      if (registrarIds.length === 0) return errorResult(`Course ${dept} ${number} not found in TigerPath catalog`);
+      if (registrarIds.length === 0)
+        return errorResult(`Course ${dept} ${number} not found in TigerPath catalog`);
       const registrarId = registrarIds[0];
 
       const labels = semesterLabelsForYear(user.year);
@@ -437,7 +489,8 @@ export function registerTigerpathTools(
         const idx = userSchedule[semesterIndex].findIndex(
           (c: any) => typeof c === "object" && c?.id === registrarId
         );
-        if (idx === -1) return errorResult(`${dept} ${number} not found in ${labels[semesterIndex]}`);
+        if (idx === -1)
+          return errorResult(`${dept} ${number} not found in ${labels[semesterIndex]}`);
         userSchedule[semesterIndex].splice(idx, 1);
       }
 

@@ -1,4 +1,4 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Pool } from "pg";
@@ -32,9 +32,8 @@ export function createMcpServer(
     return server;
   }
 
-  const junctionCtx = scope === "junction" && supabaseClient
-    ? { supabase: supabaseClient, authContext }
-    : undefined;
+  const junctionCtx =
+    scope === "junction" && supabaseClient ? { supabase: supabaseClient, authContext } : undefined;
   registerCourseTools(server, db, junctionCtx);
   registerEvaluationTools(server, db);
   registerInstructorTools(server, db);
@@ -44,7 +43,7 @@ export function createMcpServer(
     registerTigerpathTools(
       server,
       tigerpathPool,
-      scope === "junction" || scope === "full" ? authContext : undefined,
+      scope === "junction" || scope === "full" ? authContext : undefined
     );
   }
 

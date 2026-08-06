@@ -1,6 +1,6 @@
-// src/mcp/tools/courses.ts
+import type { McpServer } from "@modelcontextprotocol/server";
 
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+// src/mcp/tools/courses.ts
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
@@ -16,7 +16,9 @@ import type { AuthContext } from "../context.js";
  * The true enrollment is the sum within the type with the highest total
  * (typically Lecture, which all students share).
  */
-function calculateEnrollment(sections: { title: string; tot: number | null; cap: number | null }[]): {
+function calculateEnrollment(
+  sections: { title: string; tot: number | null; cap: number | null }[]
+): {
   enrolled: number;
   capacity: number;
 } {
@@ -48,25 +50,94 @@ interface JunctionContext {
   authContext?: AuthContext;
 }
 
-export function registerCourseTools(server: McpServer, db: NodePgDatabase, junctionCtx?: JunctionContext) {
-  server.tool(
+export function registerCourseTools(
+  server: McpServer,
+  db: NodePgDatabase,
+  junctionCtx?: JunctionContext
+) {
+  server.registerTool(
     "search_courses",
-    "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department). Use scheduleId to exclude courses that conflict with the user's existing schedule.",
     {
-      term: z.number().optional().describe("Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
-      department: z.string().optional().describe("3-letter department code (e.g., COS, AAS, ECO)"),
-      query: z.string().optional().describe("Text to search in course title, description, or number. Use this to find specific courses (e.g., '418' to find COS 418)."),
-      dist: z.string().optional().describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
-      days: z.string().optional().describe("Day filter: comma-separated day codes (M,T,W,Th,F). E.g., 'T,Th' for Tuesday/Thursday courses. Behavior depends on daysMatch."),
-      daysMatch: z.enum(["exact", "includes"]).optional().describe("How to match days. 'exact' (default): ALL sections meet only on the specified days. 'includes': course has at least one section on any of the specified days."),
-      startAfter: z.string().optional().describe("Earliest start time, e.g. '10:00 AM'. Excludes courses starting before this time."),
-      startBefore: z.string().optional().describe("Latest start time, e.g. '2:00 PM'. Excludes courses starting after this time."),
-      instructor: z.string().optional().describe("Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."),
-      scheduleId: z.number().optional().describe("TigerJunction schedule ID. When provided, excludes courses that conflict with the schedule's existing courses. Requires authenticated user (junction scope)."),
-      limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
-      offset: z.number().optional().describe("Number of results to skip for pagination (default 0)"),
+      description:
+        "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department). Use scheduleId to exclude courses that conflict with the user's existing schedule.",
+      inputSchema: z.object({
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."
+          ),
+        department: z
+          .string()
+          .optional()
+          .describe("3-letter department code (e.g., COS, AAS, ECO)"),
+        query: z
+          .string()
+          .optional()
+          .describe(
+            "Text to search in course title, description, or number. Use this to find specific courses (e.g., '418' to find COS 418)."
+          ),
+        dist: z
+          .string()
+          .optional()
+          .describe("Distribution area (e.g., LA, QCR, EM, EC, HA, SA, CD, SEL, SEN)"),
+        days: z
+          .string()
+          .optional()
+          .describe(
+            "Day filter: comma-separated day codes (M,T,W,Th,F). E.g., 'T,Th' for Tuesday/Thursday courses. Behavior depends on daysMatch."
+          ),
+        daysMatch: z
+          .enum(["exact", "includes"])
+          .optional()
+          .describe(
+            "How to match days. 'exact' (default): ALL sections meet only on the specified days. 'includes': course has at least one section on any of the specified days."
+          ),
+        startAfter: z
+          .string()
+          .optional()
+          .describe(
+            "Earliest start time, e.g. '10:00 AM'. Excludes courses starting before this time."
+          ),
+        startBefore: z
+          .string()
+          .optional()
+          .describe(
+            "Latest start time, e.g. '2:00 PM'. Excludes courses starting after this time."
+          ),
+        instructor: z
+          .string()
+          .optional()
+          .describe(
+            "Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."
+          ),
+        scheduleId: z
+          .number()
+          .optional()
+          .describe(
+            "TigerJunction schedule ID. When provided, excludes courses that conflict with the schedule's existing courses. Requires authenticated user (junction scope)."
+          ),
+        limit: z.number().optional().describe("Max results to return (default 50, max 200)"),
+        offset: z
+          .number()
+          .optional()
+          .describe("Number of results to skip for pagination (default 0)"),
+      }),
     },
-    async ({ term, department, query, dist, days, daysMatch, startAfter, startBefore, instructor, scheduleId, limit: maxResults, offset }) => {
+    async ({
+      term,
+      department,
+      query,
+      dist,
+      days,
+      daysMatch,
+      startAfter,
+      startBefore,
+      instructor,
+      scheduleId,
+      limit: maxResults,
+      offset,
+    }) => {
       const resultLimit = Math.min(maxResults ?? 50, 200);
       const resultOffset = offset ?? 0;
       const conditions = [];
@@ -142,15 +213,27 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
         // Resolve user
         if (!authContext?.netid) {
           return {
-            content: [{ type: "text" as const, text: "scheduleId filter requires authenticated user (x-user-netid header)." }],
+            content: [
+              {
+                type: "text" as const,
+                text: "scheduleId filter requires authenticated user (x-user-netid header).",
+              },
+            ],
             isError: true,
           };
         }
 
-        const { data: userId } = await supabase.rpc("get_user_id_by_netid", { netid: authContext.netid });
+        const { data: userId } = await supabase.rpc("get_user_id_by_netid", {
+          netid: authContext.netid,
+        });
         if (!userId) {
           return {
-            content: [{ type: "text" as const, text: `No TigerJunction account found for NetID '${authContext.netid}'.` }],
+            content: [
+              {
+                type: "text" as const,
+                text: `No TigerJunction account found for NetID '${authContext.netid}'.`,
+              },
+            ],
             isError: true,
           };
         }
@@ -164,7 +247,12 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
 
         if (!sched || sched.user_id !== userId) {
           return {
-            content: [{ type: "text" as const, text: "Schedule not found or does not belong to authenticated user." }],
+            content: [
+              {
+                type: "text" as const,
+                text: "Schedule not found or does not belong to authenticated user.",
+              },
+            ],
             isError: true,
           };
         }
@@ -175,7 +263,9 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
           .select("course_id")
           .eq("schedule_id", scheduleId);
 
-        const existingCourseIds = new Set((existingAssocs ?? []).map((a: { course_id: number }) => a.course_id));
+        const existingCourseIds = new Set(
+          (existingAssocs ?? []).map((a: { course_id: number }) => a.course_id)
+        );
 
         // Get occupied time slots from schedule's sections (via engine DB for consistency)
         const occupiedSlots: { days: number; startTime: number; endTime: number }[] = [];
@@ -189,7 +279,11 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
           for (const sc of supabaseCourses ?? []) {
             const engineCourseId = `${sc.listing_id}-${sc.term}`;
             const sections = await db
-              .select({ days: schema.sections.days, startTime: schema.sections.startTime, endTime: schema.sections.endTime })
+              .select({
+                days: schema.sections.days,
+                startTime: schema.sections.startTime,
+                endTime: schema.sections.endTime,
+              })
               .from(schema.sections)
               .where(eq(schema.sections.courseId, engineCourseId));
             occupiedSlots.push(...sections);
@@ -210,7 +304,10 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
             .from(schema.sections)
             .where(eq(schema.sections.courseId, course.id));
 
-          if (sections.length === 0) { filtered.push(course); continue; }
+          if (sections.length === 0) {
+            filtered.push(course);
+            continue;
+          }
 
           // Group by section type
           const byType = new Map<string, typeof sections>();
@@ -222,10 +319,12 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
 
           // Course fits if each section type has at least one non-conflicting option
           const fits = [...byType.values()].every((group) =>
-            group.some((s) =>
-              !occupiedSlots.some((o) =>
-                (s.days & o.days) !== 0 && s.startTime < o.endTime && o.startTime < s.endTime
-              )
+            group.some(
+              (s) =>
+                !occupiedSlots.some(
+                  (o) =>
+                    (s.days & o.days) !== 0 && s.startTime < o.endTime && o.startTime < s.endTime
+                )
             )
           );
 
@@ -237,7 +336,11 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify({ count: filtered.length, scheduleFiltered: true, scheduleId, courses: filtered }, null, 2),
+              text: JSON.stringify(
+                { count: filtered.length, scheduleFiltered: true, scheduleId, courses: filtered },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -254,26 +357,52 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_course_details",
-    "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam. Provide EITHER courseId OR code, not both.",
     {
-      courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
-      term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
+      description:
+        "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam. Provide EITHER courseId OR code, not both.",
+      inputSchema: z.object({
+        courseId: z
+          .string()
+          .optional()
+          .describe(
+            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."
+          ),
+        code: z
+          .string()
+          .optional()
+          .describe(
+            "Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."
+          ),
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."
+          ),
+      }),
     },
     async ({ courseId, code, term }) => {
       const resolved = await resolveCourseInput(db, { courseId, code, term });
-      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
+      if (!resolved.value)
+        return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
-      const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, resolved.value.id)).limit(1);
+      const rows = await db
+        .select()
+        .from(schema.courses)
+        .where(eq(schema.courses.id, resolved.value.id))
+        .limit(1);
       const course = rows[0];
       if (!course) return buildResolutionError("Course not found.");
 
       const instructors = await db
         .select({ netid: schema.instructors.netid, name: schema.instructors.name })
         .from(schema.courseInstructorMap)
-        .innerJoin(schema.instructors, eq(schema.courseInstructorMap.instructorId, schema.instructors.netid))
+        .innerJoin(
+          schema.instructors,
+          eq(schema.courseInstructorMap.instructorId, schema.instructors.netid)
+        )
         .where(eq(schema.courseInstructorMap.courseId, course.id));
 
       const sections = await db
@@ -311,17 +440,36 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_course_sections",
-    "Get all sections for a course including meeting times, rooms, enrollment, and capacity. Provide EITHER courseId OR code, not both.",
     {
-      courseId: z.string().optional().describe("Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
-      term: z.number().optional().describe("Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."),
+      description:
+        "Get all sections for a course including meeting times, rooms, enrollment, and capacity. Provide EITHER courseId OR code, not both.",
+      inputSchema: z.object({
+        courseId: z
+          .string()
+          .optional()
+          .describe(
+            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."
+          ),
+        code: z
+          .string()
+          .optional()
+          .describe(
+            "Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."
+          ),
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to disambiguate when searching by code. If omitted, returns the most recent term's offering."
+          ),
+      }),
     },
     async ({ courseId, code, term }) => {
       const resolved = await resolveCourseInput(db, { courseId, code, term });
-      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
+      if (!resolved.value)
+        return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
       const sections = await db
         .select()
@@ -353,10 +501,9 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "list_departments",
-    "List all academic departments with their codes.",
-    {},
+    { description: "List all academic departments with their codes.", inputSchema: z.object({}) },
     async () => {
       const depts = await db
         .select()
@@ -374,16 +521,24 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "discover_courses",
-    "Discover interesting courses by filter: 'new' (first-time offerings), 'small_seminar' (low enrollment cap), 'no_final' (no final exam), 'open' (has open sections).",
     {
-      filter: z
-        .enum(["new", "small_seminar", "no_final", "open"])
-        .describe("Discovery filter to apply"),
-      term: z.number().optional().describe("Term code to limit results to a specific semester (e.g., 1264 for Spring 2026)."),
-      department: z.string().optional().describe("Limit to a department (e.g., COS)"),
-      limit: z.number().optional().describe("Max results (default 25)"),
+      description:
+        "Discover interesting courses by filter: 'new' (first-time offerings), 'small_seminar' (low enrollment cap), 'no_final' (no final exam), 'open' (has open sections).",
+      inputSchema: z.object({
+        filter: z
+          .enum(["new", "small_seminar", "no_final", "open"])
+          .describe("Discovery filter to apply"),
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to limit results to a specific semester (e.g., 1264 for Spring 2026)."
+          ),
+        department: z.string().optional().describe("Limit to a department (e.g., COS)"),
+        limit: z.number().optional().describe("Max results (default 25)"),
+      }),
     },
     async ({ filter, term, department, limit: maxResults }) => {
       const resultLimit = maxResults ?? 25;
@@ -432,10 +587,13 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "list_terms",
-    "List all academic terms available in the database with their human-readable names.",
-    {},
+    {
+      description:
+        "List all academic terms available in the database with their human-readable names.",
+      inputSchema: z.object({}),
+    },
     async () => {
       const terms = await db
         .select({ term: schema.courses.term })
@@ -459,12 +617,22 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "compare_courses",
-    "Compare 2-5 courses side by side. Returns details, instructors, meeting times, ratings, and enrollment for each.",
     {
-      codes: z.array(z.string()).min(2).max(5).describe("Array of course codes to compare (e.g., ['COS 226', 'COS 217'])"),
-      term: z.number().optional().describe("Term code. If omitted, uses the most recent term each course was offered."),
+      description:
+        "Compare 2-5 courses side by side. Returns details, instructors, meeting times, ratings, and enrollment for each.",
+      inputSchema: z.object({
+        codes: z
+          .array(z.string())
+          .min(2)
+          .max(5)
+          .describe("Array of course codes to compare (e.g., ['COS 226', 'COS 217'])"),
+        term: z
+          .number()
+          .optional()
+          .describe("Term code. If omitted, uses the most recent term each course was offered."),
+      }),
     },
     async ({ codes, term }) => {
       const comparisons = await Promise.all(
@@ -478,14 +646,21 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
             };
           }
 
-          const rows = await db.select().from(schema.courses).where(eq(schema.courses.id, resolved.value.id)).limit(1);
+          const rows = await db
+            .select()
+            .from(schema.courses)
+            .where(eq(schema.courses.id, resolved.value.id))
+            .limit(1);
           const course = rows[0];
           if (!course) return { code, error: "Course not found" };
 
           const instructors = await db
             .select({ netid: schema.instructors.netid, name: schema.instructors.name })
             .from(schema.courseInstructorMap)
-            .innerJoin(schema.instructors, eq(schema.courseInstructorMap.instructorId, schema.instructors.netid))
+            .innerJoin(
+              schema.instructors,
+              eq(schema.courseInstructorMap.instructorId, schema.instructors.netid)
+            )
             .where(eq(schema.courseInstructorMap.courseId, course.id));
 
           const sections = await db
@@ -494,7 +669,8 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
             .where(eq(schema.sections.courseId, course.id))
             .orderBy(asc(schema.sections.id));
 
-          const { enrolled: totalEnrolled, capacity: totalCapacity } = calculateEnrollment(sections);
+          const { enrolled: totalEnrolled, capacity: totalCapacity } =
+            calculateEnrollment(sections);
 
           const evals = await db
             .select({ rating: schema.evaluations.rating, evalTerm: schema.evaluations.evalTerm })
@@ -514,7 +690,12 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
             hasFinal: course.hasFinal,
             instructors,
             meetingTimes: sections.map(formatSection),
-            enrollment: { enrolled: totalEnrolled, capacity: totalCapacity, percentFull: totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A" },
+            enrollment: {
+              enrolled: totalEnrolled,
+              capacity: totalCapacity,
+              percentFull:
+                totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A",
+            },
             latestRating: evals[0]?.rating ?? null,
           };
         })
@@ -531,17 +712,26 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_enrollment_stats",
-    "Get enrollment statistics for a course: per-section enrolled/capacity breakdown and overall percentage full.",
     {
-      courseId: z.string().optional().describe("Course ID (e.g., '002051-1264')"),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."),
-      term: z.number().optional().describe("Term code to disambiguate when searching by code."),
+      description:
+        "Get enrollment statistics for a course: per-section enrolled/capacity breakdown and overall percentage full.",
+      inputSchema: z.object({
+        courseId: z.string().optional().describe("Course ID (e.g., '002051-1264')"),
+        code: z
+          .string()
+          .optional()
+          .describe(
+            "Course code (e.g., 'COS 226'). Preferred over courseId when both are provided."
+          ),
+        term: z.number().optional().describe("Term code to disambiguate when searching by code."),
+      }),
     },
     async ({ courseId, code, term }) => {
       const resolved = await resolveCourseInput(db, { courseId, code, term });
-      if (!resolved.value) return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
+      if (!resolved.value)
+        return buildResolutionError(resolved.error ?? "Course not found.", resolved.options);
 
       const sections = await db
         .select({
@@ -568,7 +758,10 @@ export function registerCourseTools(server: McpServer, db: NodePgDatabase, junct
                 code: resolved.value.code,
                 totalEnrolled,
                 totalCapacity,
-                percentFull: totalCapacity > 0 ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%` : "N/A",
+                percentFull:
+                  totalCapacity > 0
+                    ? `${Math.round((totalEnrolled / totalCapacity) * 100)}%`
+                    : "N/A",
                 sections: sections.map((s) => ({
                   title: s.title,
                   enrolled: s.tot,

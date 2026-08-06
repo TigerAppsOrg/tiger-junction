@@ -1,10 +1,10 @@
-import { describe, test, expect, afterAll } from "bun:test";
+import { describe, test, expect, afterAll, beforeAll } from "bun:test";
 import type { FastifyInstance } from "fastify";
+import type { AddressInfo } from "node:net";
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { getApp, closeApp } from "./setup";
 
 process.env.MCP_ACCESS_TOKEN = "test-mcp-token";
-process.env.MCP_MAX_SESSIONS_PER_CLIENT = "20";
-process.env.MCP_SESSION_TTL_MS = "1800000";
 
 const MCP_HEADERS = {
   "content-type": "application/json",
@@ -29,6 +29,12 @@ interface JsonRpcErrorPayload {
   error: { code: number; message: string };
 }
 
+interface InjectResponse {
+  statusCode: number;
+  headers: Record<string, unknown>;
+  body: string;
+}
+
 function parseSSEMessages(body: string): JsonRpcMessage[] {
   return body
     .split("\n")
@@ -36,54 +42,51 @@ function parseSSEMessages(body: string): JsonRpcMessage[] {
     .map((l: string) => JSON.parse(l.slice(6)));
 }
 
+// Responses from the stateless handler may be SSE-formatted or plain JSON
+// depending on negotiation; handle both.
+function parseMessages(res: InjectResponse): JsonRpcMessage[] {
+  const contentType = String(res.headers["content-type"] ?? "");
+  if (contentType.includes("text/event-stream")) {
+    return parseSSEMessages(res.body);
+  }
+  const parsed = JSON.parse(res.body);
+  return Array.isArray(parsed) ? parsed : [parsed];
+}
+
 function parseJsonRpcError(body: string): JsonRpcErrorPayload {
   return JSON.parse(body) as JsonRpcErrorPayload;
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-async function initializeSession(app: FastifyInstance): Promise<string> {
-  return initializeSessionAt(app, "/mcp");
-}
-
-async function initializeSessionAt(app: FastifyInstance, baseUrl: string): Promise<string> {
+// Stateless serving: every POST is independent — no session header required,
+// no prior initialize required.
+async function postRpc(
+  app: FastifyInstance,
+  baseUrl: string,
+  payload: Record<string, unknown>,
+  extraHeaders: Record<string, string> = {}
+): Promise<InjectResponse> {
   const res = await app.inject({
     method: "POST",
     url: baseUrl,
-    headers: MCP_HEADERS,
-    payload: {
-      jsonrpc: "2.0",
-      id: 1,
-      method: "initialize",
-      params: {
-        protocolVersion: "2025-03-26",
-        capabilities: {},
-        clientInfo: { name: "test-client", version: "1.0.0" },
-      },
-    },
+    headers: { ...MCP_HEADERS, ...extraHeaders },
+    payload,
   });
-
-  const sessionId = res.headers["mcp-session-id"] as string;
-
-  await app.inject({
-    method: "POST",
-    url: baseUrl,
-    headers: { ...MCP_HEADERS, "mcp-session-id": sessionId },
-    payload: {
-      jsonrpc: "2.0",
-      method: "notifications/initialized",
-    },
-  });
-
-  return sessionId;
+  return res;
 }
 
-describe("POST /mcp", () => {
-  test("returns 401 without valid auth", async () => {
+const INITIALIZE_PAYLOAD = {
+  jsonrpc: "2.0",
+  id: 1,
+  method: "initialize",
+  params: {
+    protocolVersion: "2025-03-26",
+    capabilities: {},
+    clientInfo: { name: "test-client", version: "1.0.0" },
+  },
+};
+
+describe("POST /mcp (legacy 2025-era, stateless)", () => {
+  test("returns 401 without auth", async () => {
     const app = await getApp();
     const res = await app.inject({
       method: "POST",
@@ -92,16 +95,21 @@ describe("POST /mcp", () => {
         "content-type": "application/json",
         accept: "application/json, text/event-stream",
       },
-      payload: {
-        jsonrpc: "2.0",
-        id: 1,
-        method: "initialize",
-        params: {
-          protocolVersion: "2025-03-26",
-          capabilities: {},
-          clientInfo: { name: "test-client", version: "1.0.0" },
-        },
-      },
+      payload: INITIALIZE_PAYLOAD,
+    });
+
+    expect(res.statusCode).toBe(401);
+    const error = parseJsonRpcError(res.body);
+    expect(error.error.code).toBe(-32001);
+  });
+
+  test("returns 401 with wrong bearer token", async () => {
+    const app = await getApp();
+    const res = await app.inject({
+      method: "POST",
+      url: "/mcp",
+      headers: { ...MCP_HEADERS, authorization: "Bearer wrong-token" },
+      payload: INITIALIZE_PAYLOAD,
     });
 
     expect(res.statusCode).toBe(401);
@@ -111,54 +119,31 @@ describe("POST /mcp", () => {
 
   test("responds to initialize request", async () => {
     const app = await getApp();
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: MCP_HEADERS,
-      payload: {
-        jsonrpc: "2.0",
-        id: 1,
-        method: "initialize",
-        params: {
-          protocolVersion: "2025-03-26",
-          capabilities: {},
-          clientInfo: { name: "test-client", version: "1.0.0" },
-        },
-      },
-    });
+    const res = await postRpc(app, "/mcp", INITIALIZE_PAYLOAD);
 
     expect(res.statusCode).toBe(200);
-    expect(res.headers["mcp-session-id"]).toBeDefined();
 
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const initResponse = messages.find((m) => m.id === 1);
     expect(initResponse).toBeDefined();
     expect(initResponse!.jsonrpc).toBe("2.0");
-    const serverInfo = (initResponse!.result as Record<string, unknown>).serverInfo as Record<string, unknown>;
+    const serverInfo = (initResponse!.result as Record<string, unknown>).serverInfo as Record<
+      string,
+      unknown
+    >;
     expect(serverInfo.name).toBe("junction-engine");
   });
 
-  test("lists tools via tools/list", async () => {
+  test("lists tools via bare tools/list without prior initialize", async () => {
     const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 2,
-        method: "tools/list",
-      },
+    const res = await postRpc(app, "/mcp", {
+      jsonrpc: "2.0",
+      id: 2,
+      method: "tools/list",
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const toolListResponse = messages.find((m) => m.id === 2);
     expect(toolListResponse).toBeDefined();
     const tools = (toolListResponse!.result as Record<string, unknown>).tools as { name: string }[];
@@ -182,35 +167,24 @@ describe("POST /mcp", () => {
     expect(toolNames).toContain("find_courses_that_fit");
   });
 
-  test("calls list_departments tool", async () => {
+  test("calls list_departments tool without a session", async () => {
     const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 3,
-        method: "tools/call",
-        params: {
-          name: "list_departments",
-          arguments: {},
-        },
-      },
+    const res = await postRpc(app, "/mcp", {
+      jsonrpc: "2.0",
+      id: 3,
+      method: "tools/call",
+      params: { name: "list_departments", arguments: {} },
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const callResponse = messages.find((m) => m.id === 3);
     expect(callResponse).toBeDefined();
     expect(callResponse!.result).toBeDefined();
-    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const content = (callResponse!.result as Record<string, unknown>).content as {
+      type: string;
+      text: string;
+    }[];
     expect(content).toBeDefined();
     expect(content[0].type).toBe("text");
 
@@ -219,169 +193,157 @@ describe("POST /mcp", () => {
     expect(Array.isArray(data.departments)).toBe(true);
   });
 
-  test("returns deterministic error for malformed courseId", async () => {
+  test("returns deterministic tool error for malformed courseId", async () => {
     const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 4,
-        method: "tools/call",
-        params: {
-          name: "get_course_details",
-          arguments: {
-            courseId: "bad-id",
-          },
-        },
+    const res = await postRpc(app, "/mcp", {
+      jsonrpc: "2.0",
+      id: 4,
+      method: "tools/call",
+      params: {
+        name: "get_course_details",
+        arguments: { courseId: "bad-id" },
       },
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const callResponse = messages.find((m) => m.id === 4);
     expect(callResponse).toBeDefined();
+    // Comes back as a tool result (isError), not a JSON-RPC error.
+    expect(callResponse!.error).toBeUndefined();
     expect(callResponse!.result).toBeDefined();
-    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const result = callResponse!.result as Record<string, unknown>;
+    expect(result.isError).toBe(true);
+    const content = result.content as { type: string; text: string }[];
     const payload = JSON.parse(content[0].text);
     expect(payload.error).toContain("Invalid courseId");
   });
 
-  test("returns deterministic error for malformed listingId", async () => {
+  test("returns deterministic tool error for malformed listingId", async () => {
     const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 5,
-        method: "tools/call",
-        params: {
-          name: "get_course_evaluations",
-          arguments: {
-            listingId: "abc",
-          },
-        },
+    const res = await postRpc(app, "/mcp", {
+      jsonrpc: "2.0",
+      id: 5,
+      method: "tools/call",
+      params: {
+        name: "get_course_evaluations",
+        arguments: { listingId: "abc" },
       },
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const callResponse = messages.find((m) => m.id === 5);
     expect(callResponse).toBeDefined();
     expect(callResponse!.result).toBeDefined();
-    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const content = (callResponse!.result as Record<string, unknown>).content as {
+      type: string;
+      text: string;
+    }[];
     const payload = JSON.parse(content[0].text);
     expect(payload.error).toContain("Invalid listingId");
   });
 
   test("blocks schedule tools without mapped identity context", async () => {
     const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 6,
-        method: "tools/call",
-        params: {
-          name: "get_user_schedules",
-          arguments: { userId: 1 },
-        },
-      },
+    const res = await postRpc(app, "/mcp", {
+      jsonrpc: "2.0",
+      id: 6,
+      method: "tools/call",
+      params: { name: "get_user_schedules", arguments: { userId: 1 } },
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const callResponse = messages.find((m) => m.id === 6);
     expect(callResponse).toBeDefined();
     expect(callResponse!.result).toBeDefined();
-    const content = (callResponse!.result as Record<string, unknown>).content as { type: string; text: string }[];
+    const content = (callResponse!.result as Record<string, unknown>).content as {
+      type: string;
+      text: string;
+    }[];
     expect(content[0].text).toContain("Missing authenticated user context");
   });
 
-  test("expires session after ttl", async () => {
+  test("propagates per-request identity headers into the auth context", async () => {
     const app = await getApp();
-    const originalTtl = process.env.MCP_SESSION_TTL_MS;
-    process.env.MCP_SESSION_TTL_MS = "1";
-    try {
-      const sessionId = await initializeSession(app);
-      await sleep(10);
+    // With an identity header the failure changes from "missing context" to
+    // "no identity mapping" — proving the header reaches the per-request
+    // server factory rather than being silently dropped.
+    const res = await postRpc(
+      app,
+      "/mcp",
+      {
+        jsonrpc: "2.0",
+        id: 8,
+        method: "tools/call",
+        params: { name: "get_user_schedules", arguments: { userId: 1 } },
+      },
+      { "x-external-user-id": "test-unmapped-external-user" }
+    );
 
-      const res = await app.inject({
-        method: "POST",
-        url: "/mcp",
-        headers: {
-          ...MCP_HEADERS,
-          "mcp-session-id": sessionId,
-          "mcp-protocol-version": "2025-03-26",
-        },
-        payload: {
-          jsonrpc: "2.0",
-          id: 99,
-          method: "tools/list",
-        },
-      });
-
-
-      expect(res.statusCode).toBe(400);
-    } finally {
-      process.env.MCP_SESSION_TTL_MS = originalTtl ?? "1800000";
-    }
+    expect(res.statusCode).toBe(200);
+    const messages = parseMessages(res);
+    const callResponse = messages.find((m) => m.id === 8);
+    expect(callResponse).toBeDefined();
+    const content = (callResponse!.result as Record<string, unknown>).content as {
+      type: string;
+      text: string;
+    }[];
+    expect(content[0].text).toContain(
+      "No identity mapping found for external user 'test-unmapped-external-user'"
+    );
+    expect(content[0].text).not.toContain("Missing authenticated user context");
   });
 });
 
 describe("GET /mcp", () => {
-  test("returns 400 without session", async () => {
+  test("returns 401 without auth", async () => {
+    const app = await getApp();
+    const res = await app.inject({
+      method: "GET",
+      url: "/mcp",
+      headers: { accept: "application/json, text/event-stream" },
+    });
+    expect(res.statusCode).toBe(401);
+  });
+
+  test("returns 405 with valid auth (no legacy session streams)", async () => {
     const app = await getApp();
     const res = await app.inject({ method: "GET", url: "/mcp", headers: MCP_HEADERS });
-    expect(res.statusCode).toBe(400);
+    expect(res.statusCode).toBe(405);
+  });
+});
+
+describe("DELETE /mcp", () => {
+  test("returns 401 without auth", async () => {
+    const app = await getApp();
+    const res = await app.inject({
+      method: "DELETE",
+      url: "/mcp",
+      headers: { accept: "application/json, text/event-stream" },
+    });
+    expect(res.statusCode).toBe(401);
+  });
+
+  test("returns 405 with valid auth (no legacy session teardown)", async () => {
+    const app = await getApp();
+    const res = await app.inject({ method: "DELETE", url: "/mcp", headers: MCP_HEADERS });
+    expect(res.statusCode).toBe(405);
   });
 });
 
 describe("POST /princetoncourses/mcp", () => {
   test("lists only PrincetonCourses scoped tools", async () => {
     const app = await getApp();
-    const sessionId = await initializeSessionAt(app, "/princetoncourses/mcp");
-
-    const res = await app.inject({
-      method: "POST",
-      url: "/princetoncourses/mcp",
-      headers: {
-        ...MCP_HEADERS,
-        "mcp-session-id": sessionId,
-        "mcp-protocol-version": "2025-03-26",
-      },
-      payload: {
-        jsonrpc: "2.0",
-        id: 7,
-        method: "tools/list",
-      },
+    const res = await postRpc(app, "/princetoncourses/mcp", {
+      jsonrpc: "2.0",
+      id: 7,
+      method: "tools/list",
     });
 
     expect(res.statusCode).toBe(200);
-    const messages = parseSSEMessages(res.body);
+    const messages = parseMessages(res);
     const toolListResponse = messages.find((m) => m.id === 7);
     expect(toolListResponse).toBeDefined();
     const tools = (toolListResponse!.result as Record<string, unknown>).tools as { name: string }[];
@@ -398,24 +360,82 @@ describe("POST /princetoncourses/mcp", () => {
   });
 });
 
-describe("DELETE /mcp", () => {
-  test("returns 400 without valid session", async () => {
-    const app = await getApp();
-    const res = await app.inject({ method: "DELETE", url: "/mcp", headers: MCP_HEADERS });
-    expect(res.statusCode).toBe(400);
+describe("modern 2026-07-28 client (integration)", () => {
+  let app: FastifyInstance;
+  let mcpUrl: URL;
+
+  beforeAll(async () => {
+    app = await getApp();
+    await app.listen({ port: 0, host: "127.0.0.1" });
+    const address = app.server.address() as AddressInfo;
+    mcpUrl = new URL(`http://127.0.0.1:${address.port}/mcp`);
   });
 
-  test("closes session with valid session ID", async () => {
-    const app = await getApp();
-    const sessionId = await initializeSession(app);
-
-    const res = await app.inject({
-      method: "DELETE",
-      url: "/mcp",
-      headers: { ...MCP_HEADERS, "mcp-session-id": sessionId },
+  async function connectClient(): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: {
+        headers: {
+          authorization: "Bearer test-mcp-token",
+          "x-user-netid": "testnetid",
+        },
+      },
     });
-    // Some MCP SDK flows auto-close transport after initialization, in which case
-    // the explicit DELETE returns "no valid session" (400).
-    expect([200, 400]).toContain(res.statusCode);
+    const client = new Client(
+      { name: "test-modern-client", version: "1.0.0" },
+      { versionNegotiation: { mode: "auto" } }
+    );
+    await client.connect(transport);
+    // Auto negotiation may silently fall back to the legacy initialize
+    // handshake; assert the server/discover probe actually landed on the
+    // modern era so a broken 2026-07-28 path cannot hide behind the fallback.
+    expect(client.getProtocolEra()).toBe("modern");
+    return client;
+  }
+
+  test("connects and lists tools", async () => {
+    const client = await connectClient();
+    try {
+      const result = await client.listTools();
+      const toolNames = result.tools.map((t) => t.name);
+      expect(toolNames).toContain("search_courses");
+      expect(toolNames).toContain("get_course_details");
+      expect(toolNames).toContain("get_course_evaluations");
+      expect(toolNames).toContain("get_instructor");
+      expect(toolNames).toContain("get_user_schedules");
+      expect(toolNames).toContain("list_departments");
+    } finally {
+      await client.close();
+    }
+  });
+
+  test("calls list_departments and gets parseable JSON text content", async () => {
+    const client = await connectClient();
+    try {
+      const result = await client.callTool({ name: "list_departments", arguments: {} });
+      const content = result.content as { type: string; text: string }[];
+      expect(Array.isArray(content)).toBe(true);
+      expect(content[0].type).toBe("text");
+      const data = JSON.parse(content[0].text);
+      expect(data.departments).toBeDefined();
+      expect(Array.isArray(data.departments)).toBe(true);
+    } finally {
+      await client.close();
+    }
+  });
+
+  test("surfaces tool errors as tool results, not protocol errors", async () => {
+    const client = await connectClient();
+    try {
+      const result = await client.callTool({
+        name: "get_course_details",
+        arguments: { courseId: "bad-id" },
+      });
+      expect(result.isError).toBe(true);
+      const content = result.content as { type: string; text: string }[];
+      const payload = JSON.parse(content[0].text);
+      expect(payload.error).toContain("Invalid courseId");
+    } finally {
+      await client.close();
+    }
   });
 });

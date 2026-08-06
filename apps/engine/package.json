@@ -26,7 +26,6 @@
     "@fastify/swagger": "^9.5.2",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/websocket": "^11.2.0",
-    "@modelcontextprotocol/sdk": "^1.26.0",
     "@supabase/supabase-js": "^2.100.1",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
@@ -37,10 +36,13 @@
     "mongodb": "^7.1.1",
     "pg": "^8.16.3",
     "redis": "^4.6.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "@modelcontextprotocol/node": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@modelcontextprotocol/client": "2.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^24.3.0",
