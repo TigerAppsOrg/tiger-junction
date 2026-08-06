@@ -1,15 +1,18 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, asc, and } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 
 export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
-  server.tool(
+  server.registerTool(
     "get_instructor",
-    "Get details about an instructor by their netid, including name, department, office, rating (1-5 scale), numRatings (how many students rated them), and ratingUncertainty.",
     {
-      netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
+      description:
+        "Get details about an instructor by their netid, including name, department, office, rating (1-5 scale), numRatings (how many students rated them), and ratingUncertainty.",
+      inputSchema: z.object({
+        netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
+      }),
     },
     async ({ netid }) => {
       const rows = await db
@@ -18,7 +21,10 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
         .where(eq(schema.instructors.netid, netid));
 
       if (rows.length === 0) {
-        return { content: [{ type: "text" as const, text: `Instructor '${netid}' not found.` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Instructor '${netid}' not found.` }],
+          isError: true,
+        };
       }
 
       return {
@@ -27,11 +33,14 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "search_instructors",
-    "Search for instructors by name. Returns matching instructor profiles including rating, numRatings, and department.",
     {
-      name: z.string().describe("Name or partial name to search for (e.g., 'Dondero')"),
+      description:
+        "Search for instructors by name. Returns matching instructor profiles including rating, numRatings, and department.",
+      inputSchema: z.object({
+        name: z.string().describe("Name or partial name to search for (e.g., 'Dondero')"),
+      }),
     },
     async ({ name }) => {
       const instructors = await db
@@ -52,12 +61,20 @@ export function registerInstructorTools(server: McpServer, db: NodePgDatabase) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_instructor_courses",
-    "Get all courses taught by an instructor. Returns course codes, titles, and terms. Optionally filter by term.",
     {
-      netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
-      term: z.number().optional().describe("Term code to filter by (e.g., 1264 for Spring 2026). If omitted, returns all terms."),
+      description:
+        "Get all courses taught by an instructor. Returns course codes, titles, and terms. Optionally filter by term.",
+      inputSchema: z.object({
+        netid: z.string().describe("Instructor netid (e.g., 'rdondero')"),
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to filter by (e.g., 1264 for Spring 2026). If omitted, returns all terms."
+          ),
+      }),
     },
     async ({ netid, term }) => {
       const conditions = [eq(schema.courseInstructorMap.instructorId, netid)];

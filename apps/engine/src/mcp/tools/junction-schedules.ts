@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { termCodeToName, valueToDays, valueToTime } from "../helpers.js";
@@ -82,21 +82,26 @@ export function registerJunctionScheduleTools(
   authContext?: AuthContext
 ) {
   // ── get_user_schedules ──────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "get_user_schedules",
-    "Get all schedules for the authenticated user, optionally filtered by term.",
     {
-      term: z
-        .number()
-        .optional()
-        .describe(
-          "Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."
-        ),
+      description: "Get all schedules for the authenticated user, optionally filtered by term.",
+      inputSchema: z.object({
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."
+          ),
+      }),
     },
     async ({ term }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       let query = supabase
@@ -112,7 +117,10 @@ export function registerJunctionScheduleTools(
       const { data: schedules, error } = await query;
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to fetch schedules: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to fetch schedules: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
@@ -137,16 +145,22 @@ export function registerJunctionScheduleTools(
   );
 
   // ── get_schedule_details ────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "get_schedule_details",
-    "Get full details of a schedule including its courses, sections, meeting times, and any time conflicts.",
     {
-      scheduleId: z.number().describe("Schedule ID"),
+      description:
+        "Get full details of a schedule including its courses, sections, meeting times, and any time conflicts.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID"),
+      }),
     },
     async ({ scheduleId }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       // Fetch the schedule and verify ownership
@@ -161,7 +175,12 @@ export function registerJunctionScheduleTools(
       }
       if (schedule.user_id !== auth.supabaseUuid) {
         return {
-          content: [{ type: "text" as const, text: "Forbidden: schedule does not belong to authenticated user." }],
+          content: [
+            {
+              type: "text" as const,
+              text: "Forbidden: schedule does not belong to authenticated user.",
+            },
+          ],
           isError: true,
         };
       }
@@ -179,7 +198,12 @@ export function registerJunctionScheduleTools(
               type: "text" as const,
               text: JSON.stringify(
                 {
-                  schedule: { id: schedule.id, title: schedule.title, term: schedule.term, termName: termCodeToName(schedule.term) },
+                  schedule: {
+                    id: schedule.id,
+                    title: schedule.title,
+                    term: schedule.term,
+                    termName: termCodeToName(schedule.term),
+                  },
                   courses: [],
                   sections: [],
                   conflicts: "No courses in this schedule",
@@ -209,7 +233,12 @@ export function registerJunctionScheduleTools(
         .in("course_id", courseIds);
 
       // Build section list with course codes and detect conflicts
-      const allSections: (TimeSlot & { courseCode: string; sectionTitle: string; room: string | null; status: string })[] = [];
+      const allSections: (TimeSlot & {
+        courseCode: string;
+        sectionTitle: string;
+        room: string | null;
+        status: string;
+      })[] = [];
 
       for (const s of sections ?? []) {
         const course = courseMap.get(s.course_id);
@@ -243,7 +272,12 @@ export function registerJunctionScheduleTools(
             type: "text" as const,
             text: JSON.stringify(
               {
-                schedule: { id: schedule.id, title: schedule.title, term: schedule.term, termName: termCodeToName(schedule.term) },
+                schedule: {
+                  id: schedule.id,
+                  title: schedule.title,
+                  term: schedule.term,
+                  termName: termCodeToName(schedule.term),
+                },
                 courses: (courses ?? []).map((c) => ({
                   id: c.id,
                   code: c.code,
@@ -271,19 +305,24 @@ export function registerJunctionScheduleTools(
   );
 
   // ── verify_schedule ─────────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "verify_schedule",
-    "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
     {
-      courseCodes: z
-        .array(z.string())
-        .min(1)
-        .max(10)
-        .describe("Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"),
-      term: z
-        .number()
-        .optional()
-        .describe("Term code. If omitted, uses the most recent term each course is offered."),
+      description:
+        "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
+      inputSchema: z.object({
+        courseCodes: z
+          .array(z.string())
+          .min(1)
+          .max(10)
+          .describe(
+            "Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"
+          ),
+        term: z
+          .number()
+          .optional()
+          .describe("Term code. If omitted, uses the most recent term each course is offered."),
+      }),
     },
     async ({ courseCodes, term }) => {
       const issues: string[] = [];
@@ -292,7 +331,16 @@ export function registerJunctionScheduleTools(
         courseId: number;
         term: number;
         status: string;
-        sections: { title: string; type: string; days: number; startTime: number; endTime: number; status: string; cap: number; tot: number }[];
+        sections: {
+          title: string;
+          type: string;
+          days: number;
+          startTime: number;
+          endTime: number;
+          status: string;
+          cap: number;
+          tot: number;
+        }[];
       }[] = [];
 
       for (const code of courseCodes) {
@@ -308,7 +356,9 @@ export function registerJunctionScheduleTools(
           courseQuery = courseQuery.eq("term", term);
         }
 
-        const { data: matchedCourses } = await courseQuery.order("term", { ascending: false }).limit(1);
+        const { data: matchedCourses } = await courseQuery
+          .order("term", { ascending: false })
+          .limit(1);
 
         if (!matchedCourses || matchedCourses.length === 0) {
           issues.push(`Course not found: "${code}"`);
@@ -350,7 +400,9 @@ export function registerJunctionScheduleTools(
 
       // Check: too many courses
       if (resolvedCourses.length > 7) {
-        issues.push(`Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`);
+        issues.push(
+          `Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`
+        );
       }
 
       // Check: mixed terms
@@ -379,7 +431,9 @@ export function registerJunctionScheduleTools(
           const allClosed = sections.every((s) => s.status === "closed");
           const allCanceled = sections.every((s) => s.status === "canceled");
           if (allCanceled) {
-            issues.push(`No available ${type} sections: all ${type} sections for ${course.code} are canceled`);
+            issues.push(
+              `No available ${type} sections: all ${type} sections for ${course.code} are canceled`
+            );
           } else if (allClosed) {
             issues.push(
               `All ${type} sections full: all ${type} sections for ${course.code} are closed (${sections[0].tot}/${sections[0].cap} enrolled)`
@@ -435,7 +489,8 @@ export function registerJunctionScheduleTools(
               {
                 valid,
                 courseCount: resolvedCourses.length,
-                term: terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
+                term:
+                  terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
                 courses: resolvedCourses.map((c) => ({
                   code: c.code,
                   status: c.status,
@@ -458,7 +513,10 @@ export function registerJunctionScheduleTools(
   async function verifyScheduleOwnership(
     scheduleId: number,
     supabaseUuid: string
-  ): Promise<{ schedule?: { id: number; term: number; title: string; user_id: string }; error?: string }> {
+  ): Promise<{
+    schedule?: { id: number; term: number; title: string; user_id: string };
+    error?: string;
+  }> {
     const { data, error } = await supabase
       .from("schedules")
       .select("id, term, title, user_id")
@@ -466,7 +524,8 @@ export function registerJunctionScheduleTools(
       .single();
 
     if (error || !data) return { error: "Schedule not found." };
-    if (data.user_id !== supabaseUuid) return { error: "Forbidden: schedule does not belong to authenticated user." };
+    if (data.user_id !== supabaseUuid)
+      return { error: "Forbidden: schedule does not belong to authenticated user." };
     return { schedule: data };
   }
 
@@ -497,7 +556,12 @@ export function registerJunctionScheduleTools(
   async function generateCourseMetadata(
     scheduleId: number,
     courseId: number
-  ): Promise<{ complete: boolean; color: number; sections: string[]; confirms: Record<string, string> }> {
+  ): Promise<{
+    complete: boolean;
+    color: number;
+    sections: string[];
+    confirms: Record<string, string>;
+  }> {
     // Pick a color: find unused 0-6 among existing courses in this schedule
     const { data: existingAssocs } = await supabase
       .from("course_schedule_associations")
@@ -514,12 +578,18 @@ export function registerJunctionScheduleTools(
 
     let color = 0;
     for (let c = 0; c <= 6; c++) {
-      if (!usedColors.has(c)) { color = c; break; }
+      if (!usedColors.has(c)) {
+        color = c;
+        break;
+      }
       if (c === 6) {
         // All used — pick least-used
         let minCount = Infinity;
         for (const [col, count] of usedColors) {
-          if (count < minCount) { minCount = count; color = col; }
+          if (count < minCount) {
+            minCount = count;
+            color = col;
+          }
         }
       }
     }
@@ -553,17 +623,22 @@ export function registerJunctionScheduleTools(
   }
 
   // ── create_schedule ─────────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "create_schedule",
-    "Create a new schedule for the authenticated user.",
     {
-      term: z.number().describe("Term code for the schedule (e.g., 1272 for Fall 2026)."),
-      title: z.string().optional().describe("Schedule title (default: 'My Schedule')."),
+      description: "Create a new schedule for the authenticated user.",
+      inputSchema: z.object({
+        term: z.number().describe("Term code for the schedule (e.g., 1272 for Fall 2026)."),
+        title: z.string().optional().describe("Schedule title (default: 'My Schedule')."),
+      }),
     },
     async ({ term, title }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const { data, error } = await supabase
@@ -573,14 +648,21 @@ export function registerJunctionScheduleTools(
         .single();
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to create schedule: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to create schedule: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ created: true, schedule: { ...data, termName: termCodeToName(data.term) } }, null, 2),
+            text: JSON.stringify(
+              { created: true, schedule: { ...data, termName: termCodeToName(data.term) } },
+              null,
+              2
+            ),
           },
         ],
       };
@@ -588,27 +670,39 @@ export function registerJunctionScheduleTools(
   );
 
   // ── add_course_to_schedule ──────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "add_course_to_schedule",
-    "Add a course to an existing schedule. Automatically generates metadata (color, section categories). The course must exist for the schedule's term.",
     {
-      scheduleId: z.number().describe("Schedule ID to add the course to."),
-      courseCode: z.string().describe("Course code (e.g., 'COS 226')."),
+      description:
+        "Add a course to an existing schedule. Automatically generates metadata (color, section categories). The course must exist for the schedule's term.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID to add the course to."),
+        courseCode: z.string().describe("Course code (e.g., 'COS 226')."),
+      }),
     },
     async ({ scheduleId, courseCode }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const ownership = await verifyScheduleOwnership(scheduleId, auth.supabaseUuid);
       if (!ownership.schedule) {
-        return { content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }],
+          isError: true,
+        };
       }
 
       const resolved = await resolveCourseByCode(courseCode, ownership.schedule.term);
       if (!resolved.course) {
-        return { content: [{ type: "text" as const, text: resolved.error ?? "Course not found." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: resolved.error ?? "Course not found." }],
+          isError: true,
+        };
       }
 
       // Check if already in schedule
@@ -621,7 +715,9 @@ export function registerJunctionScheduleTools(
 
       if (existing && existing.length > 0) {
         return {
-          content: [{ type: "text" as const, text: `${resolved.course.code} is already in this schedule.` }],
+          content: [
+            { type: "text" as const, text: `${resolved.course.code} is already in this schedule.` },
+          ],
           isError: true,
         };
       }
@@ -633,7 +729,10 @@ export function registerJunctionScheduleTools(
         .insert({ course_id: resolved.course.id, schedule_id: scheduleId, metadata });
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to add course: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to add course: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
@@ -657,27 +756,38 @@ export function registerJunctionScheduleTools(
   );
 
   // ── remove_course_from_schedule ─────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "remove_course_from_schedule",
-    "Remove a course from a schedule.",
     {
-      scheduleId: z.number().describe("Schedule ID."),
-      courseCode: z.string().describe("Course code to remove (e.g., 'COS 226')."),
+      description: "Remove a course from a schedule.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID."),
+        courseCode: z.string().describe("Course code to remove (e.g., 'COS 226')."),
+      }),
     },
     async ({ scheduleId, courseCode }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const ownership = await verifyScheduleOwnership(scheduleId, auth.supabaseUuid);
       if (!ownership.schedule) {
-        return { content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }],
+          isError: true,
+        };
       }
 
       const resolved = await resolveCourseByCode(courseCode, ownership.schedule.term);
       if (!resolved.course) {
-        return { content: [{ type: "text" as const, text: resolved.error ?? "Course not found." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: resolved.error ?? "Course not found." }],
+          isError: true,
+        };
       }
 
       const { error, count } = await supabase
@@ -687,7 +797,10 @@ export function registerJunctionScheduleTools(
         .eq("course_id", resolved.course.id);
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to remove course: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to remove course: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
@@ -702,31 +815,39 @@ export function registerJunctionScheduleTools(
   );
 
   // ── rename_schedule ─────────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "rename_schedule",
-    "Rename a schedule.",
     {
-      scheduleId: z.number().describe("Schedule ID."),
-      title: z.string().describe("New title for the schedule."),
+      description: "Rename a schedule.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID."),
+        title: z.string().describe("New title for the schedule."),
+      }),
     },
     async ({ scheduleId, title }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const ownership = await verifyScheduleOwnership(scheduleId, auth.supabaseUuid);
       if (!ownership.schedule) {
-        return { content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }],
+          isError: true,
+        };
       }
 
-      const { error } = await supabase
-        .from("schedules")
-        .update({ title })
-        .eq("id", scheduleId);
+      const { error } = await supabase.from("schedules").update({ title }).eq("id", scheduleId);
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to rename schedule: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to rename schedule: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
@@ -741,41 +862,53 @@ export function registerJunctionScheduleTools(
   );
 
   // ── delete_schedule ─────────────────────────────────────────────────
-  server.tool(
+  server.registerTool(
     "delete_schedule",
-    "Delete a schedule and all its course associations. This cannot be undone.",
     {
-      scheduleId: z.number().describe("Schedule ID to delete."),
+      description: "Delete a schedule and all its course associations. This cannot be undone.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID to delete."),
+      }),
     },
     async ({ scheduleId }) => {
       const auth = await resolveSupabaseUserId(supabase, authContext);
       if (!auth.supabaseUuid) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const ownership = await verifyScheduleOwnership(scheduleId, auth.supabaseUuid);
       if (!ownership.schedule) {
-        return { content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: ownership.error ?? "Schedule error." }],
+          isError: true,
+        };
       }
 
-      const { error } = await supabase
-        .from("schedules")
-        .delete()
-        .eq("id", scheduleId);
+      const { error } = await supabase.from("schedules").delete().eq("id", scheduleId);
 
       if (error) {
-        return { content: [{ type: "text" as const, text: `Failed to delete schedule: ${error.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Failed to delete schedule: ${error.message}` }],
+          isError: true,
+        };
       }
 
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({
-              deleted: true,
-              scheduleId,
-              title: ownership.schedule.title,
-            }, null, 2),
+            text: JSON.stringify(
+              {
+                deleted: true,
+                scheduleId,
+                title: ownership.schedule.title,
+              },
+              null,
+              2
+            ),
           },
         ],
       };

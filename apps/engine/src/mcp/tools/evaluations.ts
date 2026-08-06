@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, sql, desc, and } from "drizzle-orm";
@@ -7,18 +7,24 @@ import { termCodeToName } from "../helpers.js";
 import { buildResolutionError, resolveListingId } from "../resolvers.js";
 
 export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
-  server.tool(
+  server.registerTool(
     "get_course_evaluations",
-    "Get student evaluations (ratings and comments) for a course across all terms it was offered.",
     {
-      listingId: z.string().optional().describe("Listing ID (e.g., '002051')"),
-      code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
-      term: z.number().optional().describe("Optional term to disambiguate code lookups."),
+      description:
+        "Get student evaluations (ratings and comments) for a course across all terms it was offered.",
+      inputSchema: z.object({
+        listingId: z.string().optional().describe("Listing ID (e.g., '002051')"),
+        code: z.string().optional().describe("Course code (e.g., 'COS 226')"),
+        term: z.number().optional().describe("Optional term to disambiguate code lookups."),
+      }),
     },
     async ({ listingId, code, term }) => {
       const resolvedListing = await resolveListingId(db, { listingId, code, term });
       if (!resolvedListing.value) {
-        return buildResolutionError(resolvedListing.error ?? "Course not found.", resolvedListing.options);
+        return buildResolutionError(
+          resolvedListing.error ?? "Course not found.",
+          resolvedListing.options
+        );
       }
 
       const evals = await db
@@ -28,7 +34,12 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
 
       if (evals.length === 0) {
         return {
-          content: [{ type: "text" as const, text: `No evaluations found for listing ${resolvedListing.value}.` }],
+          content: [
+            {
+              type: "text" as const,
+              text: `No evaluations found for listing ${resolvedListing.value}.`,
+            },
+          ],
         };
       }
 
@@ -58,14 +69,20 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "find_top_rated_courses",
-    "Find the highest-rated courses by recency-weighted average evaluation score. The 2 most recent terms get full weight; older terms are downweighted to 0.5. Optionally filter by department or distribution area.",
     {
-      department: z.string().optional().describe("Department code (e.g., COS)"),
-      dist: z.string().optional().describe("Distribution area (e.g., LA, QCR)"),
-      minRating: z.number().optional().describe("Minimum weighted rating threshold (default 4.0)"),
-      limit: z.number().optional().describe("Max results (default 20)"),
+      description:
+        "Find the highest-rated courses by recency-weighted average evaluation score. The 2 most recent terms get full weight; older terms are downweighted to 0.5. Optionally filter by department or distribution area.",
+      inputSchema: z.object({
+        department: z.string().optional().describe("Department code (e.g., COS)"),
+        dist: z.string().optional().describe("Distribution area (e.g., LA, QCR)"),
+        minRating: z
+          .number()
+          .optional()
+          .describe("Minimum weighted rating threshold (default 4.0)"),
+        limit: z.number().optional().describe("Max results (default 20)"),
+      }),
     },
     async ({ department, dist, minRating, limit: maxResults }) => {
       const threshold = minRating ?? 4.0;
@@ -113,20 +130,22 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
       const rows = topEvals.rows ?? topEvals;
 
       const enriched = await Promise.all(
-        (rows as { listing_id: string; weighted_avg: number; term_count: number }[]).map(async (e) => {
-          const course = await db
-            .select({ code: schema.courses.code, title: schema.courses.title })
-            .from(schema.courses)
-            .where(eq(schema.courses.listingId, e.listing_id))
-            .limit(1);
-          return {
-            listingId: e.listing_id,
-            code: course[0]?.code ?? "Unknown",
-            title: course[0]?.title ?? "Unknown",
-            weightedAvgRating: Number(e.weighted_avg).toFixed(2),
-            termCount: Number(e.term_count),
-          };
-        })
+        (rows as { listing_id: string; weighted_avg: number; term_count: number }[]).map(
+          async (e) => {
+            const course = await db
+              .select({ code: schema.courses.code, title: schema.courses.title })
+              .from(schema.courses)
+              .where(eq(schema.courses.listingId, e.listing_id))
+              .limit(1);
+            return {
+              listingId: e.listing_id,
+              code: course[0]?.code ?? "Unknown",
+              title: course[0]?.title ?? "Unknown",
+              weightedAvgRating: Number(e.weighted_avg).toFixed(2),
+              termCount: Number(e.term_count),
+            };
+          }
+        )
       );
 
       return {
@@ -140,19 +159,34 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "summarize_course_reviews",
-    "Get the raw student comments and rating for a course so the AI can synthesize a summary. Returns all available comment text.",
     {
-      listingId: z.string().optional().describe("Listing ID"),
-      code: z.string().optional().describe("Course code (e.g., 'COS 126')"),
-      term: z.string().optional().describe("Specific eval term. If omitted, returns all terms. Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."),
+      description:
+        "Get the raw student comments and rating for a course so the AI can synthesize a summary. Returns all available comment text.",
+      inputSchema: z.object({
+        listingId: z.string().optional().describe("Listing ID"),
+        code: z.string().optional().describe("Course code (e.g., 'COS 126')"),
+        term: z
+          .string()
+          .optional()
+          .describe(
+            "Specific eval term. If omitted, returns all terms. Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."
+          ),
+      }),
     },
     async ({ listingId, code, term }) => {
       const termForCodeLookup = term ? Number.parseInt(term, 10) : undefined;
-      const resolvedListing = await resolveListingId(db, { listingId, code, term: termForCodeLookup });
+      const resolvedListing = await resolveListingId(db, {
+        listingId,
+        code,
+        term: termForCodeLookup,
+      });
       if (!resolvedListing.value) {
-        return buildResolutionError(resolvedListing.error ?? "Course not found.", resolvedListing.options);
+        return buildResolutionError(
+          resolvedListing.error ?? "Course not found.",
+          resolvedListing.options
+        );
       }
 
       const conditions = [eq(schema.evaluations.listingId, resolvedListing.value)];
@@ -165,12 +199,22 @@ export function registerEvaluationTools(server: McpServer, db: NodePgDatabase) {
 
       if (evals.length === 0) {
         return {
-          content: [{ type: "text" as const, text: `No reviews found for listing ${resolvedListing.value}.` }],
+          content: [
+            {
+              type: "text" as const,
+              text: `No reviews found for listing ${resolvedListing.value}.`,
+            },
+          ],
         };
       }
 
       const allComments: string[] = [];
-      const termRatings: { term: string; termName: string; rating: number | null; commentCount: number }[] = [];
+      const termRatings: {
+        term: string;
+        termName: string;
+        rating: number | null;
+        commentCount: number;
+      }[] = [];
 
       for (const e of evals) {
         if (e.comments) allComments.push(...e.comments);

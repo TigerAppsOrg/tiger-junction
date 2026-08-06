@@ -1,4 +1,4 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, and, asc, sql } from "drizzle-orm";
@@ -51,22 +51,38 @@ async function resolveAuthorizedEngineUserId(
   return { userId: rows[0].engineUserId };
 }
 
-export function registerScheduleTools(server: McpServer, db: NodePgDatabase, authContext?: AuthContext) {
-  server.tool(
+export function registerScheduleTools(
+  server: McpServer,
+  db: NodePgDatabase,
+  authContext?: AuthContext
+) {
+  server.registerTool(
     "get_user_schedules",
-    "Get all schedules for a user, optionally filtered by term.",
     {
-      userId: z.number().describe("User ID"),
-      term: z.number().optional().describe("Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."),
+      description: "Get all schedules for a user, optionally filtered by term.",
+      inputSchema: z.object({
+        userId: z.number().describe("User ID"),
+        term: z
+          .number()
+          .optional()
+          .describe(
+            "Term code to filter by. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."
+          ),
+      }),
     },
     async ({ userId, term }) => {
       const auth = await resolveAuthorizedEngineUserId(db, authContext);
       if (!auth.userId) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
       if (auth.userId !== userId) {
         return {
-          content: [{ type: "text" as const, text: "Forbidden: cannot access schedules for another user." }],
+          content: [
+            { type: "text" as const, text: "Forbidden: cannot access schedules for another user." },
+          ],
           isError: true,
         };
       }
@@ -84,23 +100,33 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ count: userSchedules.length, schedules: userSchedules }, null, 2),
+            text: JSON.stringify(
+              { count: userSchedules.length, schedules: userSchedules },
+              null,
+              2
+            ),
           },
         ],
       };
     }
   );
 
-  server.tool(
+  server.registerTool(
     "get_schedule_details",
-    "Get full details of a schedule including its courses, sections, meeting times, and any time conflicts.",
     {
-      scheduleId: z.number().describe("Schedule ID"),
+      description:
+        "Get full details of a schedule including its courses, sections, meeting times, and any time conflicts.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID"),
+      }),
     },
     async ({ scheduleId }) => {
       const auth = await resolveAuthorizedEngineUserId(db, authContext);
       if (!auth.userId) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const schedule = await db
@@ -113,7 +139,12 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
       }
       if (schedule[0].userId !== auth.userId) {
         return {
-          content: [{ type: "text" as const, text: "Forbidden: schedule does not belong to authenticated user." }],
+          content: [
+            {
+              type: "text" as const,
+              text: "Forbidden: schedule does not belong to authenticated user.",
+            },
+          ],
           isError: true,
         };
       }
@@ -190,20 +221,26 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
     }
   );
 
-  server.tool(
+  server.registerTool(
     "find_courses_that_fit",
-    "Find courses that don't conflict with an existing schedule. Optionally filter by department or distribution area.",
     {
-      scheduleId: z.number().describe("Schedule ID to check against"),
-      department: z.string().optional().describe("Department code (e.g., COS)"),
-      dist: z.string().optional().describe("Distribution area (e.g., LA)"),
-      limit: z.number().optional().describe("Max results to return (default 30, max 100)"),
+      description:
+        "Find courses that don't conflict with an existing schedule. Optionally filter by department or distribution area.",
+      inputSchema: z.object({
+        scheduleId: z.number().describe("Schedule ID to check against"),
+        department: z.string().optional().describe("Department code (e.g., COS)"),
+        dist: z.string().optional().describe("Distribution area (e.g., LA)"),
+        limit: z.number().optional().describe("Max results to return (default 30, max 100)"),
+      }),
     },
     async ({ scheduleId, department, dist, limit: maxResults }) => {
       const resultLimit = Math.min(maxResults ?? 30, 100);
       const auth = await resolveAuthorizedEngineUserId(db, authContext);
       if (!auth.userId) {
-        return { content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: auth.error ?? "Unauthorized." }],
+          isError: true,
+        };
       }
 
       const schedule = await db
@@ -216,7 +253,12 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
       }
       if (schedule[0].userId !== auth.userId) {
         return {
-          content: [{ type: "text" as const, text: "Forbidden: schedule does not belong to authenticated user." }],
+          content: [
+            {
+              type: "text" as const,
+              text: "Forbidden: schedule does not belong to authenticated user.",
+            },
+          ],
           isError: true,
         };
       }
@@ -229,7 +271,11 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
       const occupiedSlots: TimeSlot[] = [];
       for (const { courseId } of existingCourseIds) {
         const sections = await db
-          .select({ days: schema.sections.days, startTime: schema.sections.startTime, endTime: schema.sections.endTime })
+          .select({
+            days: schema.sections.days,
+            startTime: schema.sections.startTime,
+            endTime: schema.sections.endTime,
+          })
           .from(schema.sections)
           .where(eq(schema.sections.courseId, courseId));
         occupiedSlots.push(...sections);
@@ -292,12 +338,24 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
     }
   );
 
-  server.tool(
+  server.registerTool(
     "verify_schedule",
-    "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
     {
-      courseCodes: z.array(z.string()).min(1).max(10).describe("Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"),
-      term: z.number().optional().describe("Term code. If omitted, uses the most recent term each course is offered."),
+      description:
+        "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
+      inputSchema: z.object({
+        courseCodes: z
+          .array(z.string())
+          .min(1)
+          .max(10)
+          .describe(
+            "Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"
+          ),
+        term: z
+          .number()
+          .optional()
+          .describe("Term code. If omitted, uses the most recent term each course is offered."),
+      }),
     },
     async ({ courseCodes, term }) => {
       const issues: string[] = [];
@@ -306,7 +364,16 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
         courseId: string;
         term: number;
         status: string;
-        sections: { title: string; type: string; days: number; startTime: number; endTime: number; status: string; cap: number; tot: number }[];
+        sections: {
+          title: string;
+          type: string;
+          days: number;
+          startTime: number;
+          endTime: number;
+          status: string;
+          cap: number;
+          tot: number;
+        }[];
       }[] = [];
 
       // Resolve each course code
@@ -369,7 +436,9 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
 
       // Check: too many courses
       if (resolvedCourses.length > 7) {
-        issues.push(`Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`);
+        issues.push(
+          `Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`
+        );
       }
 
       // Check: mixed terms
@@ -398,9 +467,13 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
           const allClosed = sections.every((s) => s.status === "closed");
           const allCanceled = sections.every((s) => s.status === "canceled");
           if (allCanceled) {
-            issues.push(`No available ${type} sections: all ${type} sections for ${course.code} are canceled`);
+            issues.push(
+              `No available ${type} sections: all ${type} sections for ${course.code} are canceled`
+            );
           } else if (allClosed) {
-            issues.push(`All ${type} sections full: all ${type} sections for ${course.code} are closed (${sections[0].tot}/${sections[0].cap} enrolled)`);
+            issues.push(
+              `All ${type} sections full: all ${type} sections for ${course.code} are closed (${sections[0].tot}/${sections[0].cap} enrolled)`
+            );
           }
         }
 
@@ -457,7 +530,8 @@ export function registerScheduleTools(server: McpServer, db: NodePgDatabase, aut
               {
                 valid,
                 courseCount: resolvedCourses.length,
-                term: terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
+                term:
+                  terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
                 courses: resolvedCourses.map((c) => ({
                   code: c.code,
                   status: c.status,

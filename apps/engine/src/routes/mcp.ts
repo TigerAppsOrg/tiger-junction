@@ -1,33 +1,10 @@
 import { randomUUID } from "node:crypto";
-import { type FastifyPluginAsync } from "fastify";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { type FastifyPluginAsync, type FastifyReply, type FastifyRequest } from "fastify";
+import { createMcpHandler } from "@modelcontextprotocol/server";
+import { toNodeHandler } from "@modelcontextprotocol/node";
 import { createMcpServer } from "../mcp/index.js";
 import type { McpToolScope } from "../mcp/index.js";
 import type { AuthContext } from "../mcp/context.js";
-
-interface McpSession {
-  server: McpServer;
-  transport: StreamableHTTPServerTransport;
-  authContext: AuthContext;
-  clientKey: string;
-  createdAt: number;
-  lastSeenAt: number;
-}
-
-function parsePositiveInt(raw: string | undefined, fallback: number): number {
-  if (!raw) return fallback;
-  const parsed = Number.parseInt(raw, 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
-
-function getSessionTtlMs(): number {
-  return parsePositiveInt(process.env.MCP_SESSION_TTL_MS, 30 * 60 * 1000);
-}
-
-function getMaxSessionsPerClient(): number {
-  return parsePositiveInt(process.env.MCP_MAX_SESSIONS_PER_CLIENT, 20);
-}
 
 function extractBearerToken(headerValue: string | undefined): string | null {
   if (!headerValue) return null;
@@ -50,219 +27,88 @@ interface McpRouteOptions {
 
 const mcpRoutes: FastifyPluginAsync<McpRouteOptions> = async (app, opts) => {
   const scope = opts.scope ?? "full";
-  const sessions = new Map<string, McpSession>();
 
   // Accept empty JSON bodies on this plugin's routes. Without this, DELETE /
   // requests from clients that set `content-type: application/json` but send
   // no body (httpx does this on DELETE) are rejected with 400 by Fastify's
-  // default parser, so `transport.close()` never runs and sessions leak until
-  // the TTL sweep.
+  // default parser before the MCP handler can answer them.
   app.removeContentTypeParser("application/json");
-  app.addContentTypeParser(
-    "application/json",
-    { parseAs: "string" },
-    (_req, body, done) => {
-      const raw = typeof body === "string" ? body : body?.toString?.("utf8") ?? "";
-      if (raw.length === 0) return done(null, undefined);
-      try {
-        done(null, JSON.parse(raw));
-      } catch (err) {
-        done(err as Error, undefined);
-      }
+  app.addContentTypeParser("application/json", { parseAs: "string" }, (_req, body, done) => {
+    const raw = typeof body === "string" ? body : (body?.toString?.("utf8") ?? "");
+    if (raw.length === 0) return done(null, undefined);
+    try {
+      done(null, JSON.parse(raw));
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  });
+
+  const authContextFromHeaders = (headers: Headers | undefined): AuthContext => {
+    const read = (name: string): string | undefined => {
+      const value = headers?.get(name)?.trim();
+      return value && value.length > 0 ? value : undefined;
+    };
+    return {
+      externalUserId: read("x-external-user-id"),
+      netid: read("x-user-netid"),
+    };
+  };
+
+  // Serving is stateless and per-request: the factory builds a fresh McpServer
+  // for every HTTP request, with the caller's identity read from that request's
+  // headers. 2026-07-28 clients are served natively; 2025-era clients are served
+  // through the SDK's stateless legacy fallback (no sessions — legacy GET/DELETE
+  // session operations answer 405).
+  const handler = createMcpHandler(
+    ({ requestInfo }) => {
+      const authContext = authContextFromHeaders(requestInfo?.headers);
+      const supabase = scope === "junction" ? app.supabase : undefined;
+      const snatchDb = scope === "junction" || scope === "snatch" ? app.snatchDb : undefined;
+      const tigerpathPool = app.tigerpathPool ?? undefined;
+      return createMcpServer(app.db.db, authContext, scope, supabase, snatchDb, tigerpathPool);
+    },
+    {
+      onerror: (err) => {
+        app.log.error({ err }, "MCP handler error");
+      },
     }
   );
+  const nodeHandler = toNodeHandler(handler, {
+    onerror: (err) => {
+      app.log.error({ err }, "MCP adapter error");
+    },
+  });
 
-  const cleanupExpiredSessions = async (): Promise<void> => {
-    const now = Date.now();
-    const ttl = getSessionTtlMs();
-    for (const [sessionId, session] of sessions) {
-      if (now - session.lastSeenAt > ttl) {
-        await session.transport.close();
-        sessions.delete(sessionId);
-      }
-    }
-  };
-
-  const touchSession = (session: McpSession) => {
-    session.lastSeenAt = Date.now();
-  };
-
-  const authenticateRequest = (request: { headers: Record<string, unknown> }) => {
+  const serve = async (request: FastifyRequest, reply: FastifyReply) => {
+    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
     const requiredToken = process.env.MCP_ACCESS_TOKEN?.trim();
     const authHeader = request.headers.authorization;
     const bearerToken = typeof authHeader === "string" ? extractBearerToken(authHeader) : null;
 
     if (requiredToken && bearerToken !== requiredToken) {
-      return null;
-    }
-
-    const externalUserIdHeader = request.headers["x-external-user-id"];
-    const netidHeader = request.headers["x-user-netid"];
-    const externalUserId =
-      typeof externalUserIdHeader === "string" && externalUserIdHeader.trim().length > 0
-        ? externalUserIdHeader.trim()
-        : undefined;
-    const netid = typeof netidHeader === "string" && netidHeader.trim().length > 0 ? netidHeader.trim() : undefined;
-
-    const clientKey = externalUserId ?? netid ?? (bearerToken ? `token:${bearerToken.slice(0, 8)}` : "anonymous");
-    return {
-      clientKey,
-      authContext: {
-        externalUserId,
-        netid,
-      } satisfies AuthContext,
-    };
-  };
-
-  const enforceSessionClientBinding = (session: McpSession, clientKey: string) => session.clientKey === clientKey;
-
-  const cleanupInterval = setInterval(() => {
-    void cleanupExpiredSessions();
-  }, 60_000);
-
-  app.post("/", {
-    config: { rawBody: true },
-    schema: { hide: true },
-  }, async (request, reply) => {
-    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
-    const auth = authenticateRequest(request);
-    if (!auth) {
-      app.log.warn({ requestId }, "Rejected unauthorized MCP POST request");
-      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
-    }
-
-    await cleanupExpiredSessions();
-    const sessionId = request.headers["mcp-session-id"] as string | undefined;
-
-    if (sessionId && sessions.has(sessionId)) {
-      const session = sessions.get(sessionId)!;
-      if (!enforceSessionClientBinding(session, auth.clientKey)) {
-        app.log.warn({ requestId, sessionId }, "Rejected MCP session access for mismatched client");
-        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
-      }
-      touchSession(session);
-      app.log.info({ requestId, sessionId }, "Handling MCP request on existing session");
-      reply.hijack();
-      await session.transport.handleRequest(request.raw, reply.raw, request.body);
-      return;
-    }
-
-    try {
-      const activeSessionsForClient = [...sessions.values()].filter((s) => s.clientKey === auth.clientKey).length;
-      if (activeSessionsForClient >= getMaxSessionsPerClient()) {
-        app.log.warn({ requestId, clientKey: auth.clientKey }, "Rejected MCP request due to session cap");
-        return reply
-          .code(429)
-          .send(rpcError(-32009, "Too many active MCP sessions for this client. Close a session and retry."));
-      }
-
-      const supabase = scope === "junction" ? app.supabase : undefined;
-      const snatchDb = (scope === "junction" || scope === "snatch") ? app.snatchDb : undefined;
-      const tigerpathPool = app.tigerpathPool ?? undefined;
-      const mcpServer = createMcpServer(app.db.db, auth.authContext, scope, supabase, snatchDb, tigerpathPool);
-      const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => randomUUID(),
-      });
-
-      transport.onclose = () => {
-        const sid = transport.sessionId;
-        if (sid) sessions.delete(sid);
-      };
-
-      await mcpServer.connect(transport);
-      reply.hijack();
-      await transport.handleRequest(request.raw, reply.raw, request.body);
-
-      if (transport.sessionId) {
-        const now = Date.now();
-        sessions.set(transport.sessionId, {
-          server: mcpServer,
-          transport,
-          authContext: auth.authContext,
-          clientKey: auth.clientKey,
-          createdAt: now,
-          lastSeenAt: now,
-        });
-        app.log.info(
-          { requestId, sessionId: transport.sessionId, clientKey: auth.clientKey },
-          "Created new MCP session"
-        );
-      }
-    } catch (err) {
-      if (!reply.sent) {
-        app.log.error({ err, requestId }, "MCP request failed");
-        return reply.code(500).send({ error: "Internal MCP error" });
-      }
-    }
-  });
-
-  app.get("/", { schema: { hide: true } }, async (request, reply) => {
-    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
-    const auth = authenticateRequest(request);
-    if (!auth) {
-      app.log.warn({ requestId }, "Rejected unauthorized MCP GET request");
-      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
-    }
-
-    await cleanupExpiredSessions();
-    const sessionId = request.headers["mcp-session-id"] as string | undefined;
-    if (sessionId && sessions.has(sessionId)) {
-      const session = sessions.get(sessionId)!;
-      if (!enforceSessionClientBinding(session, auth.clientKey)) {
-        app.log.warn({ requestId, sessionId }, "Rejected MCP GET for mismatched client");
-        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
-      }
-      touchSession(session);
-      reply.hijack();
-      await session.transport.handleRequest(request.raw, reply.raw);
-      return;
+      app.log.warn({ requestId, method: request.method }, "Rejected unauthorized MCP request");
+      return reply
+        .code(401)
+        .send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
     }
 
     reply.hijack();
-    const res = reply.raw;
-    res.writeHead(400);
-    res.end(JSON.stringify({
-      jsonrpc: "2.0",
-      error: { code: -32000, message: "Bad Request: No valid session. Initialize first via POST." },
-      id: null,
-    }));
-  });
-
-  app.delete("/", { schema: { hide: true } }, async (request, reply) => {
-    const requestId = (request.headers["x-request-id"] as string | undefined) ?? randomUUID();
-    const auth = authenticateRequest(request);
-    if (!auth) {
-      app.log.warn({ requestId }, "Rejected unauthorized MCP DELETE request");
-      return reply.code(401).send(rpcError(-32001, "Unauthorized: missing or invalid bearer token."));
+    try {
+      await nodeHandler(request.raw, reply.raw, request.body);
+    } catch (err) {
+      // The reply is hijacked, so Fastify cannot answer for us — log and drop
+      // the connection rather than leaving the client hanging.
+      app.log.error({ err, requestId }, "MCP request failed");
+      if (!reply.raw.writableEnded) reply.raw.destroy();
     }
+  };
 
-    await cleanupExpiredSessions();
-    const sessionId = request.headers["mcp-session-id"] as string | undefined;
-    if (sessionId && sessions.has(sessionId)) {
-      const session = sessions.get(sessionId)!;
-      if (!enforceSessionClientBinding(session, auth.clientKey)) {
-        app.log.warn({ requestId, sessionId }, "Rejected MCP DELETE for mismatched client");
-        return reply.code(403).send(rpcError(-32003, "Forbidden: session does not belong to this caller."));
-      }
-      await session.transport.close();
-      sessions.delete(sessionId);
-      app.log.info({ requestId, sessionId }, "Closed MCP session");
-      return reply.code(200).send();
-    }
-
-    return reply.code(400).send({
-      jsonrpc: "2.0",
-      error: { code: -32000, message: "Bad Request: No valid session." },
-      id: null,
-    });
-  });
+  app.post("/", { schema: { hide: true } }, serve);
+  app.get("/", { schema: { hide: true } }, serve);
+  app.delete("/", { schema: { hide: true } }, serve);
 
   app.addHook("onClose", async () => {
-    clearInterval(cleanupInterval);
-    for (const [, session] of sessions) {
-      await session.transport.close();
-    }
-    sessions.clear();
+    await handler.close();
   });
 };
 
