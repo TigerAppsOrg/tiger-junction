@@ -62,12 +62,13 @@ function parseJsonRpcError(body: string): JsonRpcErrorPayload {
 async function postRpc(
   app: FastifyInstance,
   baseUrl: string,
-  payload: Record<string, unknown>
+  payload: Record<string, unknown>,
+  extraHeaders: Record<string, string> = {}
 ): Promise<InjectResponse> {
   const res = await app.inject({
     method: "POST",
     url: baseUrl,
-    headers: MCP_HEADERS,
+    headers: { ...MCP_HEADERS, ...extraHeaders },
     payload,
   });
   return res;
@@ -263,6 +264,37 @@ describe("POST /mcp (legacy 2025-era, stateless)", () => {
     }[];
     expect(content[0].text).toContain("Missing authenticated user context");
   });
+
+  test("propagates per-request identity headers into the auth context", async () => {
+    const app = await getApp();
+    // With an identity header the failure changes from "missing context" to
+    // "no identity mapping" — proving the header reaches the per-request
+    // server factory rather than being silently dropped.
+    const res = await postRpc(
+      app,
+      "/mcp",
+      {
+        jsonrpc: "2.0",
+        id: 8,
+        method: "tools/call",
+        params: { name: "get_user_schedules", arguments: { userId: 1 } },
+      },
+      { "x-external-user-id": "test-unmapped-external-user" }
+    );
+
+    expect(res.statusCode).toBe(200);
+    const messages = parseMessages(res);
+    const callResponse = messages.find((m) => m.id === 8);
+    expect(callResponse).toBeDefined();
+    const content = (callResponse!.result as Record<string, unknown>).content as {
+      type: string;
+      text: string;
+    }[];
+    expect(content[0].text).toContain(
+      "No identity mapping found for external user 'test-unmapped-external-user'"
+    );
+    expect(content[0].text).not.toContain("Missing authenticated user context");
+  });
 });
 
 describe("GET /mcp", () => {
@@ -353,6 +385,10 @@ describe("modern 2026-07-28 client (integration)", () => {
       { versionNegotiation: { mode: "auto" } }
     );
     await client.connect(transport);
+    // Auto negotiation may silently fall back to the legacy initialize
+    // handshake; assert the server/discover probe actually landed on the
+    // modern era so a broken 2026-07-28 path cannot hide behind the fallback.
+    expect(client.getProtocolEra()).toBe("modern");
     return client;
   }
 
