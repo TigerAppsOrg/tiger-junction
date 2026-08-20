@@ -31,8 +31,15 @@ def _collect_token_text(events: list[tuple[str, dict]]) -> str:
 @pytest.mark.asyncio
 async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -95,8 +102,15 @@ async def test_stream_emits_done(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.mark.asyncio
 async def test_stream_emits_timeout_error(monkeypatch: pytest.MonkeyPatch) -> None:
     class SlowMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             await asyncio.sleep(0.02)
@@ -127,8 +141,15 @@ async def test_stream_emits_timeout_error(monkeypatch: pytest.MonkeyPatch) -> No
 @pytest.mark.asyncio
 async def test_stream_handles_disconnect(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -158,8 +179,15 @@ async def test_stream_handles_disconnect(monkeypatch: pytest.MonkeyPatch) -> Non
 @pytest.mark.asyncio
 async def test_stream_handles_empty_course_results(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -192,8 +220,15 @@ async def test_stream_handles_empty_course_results(monkeypatch: pytest.MonkeyPat
 @pytest.mark.asyncio
 async def test_stream_handles_malformed_payload(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -226,8 +261,15 @@ async def test_stream_handles_malformed_payload(monkeypatch: pytest.MonkeyPatch)
 @pytest.mark.asyncio
 async def test_stream_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> None:
     class FailingMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -262,8 +304,15 @@ async def test_stream_course_question_uses_details_and_evaluations(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
@@ -326,11 +375,47 @@ async def test_stream_course_question_uses_details_and_evaluations(
     assert "evaluation" in token_text.lower()
 
 
+_FAKE_LLM_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "search_courses",
+            "description": "Search courses",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    }
+]
+
+
 @pytest.mark.asyncio
 async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.MonkeyPatch) -> None:
-    class FakeLlmClient:
-        def __init__(self, settings: Settings) -> None:
+    class FakeMcpClient:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = None  # stateless server: no session
+
+        async def list_tools(self) -> list[dict]:
+            return _FAKE_LLM_TOOLS
+
+        async def close(self) -> None:
+            return None
+
+    class FakeLlmClient:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
+            self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
             yield {
@@ -347,6 +432,7 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
         async def close(self) -> None:
             return None
 
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
     monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
 
     service = ChatService(
@@ -370,11 +456,21 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
 @pytest.mark.asyncio
 async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeMcpClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def initialize(self) -> str:
             return "sid"
+
+        async def list_tools(self) -> list[dict]:
+            return _FAKE_LLM_TOOLS
 
         async def call_tool(self, name: str, arguments: dict) -> dict:
             return {"content": [{"type": "text", "text": json.dumps({"count": 1, "courses": [{"code": "COS 126", "title": "Computer Science"}]})}]}
@@ -383,8 +479,15 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             return None
 
     class FakeLlmClient:
-        def __init__(self, settings: Settings) -> None:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
             has_tool_message = any(m.get("role") == "tool" for m in messages)
@@ -432,6 +535,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
         Settings(
             tool_timeout_seconds=1,
             connect_timeout_seconds=1,
+            ask_llm_planner_enabled=True,
             ask_llm_synthesis_enabled=True,
         )
     )
@@ -449,9 +553,33 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
 
 @pytest.mark.asyncio
 async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> None:
-    class FakeLlmClient:
-        def __init__(self, settings: Settings) -> None:
+    class FakeMcpClient:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
             self._settings = settings
+            self.session_id: str | None = None
+
+        async def list_tools(self) -> list[dict]:
+            return _FAKE_LLM_TOOLS
+
+        async def close(self) -> None:
+            return None
+
+    class FakeLlmClient:
+        def __init__(
+            self,
+            settings: Settings,
+            *,
+            netid: str | None = None,
+            mcp_url: str | None = None,
+        ) -> None:
+            self._settings = settings
+            self.session_id: str | None = "sid"
 
         async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
             raise LlmClientError("upstream down")
@@ -460,6 +588,7 @@ async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyP
         async def close(self) -> None:
             return None
 
+    monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
     monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
 
     service = ChatService(

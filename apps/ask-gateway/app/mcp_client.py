@@ -33,12 +33,27 @@ class McpHttpClient:
         self._netid = netid
         self._mcp_url = mcp_url or settings.mcp_url
         self._session_id: str | None = None
+        self._initialized = False
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(settings.tool_timeout_seconds, connect=settings.connect_timeout_seconds)
         )
         self._next_id = 1
+        self._protocol_version = settings.mcp_protocol_version
 
-    async def initialize(self) -> str:
+    @property
+    def session_id(self) -> str | None:
+        """Session id issued by the server, or None for stateless servers."""
+        return self._session_id
+
+    async def initialize(self) -> str | None:
+        """Perform the MCP initialize handshake.
+
+        Returns the session id if the server issued one (sessionful 2025-era
+        servers), or None for stateless servers (MCP SDK v2 / spec 2026-07-28)
+        that do not return an mcp-session-id header. Either way, the client is
+        usable afterwards; when a session id exists it is sent on subsequent
+        requests.
+        """
         payload = {
             "jsonrpc": "2.0",
             "id": self._next(),
@@ -50,10 +65,24 @@ class McpHttpClient:
             },
         }
         response = await self._post(payload)
-        self._session_id = response.headers.get("mcp-session-id")
-        if not self._session_id:
-            raise McpClientError("MCP initialize succeeded but no mcp-session-id header was returned.")
-        await self._post({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        message = _extract_jsonrpc(response.text, expected_id=payload["id"])
+        if "error" in message:
+            raise McpClientError(f"MCP initialize failed: {message['error']}")
+        result = message.get("result", {})
+        # Subsequent requests must carry the *negotiated* protocol version,
+        # which may differ from the one we asked for.
+        negotiated = result.get("protocolVersion") if isinstance(result, dict) else None
+        if isinstance(negotiated, str) and negotiated:
+            self._protocol_version = negotiated
+        # Optional: stateless servers return no session header and honor none.
+        self._session_id = response.headers.get("mcp-session-id") or None
+        self._initialized = True
+        try:
+            await self._post({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        except Exception as exc:
+            # Some servers reject the standalone notification POST; that must
+            # not break the request flow.
+            logger.warning("MCP notifications/initialized was rejected; continuing: %s", exc)
         return self._session_id
 
     async def list_tools(self) -> list[dict[str, Any]]:
@@ -62,8 +91,9 @@ class McpHttpClient:
         Results are cached for 60 seconds to avoid redundant calls.
         Initializes a session if one doesn't exist yet.
         """
-        # Always ensure session exists (each client instance needs its own)
-        if self._session_id is None:
+        # Always ensure the handshake ran (each client instance needs its own;
+        # stateless servers never hand out a session id, so track a flag).
+        if not self._initialized:
             await self.initialize()
 
         cache_key = self._mcp_url
@@ -115,7 +145,11 @@ class McpHttpClient:
                 headers = self._headers(include_session=True)
                 headers.pop("content-type", None)
                 response = await self._client.delete(self._mcp_url, headers=headers)
-                if response.status_code >= 400:
+                if response.status_code == 405:
+                    # Stateless servers do not support DELETE on the MCP path;
+                    # nothing to tear down.
+                    pass
+                elif response.status_code >= 400:
                     logger.warning(
                         "MCP session close failed: status=%s session=%s body=%s",
                         response.status_code,
@@ -146,6 +180,7 @@ class McpHttpClient:
         headers = {
             "content-type": "application/json",
             "accept": "application/json, text/event-stream",
+            "mcp-protocol-version": self._protocol_version,
         }
         if self._settings.mcp_token:
             headers["authorization"] = f"Bearer {self._settings.mcp_token}"
@@ -153,7 +188,6 @@ class McpHttpClient:
             headers["x-user-netid"] = self._netid
         if include_session and self._session_id:
             headers["mcp-session-id"] = self._session_id
-            headers["mcp-protocol-version"] = self._settings.mcp_protocol_version
         return headers
 
 
@@ -176,10 +210,41 @@ def _mcp_tools_to_openai(mcp_tools: list[dict[str, Any]]) -> list[dict[str, Any]
 
 
 def _extract_jsonrpc(raw: str, expected_id: int) -> dict[str, Any]:
+    """Extract the JSON-RPC message matching expected_id from a response body.
+
+    Handles both response formats a streamable-HTTP MCP server may use:
+    - SSE bodies ("data: {...}" lines)
+    - plain JSON bodies (a single object, or an array of messages)
+    """
+    candidates: list[Any] = []
+    saw_sse_data = False
+    # Per the SSE spec one event's payload may span multiple consecutive
+    # "data:" lines, joined with newlines; a blank line ends the event.
+    data_lines: list[str] = []
+
+    def _flush_event() -> None:
+        if not data_lines:
+            return
+        try:
+            candidates.append(json.loads("\n".join(data_lines)))
+        except json.JSONDecodeError:
+            pass
+        data_lines.clear()
+
     for line in raw.splitlines():
-        if not line.startswith("data: "):
-            continue
-        payload = json.loads(line[6:])
-        if payload.get("id") == expected_id:
+        if line.startswith("data:"):
+            saw_sse_data = True
+            data_lines.append(line[5:].lstrip())
+        elif not line.strip():
+            _flush_event()
+    _flush_event()
+    if not saw_sse_data:
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            raise McpClientError("MCP response body was neither SSE nor valid JSON.")
+        candidates = parsed if isinstance(parsed, list) else [parsed]
+    for payload in candidates:
+        if isinstance(payload, dict) and payload.get("id") == expected_id:
             return payload
     raise McpClientError(f"MCP response did not include JSON-RPC message for id {expected_id}.")
