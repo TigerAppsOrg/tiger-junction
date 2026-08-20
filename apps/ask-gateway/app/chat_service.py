@@ -204,8 +204,9 @@ class ChatService:
             llm_tools = await asyncio.wait_for(
                 mcp_client.list_tools(), timeout=self._settings.tool_timeout_seconds
             )
-            # list_tools initializes the session, so capture it
-            session_id = mcp_client._session_id
+            # list_tools runs the initialize handshake; capture the session id
+            # (None for stateless MCP servers, which issue no session).
+            session_id = getattr(mcp_client, "session_id", None)
             collected_usage: dict[str, Any] | None = None
             # Accumulate usage across all LLM iterations (tool-calling loop)
             total_cost = 0.0
@@ -356,7 +357,7 @@ class ChatService:
                     {
                         "phase": "calling_tool",
                         "requestId": request_id,
-                        "sessionId": session_id,
+                        **({"sessionId": session_id} if session_id else {}),
                     },
                 )
                 # Append assistant message with tool_calls FIRST (before tool results)
@@ -391,7 +392,7 @@ class ChatService:
                             "arguments": tool_args,
                             "call_id": tc["id"],
                             "requestId": request_id,
-                            "sessionId": session_id,
+                            **({"sessionId": session_id} if session_id else {}),
                         },
                     )
                     persisted_tool_events.append(
@@ -421,7 +422,7 @@ class ChatService:
                             "ok": True,
                             "result": result,
                             "requestId": request_id,
-                            "sessionId": session_id,
+                            **({"sessionId": session_id} if session_id else {}),
                         },
                     )
                     messages.append(
@@ -530,7 +531,7 @@ class ChatService:
                     {
                         "phase": "calling_tool",
                         "requestId": request_id,
-                        "sessionId": session_id,
+                        **({"sessionId": session_id} if session_id else {}),
                     },
                 )
                 yield sse_event(
@@ -539,7 +540,7 @@ class ChatService:
                         "name": tool_call.name,
                         "arguments": tool_call.arguments,
                         "requestId": request_id,
-                        "sessionId": session_id,
+                        **({"sessionId": session_id} if session_id else {}),
                     },
                 )
                 result = await asyncio.wait_for(
@@ -553,7 +554,7 @@ class ChatService:
                         "ok": True,
                         "result": result,
                         "requestId": request_id,
-                        "sessionId": session_id,
+                        **({"sessionId": session_id} if session_id else {}),
                     },
                 )
                 executed_tool_runs.append(
