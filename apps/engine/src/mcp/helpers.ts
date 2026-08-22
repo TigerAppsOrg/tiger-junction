@@ -11,6 +11,25 @@ const DAY_BITS: [number, string][] = [
 const NULL_TIME = -420;
 
 /**
+ * ReCal null-time sentinel as stored in TigerJunction's Supabase (`-42`,
+ * i.e. NULL_TIME expressed in ReCal's 10-minute units).
+ */
+const RECAL_NULL_TIME = -42;
+
+/**
+ * Convert a ReCal-encoded time value to minutes-since-8AM.
+ *
+ * TigerJunction's Supabase (ReCal) `sections` table stores times in
+ * 10-minute units — the web app decodes them as `hour = value / 6 + 8`
+ * (apps/web convert.ts, HOUR_FACTOR = 6) — while this file's converters
+ * expect minutes since 8AM. Scale before formatting or the calendar
+ * collapses into the 8–10 AM window with fractional minutes.
+ */
+export function recalValueToMinutes(value: number): number {
+  return value === RECAL_NULL_TIME ? NULL_TIME : value * 10;
+}
+
+/**
  * Convert a bitmask day value to an array of day abbreviations.
  * M=1, T=2, W=4, Th=8, F=16
  */

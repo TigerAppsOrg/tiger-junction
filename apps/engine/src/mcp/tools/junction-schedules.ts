@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import { termCodeToName, valueToDays, valueToTime } from "../helpers.js";
+import { termCodeToName, valueToDays, valueToTime, recalValueToMinutes } from "../helpers.js";
 import type { AuthContext } from "../context.js";
 
 // Supabase status encoding: 0=open, 1=closed, 2=canceled
@@ -37,8 +37,8 @@ function formatSectionForDisplay(s: {
   return {
     sectionTitle: s.title,
     days: valueToDays(s.days),
-    startTime: valueToTime(s.start_time),
-    endTime: valueToTime(s.end_time),
+    startTime: valueToTime(recalValueToMinutes(s.start_time)),
+    endTime: valueToTime(recalValueToMinutes(s.end_time)),
     room: s.room ?? null,
     status: statusName(s.status),
   };
@@ -288,8 +288,8 @@ export function registerJunctionScheduleTools(
                   courseCode: s.courseCode,
                   sectionTitle: s.sectionTitle,
                   days: valueToDays(s.days),
-                  startTime: valueToTime(s.startTime),
-                  endTime: valueToTime(s.endTime),
+                  startTime: valueToTime(recalValueToMinutes(s.startTime)),
+                  endTime: valueToTime(recalValueToMinutes(s.endTime)),
                   room: s.room,
                   status: s.status,
                 })),
