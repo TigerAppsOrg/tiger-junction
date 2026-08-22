@@ -40,16 +40,27 @@ class OpenAiLlmClient:
         messages: list[dict[str, Any]],
         tools: list[dict[str, Any]] | None = None,
         model: str | None = None,
+        session_id: str | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         if not self._settings.openrouter_api_key:
             raise LlmClientError("OPENROUTER_API_KEY is missing.")
 
+        effective_model = model or self._settings.ask_llm_model
         request: dict[str, Any] = {
-            "model": model or self._settings.ask_llm_model,
+            "model": effective_model,
             "messages": messages,
             "stream": True,
             "stream_options": {"include_usage": True},
         }
+        if session_id:
+            # OpenRouter session stickiness: pins the conversation to one
+            # provider backend so prefix caches survive across iterations
+            # (caches don't transfer between providers). Max 256 chars.
+            request["session_id"] = session_id[:256]
+        if effective_model.startswith("anthropic/"):
+            # Anthropic models cache nothing without an explicit breakpoint;
+            # root-level cache_control auto-advances it as history grows.
+            request["cache_control"] = {"type": "ephemeral"}
         if tools:
             request["tools"] = tools
             request["tool_choice"] = "auto"

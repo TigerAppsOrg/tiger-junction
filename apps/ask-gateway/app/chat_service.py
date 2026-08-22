@@ -43,11 +43,6 @@ Guidelines:
 - You can check how popular a course is and which majors take it using course_popularity.
 """
 
-_TOOL_CONTINUATION_PROMPT = """\
-Continue processing the tool results. Synthesize a helpful response for the user, \
-or call additional tools if needed. Be concise.
-"""
-
 _SCHEDULE_PROMPT_ADDENDUM = """
 You also have access to the user's TigerJunction (junction.tigerapps.org) schedule.
 You can view their schedule and add/remove courses from it, keep this in mind.
@@ -219,24 +214,37 @@ class ChatService:
                 if is_disconnected():
                     raise asyncio.CancelledError()
 
-                # After the first iteration, swap to a minimal system prompt
-                # to reduce input tokens (the full prompt was already seen)
-                if iteration > 0:
-                    messages[0] = {"role": "system", "content": _TOOL_CONTINUATION_PROMPT}
-
+                # messages[0] must stay byte-identical across iterations:
+                # provider prompt caches are prefix-matching, so changing the
+                # system prompt invalidates the cached tool schemas + history
+                # on every round of the tool loop.
                 collected_content = ""
                 collected_reasoning = ""
                 collected_tool_calls: list[dict[str, Any]] = []
                 finish_reason: str | None = None
 
                 async for chunk in llm_client.stream_chat(
-                    messages=messages, tools=llm_tools, model=effective_model
+                    messages=messages,
+                    tools=llm_tools,
+                    model=effective_model,
+                    session_id=conversation_id,
                 ):
                     if chunk.get("type") == "done":
                         break
 
                     if chunk.get("usage"):
                         collected_usage = chunk["usage"]
+                        cached_tokens = (
+                            collected_usage.get("prompt_tokens_details") or {}
+                        ).get("cached_tokens")
+                        logger.info(
+                            "llm usage: request=%s iteration=%d prompt=%s cached=%s discount=%s",
+                            request_id,
+                            iteration,
+                            collected_usage.get("prompt_tokens"),
+                            cached_tokens,
+                            collected_usage.get("cache_discount"),
+                        )
                         total_cost += collected_usage.get("cost") or 0
                         total_input_tokens += collected_usage.get("prompt_tokens") or 0
                         total_output_tokens += (
