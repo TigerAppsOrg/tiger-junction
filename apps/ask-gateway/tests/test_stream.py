@@ -417,7 +417,7 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
             self._settings = settings
             self.session_id: str | None = "sid"
 
-        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None, session_id: str | None = None):
             yield {
                 "choices": [
                     {
@@ -478,6 +478,8 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
         async def close(self) -> None:
             return None
 
+    llm_calls: list[dict] = []
+
     class FakeLlmClient:
         def __init__(
             self,
@@ -489,7 +491,8 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             self._settings = settings
             self.session_id: str | None = "sid"
 
-        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None, session_id: str | None = None):
+            llm_calls.append({"system": messages[0], "session_id": session_id})
             has_tool_message = any(m.get("role") == "tool" for m in messages)
             if not has_tool_message:
                 yield {
@@ -550,6 +553,15 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
     assert "tool_result" in names
     assert "summarized them" in token_text
 
+    # Prefix-cache invariants across the tool loop: the system prompt must be
+    # byte-identical on every iteration, and every iteration must carry the
+    # same OpenRouter session id for provider stickiness.
+    assert len(llm_calls) == 2
+    assert llm_calls[0]["system"] == llm_calls[1]["system"]
+    assert llm_calls[0]["system"]["role"] == "system"
+    assert llm_calls[0]["session_id"] is not None
+    assert llm_calls[0]["session_id"] == llm_calls[1]["session_id"]
+
 
 @pytest.mark.asyncio
 async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -581,7 +593,7 @@ async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyP
             self._settings = settings
             self.session_id: str | None = "sid"
 
-        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None):
+        async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None, session_id: str | None = None):
             raise LlmClientError("upstream down")
             yield {"type": "done"}  # pragma: no cover
 
