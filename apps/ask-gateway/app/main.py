@@ -14,6 +14,16 @@ from .usage_tracker import get_user_usage_async
 from . import supabase_store
 
 app = FastAPI(title="Ask Gateway", version="1.0.0")
+
+# uvicorn's --log-level only configures its own loggers; without a handler the
+# app's INFO records (e.g. the per-iteration cache telemetry) are dropped at
+# root's WARNING default. Scope INFO to the "ask-gateway" namespace only.
+_app_log_handler = logging.StreamHandler()
+_app_log_handler.setFormatter(logging.Formatter("%(asctime)s %(name)s %(levelname)s %(message)s"))
+_app_root_logger = logging.getLogger("ask-gateway")
+_app_root_logger.setLevel(logging.INFO)
+_app_root_logger.addHandler(_app_log_handler)
+
 logger = logging.getLogger("ask-gateway")
 
 
