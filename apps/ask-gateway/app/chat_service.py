@@ -51,6 +51,7 @@ You can view their schedule and add/remove courses from it, keep this in mind.
 You also have access to the user's TigerPath (path.tigerapps.org) 4-year degree plan.
 - Get their full plan with get_user_schedule (shows all 8 semesters + external credits)
 - Add or remove courses from their plan with update_user_schedule (specify semester index 0-8 and course code)
+- Schedules and plans change between messages. Always call the tools to fetch current data before answering about a schedule or plan; never reuse schedule contents from earlier in the conversation.
 """
 
 
