@@ -83,7 +83,36 @@ function errorResult(msg: string) {
   };
 }
 
-// ── User resolution ─────────────────────────────────────────────────────────
+// ── Active plan resolution ──────────────────────────────────────────────────
+//
+// Since TigerPath's multi-plan change (April 2026) a user's schedule lives in
+// tigerpath_scheduleplan, one row per named plan, and the app reads/writes only
+// the *active* plan: user_state.active_plan_id, falling back to the lowest-id
+// plan (mirrors views.get_active_plan). The legacy
+// tigerpath_userprofile.user_schedule column only seeded the first plan and is
+// never updated by the app — reading it returns a snapshot frozen at migration.
+// Every query here must go through the active plan.
+
+// One row per profile with that profile's active plan. `major_id` prefers the
+// plan's major (what TigerPath's requirement checks use) over the profile's.
+const ACTIVE_PLANS_CTE = `
+  active_plans AS (
+    SELECT p.id AS profile_id,
+           p.year,
+           COALESCE(sp.major_id, p.major_id) AS major_id,
+           sp.id AS plan_id,
+           sp.schedule
+    FROM tigerpath_userprofile p
+    JOIN LATERAL (
+      SELECT sp.id, sp.schedule, sp.major_id
+      FROM tigerpath_scheduleplan sp
+      WHERE sp.user_profile_id = p.id
+      ORDER BY (sp.id = NULLIF(p.user_state->>'active_plan_id', '')::int) DESC NULLS LAST,
+               sp.id ASC
+      LIMIT 1
+    ) sp ON true
+    WHERE jsonb_typeof(sp.schedule) = 'array'
+  )`;
 
 async function resolveTigerpathUser(pool: Pool, netid: string) {
   const userRes = await pool.query("SELECT id FROM auth_user WHERE username = $1", [netid]);
@@ -91,14 +120,38 @@ async function resolveTigerpathUser(pool: Pool, netid: string) {
   const userId = userRes.rows[0].id;
 
   const profileRes = await pool.query(
-    `SELECT up.id, up.user_schedule, up.year, up.major_id, m.code AS major_code, m.name AS major_name
+    `SELECT up.id,
+            up.user_schedule AS legacy_schedule,
+            up.year,
+            sp.id AS plan_id,
+            sp.name AS plan_name,
+            sp.schedule AS plan_schedule,
+            sp.minors AS plan_minors,
+            COALESCE(sp.major_id, up.major_id) AS major_id,
+            m.code AS major_code,
+            m.name AS major_name
      FROM tigerpath_userprofile up
-     LEFT JOIN tigerpath_major m ON up.major_id = m.id
+     LEFT JOIN LATERAL (
+       SELECT sp.id, sp.name, sp.schedule, sp.major_id, sp.minors
+       FROM tigerpath_scheduleplan sp
+       WHERE sp.user_profile_id = up.id
+       ORDER BY (sp.id = NULLIF(up.user_state->>'active_plan_id', '')::int) DESC NULLS LAST,
+                sp.id ASC
+       LIMIT 1
+     ) sp ON true
+     LEFT JOIN tigerpath_major m ON m.id = COALESCE(sp.major_id, up.major_id)
      WHERE up.user_id = $1`,
     [userId]
   );
   if (profileRes.rows.length === 0) return null;
-  return { userId, ...profileRes.rows[0] };
+  const row = profileRes.rows[0];
+  return {
+    userId,
+    ...row,
+    // Active plan when one exists; legacy column only for accounts that
+    // predate the migration and have never opened TigerPath since.
+    user_schedule: row.plan_id ? row.plan_schedule : row.legacy_schedule,
+  };
 }
 
 // ── Course resolution ───────────────────────────────────────────────────────
@@ -234,12 +287,13 @@ export function registerTigerpathTools(
       if (registrarIds.length === 0) return errorResult(`Course ${dept} ${number} not found`);
 
       const res = await pool.query(
-        `SELECT arr.idx - 1 AS semester_index, COUNT(*)::int AS student_count
-         FROM tigerpath_userprofile p,
-              jsonb_array_elements(p.user_schedule) WITH ORDINALITY arr(semester, idx),
+        `WITH ${ACTIVE_PLANS_CTE}
+         SELECT arr.idx - 1 AS semester_index, COUNT(*)::int AS student_count
+         FROM active_plans ap,
+              jsonb_array_elements(ap.schedule) WITH ORDINALITY arr(semester, idx),
               jsonb_array_elements(arr.semester) course
          WHERE course->>'id' = ANY($1)
-           AND p.year IS NOT NULL
+           AND ap.year IS NOT NULL
            AND arr.idx <= 9
          GROUP BY arr.idx
          ORDER BY arr.idx`,
@@ -276,11 +330,12 @@ export function registerTigerpathTools(
       const limit = top_n ?? 5;
 
       const res = await pool.query(
-        `WITH major_schedules AS (
-           SELECT p.user_schedule
-           FROM tigerpath_userprofile p
-           JOIN tigerpath_major m ON p.major_id = m.id
-           WHERE m.code = $1 AND p.user_schedule IS NOT NULL
+        `WITH ${ACTIVE_PLANS_CTE},
+         major_schedules AS (
+           SELECT ap.schedule AS user_schedule
+           FROM active_plans ap
+           JOIN tigerpath_major m ON ap.major_id = m.id
+           WHERE m.code = $1
          ),
          exploded AS (
            SELECT arr.idx - 1 AS sem_idx, course->>'id' AS registrar_id
@@ -339,10 +394,11 @@ export function registerTigerpathTools(
       if (registrarIds.length === 0) return errorResult(`Course ${dept} ${number} not found`);
 
       const res = await pool.query(
-        `SELECT m.code AS major_code, m.name AS major_name, COUNT(DISTINCT p.id)::int AS student_count
-         FROM tigerpath_userprofile p
-         LEFT JOIN tigerpath_major m ON p.major_id = m.id,
-              jsonb_array_elements(p.user_schedule) semester,
+        `WITH ${ACTIVE_PLANS_CTE}
+         SELECT m.code AS major_code, m.name AS major_name, COUNT(DISTINCT ap.profile_id)::int AS student_count
+         FROM active_plans ap
+         LEFT JOIN tigerpath_major m ON ap.major_id = m.id,
+              jsonb_array_elements(ap.schedule) semester,
               jsonb_array_elements(semester) course
          WHERE course->>'id' = ANY($1)
          GROUP BY m.code, m.name
@@ -372,9 +428,10 @@ export function registerTigerpathTools(
     },
     async () => {
       const majorRes = await pool.query(
-        `SELECT m.code, m.name, m.degree, COUNT(*)::int AS students
-         FROM tigerpath_userprofile p
-         JOIN tigerpath_major m ON p.major_id = m.id
+        `WITH ${ACTIVE_PLANS_CTE}
+         SELECT m.code, m.name, m.degree, COUNT(*)::int AS students
+         FROM active_plans ap
+         JOIN tigerpath_major m ON ap.major_id = m.id
          GROUP BY m.code, m.name, m.degree
          ORDER BY students DESC`
       );
@@ -424,6 +481,9 @@ export function registerTigerpathTools(
       return textResult({
         netid,
         class_year: user.year,
+        plan: user.plan_id
+          ? { id: user.plan_id, name: user.plan_name, minors: user.plan_minors ?? [] }
+          : null,
         major: user.major_code ? { code: user.major_code, name: user.major_name } : null,
         semesters,
       });
@@ -494,18 +554,30 @@ export function registerTigerpathTools(
         userSchedule[semesterIndex].splice(idx, 1);
       }
 
-      await pool.query(
-        `UPDATE tigerpath_userprofile SET user_schedule = $1
-         FROM auth_user
-         WHERE tigerpath_userprofile.user_id = auth_user.id AND auth_user.username = $2`,
-        [JSON.stringify(userSchedule), netid]
-      );
+      if (user.plan_id) {
+        // Same write TigerPath's update_schedule view performs, so the change
+        // is visible in the app immediately.
+        await pool.query(
+          `UPDATE tigerpath_scheduleplan SET schedule = $1, updated_at = now() WHERE id = $2`,
+          [JSON.stringify(userSchedule), user.plan_id]
+        );
+      } else {
+        // No plan yet: TigerPath seeds the first plan from this column on the
+        // user's next visit.
+        await pool.query(
+          `UPDATE tigerpath_userprofile SET user_schedule = $1
+           FROM auth_user
+           WHERE tigerpath_userprofile.user_id = auth_user.id AND auth_user.username = $2`,
+          [JSON.stringify(userSchedule), netid]
+        );
+      }
 
       return textResult({
         success: true,
         action,
         course: `${dept.toUpperCase()} ${number}`,
         semester: labels[semesterIndex],
+        plan: user.plan_id ? { id: user.plan_id, name: user.plan_name } : null,
       });
     }
   );
