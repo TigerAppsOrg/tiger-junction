@@ -19,6 +19,13 @@
     {
       "idx": 2,
       "version": "7",
+      "when": 1773000000000,
+      "tag": "0002_replace_course_id_with_listing_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
       "when": 1775000000000,
       "tag": "0003_external_user_identities",
       "breakpoints": true
