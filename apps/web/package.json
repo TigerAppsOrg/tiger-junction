@@ -33,7 +33,7 @@
     "prettier-plugin-svelte": "^3.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sst": "2.43.2",
+    "sst": "4.13.1",
     "supabase": "^1.178.2",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
