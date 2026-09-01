@@ -1,0 +1,30 @@
+name: Uptime Check
+
+on:
+  schedule:
+    # Every 15 minutes; a failed run emails the workflow's maintainer.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe engine and ask-gateway
+        run: |
+          set -e
+          fail=0
+          for target in "engine http://52.45.218.243/health" "ask-gateway http://52.45.218.243/ask/health" "mcp http://52.45.218.243/mcp"; do
+            name=${target%% *}; url=${target#* }
+            if [ "$name" = "mcp" ]; then
+              code=$(curl -s -m 15 -o /dev/null -w "%{http_code}" -X POST "$url" \
+                -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
+                -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' || echo 000)
+            else
+              code=$(curl -s -m 15 -o /dev/null -w "%{http_code}" "$url" || echo 000)
+            fi
+            echo "$name -> HTTP $code"
+            [ "$code" = "200" ] || fail=1
+          done
+          exit $fail
