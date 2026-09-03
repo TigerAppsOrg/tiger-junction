@@ -23,6 +23,8 @@ jobs:
       PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
       SERVICE_ROLE_KEY: ${{ secrets.SERVICE_KEY }}
       API_ACCESS_TOKEN: ${{ secrets.API_ACCESS_TOKEN }}
+      CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+      CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
     steps:
       - name: Checkout
