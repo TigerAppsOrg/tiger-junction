@@ -68,6 +68,30 @@ async function snatchFetch(
   }
 }
 
+/**
+ * A single section offered as a choice when a course has several and the
+ * caller did not name one. Times and days are already human-readable.
+ */
+type SectionChoice = {
+  title: string;
+  days: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  enrolled: number;
+  capacity: number;
+};
+
+/**
+ * The structured "which section?" payload. Not a failure — the caller should
+ * ask the student to pick, then call again with `section`.
+ */
+type NeedsSection = {
+  course: string;
+  title: string;
+  sections: SectionChoice[];
+};
+
 async function resolveClassId(
   db: NodePgDatabase,
   courseCode: string,
@@ -77,6 +101,7 @@ async function resolveClassId(
   classId?: number;
   section?: { title: string; days: number; startTime: number; endTime: number };
   courseName?: string;
+  needsSection?: NeedsSection;
   error?: string;
 }> {
   const conditions = [ilike(schema.courses.code, courseCode)];
@@ -136,13 +161,29 @@ async function resolveClassId(
     };
   }
 
-  const sectionList = sections.map((s) => {
+  const choices: SectionChoice[] = sections.map((s) => {
     const formatted = formatSection(s);
-    return `${s.title} (${formatted.days.join("")} ${formatted.startTime}–${formatted.endTime}, ${s.status}, ${s.tot}/${s.cap} enrolled)`;
+    return {
+      title: s.title,
+      days: formatted.days.join(""),
+      startTime: formatted.startTime,
+      endTime: formatted.endTime,
+      status: s.status,
+      enrolled: s.tot ?? 0,
+      capacity: s.cap ?? 0,
+    };
   });
 
+  // Not a failure: the course simply has several sections and the caller did
+  // not name one. `error` is kept alongside for callers that only branch on it.
   return {
-    error: `${course.code} has ${sections.length} sections. Please specify which one:\n${sectionList.join("\n")}`,
+    needsSection: { course: course.code, title: course.title, sections: choices },
+    error: `${course.code} has ${sections.length} sections. Please specify which one:\n${choices
+      .map(
+        (c) =>
+          `${c.title} (${c.days} ${c.startTime}–${c.endTime}, ${c.status}, ${c.enrolled}/${c.capacity} enrolled)`
+      )
+      .join("\n")}`,
   };
 }
 
@@ -223,7 +264,7 @@ export function registerSnatchTools(
     "subscribe_to_snatch",
     {
       description:
-        "Subscribe to TigerSnatch notifications for a class section. You'll get notified when a seat opens. Provide a course code and optionally a specific section (e.g., 'L01'). If the course has multiple sections and none is specified, you'll be shown the available sections to choose from.",
+        "Subscribe to TigerSnatch notifications for a class section. You'll get notified when a seat opens. Provide a course code and optionally a specific section (e.g., 'L01'). If the course has multiple sections and none is specified, this returns a successful (non-error) reply of the form {needsSection: true, course, title, sections: [...]} — that is not a failure: ask the student which section they want, then call this tool again with that section title.",
       inputSchema: z.object({
         courseCode: z.string().describe("Course code (e.g., 'COS 226')."),
         section: z
@@ -249,6 +290,29 @@ export function registerSnatchTools(
       }
 
       const resolved = await resolveClassId(db, courseCode, term, section);
+
+      // Several sections and none chosen — a question for the student, not an
+      // error. Answer with the choices so the caller can ask and retry.
+      if (resolved.needsSection) {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  needsSection: true,
+                  course: resolved.needsSection.course,
+                  title: resolved.needsSection.title,
+                  sections: resolved.needsSection.sections,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+
       if (!resolved.classId) {
         return {
           content: [{ type: "text" as const, text: resolved.error ?? "Could not resolve class." }],
