@@ -12,26 +12,68 @@ export default class OIT_API implements I_OIT_API {
   private readonly baseUrl = "https://api.princeton.edu/student-app/1.0.3";
   private readonly evalUrl = "https://registrarapps.princeton.edu/course-evaluation?";
 
-  private apiKey: string;
+  private apiKey: string | null = null;
   private sessionToken: string;
 
   constructor() {
-    if (!process.env.API_ACCESS_TOKEN)
-      throw new Error("API_ACCESS_TOKEN environment variable is not set.");
-    this.apiKey = process.env.API_ACCESS_TOKEN;
+    if (!process.env.CONSUMER_KEY && !process.env.API_ACCESS_TOKEN)
+      throw new Error(
+        "Set CONSUMER_KEY/CONSUMER_SECRET (preferred) or API_ACCESS_TOKEN for the OIT API."
+      );
     this.sessionToken = process.env.SESSION_TOKEN || "";
   }
 
-  private async fetchOIT<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch OIT API: ${response.statusText}`);
+  // Static WSO2 tokens rotate without notice; mint one from OAuth
+  // client_credentials when consumer credentials are available.
+  private async mintAccessToken(): Promise<string> {
+    const key = process.env.CONSUMER_KEY;
+    const secret = process.env.CONSUMER_SECRET;
+    if (!key || !secret) {
+      if (process.env.API_ACCESS_TOKEN) return process.env.API_ACCESS_TOKEN;
+      throw new Error("CONSUMER_KEY/CONSUMER_SECRET or API_ACCESS_TOKEN must be set.");
     }
-    return await response.json();
+
+    const basic = Buffer.from(`${key}:${secret}`).toString("base64");
+    const response = await fetch("https://api.princeton.edu/token", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${basic}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    });
+    if (!response.ok) throw new Error(`OIT token endpoint responded ${response.status}`);
+    const payload = (await response.json()) as { access_token?: string };
+    if (!payload.access_token) throw new Error("OIT token endpoint returned no access_token");
+    return payload.access_token;
+  }
+
+  private async getApiKey(): Promise<string> {
+    if (!this.apiKey) this.apiKey = await this.mintAccessToken();
+    return this.apiKey;
+  }
+
+  private async fetchOIT<T>(endpoint: string): Promise<T> {
+    const MAX_ATTEMPTS = 3;
+    for (let attempt = 1; ; attempt++) {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${await this.getApiKey()}`,
+        },
+      });
+      if (response.ok) return (await response.json()) as T;
+
+      if (response.status === 401 && attempt === 1) {
+        this.apiKey = null; // token expired or rotated — mint a fresh one
+        continue;
+      }
+      // The details endpoint 500s sporadically; a short backoff clears it.
+      if (response.status >= 500 && attempt < MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+        continue;
+      }
+      throw new Error(`Failed to fetch OIT API (${response.status} ${response.statusText}) for ${endpoint}`);
+    }
   }
 
   private async __oit_getTerms(): Promise<t.OIT_Term[]> {
@@ -251,8 +293,14 @@ export default class OIT_API implements I_OIT_API {
   }
 
   async getRegDepartments(term: string): Promise<string[]> {
-    const regListings = await this.getRegListings(term);
-    return Array.from(new Set(regListings.map((x) => x.subject)));
+    // subject=list comes from the student-app API our credentials are
+    // subscribed to; getRegListings needs a registrar-website token that
+    // Cloudflare blocks from datacenter IPs, so avoid it here.
+    const data = await this.fetchOIT<{
+      term: { subjects: { code: string }[] }[];
+    }>(`/courses/courses?term=${term}&subject=list&fmt=json`);
+    const subjects = data.term?.[0]?.subjects ?? [];
+    return subjects.map((s) => s.code).sort();
   }
 
   async getCourseEvals(courseId: string): Promise<Record<string, t.OIT_Eval[]>> {
