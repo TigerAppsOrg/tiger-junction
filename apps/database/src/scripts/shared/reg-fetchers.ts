@@ -18,19 +18,86 @@ import type {
 // Helpers and Constants
 //----------------------------------------------------------------------
 
-// API endpoint for the public course listings API
-const REG_PUBLIC_URL =
-    "https://api.princeton.edu/registrar/course-offerings/classes/";
-
 // API endpoint for the registrar student-app API
 const REG_API_URL = "https://api.princeton.edu/student-app/1.0.3/";
 
-// The public course-offerings classes API is served from the api.princeton.edu
-// gateway and accepts the same API_ACCESS_TOKEN we use for the student-app API
-// (see fetchRegDeptCourses/fetchRegSeats). We previously scraped a short-lived
-// apiToken from the registrar.princeton.edu website, but that page sits behind a
-// Cloudflare bot challenge that 403s from datacenter IPs (e.g. the cron box), so
-// we authenticate with API_ACCESS_TOKEN instead — no website scrape required.
+// One update run resolves listings several times — memoize per term.
+const listingsCache = new Map<number, RegListing[]>();
+// The details endpoint 500s under load (~6% of calls at concurrency 20);
+// keep concurrency low and retry with backoff.
+const DETAIL_CONCURRENCY = 5;
+const DETAIL_RETRIES = 3;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Authentication history: we used to scrape a token from the registrar website
+// (Cloudflare now 403s that from everywhere), then a static API_ACCESS_TOKEN
+// (WSO2 token that OIT rotates without notice — it went stale 2026-09-01 and
+// broke the hourly course update). The durable path is minting our own OAuth
+// client_credentials token from CONSUMER_KEY / CONSUMER_SECRET, refreshed
+// automatically on 401. API_ACCESS_TOKEN remains a fallback when no consumer
+// credentials are configured.
+//
+// The old listings source (registrar/course-offerings/classes/<term>) sits
+// behind an API product our credentials are not subscribed to, so
+// fetchRegListings now builds the same shape from the student-app API.
+
+const TOKEN_URL = "https://api.princeton.edu/token";
+
+let cachedAuthHeader: string | null = null;
+
+const mintAuthHeader = async (): Promise<string | null> => {
+    const key = process.env.CONSUMER_KEY;
+    const secret = process.env.CONSUMER_SECRET;
+    if (!key || !secret) return null;
+    const res = await fetch(TOKEN_URL, {
+        method: "POST",
+        headers: {
+            Authorization:
+                "Basic " + Buffer.from(`${key}:${secret}`).toString("base64"),
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "grant_type=client_credentials"
+    });
+    if (!res.ok) {
+        throw new Error(`OAuth token endpoint responded ${res.status}`);
+    }
+    const payload: any = await res.json();
+    return "Bearer " + payload.access_token;
+};
+
+const getAuthHeader = async (): Promise<string> => {
+    if (cachedAuthHeader) return cachedAuthHeader;
+    cachedAuthHeader =
+        (await mintAuthHeader()) ?? process.env.API_ACCESS_TOKEN ?? null;
+    if (!cachedAuthHeader) {
+        throw new Error(
+            "Set CONSUMER_KEY + CONSUMER_SECRET (preferred) or API_ACCESS_TOKEN"
+        );
+    }
+    return cachedAuthHeader;
+};
+
+const regFetchJson = async (url: string): Promise<any> => {
+    let res = await fetch(url, {
+        headers: { Authorization: await getAuthHeader() }
+    });
+    if (
+        res.status === 401 &&
+        process.env.CONSUMER_KEY &&
+        process.env.CONSUMER_SECRET
+    ) {
+        // Token expired mid-run — re-mint once and retry.
+        cachedAuthHeader = await mintAuthHeader();
+        res = await fetch(url, {
+            headers: { Authorization: cachedAuthHeader as string }
+        });
+    }
+    if (!res.ok) {
+        throw new Error(`Registrar API responded ${res.status} for ${url}`);
+    }
+    return res.json();
+};
 
 //----------------------------------------------------------------------
 // Fetcher Functions
@@ -41,49 +108,91 @@ const REG_API_URL = "https://api.princeton.edu/student-app/1.0.3/";
  * @param term Term code
  */
 export const fetchRegListings = async (term: number): Promise<RegListing[]> => {
-    const token = process.env.API_ACCESS_TOKEN;
-    if (!token) throw new Error("API access token not found");
+    const cached = listingsCache.get(term);
+    if (cached) return cached;
 
-    const rawCourseList = await fetch(`${REG_PUBLIC_URL}${term}`, {
-        method: "GET",
-        headers: {
-            Authorization: token
+    const subjects = await fetchRegDepartments(term);
+    if (subjects.length === 0) {
+        throw new Error("No subjects returned for term " + term);
+    }
+
+    // Crosslisted courses appear under every subject — dedupe by course_id.
+    const feedById = new Map<
+        string,
+        { subject: string; catnum: string; title: string }
+    >();
+    for (const subject of subjects) {
+        const courses = await fetchRegDeptCourses(subject, term);
+        for (const course of courses) {
+            if (feedById.has(course.course_id)) continue;
+            feedById.set(course.course_id, {
+                subject,
+                catnum: course.catalog_number,
+                title: course.title
+            });
         }
-    });
-    const courseList: any = await rawCourseList.json();
+    }
 
-    const valid =
-        courseList &&
-        courseList.classes &&
-        courseList.classes.class &&
-        Array.isArray(courseList.classes.class);
-    if (!valid) throw new Error("Invalid course list response format");
-
-    const regListings = courseList.classes.class as RegListing[];
-
-    // Remove duplicates
-    const seenIds = new Set<string>();
-    const uniqueRegListings = regListings.filter(x => {
-        if (seenIds.has(x.course_id)) {
-            return false;
+    const courseIds = Array.from(feedById.keys());
+    const listings: RegListing[] = [];
+    let detailFailureCount = 0;
+    for (let i = 0; i < courseIds.length; i += DETAIL_CONCURRENCY) {
+        const batch = courseIds.slice(i, i + DETAIL_CONCURRENCY);
+        const detailBatch = await Promise.all(
+            batch.map(async id => {
+                for (let attempt = 1; attempt <= DETAIL_RETRIES; attempt++) {
+                    try {
+                        return { id, details: await fetchRegCourseDetails(id, term) };
+                    } catch (error) {
+                        if (attempt === DETAIL_RETRIES) {
+                            console.error(
+                                `Details fetch failed for ${id}: ${(error as Error).message}`
+                            );
+                        } else {
+                            await sleep(1000 * attempt);
+                        }
+                    }
+                }
+                return { id, details: null };
+            })
+        );
+        for (const { id, details } of detailBatch) {
+            if (details === null) detailFailureCount++;
+            const feed = feedById.get(id)!;
+            const crosslistings =
+                details?.crosslistings || `${feed.subject} ${feed.catnum}`;
+            // The subject/catnum of the primary listing lead the crosslistings
+            // string (e.g. "COS 217/ECE 217").
+            const primary = crosslistings.split("/")[0].trim().split(/\s+/);
+            listings.push({
+                course_id: id,
+                subject: primary[0] || feed.subject,
+                catnum: primary.slice(1).join(" ") || feed.catnum,
+                long_title: details?.long_title || feed.title,
+                topic_title: details?.topic_title || null,
+                crosslistings,
+                distribution_area: details?.distribution_area_short || null
+            });
         }
-        seenIds.add(x.course_id);
-        return true;
-    });
+    }
 
-    return uniqueRegListings;
+    // A degraded run must fail loudly rather than silently wipe
+    // details-derived data (dists, crosslisting codes) downstream.
+    if (detailFailureCount > courseIds.length * 0.05) {
+        throw new Error(
+            `Registrar details failed for ${detailFailureCount}/${courseIds.length} courses — aborting listings build`
+        );
+    }
+    listingsCache.set(term, listings);
+    return listings;
 };
 
-/**
- * Fetch all 3-letter department codes for a given term
- * @param term
- * @returns
- */
 export const fetchRegDepartments = async (term: number): Promise<string[]> => {
-    const regListings = await fetchRegListings(term);
-    const departments = new Set<string>();
-    for (const listing of regListings) departments.add(listing.subject);
-    return Array.from(departments).sort();
+    const data = await regFetchJson(
+        `${REG_API_URL}courses/courses?term=${term}&subject=list&fmt=json`
+    );
+    const subjects = (data?.term?.[0]?.subjects ?? []).map((s: any) => s.code);
+    return (subjects as string[]).sort();
 };
 
 /**
@@ -95,20 +204,9 @@ export const fetchRegDeptCourses = async (
     dept: string,
     term: number
 ): Promise<RegDeptCourse[]> => {
-    const token = process.env.API_ACCESS_TOKEN;
-    if (!token) throw new Error("API access token not found");
-
-    const rawDeptData = await fetch(
-        `${REG_API_URL}courses/courses?term=${term}&subject=${dept}&fmt=json`,
-        {
-            method: "GET",
-            headers: {
-                Authorization: token
-            }
-        }
+    const deptData: any = await regFetchJson(
+        `${REG_API_URL}courses/courses?term=${term}&subject=${dept}&fmt=json`
     );
-
-    const deptData: any = await rawDeptData.json();
     if (!deptData.term[0].subjects) {
         console.error("No courses found for department " + dept);
         return [];
@@ -136,19 +234,9 @@ export const fetchRegCourseDetails = async (
     listingId: string,
     term: number
 ): Promise<RegCourseDetails> => {
-    const token = process.env.API_ACCESS_TOKEN;
-    if (!token) throw new Error("API access token not found");
-
-    const rawCourseDetails = await fetch(
-        `${REG_API_URL}courses/details?term=${term}&course_id=${listingId}&fmt=json`,
-        {
-            method: "GET",
-            headers: {
-                Authorization: token
-            }
-        }
+    const courseDetails: any = await regFetchJson(
+        `${REG_API_URL}courses/details?term=${term}&course_id=${listingId}&fmt=json`
     );
-    const courseDetails: any = await rawCourseDetails.json();
 
     const valid =
         courseDetails &&
@@ -168,21 +256,11 @@ export const fetchRegSeats = async (
     courseIds: string[],
     term: number
 ): Promise<RegSeat[]> => {
-    const token = process.env.API_ACCESS_TOKEN;
-    if (!token) throw new Error("API access token not found");
-
-    const rawSeatData = await fetch(
+    const seatData: any = await regFetchJson(
         `${REG_API_URL}courses/seats?term=${term}&course_ids=${courseIds.join(
             ","
-        )}&fmt=json`,
-        {
-            method: "GET",
-            headers: {
-                Authorization: token
-            }
-        }
+        )}&fmt=json`
     );
-    const seatData: any = await rawSeatData.json();
 
     const valid = seatData.course && Array.isArray(seatData.course);
     if (!valid) throw new Error("Invalid seat data response format");
