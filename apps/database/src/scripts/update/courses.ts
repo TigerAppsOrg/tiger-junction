@@ -159,6 +159,12 @@ export const updateCourses = async (term: number) => {
 
 const isMainModule = process.argv[1] === import.meta.url.slice(7);
 if (isMainModule) {
-    console.log("Updating courses for term 1254");
-    updateCourses(1254);
+    const term = parseInt(process.argv[2], 10);
+    if (Number.isNaN(term)) {
+        throw new Error("Usage: bun src/scripts/update/courses.ts <term>");
+    }
+    console.log("Updating engine-DB courses for term " + term);
+    await updateCourses(term);
+    console.log("Done updating engine-DB courses for term " + term);
+    process.exit(0);
 }
