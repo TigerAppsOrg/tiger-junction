@@ -13,6 +13,11 @@
         type GradientConfig
     } from "$lib/stores/styles";
     import { hslToRGBComponents } from "$lib/scripts/convert";
+    import {
+        initAnalytics,
+        identifyUser,
+        resetAnalytics
+    } from "$lib/scripts/analytics";
     import ToastLib from "$lib/components/general/ToastLib.svelte";
     import NoiseFilter from "$lib/components/ui/NoiseFilter.svelte";
     import type { Snippet } from "svelte";
@@ -44,6 +49,14 @@
 
     let supabase = $derived(data.supabase);
     let session = $derived(data.session);
+    let user = $derived(data.user);
+
+    // PostHog: init once, then key the person by netid whenever a user is
+    // present (covers initial load and later sign-ins).
+    $effect(() => {
+        initAnalytics();
+        identifyUser(user?.email ?? session?.user?.email);
+    });
 
     // Sync dark mode class on <html> element with the store
     $effect(() => {
@@ -126,6 +139,9 @@
         const {
             data: { subscription }
         } = supabase.auth.onAuthStateChange((event: string, _session: any) => {
+            if (event === "SIGNED_OUT") {
+                resetAnalytics();
+            }
             if (_session?.expires_at !== session?.expires_at) {
                 invalidate("supabase:auth");
             }

@@ -54,6 +54,7 @@
     "ics": "^3.5.0",
     "js-yaml": "^4.1.0",
     "jsdom": "^22.1.0",
+    "posthog-js": "^1.429.1",
     "redis": "^4.6.10",
     "svelte-dnd-action": "^0.9.67",
     "svelte-inview": "^4.0.1"
