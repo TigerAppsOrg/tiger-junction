@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { termCodeToName, valueToDays, valueToTime, recalValueToMinutes } from "../helpers.js";
 import type { AuthContext } from "../context.js";
+import { isSectionSelected } from "../schedule-selection.js";
 
 // Supabase status encoding: 0=open, 1=closed, 2=canceled
 const STATUS_MAP: Record<number, string> = { 0: "open", 1: "closed", 2: "canceled" };
@@ -225,6 +226,7 @@ export function registerJunctionScheduleTools(
         .in("id", courseIds);
 
       const courseMap = new Map((courses ?? []).map((c) => [c.id, c]));
+      const metadataByCourse = new Map(associations.map((a) => [a.course_id, a.metadata]));
 
       // Fetch sections for all courses
       const { data: sections } = await supabase
@@ -234,6 +236,7 @@ export function registerJunctionScheduleTools(
 
       // Build section list with course codes and detect conflicts
       const allSections: (TimeSlot & {
+        selected: boolean;
         courseCode: string;
         sectionTitle: string;
         room: string | null;
@@ -244,6 +247,7 @@ export function registerJunctionScheduleTools(
         const course = courseMap.get(s.course_id);
         if (!course) continue;
         allSections.push({
+          selected: isSectionSelected(metadataByCourse.get(s.course_id), s.title),
           courseCode: course.code,
           sectionTitle: s.title,
           days: s.days,
@@ -257,6 +261,7 @@ export function registerJunctionScheduleTools(
       const conflicts: string[] = [];
       for (let i = 0; i < allSections.length; i++) {
         for (let j = i + 1; j < allSections.length; j++) {
+          if (!allSections[i].selected || !allSections[j].selected) continue;
           if (allSections[i].courseCode === allSections[j].courseCode) continue;
           if (timeSlotsOverlap(allSections[i], allSections[j])) {
             conflicts.push(
@@ -285,6 +290,7 @@ export function registerJunctionScheduleTools(
                   status: statusName(c.status),
                 })),
                 sections: allSections.map((s) => ({
+                  selected: s.selected,
                   courseCode: s.courseCode,
                   sectionTitle: s.sectionTitle,
                   days: valueToDays(s.days),
