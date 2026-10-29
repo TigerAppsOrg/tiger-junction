@@ -354,7 +354,8 @@ class ChatService:
                         done_data["quota"] = {
                             "percentUsed": quota_after["percentUsed"],
                             "tier": quota_after["tier"],
-                            "model": quota_after["model"],
+                            "model": effective_model,
+                            "nextModel": quota_after["model"],
                             "tierChanged": quota_before is not None
                             and quota_before["tier"] != quota_after["tier"],
                             "resetSeconds": quota_after["resetSeconds"],

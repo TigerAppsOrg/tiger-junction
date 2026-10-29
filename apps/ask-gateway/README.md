@@ -10,6 +10,10 @@ Haiku 5.5 (`anthropic/claude-haiku-5.5`) for the remaining $1. Requests are bloc
 at $4 until the existing eight-hour quota window resets. Model IDs are defined
 in `app/usage_tracker.py`; they were verified against OpenRouter's model catalog
 on October 29, 2026. Quota responses include the model ID for client display.
+Agentic completion metadata reports the model that handled the request in
+`quota.model`, and the model selected by the updated quota in `quota.nextModel`.
+This keeps a response attributed to Sonnet even if its cost moves the user into
+the Haiku tier for their next request.
 
 ## Endpoints
 

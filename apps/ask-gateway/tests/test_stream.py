@@ -455,15 +455,28 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("spent, expected_model", [
-    (None, None),
-    (0.0, "anthropic/claude-sonnet-5.5"),
-    (3.0, "anthropic/claude-haiku-5.5"),
+@pytest.mark.parametrize("spent, expected_model, expected_tier", [
+    (None, None, None),
+    (0.0, "anthropic/claude-sonnet-5.5", 1),
+    (2.99, "anthropic/claude-sonnet-5.5", 2),
+    (3.0, "anthropic/claude-haiku-5.5", 2),
+    (3.99, "anthropic/claude-haiku-5.5", "exhausted"),
 ])
 async def test_stream_llm_tool_call_loop_executes_mcp(
-    monkeypatch: pytest.MonkeyPatch, spent: float | None, expected_model: str | None
+    monkeypatch: pytest.MonkeyPatch, spent: float | None, expected_model: str | None,
+    expected_tier: int | str | None
 ) -> None:
-    monkeypatch.setattr("app.supabase_store.get_quota_spent", AsyncMock(return_value=spent or 0.0))
+    quota_spent = spent or 0.0
+
+    async def get_spent(netid, window):
+        return quota_spent
+
+    async def save_spent(netid, window, value):
+        nonlocal quota_spent
+        quota_spent = value
+
+    monkeypatch.setattr("app.supabase_store.get_quota_spent", get_spent)
+    monkeypatch.setattr("app.supabase_store.upsert_quota", save_spent)
     monkeypatch.setattr("app.supabase_store.save_message", AsyncMock())
     class FakeMcpClient:
         def __init__(
@@ -535,7 +548,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(
                     }
                 ]
             }
-            yield {"usage": {"prompt_tokens": 20, "completion_tokens": 10}}
+            yield {"usage": {"prompt_tokens": 20, "completion_tokens": 10, "cost": 0.02}}
             yield {"type": "done"}
 
         async def close(self) -> None:
@@ -584,6 +597,12 @@ async def test_stream_llm_tool_call_loop_executes_mcp(
     done = next(data for name, data in events if name == "done")
     if expected_model:
         assert done["quota"]["model"] == expected_model
+        assert done["quota"]["tier"] == expected_tier
+        assert done["quota"]["nextModel"] == (
+            "anthropic/claude-sonnet-5.5" if expected_tier == 1 else "anthropic/claude-haiku-5.5"
+        )
+        assert done["quota"]["tierChanged"] is (spent in (2.99, 3.99))
+        assert quota_spent == pytest.approx(spent + 0.02)
     else:
         assert "quota" not in done
 
