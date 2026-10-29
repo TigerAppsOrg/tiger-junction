@@ -37,8 +37,9 @@ export const populateListings = async (term: number) => {
         ];
 
     if (listFetchError) {
-        console.error(listFetchError);
-        return;
+        throw new Error(`Failed to fetch existing listings for term ${term}`, {
+            cause: listFetchError
+        });
     }
 
     const formattedCourselist = regListings.map(x => {
@@ -140,8 +141,9 @@ export const populateListings = async (term: number) => {
         .upsert(formattedCourselist);
 
     if (error) {
-        console.error(error);
-        return;
+        throw new Error(`Failed to upsert listings for term ${term}`, {
+            cause: error
+        });
     }
 
     console.log(

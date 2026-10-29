@@ -7,9 +7,14 @@ on:
   workflow_dispatch:
     inputs:
       term:
-        description: "Term code (e.g. 1272 for Fall 2026)"
+        description: "Term code (e.g. 1274 for Spring 2027)"
         required: true
-        default: "1272"
+        default: "1274"
+      import_courses:
+        description: "Import full listings, courses, grading and sections before refreshing seats (new semester)"
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: seats-cron
@@ -18,7 +23,7 @@ concurrency:
 jobs:
   update-seats:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 90
     env:
       PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
       SERVICE_ROLE_KEY: ${{ secrets.SERVICE_KEY }}
@@ -39,6 +44,15 @@ jobs:
         working-directory: apps/database
         run: bun install --frozen-lockfile
 
+      - name: Import listings, courses and grading + sync Redis
+        if: ${{ inputs.import_courses }}
+        working-directory: apps/database
+        env:
+          TERM: ${{ inputs.term || '1274' }}
+        run: bun run update-supabase "$TERM" --grading
+
       - name: Update seats + sync Redis
         working-directory: apps/database
-        run: bun run update:seats:once ${{ github.event.inputs.term || '1272' }}
+        env:
+          TERM: ${{ inputs.term || '1274' }}
+        run: bun run update:seats:once "$TERM"

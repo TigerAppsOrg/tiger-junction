@@ -20,7 +20,15 @@ Additionally, you should update the [`db/createUser.sql`](db/createUser.sql) fil
 
 ## Step 2: Update the Codebase
 
-Create a new branch. There is only 1 file that needs to be updated: [`src/lib/changeme.ts`](src/lib/changeme.ts). There are 5 things that need to be updated in the file, and they all have comments next to them explaining what needs to be done. Once you have updated the file, commit the changes and push the branch to GitHub.
+Create a new branch and update the term configuration in:
+
+- [`apps/web/src/lib/changeme.ts`](apps/web/src/lib/changeme.ts): planner tabs, active/default terms, calendar dates, and section-loading state.
+- [`apps/ask-gateway/app/chat_service.py`](apps/ask-gateway/app/chat_service.py): Ask AI's upcoming/default term in the system prompt. The Ask AI page does not send a term, so this must match the planner's default.
+- [`apps/engine/src/mcp/tools/courses.ts`](apps/engine/src/mcp/tools/courses.ts): MCP term mappings and current/upcoming descriptions.
+- [`apps/engine/src/oit/index.ts`](apps/engine/src/oit/index.ts) and [`apps/database/src/scripts/supabase/shared.ts`](apps/database/src/scripts/supabase/shared.ts): supported import terms.
+- [`.github/workflows/seats-cron.yml`](.github/workflows/seats-cron.yml): manual and scheduled default term.
+
+Commit the changes and push the branch to GitHub.
 
 ## Step 3: Check Department List
 
@@ -28,7 +36,18 @@ In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTM
 
 ## Step 4: Populate the Database
 
-Database population is done via CLI scripts in `apps/database`. Make sure your `apps/database/.env` file is configured with the required environment variables (see `apps/database/.env.example`): `PUBLIC_SUPABASE_URL`, `SERVICE_ROLE_KEY`, `API_ACCESS_TOKEN`, `REDIS_PASSWORD`, and `REG_COOKIE`.
+For a new term, use the **Seats Cron** GitHub Actions workflow with the target
+`term` and **import_courses** enabled. It runs the full listings/course/section
+import with grading, then updates seats and syncs Redis using the repository's
+existing secrets. Leave **import_courses** off for normal seat refreshes.
+Supabase import failures stop the command with a nonzero exit before Redis sync
+and the subsequent seat refresh. Earlier database writes are not rolled back;
+fix the reported failure and rerun the import before considering the term ready.
+The scheduled hourly run remains a seat refresh only. Add the new term to the
+allowlist before dispatching; when testing a term-update branch, select that
+branch in the workflow's **Run workflow** menu.
+
+Database population can also be done via CLI scripts in `apps/database`. Make sure your `apps/database/.env` file is configured with the required environment variables (see `apps/database/.env.example`): `PUBLIC_SUPABASE_URL`, `SERVICE_ROLE_KEY`, `API_ACCESS_TOKEN`, `REDIS_PASSWORD`, and `REG_COOKIE`.
 
 Before running the scripts, add the new term code to the `TERMS` array in `apps/database/src/scripts/supabase/shared.ts`, or the scripts will reject it as invalid.
 

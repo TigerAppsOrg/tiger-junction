@@ -29,4 +29,7 @@ const updateGrading = flags.includes("--grading") || flags.includes("-g");
     await redisTransfer(term);
     const endTime = Date.now();
     console.log("Finished in", (endTime - startTime) / 1000, "s");
-})();
+})().catch(error => {
+    console.error("Data update failed:", error);
+    process.exit(1);
+});

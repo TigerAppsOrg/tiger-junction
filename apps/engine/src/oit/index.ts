@@ -241,7 +241,7 @@ export default class OIT_API implements I_OIT_API {
       "1242", "1244",
       "1252", "1254",
       "1262", "1264",
-      "1272",
+      "1272", "1274",
     ];
   }
 

@@ -4,7 +4,10 @@ on:
   pull_request:
     paths:
       - "apps/web/**"
-      - "pr.yml"
+      - "apps/database/**"
+      - "apps/ask-gateway/**"
+      - "apps/engine/**"
+      - ".github/workflows/pr.yml"
     branches:
       - main
 
@@ -30,3 +33,25 @@ jobs:
       - name: Test build
         working-directory: apps/web
         run: npm run build
+
+  ImportAndPlannerTests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install importer dependencies
+        working-directory: apps/database
+        run: bun install --frozen-lockfile
+      - name: Test import failure propagation
+        working-directory: apps/database
+        run: bun test src/scripts/supabase/tests/import.test.ts
+      - name: Install gateway test dependencies
+        run: python -m pip install -r apps/ask-gateway/requirements.txt
+      - name: Test Ask AI planner and gateway
+        working-directory: apps/ask-gateway
+        run: python -m pytest tests -q
