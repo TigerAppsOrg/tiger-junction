@@ -434,7 +434,7 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(
@@ -457,10 +457,10 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
 @pytest.mark.asyncio
 @pytest.mark.parametrize("spent, expected_model, expected_tier", [
     (None, None, None),
-    (0.0, "anthropic/claude-sonnet-5.5", 1),
-    (2.99, "anthropic/claude-sonnet-5.5", 2),
-    (3.0, "anthropic/claude-haiku-5.5", 2),
-    (3.99, "anthropic/claude-haiku-5.5", "exhausted"),
+    (0.0, "claude-sonnet-5-5", 1),
+    (2.99, "claude-sonnet-5-5", 2),
+    (3.0, "claude-haiku-5-5", 2),
+    (3.99, "claude-haiku-5-5", "exhausted"),
 ])
 async def test_stream_llm_tool_call_loop_executes_mcp(
     monkeypatch: pytest.MonkeyPatch, spent: float | None, expected_model: str | None,
@@ -555,7 +555,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(
@@ -581,7 +581,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(
 
     # Prefix-cache invariants across the tool loop: the system prompt must be
     # byte-identical on every iteration, and every iteration must carry the
-    # same OpenRouter session id for provider stickiness.
+    # same conversation ID for request correlation.
     assert len(llm_calls) == 2
     assert llm_calls[0]["system"] == llm_calls[1]["system"]
     assert llm_calls[0]["system"]["role"] == "system"
@@ -599,7 +599,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(
         assert done["quota"]["model"] == expected_model
         assert done["quota"]["tier"] == expected_tier
         assert done["quota"]["nextModel"] == (
-            "anthropic/claude-sonnet-5.5" if expected_tier == 1 else "anthropic/claude-haiku-5.5"
+            "claude-sonnet-5-5" if expected_tier == 1 else "claude-haiku-5-5"
         )
         assert done["quota"]["tierChanged"] is (spent in (2.99, 3.99))
         assert quota_spent == pytest.approx(spent + 0.02)
@@ -645,7 +645,7 @@ async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyP
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(

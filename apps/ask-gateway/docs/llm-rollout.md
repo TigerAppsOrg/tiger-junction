@@ -4,9 +4,10 @@ This document defines the safe rollout sequence for Milestone 2 planner/synthesi
 
 ## Backend
 
-- LLM backend uses OpenRouter's OpenAI-compatible API.
-- Default model: `moonshotai/kimi-k2:thinking`.
-- Test model (optional): `google/gemini-3.1-flash-lite` via `ASK_LLM_TEST_MODEL`.
+- LLM backend uses Anthropic's direct Messages API with `ANTHROPIC_API_KEY`.
+- Default/tier 1 model: `claude-sonnet-5-5`.
+- Tier 2/test model: `claude-haiku-5-5`.
+- Prompt caching and production SSM setup are documented in [the gateway README](../README.md).
 
 ## Flags
 

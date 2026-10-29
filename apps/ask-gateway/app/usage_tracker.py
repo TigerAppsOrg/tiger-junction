@@ -18,8 +18,8 @@ from . import supabase_store
 
 logger = logging.getLogger("ask-gateway.usage")
 
-TIER1_MODEL = "anthropic/claude-sonnet-5.5"
-TIER2_MODEL = "anthropic/claude-haiku-5.5"
+TIER1_MODEL = "claude-sonnet-5-5"
+TIER2_MODEL = "claude-haiku-5-5"
 TIER1_BUDGET = 3.00
 TIER2_BUDGET = 1.00
 TOTAL_BUDGET = TIER1_BUDGET + TIER2_BUDGET  # $4.00

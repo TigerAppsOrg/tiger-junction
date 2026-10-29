@@ -62,6 +62,7 @@ jobs:
             set -e
             cd /opt/ask-gateway
             python3 -m pip install --user -q -r requirements.txt
+            python3 scripts/configure_anthropic.py
             sudo systemctl restart ask-gateway
             sleep 3
             systemctl is-active ask-gateway

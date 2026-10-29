@@ -2,18 +2,47 @@
 
 FastAPI service that provides SSE chat streaming for PrincetonCourses and calls Junction MCP tools.
 
-## Model tiers
+## Direct Claude API and model tiers
 
-Authenticated users (including PrincetonCourses users) use Claude Sonnet 5.5
-(`anthropic/claude-sonnet-5.5`) for the first $3 of each quota window, then Claude
-Haiku 5.5 (`anthropic/claude-haiku-5.5`) for the remaining $1. Requests are blocked
-at $4 until the existing eight-hour quota window resets. Model IDs are defined
-in `app/usage_tracker.py`; they were verified against OpenRouter's model catalog
-on October 29, 2026. Quota responses include the model ID for client display.
-Agentic completion metadata reports the model that handled the request in
-`quota.model`, and the model selected by the updated quota in `quota.nextModel`.
-This keeps a response attributed to Sonnet even if its cost moves the user into
-the Haiku tier for their next request.
+The gateway calls `https://api.anthropic.com/v1/messages` directly using
+`ANTHROPIC_API_KEY`. It does not use OpenRouter. Authenticated PrincetonCourses
+users get Sonnet 5.5 (`claude-sonnet-5-5`) for the first $3, then Haiku 5.5
+(`claude-haiku-5-5`) for the next $1 in the existing eight-hour quota window.
+`ASK_LLM_MODEL` selects the default for requests without a netid. Only the two
+priced tier models are accepted. Output is capped at 4,096 tokens per API call.
+
+### Prompt caching
+
+The Messages API is stateless: each request replays conversation history. There
+is no provider session ID to create or keep alive. The application's conversation
+ID is for history/correlation and is not added to the cached prompt.
+
+- Keep tools and system instructions stable; tools are sorted by name.
+- An explicit breakpoint at the end of the system prompt caches tools + system.
+- Top-level automatic `cache_control` advances the cache through growing history,
+  including tool calls and results. Both use the default five-minute TTL; hits
+  refresh it. Different models have independent caches.
+- Prefix matches, not session IDs, determine cache hits. The two tier models
+  currently require at least 512 tokens for caching. Short prompts may not cache.
+- Logs expose cache-read and cache-write token counts, without prompt contents.
+  Quota cost estimates include uncached input, cache writes, cache reads, and output
+  at the published model rates, including Haiku's >100K input tier.
+- Completion `quota.model` identifies the model that handled the request;
+  `quota.nextModel` identifies the model chosen after charging it.
+
+References: [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching),
+[streaming](https://platform.claude.com/docs/en/api/messages-streaming).
+Models and pricing verified October 29, 2026. Update `MODEL_RATES` with any future
+model changes; these estimates are not an Anthropic billing reconciliation.
+
+### Production configuration
+
+CD loads the credential from the SSM SecureString
+`/ask-gateway/production/ANTHROPIC_API_KEY` in `us-east-1` using the instance role.
+`scripts/configure_anthropic.py` atomically updates the existing `.env` with mode
+0600, preserving gateway/MCP/Supabase credentials and removing OpenRouter settings.
+It fails before restart if the key cannot be read. No API key belongs in GitHub
+source or workflow logs. Local development uses `.env.example` and an `.env` file.
 
 ## Endpoints
 

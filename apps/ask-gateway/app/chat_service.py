@@ -10,7 +10,7 @@ from typing import Any, AsyncIterator, Callable
 logger = logging.getLogger("ask-gateway.chat")
 
 from .config import Settings
-from .llm_client import LlmClientError, OpenAiLlmClient
+from .llm_client import LlmClientError, AnthropicLlmClient
 from .mcp_client import McpClientError, McpHttpClient
 from .models import AskStreamRequest, ToolCall
 from .response_synthesizer import synthesize_final_response
@@ -164,7 +164,7 @@ class ChatService:
         prompt = payload.messages[-1].content
         mcp_url = self._settings.junction_mcp_url if payload.netid else None
         mcp_client = McpHttpClient(self._settings, netid=payload.netid, mcp_url=mcp_url)
-        llm_client = OpenAiLlmClient(self._settings)
+        llm_client = AnthropicLlmClient(self._settings)
         session_id: str | None = None
 
         # Quota enforcement
@@ -239,12 +239,12 @@ class ChatService:
                             collected_usage.get("prompt_tokens_details") or {}
                         ).get("cached_tokens")
                         logger.info(
-                            "llm usage: request=%s iteration=%d prompt=%s cached=%s discount=%s",
+                            "llm usage: request=%s iteration=%d prompt=%s cached=%s cache_write=%s",
                             request_id,
                             iteration,
                             collected_usage.get("prompt_tokens"),
                             cached_tokens,
-                            collected_usage.get("cache_discount"),
+                            collected_usage.get("cache_creation_input_tokens"),
                         )
                         total_cost += collected_usage.get("cost") or 0
                         total_input_tokens += collected_usage.get("prompt_tokens") or 0
