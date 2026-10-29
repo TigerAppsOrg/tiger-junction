@@ -559,6 +559,11 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
     assert len(llm_calls) == 2
     assert llm_calls[0]["system"] == llm_calls[1]["system"]
     assert llm_calls[0]["system"]["role"] == "system"
+    # Ask AI sends no term: the planner must receive the upcoming semester default.
+    system_prompt = llm_calls[0]["system"]["content"]
+    assert "prefer term 1274 (Spring 2027)" in system_prompt
+    assert "default to searching and discussing courses for Spring 2027" in system_prompt
+    assert "prefer term 1272" not in system_prompt
     assert llm_calls[0]["session_id"] is not None
     assert llm_calls[0]["session_id"] == llm_calls[1]["session_id"]
 

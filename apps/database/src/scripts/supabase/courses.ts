@@ -212,8 +212,9 @@ export const populateCourses = async (
     ];
 
     if (supaRes.error) {
-        console.error(supaRes.error);
-        return;
+        throw new Error(`Failed to fetch existing courses for term ${term}`, {
+            cause: supaRes.error
+        });
     }
 
     const supaCourses = supaRes.data;
@@ -330,8 +331,9 @@ export const populateCourses = async (
         .select("id,listing_id");
 
     if (courseError) {
-        console.error(courseError);
-        return;
+        throw new Error(`Failed to upsert existing courses for term ${term}`, {
+            cause: courseError
+        });
     }
 
     const { data: courseDataNew, error: courseErrorNew } = await supabase
@@ -340,8 +342,9 @@ export const populateCourses = async (
         .select("id,listing_id");
 
     if (courseErrorNew) {
-        console.error(courseErrorNew);
-        return;
+        throw new Error(`Failed to insert new courses for term ${term}`, {
+            cause: courseErrorNew
+        });
     }
 
     courseData.push(...courseDataNew);
@@ -352,8 +355,9 @@ export const populateCourses = async (
         .eq("term", term);
 
     if (sectionError) {
-        console.error(sectionError);
-        return;
+        throw new Error(`Failed to fetch existing sections for term ${term}`, {
+            cause: sectionError
+        });
     }
 
     // Handle sections
@@ -451,8 +455,9 @@ export const populateCourses = async (
         .upsert(existingSections);
 
     if (sectionUpdateError) {
-        console.error(sectionUpdateError);
-        return;
+        throw new Error(`Failed to upsert existing sections for term ${term}`, {
+            cause: sectionUpdateError
+        });
     }
 
     const { error: newSectionError } = await supabase
@@ -460,8 +465,9 @@ export const populateCourses = async (
         .insert(newSections);
 
     if (newSectionError) {
-        console.error(newSectionError);
-        return;
+        throw new Error(`Failed to insert new sections for term ${term}`, {
+            cause: newSectionError
+        });
     }
 
     // Delete sections that no longer exist
@@ -471,8 +477,9 @@ export const populateCourses = async (
         .in("id", sectionIdDeleteList);
 
     if (sectionDeleteError) {
-        console.error(sectionDeleteError);
-        return;
+        throw new Error(`Failed to delete obsolete sections for term ${term}`, {
+            cause: sectionDeleteError
+        });
     }
 
     console.log(

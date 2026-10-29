@@ -65,7 +65,7 @@ export function registerCourseTools(
           .number()
           .optional()
           .describe(
-            "Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current). Codes ending in 2=Fall, ending in 4=Spring."
+            "Term code. Mapping: 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026, 1272=Fall 2026 (current), 1274=Spring 2027 (upcoming; use for searches unless the user specifies another term). Codes ending in 2=Fall, ending in 4=Spring."
           ),
         department: z
           .string()
@@ -367,7 +367,7 @@ export function registerCourseTools(
           .string()
           .optional()
           .describe(
-            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."
+            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026, 1272=Fall 2026 (current), 1274=Spring 2027 (upcoming; use for searches unless the user specifies another term)."
           ),
         code: z
           .string()
@@ -450,7 +450,7 @@ export function registerCourseTools(
           .string()
           .optional()
           .describe(
-            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026 (current)."
+            "Course ID: listingId + term code (e.g., '002051-1264' where 1264=Spring 2026). Term codes: ending in 2=Fall, ending in 4=Spring. 1232=Fall 2022, 1234=Spring 2023, 1242=Fall 2023, 1244=Spring 2024, 1252=Fall 2024, 1254=Spring 2025, 1262=Fall 2025, 1264=Spring 2026, 1272=Fall 2026 (current), 1274=Spring 2027 (upcoming; use for searches unless the user specifies another term)."
           ),
         code: z
           .string()
