@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -454,7 +455,16 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
 
 
 @pytest.mark.asyncio
-async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("spent, expected_model", [
+    (None, None),
+    (0.0, "anthropic/claude-sonnet-5.5"),
+    (3.0, "anthropic/claude-haiku-5.5"),
+])
+async def test_stream_llm_tool_call_loop_executes_mcp(
+    monkeypatch: pytest.MonkeyPatch, spent: float | None, expected_model: str | None
+) -> None:
+    monkeypatch.setattr("app.supabase_store.get_quota_spent", AsyncMock(return_value=spent or 0.0))
+    monkeypatch.setattr("app.supabase_store.save_message", AsyncMock())
     class FakeMcpClient:
         def __init__(
             self,
@@ -492,7 +502,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             self.session_id: str | None = "sid"
 
         async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None, session_id: str | None = None):
-            llm_calls.append({"system": messages[0], "session_id": session_id})
+            llm_calls.append({"system": messages[0], "session_id": session_id, "model": model})
             has_tool_message = any(m.get("role") == "tool" for m in messages)
             if not has_tool_message:
                 yield {
@@ -542,7 +552,10 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             ask_llm_synthesis_enabled=True,
         )
     )
-    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy cs courses")])
+    payload = AskStreamRequest(
+        messages=[ChatMessage(role="user", content="easy cs courses")],
+        netid="test-user" if spent is not None else None,
+    )
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
     events = _parse_events(chunks)
@@ -566,6 +579,13 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
     assert "prefer term 1272" not in system_prompt
     assert llm_calls[0]["session_id"] is not None
     assert llm_calls[0]["session_id"] == llm_calls[1]["session_id"]
+
+    assert all(call["model"] == expected_model for call in llm_calls)
+    done = next(data for name, data in events if name == "done")
+    if expected_model:
+        assert done["quota"]["model"] == expected_model
+    else:
+        assert "quota" not in done
 
 
 @pytest.mark.asyncio

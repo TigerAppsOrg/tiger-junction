@@ -354,6 +354,7 @@ class ChatService:
                         done_data["quota"] = {
                             "percentUsed": quota_after["percentUsed"],
                             "tier": quota_after["tier"],
+                            "model": quota_after["model"],
                             "tierChanged": quota_before is not None
                             and quota_before["tier"] != quota_after["tier"],
                             "resetSeconds": quota_after["resetSeconds"],
@@ -614,6 +615,7 @@ class ChatService:
                 det_done_data["quota"] = {
                     "percentUsed": det_q["percentUsed"],
                     "tier": det_q["tier"],
+                    "model": det_q["model"],
                     "tierChanged": False,
                     "resetSeconds": det_q["resetSeconds"],
                 }

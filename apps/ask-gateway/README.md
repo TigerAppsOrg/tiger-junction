@@ -2,6 +2,15 @@
 
 FastAPI service that provides SSE chat streaming for PrincetonCourses and calls Junction MCP tools.
 
+## Model tiers
+
+Authenticated users (including PrincetonCourses users) use Claude Sonnet 5.5
+(`anthropic/claude-sonnet-5.5`) for the first $3 of each quota window, then Claude
+Haiku 5.5 (`anthropic/claude-haiku-5.5`) for the remaining $1. Requests are blocked
+at $4 until the existing eight-hour quota window resets. Model IDs are defined
+in `app/usage_tracker.py`; they were verified against OpenRouter's model catalog
+on October 29, 2026. Quota responses include the model ID for client display.
+
 ## Endpoints
 
 - `GET /health` - health check
