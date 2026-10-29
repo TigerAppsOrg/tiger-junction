@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -433,7 +434,7 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(
@@ -454,7 +455,29 @@ async def test_stream_llm_direct_answer_no_tool_calls(monkeypatch: pytest.Monkey
 
 
 @pytest.mark.asyncio
-async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("spent, expected_model, expected_tier", [
+    (None, None, None),
+    (0.0, "claude-sonnet-5-5", 1),
+    (2.99, "claude-sonnet-5-5", 2),
+    (3.0, "claude-haiku-5-5", 2),
+    (3.99, "claude-haiku-5-5", "exhausted"),
+])
+async def test_stream_llm_tool_call_loop_executes_mcp(
+    monkeypatch: pytest.MonkeyPatch, spent: float | None, expected_model: str | None,
+    expected_tier: int | str | None
+) -> None:
+    quota_spent = spent or 0.0
+
+    async def get_spent(netid, window):
+        return quota_spent
+
+    async def save_spent(netid, window, value):
+        nonlocal quota_spent
+        quota_spent = value
+
+    monkeypatch.setattr("app.supabase_store.get_quota_spent", get_spent)
+    monkeypatch.setattr("app.supabase_store.upsert_quota", save_spent)
+    monkeypatch.setattr("app.supabase_store.save_message", AsyncMock())
     class FakeMcpClient:
         def __init__(
             self,
@@ -492,7 +515,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             self.session_id: str | None = "sid"
 
         async def stream_chat(self, *, messages: list[dict], tools: list[dict], model: str | None = None, session_id: str | None = None):
-            llm_calls.append({"system": messages[0], "session_id": session_id})
+            llm_calls.append({"system": messages[0], "session_id": session_id, "model": model})
             has_tool_message = any(m.get("role") == "tool" for m in messages)
             if not has_tool_message:
                 yield {
@@ -525,14 +548,14 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
                     }
                 ]
             }
-            yield {"usage": {"prompt_tokens": 20, "completion_tokens": 10}}
+            yield {"usage": {"prompt_tokens": 20, "completion_tokens": 10, "cost": 0.02}}
             yield {"type": "done"}
 
         async def close(self) -> None:
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(
@@ -542,7 +565,10 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
             ask_llm_synthesis_enabled=True,
         )
     )
-    payload = AskStreamRequest(messages=[ChatMessage(role="user", content="easy cs courses")])
+    payload = AskStreamRequest(
+        messages=[ChatMessage(role="user", content="easy cs courses")],
+        netid="test-user" if spent is not None else None,
+    )
 
     chunks = [chunk async for chunk in service.stream_chat(payload, is_disconnected=lambda: False)]
     events = _parse_events(chunks)
@@ -555,7 +581,7 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
 
     # Prefix-cache invariants across the tool loop: the system prompt must be
     # byte-identical on every iteration, and every iteration must carry the
-    # same OpenRouter session id for provider stickiness.
+    # same conversation ID for request correlation.
     assert len(llm_calls) == 2
     assert llm_calls[0]["system"] == llm_calls[1]["system"]
     assert llm_calls[0]["system"]["role"] == "system"
@@ -566,6 +592,19 @@ async def test_stream_llm_tool_call_loop_executes_mcp(monkeypatch: pytest.Monkey
     assert "prefer term 1272" not in system_prompt
     assert llm_calls[0]["session_id"] is not None
     assert llm_calls[0]["session_id"] == llm_calls[1]["session_id"]
+
+    assert all(call["model"] == expected_model for call in llm_calls)
+    done = next(data for name, data in events if name == "done")
+    if expected_model:
+        assert done["quota"]["model"] == expected_model
+        assert done["quota"]["tier"] == expected_tier
+        assert done["quota"]["nextModel"] == (
+            "claude-sonnet-5-5" if expected_tier == 1 else "claude-haiku-5-5"
+        )
+        assert done["quota"]["tierChanged"] is (spent in (2.99, 3.99))
+        assert quota_spent == pytest.approx(spent + 0.02)
+    else:
+        assert "quota" not in done
 
 
 @pytest.mark.asyncio
@@ -606,7 +645,7 @@ async def test_stream_llm_error_emits_upstream_error(monkeypatch: pytest.MonkeyP
             return None
 
     monkeypatch.setattr("app.chat_service.McpHttpClient", FakeMcpClient)
-    monkeypatch.setattr("app.chat_service.OpenAiLlmClient", FakeLlmClient)
+    monkeypatch.setattr("app.chat_service.AnthropicLlmClient", FakeLlmClient)
 
     service = ChatService(
         Settings(

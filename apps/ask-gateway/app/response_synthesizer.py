@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from .llm_client import LlmClientError, OpenAiLlmClient
+from .llm_client import LlmClientError, AnthropicLlmClient
 from .synthesis_prompt import build_synthesis_system_prompt, build_synthesis_user_prompt
 
 COURSE_LIST_TOOLS = {"search_courses", "discover_courses", "find_top_rated_courses"}
@@ -30,7 +30,7 @@ async def synthesize_final_response(
     *,
     prompt: str,
     tool_runs: list[dict[str, Any]],
-    llm_client: OpenAiLlmClient | None,
+    llm_client: AnthropicLlmClient | None,
     llm_enabled: bool,
 ) -> str:
     deterministic = _compose_deterministic_response(prompt=prompt, tool_runs=tool_runs)
