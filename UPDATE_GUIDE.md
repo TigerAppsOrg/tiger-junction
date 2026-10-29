@@ -28,7 +28,15 @@ In [`src/lib/constants.ts`](src/lib/constants.ts) check the array titled DEPARTM
 
 ## Step 4: Populate the Database
 
-Database population is done via CLI scripts in `apps/database`. Make sure your `apps/database/.env` file is configured with the required environment variables (see `apps/database/.env.example`): `PUBLIC_SUPABASE_URL`, `SERVICE_ROLE_KEY`, `API_ACCESS_TOKEN`, `REDIS_PASSWORD`, and `REG_COOKIE`.
+For a new term, use the **Seats Cron** GitHub Actions workflow with the target
+`term` and **import_courses** enabled. It runs the full listings/course/section
+import with grading, then updates seats and syncs Redis using the repository's
+existing secrets. Leave **import_courses** off for normal seat refreshes.
+The scheduled hourly run remains a seat refresh only. Add the new term to the
+allowlist before dispatching; when testing a term-update branch, select that
+branch in the workflow's **Run workflow** menu.
+
+Database population can also be done via CLI scripts in `apps/database`. Make sure your `apps/database/.env` file is configured with the required environment variables (see `apps/database/.env.example`): `PUBLIC_SUPABASE_URL`, `SERVICE_ROLE_KEY`, `API_ACCESS_TOKEN`, `REDIS_PASSWORD`, and `REG_COOKIE`.
 
 Before running the scripts, add the new term code to the `TERMS` array in `apps/database/src/scripts/supabase/shared.ts`, or the scripts will reject it as invalid.
 

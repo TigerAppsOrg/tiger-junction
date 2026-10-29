@@ -8,11 +8,11 @@ BEGIN
   INSERT INTO public.private_profiles (id)
   VALUES (new.id);
   
-  -- Create default schedules for terms (1242, 1234, 1244)
+  -- Create default schedules for Spring 2027, Fall 2026, and Spring 2026
   INSERT INTO public.schedules (user_id, title, term)
-  VALUES (new.id, 'My Schedule', 1262),
+  VALUES (new.id, 'My Schedule', 1274),
          (new.id, 'My Schedule', 1272),
-         (new.id, 'My Schedule', 1254);
+         (new.id, 'My Schedule', 1264);
 
 
   RETURN new;
