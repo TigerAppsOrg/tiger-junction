@@ -30,12 +30,20 @@ export function termToStellic(
     return year ? { semId, year } : null;
 }
 
-/** "COS 333 / ECE 333" -> ["COS 333", "ECE 333"], normalised to "DEP 123X". */
+/**
+ * Junction stores codes without a space ("COS217", "COS435/ECE433"); Stellic
+ * wants "COS 217". Accepts either form and returns each listing as "DEP 123X".
+ */
 export function splitCodes(code: string): string[] {
-    return code
-        .split("/")
-        .map(c => c.trim().replace(/\s+/g, " ").toUpperCase())
-        .filter(c => /^[A-Z]{3} \d{3}[A-Z]?$/.test(c));
+    const out: string[] = [];
+    for (const part of code.split("/")) {
+        const m = part
+            .trim()
+            .toUpperCase()
+            .match(/^([A-Z]{3})\s*(\d{3}[A-Z]?)$/);
+        if (m) out.push(`${m[1]} ${m[2]}`);
+    }
+    return out;
 }
 
 export type ExportResult = {
