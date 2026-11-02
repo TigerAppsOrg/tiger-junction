@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { dev } from "$app/environment";
     import { currentTerm, schedules } from "$lib/changeme";
     import duck from "$lib/img/duck.gif";
     import {
@@ -163,8 +164,9 @@
     });
 
     // * Export the current schedule to the student's Stellic plan
-    // TODO: point at the Stellic login route once it is merged.
-    const STELLIC_LOGIN_PATH = "/stellic/login";
+    // In `npm run dev`, the paste-a-session page stands in for the real login.
+    // TODO: point the production path at the Stellic login route once it is merged.
+    const STELLIC_LOGIN_PATH = dev ? "/stellic/dev" : "/stellic/login";
     let exportingToStellic = $state(false);
 
     const handleStellicExport = async () => {
