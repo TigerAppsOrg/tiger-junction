@@ -108,9 +108,15 @@ export type StellicPlan = {
 };
 
 type GetPlanResponse = { success: boolean; student_plan: StellicPlan };
+/**
+ * On a refusal Stellic answers 200 with success: false and a reason, e.g.
+ * { code: 494, text: "Pre-requisites not satisfied for course EGR 153: EGR 151 [UGRD]" }.
+ * The Stellic UI then asks the student and resends with force=true.
+ */
 type AddCourseResponse = {
     success: boolean;
     courses_affected?: { id: number; code: string }[];
+    message?: { code?: number; text?: string } | string;
 };
 
 // ---------- endpoints ----------
@@ -129,25 +135,55 @@ export async function getStudentPlan(
     return data.student_plan;
 }
 
-/** POST /planner/add-course/ : returns the new plancourse_id. */
+/** A refusal Stellic would let the student override (prerequisites, etc.). */
+export class StellicRefusal extends StellicError {
+    constructor(
+        message: string,
+        public readonly code: number | null
+    ) {
+        super(message, "request");
+        this.name = "StellicRefusal";
+    }
+}
+
+/**
+ * POST /planner/add-course/ : returns the new plancourse_id.
+ * `force` mirrors the Stellic UI's "add anyway" (force=true&force_integrated=true);
+ * only pass it after the student has confirmed.
+ */
 export async function addCourse(
     session: StellicSession,
-    args: { planId: string; courseCode: string; semId: number; year: string }
+    args: {
+        planId: string;
+        courseCode: string;
+        semId: number;
+        year: string;
+        force?: boolean;
+    }
 ): Promise<number | null> {
+    const form: Record<string, string> = {
+        plan_id: args.planId,
+        course_code: args.courseCode,
+        sem_id: String(args.semId),
+        year: args.year
+    };
+    if (args.force) {
+        form.force = "true";
+        form.force_integrated = "true";
+    }
+
     const data = await post<AddCourseResponse>(
         session,
         "/planner/add-course/",
-        {
-            plan_id: args.planId,
-            course_code: args.courseCode,
-            sem_id: String(args.semId),
-            year: args.year
-        }
+        form
     );
     if (!data.success) {
-        throw new StellicError(
-            `Stellic did not add ${args.courseCode}`,
-            "request"
+        const msg = data.message;
+        const text = typeof msg === "string" ? msg : msg?.text;
+        const code = typeof msg === "object" && msg ? (msg.code ?? null) : null;
+        throw new StellicRefusal(
+            text || `Stellic did not add ${args.courseCode}`,
+            code
         );
     }
     return data.courses_affected?.[0]?.id ?? null;

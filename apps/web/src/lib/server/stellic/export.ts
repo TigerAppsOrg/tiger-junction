@@ -2,9 +2,13 @@ import {
     addCourse,
     getStudentPlan,
     StellicError,
+    StellicRefusal,
     type StellicPlan,
     type StellicSession
 } from "./client";
+
+/** Stellic's refusal code for unmet prerequisites (seen 2026-11-02 on EGR 153). */
+const PREREQ_REFUSAL = 494;
 
 /**
  * Princeton term code -> Stellic term.
@@ -116,6 +120,10 @@ export async function exportScheduleToStellic(
             } catch (e) {
                 if (e instanceof StellicError && e.kind === "auth") throw e;
                 lastError = e instanceof Error ? e.message : "unknown error";
+                // A prerequisite refusal (Stellic code 494) applies to every
+                // listing of the course; trying the others would only repeat it.
+                if (e instanceof StellicRefusal && e.code === PREREQ_REFUSAL)
+                    break;
             }
         }
         if (!added) result.failed.push({ code: label, reason: lastError });

@@ -206,16 +206,17 @@
             const parts = [`Added ${data.added.length} to Stellic`];
             if (data.skipped.length)
                 parts.push(`${data.skipped.length} already there`);
-            if (data.failed.length) {
-                parts.push(
-                    `failed: ${data.failed.map((f: { code: string }) => f.code).join(", ")}`
-                );
-            }
             toastStore.add(
                 data.failed.length ? "warning" : "success",
                 parts.join(", "),
                 6
             );
+
+            // One toast per refusal, with Stellic's own reason, e.g.
+            // "Pre-requisites not satisfied for course EGR 153: EGR 151".
+            for (const f of data.failed as { code: string; reason: string }[]) {
+                toastStore.add("error", `${f.code} not added: ${f.reason}`, 10);
+            }
         } catch {
             toastStore.add("error", "Could not reach Stellic", 5);
         } finally {
