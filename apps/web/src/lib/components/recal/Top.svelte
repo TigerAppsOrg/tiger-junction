@@ -161,6 +161,65 @@
         $calColors; // track dependency
         return getStyles("6");
     });
+
+    // * Export the current schedule to the student's Stellic plan
+    // TODO: point at the Stellic login route once it is merged.
+    const STELLIC_LOGIN_PATH = "/stellic/login";
+    let exportingToStellic = $state(false);
+
+    const handleStellicExport = async () => {
+        if (exportingToStellic) return;
+        const scheduleCourses = $savedCourses[$currentSchedule] ?? [];
+        if (scheduleCourses.length === 0) {
+            toastStore.add("warning", "This schedule has no courses to export");
+            return;
+        }
+
+        exportingToStellic = true;
+        try {
+            const res = await fetch("/api/client/stellic/export", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    term: $currentTerm,
+                    codes: scheduleCourses.map(c => c.code)
+                })
+            });
+            const data = await res.json();
+
+            if (res.status === 401 && data.needsLogin) {
+                const back = window.location.pathname + window.location.search;
+                window.location.href = `${STELLIC_LOGIN_PATH}?returnTo=${encodeURIComponent(back)}`;
+                return;
+            }
+            if (!res.ok) {
+                toastStore.add(
+                    "error",
+                    data.error ?? "Export to Stellic failed",
+                    5
+                );
+                return;
+            }
+
+            const parts = [`Added ${data.added.length} to Stellic`];
+            if (data.skipped.length)
+                parts.push(`${data.skipped.length} already there`);
+            if (data.failed.length) {
+                parts.push(
+                    `failed: ${data.failed.map((f: { code: string }) => f.code).join(", ")}`
+                );
+            }
+            toastStore.add(
+                data.failed.length ? "warning" : "success",
+                parts.join(", "),
+                6
+            );
+        } catch {
+            toastStore.add("error", "Could not reach Stellic", 5);
+        } finally {
+            exportingToStellic = false;
+        }
+    };
 </script>
 
 <div
@@ -248,97 +307,129 @@
         </div>
     </div>
 
-    <div class="w-auto overflow-x-auto overflow-y-hidden">
-        <div
-            class="themed-panel flex gap-2 w-fit
+    <div class="flex justify-between gap-2">
+        <div class="w-auto min-w-0 overflow-x-auto overflow-y-hidden">
+            <div
+                class="themed-panel flex gap-2 w-fit
             p-1 h-8 font-normal rounded-sm">
-            {#key $retop}
-                {#await fetchUserSchedules(supabase, $currentTerm)}
-                    <Loader />
-                {:then}
-                    <div
-                        class="flex gap-2"
-                        style={cssVarStyles}
-                        use:dndzone={{
-                            items: $schedules[$currentTerm],
-                            flipDurationMs,
-                            type: "schedule",
-                            dropTargetStyle: {
-                                outline: "2px solid var(--bg)",
-                                borderRadius: "2px"
-                            }
-                        }}
-                        onconsider={handleDndConsider}
-                        onfinalize={handleDndFinalize}>
-                        {#each $schedules[$currentTerm] as schedule (schedule.id)}
-                            <button
-                                animate:flip={{ duration: flipDurationMs }}
-                                class="card {$currentSchedule === schedule.id
-                                    ? 'flex items-center gap-4'
-                                    : 'termchoice'}"
-                                class:selected={$currentSchedule ===
-                                    schedule.id}
-                                onclick={() =>
-                                    $currentSchedule === schedule.id
-                                        ? modalStore.push("editSchedule")
-                                        : handleScheduleChange(schedule.id)}>
-                                <span class="whitespace-nowrap"
-                                    >{schedule.title}</span>
-                                {#if $currentSchedule === schedule.id}
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="w-4 h-4 mr-2">
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                    </svg>
-                                {/if}
-                            </button>
-                        {/each}
-                    </div>
-                    <button
-                        class="card add-button"
-                        onclick={() => {
-                            handleAddSchedule();
-                        }}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </button>
-                {:catch}
-                    <button
-                        class="card add-button"
-                        onclick={() => modalStore.push("addSchedule")}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="btn-icon">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </button>
-                {/await}
-            {/key}
+                {#key $retop}
+                    {#await fetchUserSchedules(supabase, $currentTerm)}
+                        <Loader />
+                    {:then}
+                        <div
+                            class="flex gap-2"
+                            style={cssVarStyles}
+                            use:dndzone={{
+                                items: $schedules[$currentTerm],
+                                flipDurationMs,
+                                type: "schedule",
+                                dropTargetStyle: {
+                                    outline: "2px solid var(--bg)",
+                                    borderRadius: "2px"
+                                }
+                            }}
+                            onconsider={handleDndConsider}
+                            onfinalize={handleDndFinalize}>
+                            {#each $schedules[$currentTerm] as schedule (schedule.id)}
+                                <button
+                                    animate:flip={{ duration: flipDurationMs }}
+                                    class="card {$currentSchedule ===
+                                    schedule.id
+                                        ? 'flex items-center gap-4'
+                                        : 'termchoice'}"
+                                    class:selected={$currentSchedule ===
+                                        schedule.id}
+                                    onclick={() =>
+                                        $currentSchedule === schedule.id
+                                            ? modalStore.push("editSchedule")
+                                            : handleScheduleChange(
+                                                  schedule.id
+                                              )}>
+                                    <span class="whitespace-nowrap"
+                                        >{schedule.title}</span>
+                                    {#if $currentSchedule === schedule.id}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4 mr-2">
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                    {/if}
+                                </button>
+                            {/each}
+                        </div>
+                        <button
+                            class="card add-button"
+                            onclick={() => {
+                                handleAddSchedule();
+                            }}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    {:catch}
+                        <button
+                            class="card add-button"
+                            onclick={() => modalStore.push("addSchedule")}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="btn-icon">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    {/await}
+                {/key}
+            </div>
         </div>
+        {#if !$isMobile}
+            <!-- Same look as Manage Events, sitting directly below it -->
+            <button
+                onclick={handleStellicExport}
+                disabled={exportingToStellic}
+                style={eventStyles}
+                id="stellic-export"
+                class="h-8 w-36 shrink-0 rounded-sm duration-150
+            flex items-center justify-center gap-1
+            disabled:opacity-60 disabled:cursor-wait">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-5 w-5">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>
+                    {exportingToStellic ? "Exporting…" : "Export to Stellic"}
+                </span>
+            </button>
+        {/if}
     </div>
     <!-- * Schedule Select -->
 
@@ -356,12 +447,14 @@
 </div>
 
 <style lang="postcss">
-    #events {
+    #events,
+    #stellic-export {
         background-color: var(--bg);
         color: var(--text);
     }
 
-    #events:hover {
+    #events:hover,
+    #stellic-export:hover:not(:disabled) {
         background-color: var(--bg-hover);
     }
 
