@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { dev } from "$app/environment";
     import { currentTerm, schedules } from "$lib/changeme";
     import duck from "$lib/img/duck.gif";
     import {
@@ -32,7 +31,7 @@
         type StellicExportResult
     } from "$lib/stores/stellic";
     import confetti from "canvas-confetti";
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
     import Loader from "../ui/Loader.svelte";
     import { scheduleEventMap } from "$lib/stores/events";
     import { dndzone } from "svelte-dnd-action";
@@ -168,10 +167,28 @@
     });
 
     // * Export the current schedule to the student's Stellic plan
-    // In `npm run dev`, the paste-a-session page stands in for the real login.
-    // TODO: point the production path at the Stellic login route once it is merged.
-    const STELLIC_LOGIN_PATH = dev ? "/stellic/dev" : "/stellic/login";
+    // No Stellic session yet: sign in with Princeton (CAS + Duo), then come back
+    // with ?stellicExport=1 so the export continues on its own.
+    const STELLIC_LOGIN_PATH = "/stellic/login";
     let exportingToStellic = $state(false);
+
+    onMount(() => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("stellicExport") !== "1") return;
+        url.searchParams.delete("stellicExport");
+        history.replaceState(history.state, "", url);
+
+        // Wait for this schedule's courses to load (up to 8 s), then export.
+        const startedAt = Date.now();
+        const timer = setInterval(() => {
+            const ready = ($savedCourses[$currentSchedule] ?? []).length > 0;
+            if (ready || Date.now() - startedAt > 8000) {
+                clearInterval(timer);
+                handleStellicExport();
+            }
+        }, 250);
+        return () => clearInterval(timer);
+    });
 
     const handleStellicExport = async () => {
         if (exportingToStellic) return;
