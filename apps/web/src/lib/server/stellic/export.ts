@@ -54,7 +54,19 @@ export type ExportResult = {
     added: string[];
     skipped: { code: string; reason: string }[];
     failed: { code: string; reason: string }[];
+    /** Added anyway although the student has not met the prerequisites. */
+    prereqWarnings: { code: string; missing: string; message: string }[];
 };
+
+/**
+ * "Pre-requisites not satisfied for course EGR 153: EGR 151 [UGRD]" -> "EGR 151".
+ * Falls back to the whole message if Stellic words it differently.
+ */
+export function missingPrereqs(message: string): string {
+    const m = message.match(/not satisfied for course [^:]+:\s*(.+)$/i);
+    if (!m) return message;
+    return m[1].replace(/\s*\[[A-Z]+\]/g, "").trim();
+}
 
 /**
  * Add a Junction schedule's courses to the student's Stellic plan for one term.
@@ -66,7 +78,12 @@ export async function exportScheduleToStellic(
     termCode: number,
     courseCodes: string[]
 ): Promise<ExportResult> {
-    const result: ExportResult = { added: [], skipped: [], failed: [] };
+    const result: ExportResult = {
+        added: [],
+        skipped: [],
+        failed: [],
+        prereqWarnings: []
+    };
 
     const plan = await getStudentPlan(session);
     const target = termToStellic(termCode, plan.academic_years);
@@ -106,24 +123,45 @@ export async function exportScheduleToStellic(
         let added = false;
         let lastError = "";
         for (const code of listings) {
+            const args = {
+                planId: plan.plan_id,
+                courseCode: code,
+                semId: target.semId,
+                year: target.year
+            };
             try {
-                await addCourse(session, {
-                    planId: plan.plan_id,
-                    courseCode: code,
-                    semId: target.semId,
-                    year: target.year
-                });
-                result.added.push(code);
-                inPlan.add(code);
+                await addCourse(session, args);
                 added = true;
-                break;
             } catch (e) {
                 if (e instanceof StellicError && e.kind === "auth") throw e;
                 lastError = e instanceof Error ? e.message : "unknown error";
-                // A prerequisite refusal (Stellic code 494) applies to every
-                // listing of the course; trying the others would only repeat it.
-                if (e instanceof StellicRefusal && e.code === PREREQ_REFUSAL)
-                    break;
+
+                // Unmet prerequisites (code 494) are only a warning in Stellic:
+                // its own UI asks "add anyway?" and resends with force=true.
+                // A plan is not an enrollment, so do the same and tell the student.
+                if (e instanceof StellicRefusal && e.code === PREREQ_REFUSAL) {
+                    try {
+                        await addCourse(session, { ...args, force: true });
+                        added = true;
+                        result.prereqWarnings.push({
+                            code,
+                            missing: missingPrereqs(e.message),
+                            message: e.message
+                        });
+                    } catch (e2) {
+                        if (e2 instanceof StellicError && e2.kind === "auth")
+                            throw e2;
+                        lastError =
+                            e2 instanceof Error ? e2.message : "unknown error";
+                    }
+                    // The prerequisite applies to every listing; stop here.
+                    if (!added) break;
+                }
+            }
+            if (added) {
+                result.added.push(code);
+                inPlan.add(code);
+                break;
             }
         }
         if (!added) result.failed.push({ code: label, reason: lastError });

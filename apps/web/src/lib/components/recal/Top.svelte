@@ -27,6 +27,10 @@
         showCal
     } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
+    import {
+        stellicExportResult,
+        type StellicExportResult
+    } from "$lib/stores/stellic";
     import confetti from "canvas-confetti";
     import { getContext } from "svelte";
     import Loader from "../ui/Loader.svelte";
@@ -203,19 +207,18 @@
                 return;
             }
 
-            const parts = [`Added ${data.added.length} to Stellic`];
-            if (data.skipped.length)
-                parts.push(`${data.skipped.length} already there`);
-            toastStore.add(
-                data.failed.length ? "warning" : "success",
-                parts.join(", "),
-                6
-            );
+            const result = data as StellicExportResult;
 
-            // One toast per refusal, with Stellic's own reason, e.g.
-            // "Pre-requisites not satisfied for course EGR 153: EGR 151".
-            for (const f of data.failed as { code: string; reason: string }[]) {
-                toastStore.add("error", `${f.code} not added: ${f.reason}`, 10);
+            // Anything the student should read (unmet prerequisites, refusals)
+            // opens a popup; a clean export is just a toast.
+            if (result.prereqWarnings.length || result.failed.length) {
+                stellicExportResult.set(result);
+                modalStore.push("stellicExport");
+            } else {
+                const parts = [`Added ${result.added.length} to Stellic`];
+                if (result.skipped.length)
+                    parts.push(`${result.skipped.length} already there`);
+                toastStore.add("success", parts.join(", "), 6);
             }
         } catch {
             toastStore.add("error", "Could not reach Stellic", 5);
