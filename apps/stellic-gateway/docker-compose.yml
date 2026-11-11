@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: stellic-gateway-postgres
+    environment:
+      POSTGRES_USER: stellic
+      POSTGRES_PASSWORD: stellic_password
+      POSTGRES_DB: stellic_gateway
+    ports:
+      - "5434:5432"
+    volumes:
+      - stellic_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stellic -d stellic_gateway"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  stellic_postgres_data:
