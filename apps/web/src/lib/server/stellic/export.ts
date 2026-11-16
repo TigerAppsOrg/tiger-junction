@@ -8,6 +8,7 @@ import {
     StellicError,
     StellicRefusal,
     type StellicPlan,
+    type StellicSection,
     type StellicSession,
     type StellicTermCourse
 } from "./client";
@@ -463,18 +464,15 @@ async function setSections(
             courseCode: code,
             planCourseId
         });
-        const byName = new Map(
-            groups
-                .flatMap(g => g.sections)
-                .map(s => [s.name.toUpperCase(), s.id])
-        );
+        const all = groups.flatMap(g => g.sections);
+        const byName = new Map(all.map(s => [s.name.toUpperCase(), s]));
 
-        const ids: number[] = [];
+        const picked: StellicSection[] = [];
         const missing: string[] = [];
         for (const s of wanted) {
-            const id = byName.get(s.name.toUpperCase());
-            if (id === undefined) missing.push(s.name);
-            else ids.push(id);
+            const sec = byName.get(s.name.toUpperCase());
+            if (sec) picked.push(sec);
+            else missing.push(s.name);
         }
         if (missing.length) {
             result.sectionNotes.push({
@@ -482,20 +480,40 @@ async function setSections(
                 message: `Stellic has no section ${missing.join(", ")}, so it was not selected.`
             });
         }
-        if (!ids.length) return;
+        if (!picked.length) return;
 
-        const stored = await changeCourseSections(session, {
+        // Stellic takes the most specific section and fills in its parent:
+        // choosing P03 sends only P03 and Stellic adds L01 (seen 2026-11-16).
+        // Sending L01 as well makes Stellic reset the precept to P01. So send
+        // only sections that are not the parent of another chosen section.
+        const parentIds = new Set(
+            picked.flatMap(s => (s.parents ?? []).map(p => p.id))
+        );
+        const leaves = picked.filter(s => !parentIds.has(s.id));
+        const wantedNames = picked.map(s => s.name.toUpperCase());
+
+        let stored = await changeCourseSections(session, {
             ...args,
             courseCode: code,
             planCourseId,
-            sectionIds: ids
+            sectionIds: leaves.map(s => s.id)
         });
-        const storedNames = stored.map(s => s.name.toUpperCase());
-        const wantedNames = wanted
-            .map(s => s.name.toUpperCase())
-            .filter(n => !missing.includes(n));
-        const notStored = wantedNames.filter(n => !storedNames.includes(n));
-        const extra = storedNames.filter(n => !wantedNames.includes(n));
+        // More than one leaf (e.g. a precept and a lab under one lecture):
+        // if Stellic kept only some, set them one at a time.
+        const kept = () => stored.map(s => s.name.toUpperCase());
+        if (leaves.length > 1 && wantedNames.some(n => !kept().includes(n))) {
+            for (const leaf of leaves) {
+                stored = await changeCourseSections(session, {
+                    ...args,
+                    courseCode: code,
+                    planCourseId,
+                    sectionIds: [leaf.id]
+                });
+            }
+        }
+
+        const notStored = wantedNames.filter(n => !kept().includes(n));
+        const extra = kept().filter(n => !wantedNames.includes(n));
         if (notStored.length) {
             result.sectionNotes.push({
                 code,

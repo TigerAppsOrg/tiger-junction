@@ -173,9 +173,13 @@
 
     // * Export the current schedule to the student's Stellic plan
     // No Stellic session yet: sign in with Princeton (CAS + Duo), then come back
-    // with ?stellicExport=1 so the export continues on its own.
+    // with ?stellicExport=1 so the export continues on the same schedule.
     const STELLIC_LOGIN_PATH = "/stellic/login";
     let exportingToStellic = $state(false);
+
+    // The login page reloads Junction, which opens the term's first schedule.
+    // Remember which schedule the student clicked Export on, and go back to it.
+    const PENDING_EXPORT_KEY = "stellicPendingExport";
 
     onMount(() => {
         const url = new URL(window.location.href);
@@ -183,14 +187,58 @@
         url.searchParams.delete("stellicExport");
         history.replaceState(history.state, "", url);
 
-        // Wait for this schedule's courses to load (up to 8 s), then export.
+        let pending: { term: number; scheduleId: number } | null = null;
+        try {
+            pending = JSON.parse(
+                sessionStorage.getItem(PENDING_EXPORT_KEY) ?? "null"
+            );
+            sessionStorage.removeItem(PENDING_EXPORT_KEY);
+        } catch {
+            pending = null;
+        }
+        if (!pending) {
+            toastStore.add(
+                "info",
+                "Signed in to Stellic. Click Export to Stellic again.",
+                6
+            );
+            return;
+        }
+        const target = pending;
+
+        // Wait for Junction to finish loading, open the right term and
+        // schedule, then export it. Never export a different schedule.
         const startedAt = Date.now();
-        const timer = setInterval(() => {
-            const ready = ($savedCourses[$currentSchedule] ?? []).length > 0;
-            if (ready || Date.now() - startedAt > 8000) {
+        let switchedTerm = false;
+        const timer = setInterval(async () => {
+            if (Date.now() - startedAt > 15000) {
                 clearInterval(timer);
-                handleStellicExport();
+                toastStore.add(
+                    "info",
+                    "Signed in to Stellic. Open your schedule and click Export to Stellic again.",
+                    6
+                );
+                return;
             }
+            if (!$ready) return;
+            if ($currentTerm !== target.term) {
+                if (!switchedTerm) {
+                    switchedTerm = true;
+                    await handleTermChange(target.term);
+                }
+                return;
+            }
+            const exists = ($schedules[target.term] ?? []).some(
+                x => x.id === target.scheduleId
+            );
+            if (!exists) return;
+            if ($currentSchedule !== target.scheduleId) {
+                handleScheduleChange(target.scheduleId);
+                return;
+            }
+            if (($savedCourses[target.scheduleId] ?? []).length === 0) return;
+            clearInterval(timer);
+            handleStellicExport();
         }, 250);
         return () => clearInterval(timer);
     });
@@ -316,6 +364,17 @@
             if (!res) return;
 
             if (res.status === 401 && data.needsLogin) {
+                try {
+                    sessionStorage.setItem(
+                        PENDING_EXPORT_KEY,
+                        JSON.stringify({
+                            term: $currentTerm,
+                            scheduleId: $currentSchedule
+                        })
+                    );
+                } catch {
+                    // Without storage the student just clicks Export again.
+                }
                 const back = window.location.pathname + window.location.search;
                 window.location.href = `${STELLIC_LOGIN_PATH}?returnTo=${encodeURIComponent(back)}`;
                 return;
