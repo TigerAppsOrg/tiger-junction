@@ -27,9 +27,14 @@
     } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
     import {
+        stellicConflictPrompt,
         stellicExportResult,
+        type StellicConflict,
         type StellicExportResult
     } from "$lib/stores/stellic";
+    import { scheduleCourseMeta } from "$lib/stores/recal";
+    import { sectionData, type SectionData } from "$lib/stores/rsections";
+    import { valueToDays } from "$lib/scripts/convert";
     import confetti from "canvas-confetti";
     import { getContext, onMount } from "svelte";
     import Loader from "../ui/Loader.svelte";
@@ -190,6 +195,75 @@
         return () => clearInterval(timer);
     });
 
+    /** Junction's chosen sections for one course, with meeting times for the conflict check. */
+    const junctionSections = (courseId: number) => {
+        const meta = $scheduleCourseMeta[$currentSchedule]?.[courseId];
+        const rows: SectionData[] =
+            $sectionData[$currentTerm]?.[courseId] ?? [];
+        if (!meta) return [];
+
+        const out: {
+            name: string;
+            meetings: { days: string[]; start: number; end: number }[];
+        }[] = [];
+        for (const [category, chosen] of Object.entries(meta.confirms)) {
+            // Older schedules store the section id instead of its title.
+            const picked = rows.filter(r =>
+                typeof chosen === "number"
+                    ? r.id === chosen
+                    : r.category === category && r.title === chosen
+            );
+            if (!picked.length) continue;
+            out.push({
+                name: picked[0].title,
+                meetings: picked
+                    .filter(
+                        r =>
+                            r.days &&
+                            r.start_time !== null &&
+                            r.end_time !== null &&
+                            r.end_time > r.start_time
+                    )
+                    .map(r => ({
+                        days: valueToDays(r.days).map(d => WEEKDAYS[d - 1]),
+                        // Junction stores times as (hours - 8) * 6 + minutes / 10.
+                        start: Math.round((r.start_time + 48) * 10),
+                        end: Math.round((r.end_time + 48) * 10)
+                    }))
+            });
+        }
+        return out;
+    };
+    const WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+
+    /** Ask about each conflict in turn; null if the student closes a popup. */
+    const askConflicts = async (conflicts: StellicConflict[]) => {
+        const decisions: Record<string, "replace" | "skip"> = {};
+        for (let i = 0; i < conflicts.length; i++) {
+            const useJunction = await new Promise<boolean | null>(resolve => {
+                let done = false;
+                stellicConflictPrompt.set({
+                    conflict: conflicts[i],
+                    index: i,
+                    total: conflicts.length,
+                    answer: v => {
+                        if (done) return;
+                        done = true;
+                        resolve(v);
+                    }
+                });
+                modalStore.push("stellicConflict");
+            });
+            if (useJunction === null) {
+                stellicConflictPrompt.set(null);
+                return null;
+            }
+            decisions[conflicts[i].id] = useJunction ? "replace" : "skip";
+        }
+        stellicConflictPrompt.set(null);
+        return decisions;
+    };
+
     const handleStellicExport = async () => {
         if (exportingToStellic) return;
         const scheduleCourses = $savedCourses[$currentSchedule] ?? [];
@@ -200,35 +274,73 @@
 
         exportingToStellic = true;
         try {
-            const res = await fetch("/api/client/stellic/export", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    term: $currentTerm,
-                    codes: scheduleCourses.map(c => c.code)
-                })
-            });
-            const data = await res.json();
+            const courses = scheduleCourses.map(c => ({
+                code: c.code,
+                sections: junctionSections(c.id)
+            }));
+            let decisions: Record<string, "replace" | "skip"> = {};
+            let data: Record<string, unknown> = {};
+            let res: Response | null = null;
+
+            // Pass 1 only checks for conflicts. If there are any, ask, then
+            // send the answers; a second round only happens if the plan
+            // changed in between.
+            for (let round = 0; round < 3; round++) {
+                res = await fetch("/api/client/stellic/export", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        term: $currentTerm,
+                        courses,
+                        decisions
+                    })
+                });
+                data = await res.json();
+                if (!(res.ok && data.needsDecision)) break;
+
+                exportingToStellic = false;
+                const answers = await askConflicts(
+                    data.conflicts as StellicConflict[]
+                );
+                if (!answers) {
+                    toastStore.add(
+                        "info",
+                        "Export cancelled. Nothing was changed in Stellic.",
+                        5
+                    );
+                    return;
+                }
+                exportingToStellic = true;
+                decisions = { ...decisions, ...answers };
+            }
+            if (!res) return;
 
             if (res.status === 401 && data.needsLogin) {
                 const back = window.location.pathname + window.location.search;
                 window.location.href = `${STELLIC_LOGIN_PATH}?returnTo=${encodeURIComponent(back)}`;
                 return;
             }
-            if (!res.ok) {
+            if (!res.ok || data.needsDecision) {
                 toastStore.add(
                     "error",
-                    data.error ?? "Export to Stellic failed",
+                    (data.error as string) ?? "Export to Stellic failed",
                     5
                 );
                 return;
             }
 
-            const result = data as StellicExportResult;
+            const result = data as unknown as StellicExportResult;
 
-            // Anything the student should read (unmet prerequisites, refusals)
-            // opens a popup; a clean export is just a toast.
-            if (result.prereqWarnings.length || result.failed.length) {
+            // Anything the student should read (unmet prerequisites, refusals,
+            // replaced courses, section problems) opens a popup; a clean
+            // export is just a toast.
+            if (
+                result.prereqWarnings.length ||
+                result.failed.length ||
+                result.replaced.length ||
+                result.keptExisting.length ||
+                result.sectionNotes.length
+            ) {
                 stellicExportResult.set(result);
                 modalStore.push("stellicExport");
             } else {

@@ -56,19 +56,60 @@ async function post<T>(
     path: string,
     form: Record<string, string> = {}
 ): Promise<T> {
+    return request<T>(
+        session,
+        "POST",
+        path,
+        new URLSearchParams(form).toString()
+    );
+}
+
+/**
+ * Some Stellic endpoints (changecoursesection) take a JSON body while still
+ * declaring it form-encoded. Send it exactly the way the Stellic app does.
+ */
+async function postJsonBody<T>(
+    session: StellicSession,
+    path: string,
+    body: unknown
+): Promise<T> {
+    return request<T>(session, "POST", path, JSON.stringify(body));
+}
+
+async function get<T>(
+    session: StellicSession,
+    path: string,
+    query: Record<string, string>
+): Promise<T> {
+    return request<T>(
+        session,
+        "GET",
+        path + "?" + new URLSearchParams(query).toString()
+    );
+}
+
+async function request<T>(
+    session: StellicSession,
+    method: "GET" | "POST",
+    path: string,
+    body?: string
+): Promise<T> {
+    const headers: Record<string, string> = {
+        "Cookie": session.cookieHeader,
+        "X-CSRFToken": session.csrfToken,
+        "X-Requested-With": "XMLHttpRequest",
+        "Accept": "application/json, text/plain, */*",
+        "Referer": STELLIC_ORIGIN + "/app/planner"
+    };
+    if (method === "POST") {
+        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        headers["Origin"] = STELLIC_ORIGIN;
+    }
     const res = await fetch(STELLIC_ORIGIN + path, {
-        method: "POST",
+        method,
         redirect: "manual", // an expired session answers 302 to Princeton login
-        headers: {
-            "Cookie": session.cookieHeader,
-            "X-CSRFToken": session.csrfToken,
-            "X-Requested-With": "XMLHttpRequest",
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Origin": STELLIC_ORIGIN,
-            "Referer": STELLIC_ORIGIN + "/app/planner"
-        },
-        body: new URLSearchParams(form).toString()
+        headers,
+        body
     });
 
     // fetch with redirect: "manual" reports a redirect as status 3xx or 0 ("opaqueredirect").
@@ -83,7 +124,11 @@ async function post<T>(
         );
     }
     if (!res.ok) {
-        throw new StellicError(`Stellic ${path} failed`, "request", res.status);
+        throw new StellicError(
+            `Stellic ${path.split("?")[0]} failed`,
+            "request",
+            res.status
+        );
     }
     return parseStellicJson<T>(await res.text());
 }
@@ -192,4 +237,158 @@ export async function addCourse(
 /** POST /auth/extendsession/ : renews a live session by an hour. */
 export async function extendSession(session: StellicSession): Promise<void> {
     await post(session, "/auth/extendsession/");
+}
+
+/** POST /planner/remove-course/ : drops one course entry from a plan term. */
+export async function removeCourse(
+    session: StellicSession,
+    args: {
+        planId: string;
+        courseCode: string;
+        planCourseId: number;
+        semId: number;
+        year: string;
+    }
+): Promise<void> {
+    const data = await post<{ success: boolean }>(
+        session,
+        "/planner/remove-course/",
+        {
+            plan_id: args.planId,
+            course_code: args.courseCode,
+            plancourse_id: String(args.planCourseId),
+            sem_id: String(args.semId),
+            year: args.year
+        }
+    );
+    if (!data.success) {
+        throw new StellicError(
+            `Stellic did not remove ${args.courseCode}`,
+            "request"
+        );
+    }
+}
+
+// ---------- sections (captured 2026-11-16, ORF 245 + COS 435 on Spring 2027) ----------
+
+/** One meeting pattern: "02:55PM"-style times and lowercase weekday names. */
+export type StellicTiming = {
+    time: { start: string; end: string };
+    days: string[];
+};
+
+export type StellicSection = {
+    id: number;
+    /** "L01", "P03", ... (same naming as the registrar and Junction) */
+    name: string;
+    type: { name: string; short_name: string };
+    timings: StellicTiming[];
+    /** For a precept: the lecture(s) it belongs to. */
+    parents: { id: number }[];
+};
+
+export type StellicSectionGroup = {
+    group_name: string; // "Lecture"
+    group_short_name: string; // "LEC"
+    required: boolean;
+    sections: StellicSection[];
+};
+
+/** A course in one plan term, with the sections currently chosen for it. */
+export type StellicTermCourse = {
+    course: { id: number; code: string; is_registered: boolean };
+    section_groups: StellicSectionGroup[];
+};
+
+/**
+ * GET /scheduler/getsemestersections/ : every course in one plan term with
+ * its chosen sections and their meeting times.
+ */
+export async function getSemesterSections(
+    session: StellicSession,
+    args: { planId: string; semId: number; year: string }
+): Promise<StellicTermCourse[]> {
+    const data = await get<{
+        success: boolean;
+        data_list?: StellicTermCourse[];
+    }>(session, "/scheduler/getsemestersections/", {
+        sem_id: String(args.semId),
+        year: args.year,
+        plan_id: args.planId
+    });
+    if (!data.success) {
+        throw new StellicError(
+            "Stellic did not return the term's sections",
+            "request"
+        );
+    }
+    return data.data_list ?? [];
+}
+
+/** GET /planner/getsections/ : all sections offered for a planned course. */
+export async function getCourseSections(
+    session: StellicSession,
+    args: {
+        planId: string;
+        courseCode: string;
+        semId: number;
+        year: string;
+        physicalYear: number;
+        planCourseId: number;
+    }
+): Promise<StellicSectionGroup[]> {
+    const data = await get<{
+        success: boolean;
+        data_list?: StellicSectionGroup[];
+    }>(session, "/planner/getsections/", {
+        plan_id: args.planId,
+        course_code: args.courseCode,
+        sem_id: String(args.semId),
+        year: args.year,
+        physical_year: String(args.physicalYear),
+        campus_id: "10", // Main Princeton Location
+        plan_course_id: String(args.planCourseId)
+    });
+    if (!data.success) {
+        throw new StellicError(
+            `Stellic did not list sections for ${args.courseCode}`,
+            "request"
+        );
+    }
+    return data.data_list ?? [];
+}
+
+/**
+ * POST /planner/changecoursesection/ : sets the sections of a planned course.
+ * Returns the sections Stellic actually stored (it may add a default precept).
+ */
+export async function changeCourseSections(
+    session: StellicSession,
+    args: {
+        planId: string;
+        courseCode: string;
+        planCourseId: number;
+        semId: number;
+        year: string;
+        sectionIds: number[];
+    }
+): Promise<StellicSection[]> {
+    const data = await postJsonBody<{
+        success: boolean;
+        sections?: StellicSection[];
+    }>(session, "/planner/changecoursesection/", {
+        plan_id: args.planId,
+        sem_id: String(args.semId),
+        year: args.year,
+        section_ids: args.sectionIds,
+        course_code: args.courseCode,
+        id: args.planCourseId
+    });
+    if (!data.success) {
+        throw new StellicError(
+            `Stellic did not set sections for ${args.courseCode}`,
+            "request"
+        );
+    }
+    return data.sections ?? [];
 }

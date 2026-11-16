@@ -42,6 +42,45 @@
                     </section>
                 {/if}
 
+                {#if result.replaced?.length || result.keptExisting?.length}
+                    <section>
+                        <h2 class="font-semibold">Schedule conflicts</h2>
+                        <ul class="flex flex-col gap-1">
+                            {#each result.replaced ?? [] as r}
+                                <li>
+                                    Removed
+                                    <span class="font-semibold">{r.code}</span>
+                                    to make room for
+                                    <span class="font-semibold">{r.by}</span>
+                                </li>
+                            {/each}
+                            {#each result.keptExisting ?? [] as k}
+                                <li>
+                                    Kept
+                                    <span class="font-semibold"
+                                        >{k.conflictsWith}</span
+                                    >, so
+                                    <span class="font-semibold">{k.code}</span>
+                                    was not added
+                                </li>
+                            {/each}
+                        </ul>
+                    </section>
+                {/if}
+
+                {#if result.sectionNotes?.length}
+                    <section>
+                        <h2 class="font-semibold">Sections</h2>
+                        <ul class="flex flex-col gap-1">
+                            {#each result.sectionNotes as n}
+                                <li>
+                                    <span class="font-semibold">{n.code}</span>: {n.message}
+                                </li>
+                            {/each}
+                        </ul>
+                    </section>
+                {/if}
+
                 {#if cleanlyAdded.length}
                     <section>
                         <h2 class="font-semibold">Added</h2>
