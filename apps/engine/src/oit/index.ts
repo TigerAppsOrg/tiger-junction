@@ -319,9 +319,17 @@ export default class OIT_API implements I_OIT_API {
     const data = await this.fetchOIT<t.OIT_CoursesResponse>(
       `/courses/courses?term=${term}&subject=list&fmt=json`
     );
-    const subjects = this.courseSubjects(data, term);
-    if (subjects.length === 0) {
+    // subject=list returns a global directory without term metadata. Only the
+    // subsequent per-department course responses identify a particular term.
+    const subjects =
+      data.term?.length === 1 && data.term[0]?.code === undefined
+        ? data.term[0].subjects
+        : this.courseSubjects(data, term);
+    if (!Array.isArray(subjects) || subjects.length === 0) {
       throw new Error(`No departments returned for term ${term}; refusing an empty catalog update`);
+    }
+    if (subjects.some((subject) => !/^[A-Z]{3}$/.test(subject?.code))) {
+      throw new Error(`Invalid OIT department directory for term ${term}`);
     }
     return subjects.map((s) => s.code).sort();
   }

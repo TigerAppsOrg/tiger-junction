@@ -89,7 +89,14 @@ test("an empty department does not prevent later departments from being fetched"
     seen.push(subject);
     if (subject === "list")
       return Response.json({
-        term: [{ code: "1274", subjects: [{ code: "CTL" }, { code: "ECO" }] }],
+        term: [
+          {
+            subjects: [
+              { code: "CTL", courses: [] },
+              { code: "ECO", courses: [] },
+            ],
+          },
+        ],
       });
     return Response.json(
       subject === "CTL"
@@ -101,4 +108,22 @@ test("an empty department does not prevent later departments from being fetched"
   }) as unknown as typeof fetch;
   await oit.getAllCourseData("1274");
   expect(seen).toEqual(["list", "CTL", "ECO"]);
+});
+
+test("accepts OIT's unscoped subject directory but rejects invalid entries", async () => {
+  expect(
+    await api({
+      term: [
+        {
+          subjects: [
+            { code: "ECO", name: "Economics", courses: [] },
+            { code: "COS", name: "Computer Science", courses: [] },
+          ],
+        },
+      ],
+    }).getRegDepartments("1274")
+  ).toEqual(["COS", "ECO"]);
+  await expect(api({ term: [{ subjects: [{}] }] }).getRegDepartments("1274")).rejects.toThrow(
+    "Invalid OIT department directory"
+  );
 });

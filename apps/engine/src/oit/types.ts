@@ -115,13 +115,13 @@ export interface OIT_Subject {
 
 export interface OIT_CoursesResponse {
   term: Array<{
-    code: string | null;
-    name: string | null;
+    code?: string | null;
+    name?: string | null;
     suffix?: string;
     cal_name?: string;
     reg_name?: string;
-    start_date: string | null;
-    end_date: string | null;
+    start_date?: string | null;
+    end_date?: string | null;
     subjects?: OIT_Subject[];
   }>;
 }
