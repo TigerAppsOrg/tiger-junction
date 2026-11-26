@@ -26,8 +26,17 @@
         showCal
     } from "$lib/stores/styles";
     import { toastStore } from "$lib/stores/toast";
+    import {
+        stellicConflictPrompt,
+        stellicExportResult,
+        type StellicConflict,
+        type StellicExportResult
+    } from "$lib/stores/stellic";
+    import { scheduleCourseMeta } from "$lib/stores/recal";
+    import { sectionData, type SectionData } from "$lib/stores/rsections";
+    import { valueToDays } from "$lib/scripts/convert";
     import confetti from "canvas-confetti";
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
     import Loader from "../ui/Loader.svelte";
     import { scheduleEventMap } from "$lib/stores/events";
     import { dndzone } from "svelte-dnd-action";
@@ -161,6 +170,250 @@
         $calColors; // track dependency
         return getStyles("6");
     });
+
+    // * Export the current schedule to the student's Stellic plan
+    // No Stellic session yet: sign in with Princeton (CAS + Duo), then come back
+    // with ?stellicExport=1 so the export continues on the same schedule.
+    const STELLIC_LOGIN_PATH = "/stellic/login";
+    let exportingToStellic = $state(false);
+
+    // The login page reloads Junction, which opens the term's first schedule.
+    // Remember which schedule the student clicked Export on, and go back to it.
+    const PENDING_EXPORT_KEY = "stellicPendingExport";
+
+    onMount(() => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("stellicExport") !== "1") return;
+        url.searchParams.delete("stellicExport");
+        history.replaceState(history.state, "", url);
+
+        let pending: { term: number; scheduleId: number } | null = null;
+        try {
+            pending = JSON.parse(
+                sessionStorage.getItem(PENDING_EXPORT_KEY) ?? "null"
+            );
+            sessionStorage.removeItem(PENDING_EXPORT_KEY);
+        } catch {
+            pending = null;
+        }
+        if (!pending) {
+            toastStore.add(
+                "info",
+                "Signed in to Stellic. Click Export to Stellic again.",
+                6
+            );
+            return;
+        }
+        const target = pending;
+
+        // Wait for Junction to finish loading, open the right term and
+        // schedule, then export it. Never export a different schedule.
+        const startedAt = Date.now();
+        let switchedTerm = false;
+        const timer = setInterval(async () => {
+            if (Date.now() - startedAt > 15000) {
+                clearInterval(timer);
+                toastStore.add(
+                    "info",
+                    "Signed in to Stellic. Open your schedule and click Export to Stellic again.",
+                    6
+                );
+                return;
+            }
+            if (!$ready) return;
+            if ($currentTerm !== target.term) {
+                if (!switchedTerm) {
+                    switchedTerm = true;
+                    await handleTermChange(target.term);
+                }
+                return;
+            }
+            const exists = ($schedules[target.term] ?? []).some(
+                x => x.id === target.scheduleId
+            );
+            if (!exists) return;
+            if ($currentSchedule !== target.scheduleId) {
+                handleScheduleChange(target.scheduleId);
+                return;
+            }
+            if (($savedCourses[target.scheduleId] ?? []).length === 0) return;
+            clearInterval(timer);
+            handleStellicExport();
+        }, 250);
+        return () => clearInterval(timer);
+    });
+
+    /** Junction's chosen sections for one course, with meeting times for the conflict check. */
+    const junctionSections = (courseId: number) => {
+        const meta = $scheduleCourseMeta[$currentSchedule]?.[courseId];
+        const rows: SectionData[] =
+            $sectionData[$currentTerm]?.[courseId] ?? [];
+        if (!meta) return [];
+
+        const out: {
+            name: string;
+            meetings: { days: string[]; start: number; end: number }[];
+        }[] = [];
+        for (const [category, chosen] of Object.entries(meta.confirms)) {
+            // Older schedules store the section id instead of its title.
+            const picked = rows.filter(r =>
+                typeof chosen === "number"
+                    ? r.id === chosen
+                    : r.category === category && r.title === chosen
+            );
+            if (!picked.length) continue;
+            out.push({
+                name: picked[0].title,
+                meetings: picked
+                    .filter(
+                        r =>
+                            r.days &&
+                            r.start_time !== null &&
+                            r.end_time !== null &&
+                            r.end_time > r.start_time
+                    )
+                    .map(r => ({
+                        days: valueToDays(r.days).map(d => WEEKDAYS[d - 1]),
+                        // Junction stores times as (hours - 8) * 6 + minutes / 10.
+                        start: Math.round((r.start_time + 48) * 10),
+                        end: Math.round((r.end_time + 48) * 10)
+                    }))
+            });
+        }
+        return out;
+    };
+    const WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+
+    /** Ask about each conflict in turn; null if the student closes a popup. */
+    const askConflicts = async (conflicts: StellicConflict[]) => {
+        const decisions: Record<string, "replace" | "skip"> = {};
+        for (let i = 0; i < conflicts.length; i++) {
+            const useJunction = await new Promise<boolean | null>(resolve => {
+                let done = false;
+                stellicConflictPrompt.set({
+                    conflict: conflicts[i],
+                    index: i,
+                    total: conflicts.length,
+                    answer: v => {
+                        if (done) return;
+                        done = true;
+                        resolve(v);
+                    }
+                });
+                modalStore.push("stellicConflict");
+            });
+            if (useJunction === null) {
+                stellicConflictPrompt.set(null);
+                return null;
+            }
+            decisions[conflicts[i].id] = useJunction ? "replace" : "skip";
+        }
+        stellicConflictPrompt.set(null);
+        return decisions;
+    };
+
+    const handleStellicExport = async () => {
+        if (exportingToStellic) return;
+        const scheduleCourses = $savedCourses[$currentSchedule] ?? [];
+        if (scheduleCourses.length === 0) {
+            toastStore.add("warning", "This schedule has no courses to export");
+            return;
+        }
+
+        exportingToStellic = true;
+        try {
+            const courses = scheduleCourses.map(c => ({
+                code: c.code,
+                sections: junctionSections(c.id)
+            }));
+            let decisions: Record<string, "replace" | "skip"> = {};
+            let data: Record<string, unknown> = {};
+            let res: Response | null = null;
+
+            // Pass 1 only checks for conflicts. If there are any, ask, then
+            // send the answers; a second round only happens if the plan
+            // changed in between.
+            for (let round = 0; round < 3; round++) {
+                res = await fetch("/api/client/stellic/export", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        term: $currentTerm,
+                        courses,
+                        decisions
+                    })
+                });
+                data = await res.json();
+                if (!(res.ok && data.needsDecision)) break;
+
+                exportingToStellic = false;
+                const answers = await askConflicts(
+                    data.conflicts as StellicConflict[]
+                );
+                if (!answers) {
+                    toastStore.add(
+                        "info",
+                        "Export cancelled. Nothing was changed in Stellic.",
+                        5
+                    );
+                    return;
+                }
+                exportingToStellic = true;
+                decisions = { ...decisions, ...answers };
+            }
+            if (!res) return;
+
+            if (res.status === 401 && data.needsLogin) {
+                try {
+                    sessionStorage.setItem(
+                        PENDING_EXPORT_KEY,
+                        JSON.stringify({
+                            term: $currentTerm,
+                            scheduleId: $currentSchedule
+                        })
+                    );
+                } catch {
+                    // Without storage the student just clicks Export again.
+                }
+                const back = window.location.pathname + window.location.search;
+                window.location.href = `${STELLIC_LOGIN_PATH}?returnTo=${encodeURIComponent(back)}`;
+                return;
+            }
+            if (!res.ok || data.needsDecision) {
+                toastStore.add(
+                    "error",
+                    (data.error as string) ?? "Export to Stellic failed",
+                    5
+                );
+                return;
+            }
+
+            const result = data as unknown as StellicExportResult;
+
+            // Anything the student should read (unmet prerequisites, refusals,
+            // replaced courses, section problems) opens a popup; a clean
+            // export is just a toast.
+            if (
+                result.prereqWarnings.length ||
+                result.failed.length ||
+                result.replaced.length ||
+                result.keptExisting.length ||
+                result.sectionNotes.length
+            ) {
+                stellicExportResult.set(result);
+                modalStore.push("stellicExport");
+            } else {
+                const parts = [`Added ${result.added.length} to Stellic`];
+                if (result.skipped.length)
+                    parts.push(`${result.skipped.length} already there`);
+                toastStore.add("success", parts.join(", "), 6);
+            }
+        } catch {
+            toastStore.add("error", "Could not reach Stellic", 5);
+        } finally {
+            exportingToStellic = false;
+        }
+    };
 </script>
 
 <div
@@ -248,97 +501,129 @@
         </div>
     </div>
 
-    <div class="w-auto overflow-x-auto overflow-y-hidden">
-        <div
-            class="themed-panel flex gap-2 w-fit
+    <div class="flex justify-between gap-2">
+        <div class="w-auto min-w-0 overflow-x-auto overflow-y-hidden">
+            <div
+                class="themed-panel flex gap-2 w-fit
             p-1 h-8 font-normal rounded-sm">
-            {#key $retop}
-                {#await fetchUserSchedules(supabase, $currentTerm)}
-                    <Loader />
-                {:then}
-                    <div
-                        class="flex gap-2"
-                        style={cssVarStyles}
-                        use:dndzone={{
-                            items: $schedules[$currentTerm],
-                            flipDurationMs,
-                            type: "schedule",
-                            dropTargetStyle: {
-                                outline: "2px solid var(--bg)",
-                                borderRadius: "2px"
-                            }
-                        }}
-                        onconsider={handleDndConsider}
-                        onfinalize={handleDndFinalize}>
-                        {#each $schedules[$currentTerm] as schedule (schedule.id)}
-                            <button
-                                animate:flip={{ duration: flipDurationMs }}
-                                class="card {$currentSchedule === schedule.id
-                                    ? 'flex items-center gap-4'
-                                    : 'termchoice'}"
-                                class:selected={$currentSchedule ===
-                                    schedule.id}
-                                onclick={() =>
-                                    $currentSchedule === schedule.id
-                                        ? modalStore.push("editSchedule")
-                                        : handleScheduleChange(schedule.id)}>
-                                <span class="whitespace-nowrap"
-                                    >{schedule.title}</span>
-                                {#if $currentSchedule === schedule.id}
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="w-4 h-4 mr-2">
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                    </svg>
-                                {/if}
-                            </button>
-                        {/each}
-                    </div>
-                    <button
-                        class="card add-button"
-                        onclick={() => {
-                            handleAddSchedule();
-                        }}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </button>
-                {:catch}
-                    <button
-                        class="card add-button"
-                        onclick={() => modalStore.push("addSchedule")}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="btn-icon">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </button>
-                {/await}
-            {/key}
+                {#key $retop}
+                    {#await fetchUserSchedules(supabase, $currentTerm)}
+                        <Loader />
+                    {:then}
+                        <div
+                            class="flex gap-2"
+                            style={cssVarStyles}
+                            use:dndzone={{
+                                items: $schedules[$currentTerm],
+                                flipDurationMs,
+                                type: "schedule",
+                                dropTargetStyle: {
+                                    outline: "2px solid var(--bg)",
+                                    borderRadius: "2px"
+                                }
+                            }}
+                            onconsider={handleDndConsider}
+                            onfinalize={handleDndFinalize}>
+                            {#each $schedules[$currentTerm] as schedule (schedule.id)}
+                                <button
+                                    animate:flip={{ duration: flipDurationMs }}
+                                    class="card {$currentSchedule ===
+                                    schedule.id
+                                        ? 'flex items-center gap-4'
+                                        : 'termchoice'}"
+                                    class:selected={$currentSchedule ===
+                                        schedule.id}
+                                    onclick={() =>
+                                        $currentSchedule === schedule.id
+                                            ? modalStore.push("editSchedule")
+                                            : handleScheduleChange(
+                                                  schedule.id
+                                              )}>
+                                    <span class="whitespace-nowrap"
+                                        >{schedule.title}</span>
+                                    {#if $currentSchedule === schedule.id}
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4 mr-2">
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                        </svg>
+                                    {/if}
+                                </button>
+                            {/each}
+                        </div>
+                        <button
+                            class="card add-button"
+                            onclick={() => {
+                                handleAddSchedule();
+                            }}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="h-5 w-5 dark:text-zinc-300 text-zinc-500">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    {:catch}
+                        <button
+                            class="card add-button"
+                            onclick={() => modalStore.push("addSchedule")}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="btn-icon">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    {/await}
+                {/key}
+            </div>
         </div>
+        {#if !$isMobile}
+            <!-- Same look as Manage Events, sitting directly below it -->
+            <button
+                onclick={handleStellicExport}
+                disabled={exportingToStellic}
+                style={eventStyles}
+                id="stellic-export"
+                class="h-8 w-36 shrink-0 rounded-sm duration-150
+            flex items-center justify-center gap-1
+            disabled:opacity-60 disabled:cursor-wait">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-5 w-5">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+                <span>
+                    {exportingToStellic ? "Exporting…" : "Export to Stellic"}
+                </span>
+            </button>
+        {/if}
     </div>
     <!-- * Schedule Select -->
 
@@ -356,12 +641,14 @@
 </div>
 
 <style lang="postcss">
-    #events {
+    #events,
+    #stellic-export {
         background-color: var(--bg);
         color: var(--text);
     }
 
-    #events:hover {
+    #events:hover,
+    #stellic-export:hover:not(:disabled) {
         background-color: var(--bg-hover);
     }
 

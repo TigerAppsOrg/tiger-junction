@@ -8,6 +8,8 @@
     import AddSchedule from "../recal/modals/schedule/AddSchedule.svelte";
     import EditSchedule from "../recal/modals/schedule/EditSchedule.svelte";
     import RecalStats from "../recal/modals/RecalStats.svelte";
+    import StellicExport from "../recal/modals/StellicExport.svelte";
+    import StellicConflict from "../recal/modals/StellicConflict.svelte";
     import Feedback from "./Feedback.svelte";
     import FeedbackPop from "./FeedbackPop.svelte";
 
@@ -23,6 +25,8 @@
         addSchedule: AddSchedule,
         editSchedule: EditSchedule,
         rstats: RecalStats,
+        stellicExport: StellicExport,
+        stellicConflict: StellicConflict,
         feedback: Feedback,
         feedbackpop: FeedbackPop,
         manageEvents: ManageEvents,

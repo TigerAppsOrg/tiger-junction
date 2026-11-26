@@ -1,3 +1,4 @@
+import { dev } from "$app/environment";
 import { goto } from "$app/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -38,7 +39,11 @@ export const handleLogin = async (supabase: SupabaseClient) => {
     await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-            redirectTo: "https://junction.tigerapps.org/auth/callback"
+            // Local dev returns to localhost (Supabase allows it), so the
+            // "swap the callback URL" step in CONTRIBUTING.md is not needed.
+            redirectTo: dev
+                ? `${window.location.origin}/auth/callback`
+                : "https://junction.tigerapps.org/auth/callback"
         }
     });
 };
