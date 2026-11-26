@@ -37,7 +37,7 @@ export default class OIT_API implements I_OIT_API {
     const response = await fetch("https://api.princeton.edu/token", {
       method: "POST",
       headers: {
-        Authorization: `Basic ${basic}`,
+        "Authorization": `Basic ${basic}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: "grant_type=client_credentials",
@@ -72,7 +72,9 @@ export default class OIT_API implements I_OIT_API {
         await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
         continue;
       }
-      throw new Error(`Failed to fetch OIT API (${response.status} ${response.statusText}) for ${endpoint}`);
+      throw new Error(
+        `Failed to fetch OIT API (${response.status} ${response.statusText}) for ${endpoint}`
+      );
     }
   }
 
@@ -224,9 +226,33 @@ export default class OIT_API implements I_OIT_API {
 
   async getDeptCourses(term: string, dept: string): Promise<t.OIT_Course[]> {
     const data = await this.__oit_getCourses({ term, subject: dept });
+    const subject = this.courseSubjects(data, term).find((s) => s.code === dept);
+    if (!subject) return [];
+    if (!Array.isArray(subject.courses)) {
+      throw new Error(`Invalid OIT courses for ${dept} in term ${term}`);
+    }
+    return subject.courses;
+  }
+
+  private courseSubjects(data: t.OIT_CoursesResponse, term: string): t.OIT_Subject[] {
+    if (!Array.isArray(data?.term)) throw new Error("Invalid OIT course response: missing terms");
     if (data.term.length === 0) return [];
-    const subject = data.term[0].subjects.find((s) => s.code === dept);
-    return subject ? subject.courses : [];
+
+    // OIT's subject list includes departments with no offerings. For example,
+    // CTL in Spring 2027 returns a null-code term with no subjects, not [].
+    if (
+      data.term.length === 1 &&
+      data.term[0]?.code === null &&
+      data.term[0].subjects === undefined
+    )
+      return [];
+
+    const requested = data.term.find((entry) => entry?.code === term);
+    if (!requested) throw new Error(`OIT returned the wrong term; expected ${term}`);
+    if (!Array.isArray(requested.subjects)) {
+      throw new Error(`Invalid OIT subjects for term ${term}`);
+    }
+    return requested.subjects;
   }
 
   async getLatestTermCode(): Promise<string | null> {
@@ -236,13 +262,7 @@ export default class OIT_API implements I_OIT_API {
 
   async getAllTermCodes(): Promise<string[]> {
     // Hardcoded because the OIT API only returns the current term
-    return [
-      "1232", "1234",
-      "1242", "1244",
-      "1252", "1254",
-      "1262", "1264",
-      "1272", "1274",
-    ];
+    return ["1232", "1234", "1242", "1244", "1252", "1254", "1262", "1264", "1272", "1274"];
   }
 
   async getCourseDetails(term: string, courseId: string): Promise<t.OIT_CourseDetails> {
@@ -296,10 +316,13 @@ export default class OIT_API implements I_OIT_API {
     // subject=list comes from the student-app API our credentials are
     // subscribed to; getRegListings needs a registrar-website token that
     // Cloudflare blocks from datacenter IPs, so avoid it here.
-    const data = await this.fetchOIT<{
-      term: { subjects: { code: string }[] }[];
-    }>(`/courses/courses?term=${term}&subject=list&fmt=json`);
-    const subjects = data.term?.[0]?.subjects ?? [];
+    const data = await this.fetchOIT<t.OIT_CoursesResponse>(
+      `/courses/courses?term=${term}&subject=list&fmt=json`
+    );
+    const subjects = this.courseSubjects(data, term);
+    if (subjects.length === 0) {
+      throw new Error(`No departments returned for term ${term}; refusing an empty catalog update`);
+    }
     return subjects.map((s) => s.code).sort();
   }
 

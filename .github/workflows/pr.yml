@@ -12,6 +12,20 @@ on:
       - main
 
 jobs:
+  EngineImportTests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install engine dependencies
+        working-directory: apps/engine
+        run: bun install --frozen-lockfile
+      - name: Test OIT import response handling
+        working-directory: apps/engine
+        run: bun test src/tests/oit-import.test.ts
+
   TestBuild:
     runs-on: ubuntu-latest
     env:
