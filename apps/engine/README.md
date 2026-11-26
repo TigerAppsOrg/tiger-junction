@@ -91,6 +91,9 @@ The junction/full MCP scopes expose `list_published_terms`,
 waiting for the imported course database to refresh. All are read-only. Successful
 public responses are cached for five minutes, with fetch time and source links.
 No user identity is sent to OIT. These tools do not populate the local database.
+OIT reads have one eight-second budget covering token minting, token refresh,
+fetching response bodies and retry backoff. This leaves a margin before the Ask
+gateway's default ten-second tool deadline to return structured unavailable coverage.
 
 Search returns published instructors and section meetings with query pagination.
 Details return prerequisite/restriction text, distributions and grading basis.
@@ -99,7 +102,9 @@ availability. A missing term, an API error and a successful empty query remain
 distinct. The terms endpoint may list only the currently published term, not all
 historical terms. Explicit term queries never silently substitute another term.
 
-Run `bun test src/tests/published-courses.test.ts` for isolated MCP fixture checks.
+Run `bun test src/tests/published-courses.test.ts src/tests/oit-deadline.test.ts`
+for isolated MCP fixture and deadline checks. The PublishedCourseTests CI job
+runs these checks without service credentials or a database.
 The full `bun run test` also needs the repository's local database/services.
 Before production rollout, smoke-test an explicit upcoming term, a non-COS
 department and course details using valid OIT credentials. Confirm times and

@@ -55,3 +55,17 @@ jobs:
       - name: Test Ask AI planner and gateway
         working-directory: apps/ask-gateway
         run: python -m pytest tests -q
+
+  PublishedCourseTests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install engine dependencies
+        working-directory: apps/engine
+        run: bun install --frozen-lockfile
+      - name: Test published data and end-to-end OIT deadlines
+        working-directory: apps/engine
+        run: bun test src/tests/published-courses.test.ts src/tests/oit-deadline.test.ts

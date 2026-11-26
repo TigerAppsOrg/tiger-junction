@@ -6,6 +6,10 @@ import * as h from "./helpers";
 import { I_OIT_API } from "./interface";
 import { scrapeCourseEvals } from "./evals";
 import { abort } from "process";
+import { setTimeout as delay } from "node:timers/promises";
+
+// Leave time for the gateway to receive the structured failure before its 10s deadline.
+export const OIT_REQUEST_TIMEOUT_MS = 8_000;
 
 export default class OIT_API implements I_OIT_API {
   private readonly regPublicUrl = "https://api.princeton.edu/registrar/course-offerings/classes/";
@@ -15,7 +19,7 @@ export default class OIT_API implements I_OIT_API {
   private apiKey: string | null = null;
   private sessionToken: string;
 
-  constructor() {
+  constructor(private readonly requestTimeoutMs = OIT_REQUEST_TIMEOUT_MS) {
     if (!process.env.CONSUMER_KEY && !process.env.API_ACCESS_TOKEN)
       throw new Error(
         "Set CONSUMER_KEY/CONSUMER_SECRET (preferred) or API_ACCESS_TOKEN for the OIT API."
@@ -25,7 +29,7 @@ export default class OIT_API implements I_OIT_API {
 
   // Static WSO2 tokens rotate without notice; mint one from OAuth
   // client_credentials when consumer credentials are available.
-  private async mintAccessToken(): Promise<string> {
+  private async mintAccessToken(signal: AbortSignal): Promise<string> {
     const key = process.env.CONSUMER_KEY;
     const secret = process.env.CONSUMER_SECRET;
     if (!key || !secret) {
@@ -37,7 +41,7 @@ export default class OIT_API implements I_OIT_API {
     const response = await fetch("https://api.princeton.edu/token", {
       method: "POST",
       redirect: "error",
-      signal: AbortSignal.timeout(12_000),
+      signal,
       headers: {
         Authorization: `Basic ${basic}`,
         "Content-Type": "application/x-www-form-urlencoded",
@@ -50,30 +54,37 @@ export default class OIT_API implements I_OIT_API {
     return payload.access_token;
   }
 
-  private async getApiKey(): Promise<string> {
-    if (!this.apiKey) this.apiKey = await this.mintAccessToken();
+  private async getApiKey(signal: AbortSignal): Promise<string> {
+    if (!this.apiKey) this.apiKey = await this.mintAccessToken(signal);
     return this.apiKey;
   }
 
   private async fetchOIT<T>(endpoint: string): Promise<T> {
+    // One operation budget includes token acquisition, response bodies, token
+    // refresh, retries and backoff. Never restart the clock between phases.
+    const signal = AbortSignal.timeout(this.requestTimeoutMs);
     const MAX_ATTEMPTS = 3;
     for (let attempt = 1; ; attempt++) {
+      signal.throwIfAborted();
+      const apiKey = await this.getApiKey(signal);
+      signal.throwIfAborted();
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         redirect: "error",
-        signal: AbortSignal.timeout(12_000),
+        signal,
         headers: {
-          Authorization: `Bearer ${await this.getApiKey()}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       });
       if (response.ok) return (await response.json()) as T;
 
+      await response.body?.cancel();
       if (response.status === 401 && attempt === 1) {
         this.apiKey = null; // token expired or rotated — mint a fresh one
         continue;
       }
       // The details endpoint 500s sporadically; a short backoff clears it.
       if (response.status >= 500 && attempt < MAX_ATTEMPTS) {
-        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+        await delay(1000 * attempt, undefined, { signal });
         continue;
       }
       throw new Error(`Failed to fetch OIT API (${response.status} ${response.statusText}) for ${endpoint}`);
