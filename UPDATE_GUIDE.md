@@ -63,6 +63,37 @@ From the `apps/database` directory, run the following commands in order:
    - Requires `REG_COOKIE` to be set (a valid `PHPSESSID` cookie from the registrar evaluations site).
    - You can optionally pass a `startIndex` as a second argument to resume from a specific course if the script is interrupted.
 
+### Refresh the engine catalog and AWS scheduler
+
+Supabase/Redis and the engine Postgres database are separate catalogs. The
+**Seats Cron** workflow updates Supabase/Redis only; PI/MCP reads engine Postgres.
+Verify both catalogs before declaring a new term available.
+
+On the AWS `junction-engine` instance (accessible through AWS CLI/SSM):
+
+- `tigerjunction-update-courses.timer` fires hourly at :17, with up to two minutes
+  of jitter. `/usr/local/bin/tigerjunction-update-courses.sh` chooses hourly runs
+  during active windows and a daily graded run otherwise.
+- Update `/etc/tigerjunction-cron.conf` at each rollover. For Spring 2027, use
+  `TJ_TERMS="1274 1272"` so the upcoming and current semesters both refresh, and
+  include `2027-01-25:2027-04-23` in `TJ_ACTIVE_WINDOWS` alongside the Fall window.
+  These settings are not automatically deployed from this repository.
+- The wrapper runs the Supabase importer from `/opt/tiger-junction/apps/database`,
+  then `bun run cli update` from `/opt/junction-engine` for the latest published
+  OIT term. Deploy importer changes to the correct checkout: Engine CD updates
+  `/opt/junction-engine`, not the separate Supabase importer checkout.
+- Start a catch-up run with `systemctl start --no-block tigerjunction-update-courses.service`.
+  Check `journalctl -u tigerjunction-update-courses.service` and require both the
+  term import and engine update to succeed. The wrapper's lock prevents overlap.
+- Verify nonzero course and section counts for the new term in both databases,
+  then query it through the existing engine course/MCP endpoint. A successful
+  seat refresh alone does not establish that the engine catalog is populated.
+
+OIT can list a department with no offerings and return a null-code term without
+`subjects` for that department (for example CTL in Spring 2027). The engine must
+skip that empty department without aborting the term import; malformed and
+wrong-term responses must still fail visibly.
+
 ## Step 5: Test and Deploy
 
 Run the branch locally with `npx sst dev` and `npm run dev` (in a separate terminal window). Play around with the app to ensure that there are no bugs. If there are, fix them and push the changes to the branch. Once the update branch is bug-free, create a pull request and merge the branch into `main`. GitHub Actions will automatically create a production deployment of the new branch through SST onto AWS. Once the branch has been merged, you can delete the branch.
