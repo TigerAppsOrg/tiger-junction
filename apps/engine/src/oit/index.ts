@@ -36,6 +36,8 @@ export default class OIT_API implements I_OIT_API {
     const basic = Buffer.from(`${key}:${secret}`).toString("base64");
     const response = await fetch("https://api.princeton.edu/token", {
       method: "POST",
+      redirect: "error",
+      signal: AbortSignal.timeout(12_000),
       headers: {
         Authorization: `Basic ${basic}`,
         "Content-Type": "application/x-www-form-urlencoded",
@@ -57,6 +59,8 @@ export default class OIT_API implements I_OIT_API {
     const MAX_ATTEMPTS = 3;
     for (let attempt = 1; ; attempt++) {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        redirect: "error",
+        signal: AbortSignal.timeout(12_000),
         headers: {
           Authorization: `Bearer ${await this.getApiKey()}`,
         },
@@ -100,6 +104,15 @@ export default class OIT_API implements I_OIT_API {
 
     const data = await this.fetchOIT<t.OIT_CoursesResponse>(`/courses/courses?${params}`);
     return data;
+  }
+
+  // Live reads for MCP do not depend on a completed database import.
+  async getPublishedTerms(): Promise<t.OIT_Term[]> {
+    return this.__oit_getTerms();
+  }
+
+  async getPublishedCourses(options: { term: string; subject?: string; search?: string }): Promise<t.OIT_CoursesResponse> {
+    return this.__oit_getCourses(options);
   }
 
   private async __oit_getSeats(term: string, courseIds: string[]): Promise<t.OIT_Seat[]> {

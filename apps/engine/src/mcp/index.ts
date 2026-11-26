@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Pool } from "pg";
+import { registerPublishedCourseTools } from "./tools/published-courses.js";
 import { registerCourseTools } from "./tools/courses.js";
 import { registerEvaluationTools } from "./tools/evaluations.js";
 import { registerInstructorTools } from "./tools/instructors.js";
@@ -35,6 +36,7 @@ export function createMcpServer(
   const junctionCtx =
     scope === "junction" && supabaseClient ? { supabase: supabaseClient, authContext } : undefined;
   registerCourseTools(server, db, junctionCtx);
+  if (scope === "junction" || scope === "full") registerPublishedCourseTools(server);
   registerEvaluationTools(server, db);
   registerInstructorTools(server, db);
 
