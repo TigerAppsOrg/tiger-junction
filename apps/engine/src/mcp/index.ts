@@ -50,7 +50,7 @@ export function createMcpServer(
   if (scope === "full") {
     registerScheduleTools(server, db, authContext);
   } else if (scope === "junction" && supabaseClient) {
-    registerJunctionScheduleTools(server, supabaseClient, authContext);
+    registerJunctionScheduleTools(server, supabaseClient, authContext, db);
     registerSnatchTools(server, db, authContext, snatchDb);
   } else if (scope === "snatch") {
     registerSnatchTools(server, db, authContext, snatchDb);

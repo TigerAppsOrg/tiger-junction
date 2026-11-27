@@ -1,6 +1,8 @@
 // src/oit/types.ts
 // Author(s): Joshua Lau
 
+import type { CourseDetailsMetadata } from "./grading.js";
+
 export type StringBoolean = "Y" | "N";
 export type Status = "open" | "closed" | "canceled";
 
@@ -15,7 +17,14 @@ export interface OIT_CourseData {
   status: Status;
   dists?: string[];
   grading_basis: string;
-  has_final: boolean;
+  has_final: boolean | null;
+  exam_pct: number | null;
+  pset_pct: number | null;
+  grading_known: boolean;
+  web_address: string | null;
+  restrictions: string | null;
+  details_json: CourseDetailsMetadata;
+  details_fetched_at: Date;
 
   sections: OIT_SectionData[];
   instructors: OIT_FullInstructor[];
@@ -177,6 +186,8 @@ export interface OIT_CourseDetails {
   grading_prob_sets: string;
   grading_precept_part: string;
   grading_term_papers: string;
+  pu_pres_final_exam?: string;
+  pu_projects?: string;
 
   // Course head info
   course_head_name: string | null;
@@ -218,11 +229,17 @@ export interface OIT_CourseDetails {
 
   // Seat reservations
   seat_reservations?: {
-    seat_reservation: Array<{
-      class_section: string;
-      description: string;
-      enrl_cap: string;
-    }>;
+    seat_reservation:
+      | {
+          class_section: string;
+          description: string;
+          enrl_cap: string;
+        }
+      | Array<{
+          class_section: string;
+          description: string;
+          enrl_cap: string;
+        }>;
   };
 }
 

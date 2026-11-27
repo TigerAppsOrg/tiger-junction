@@ -3,9 +3,40 @@
 
 import * as t from "./types";
 import * as h from "./helpers";
+import { extractCourseDetailsMetadata } from "./grading";
 import { I_OIT_API } from "./interface";
 import { scrapeCourseEvals } from "./evals";
 import { abort } from "process";
+
+const DEFAULT_DETAILS_CONCURRENCY = 6;
+
+function resolveDetailsConcurrency(): number {
+  const raw = Number(process.env.OIT_DETAILS_CONCURRENCY);
+  if (!Number.isFinite(raw) || raw < 1) return DEFAULT_DETAILS_CONCURRENCY;
+  return Math.min(Math.floor(raw), 12);
+}
+
+async function mapWithConcurrency<T, R>(
+  items: readonly T[],
+  concurrency: number,
+  worker: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  if (items.length === 0) return [];
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function runWorker(): Promise<void> {
+    while (true) {
+      const idx = nextIndex++;
+      if (idx >= items.length) return;
+      results[idx] = await worker(items[idx], idx);
+    }
+  }
+
+  const workerCount = Math.min(concurrency, items.length);
+  await Promise.all(Array.from({ length: workerCount }, () => runWorker()));
+  return results;
+}
 
 export default class OIT_API implements I_OIT_API {
   private readonly regPublicUrl = "https://api.princeton.edu/registrar/course-offerings/classes/";
@@ -119,77 +150,94 @@ export default class OIT_API implements I_OIT_API {
   async getAllCourseData(term: string): Promise<t.OIT_CourseData[]> {
     const departments = await this.getRegDepartments(term);
     const allCourseData: t.OIT_CourseData[] = [];
+    const concurrency = resolveDetailsConcurrency();
 
     for (const dept of departments) {
       const deptStartTime = Date.now();
       console.log(`Fetching courses for department ${dept}...`);
 
       const deptCourses = await this.getDeptCourses(term, dept);
-      for (const course of deptCourses) {
-        const courseDetails = await this.getCourseDetails(term, course.course_id);
+      const deptCourseData = await mapWithConcurrency(
+        deptCourses,
+        concurrency,
+        async (course): Promise<t.OIT_CourseData> => {
+          const courseDetails = await this.getCourseDetails(term, course.course_id);
+          const fetchedAt = new Date();
 
-        const sectionData: t.OIT_SectionData[] = [];
-        for (const section of course.classes) {
-          for (const meeting of section.schedule.meetings) {
-            try {
-              sectionData.push({
-                course_id: course.course_id + "-" + term,
-                title: section.section,
-                num: section.class_number,
-                room: meeting.building ? meeting.building.name + " " + meeting.room : undefined,
-                tot: parseInt(section.enrollment),
-                cap: parseInt(section.capacity),
-                days: h.daysToValue(meeting.days),
-                start_time: h.timeToValue(meeting.start_time),
-                end_time: h.timeToValue(meeting.end_time),
-                status: "open", // TODO : h.calculateSectionStatus(section),
-              });
-            } catch (e) {
-              console.error(`Error processing section ${section.class_number}:`, e);
-              console.error(section);
-              abort();
+          const sectionData: t.OIT_SectionData[] = [];
+          for (const section of course.classes) {
+            for (const meeting of section.schedule.meetings) {
+              try {
+                sectionData.push({
+                  course_id: course.course_id + "-" + term,
+                  title: section.section,
+                  num: section.class_number,
+                  room: meeting.building ? meeting.building.name + " " + meeting.room : undefined,
+                  tot: parseInt(section.enrollment),
+                  cap: parseInt(section.capacity),
+                  days: h.daysToValue(meeting.days),
+                  start_time: h.timeToValue(meeting.start_time),
+                  end_time: h.timeToValue(meeting.end_time),
+                  status: "open", // TODO : h.calculateSectionStatus(section),
+                });
+              } catch (e) {
+                console.error(`Error processing section ${section.class_number}:`, e);
+                console.error(section);
+                abort();
+              }
             }
           }
-        }
 
-        try {
-          const detailInstructors = courseDetails.course_instructors
-            ? courseDetails.course_instructors.course_instructor instanceof Array
-              ? courseDetails.course_instructors.course_instructor
-              : [courseDetails.course_instructors.course_instructor]
-            : [];
+          try {
+            const detailInstructors = courseDetails.course_instructors
+              ? courseDetails.course_instructors.course_instructor instanceof Array
+                ? [...courseDetails.course_instructors.course_instructor]
+                : [courseDetails.course_instructors.course_instructor]
+              : [];
 
-          if (courseDetails.course_head_name && courseDetails.course_head_netid) {
-            const headName = courseDetails.course_head_name;
-            const headNetid = courseDetails.course_head_netid;
-            detailInstructors.push({
-              netid: headNetid,
-              name: headName,
-            });
+            if (courseDetails.course_head_name && courseDetails.course_head_netid) {
+              const headName = courseDetails.course_head_name;
+              const headNetid = courseDetails.course_head_netid;
+              detailInstructors.push({
+                netid: headNetid,
+                name: headName,
+              });
+            }
+
+            const metadata = extractCourseDetailsMetadata(courseDetails, fetchedAt);
+
+            return {
+              id: course.course_id + "-" + term,
+              listing_id: course.course_id,
+              term: term,
+              code: courseDetails.crosslistings,
+              title: course.title,
+              description: courseDetails.description,
+              status: h.calculateCourseStatus(course),
+              dists: courseDetails.distribution_area_short?.split(" or ").sort() || [],
+              grading_basis: courseDetails.grading_basis,
+              has_final: metadata.grading.known ? metadata.grading.hasSeatedFinal : null,
+              exam_pct: metadata.grading.examPct,
+              pset_pct: metadata.grading.psetPct,
+              grading_known: metadata.grading.known,
+              web_address: metadata.webAddress,
+              restrictions: metadata.otherRestrictions,
+              details_json: metadata,
+              details_fetched_at: fetchedAt,
+
+              sections: sectionData,
+              instructors: h.resolveInstructors(course.instructors, detailInstructors),
+            };
+          } catch (e) {
+            console.error(`Error processing course ${course.course_id}:`, e);
+            console.error(course);
+            console.error(courseDetails);
+            abort();
           }
-
-          allCourseData.push({
-            id: course.course_id + "-" + term,
-            listing_id: course.course_id,
-            term: term,
-            code: courseDetails.crosslistings,
-            title: course.title,
-            description: courseDetails.description,
-            status: h.calculateCourseStatus(course),
-            dists: courseDetails.distribution_area_short?.split(" or ").sort() || [],
-            grading_basis: courseDetails.grading_basis,
-            has_final: courseDetails.grading_final_exam !== "0",
-
-            sections: sectionData,
-            instructors: h.resolveInstructors(course.instructors, detailInstructors),
-          });
-        } catch (e) {
-          console.error(`Error processing course ${course.course_id}:`, e);
-          console.error(course);
-          console.error(courseDetails);
-          abort();
         }
-      }
+      );
+
+      allCourseData.push(...deptCourseData);
 
       const deptEndTime = Date.now();
       console.log(

@@ -18,9 +18,36 @@ export default class DB implements I_DB {
     }
   }
 
+  public async ensureCourseDetailColumns() {
+    try {
+      await this.db.execute(sql`
+        ALTER TABLE "courses"
+          ADD COLUMN IF NOT EXISTS "exam_pct" smallint,
+          ADD COLUMN IF NOT EXISTS "pset_pct" smallint,
+          ADD COLUMN IF NOT EXISTS "grading_known" boolean DEFAULT false NOT NULL,
+          ADD COLUMN IF NOT EXISTS "web_address" text,
+          ADD COLUMN IF NOT EXISTS "restrictions" text,
+          ADD COLUMN IF NOT EXISTS "details_json" jsonb,
+          ADD COLUMN IF NOT EXISTS "details_fetched_at" timestamp with time zone
+      `);
+      await this.db.execute(sql`
+        CREATE INDEX IF NOT EXISTS "courses_term_grading_idx"
+          ON "courses" ("term", "grading_known", "exam_pct", "pset_pct")
+      `);
+    } catch (error) {
+      // If the runtime DB role does not own DDL, log and continue so pre-migrated
+      // environments still start cleanly.
+      console.warn(
+        "Skipping automatic course-detail schema check:",
+        error instanceof Error ? error.message : String(error)
+      );
+    }
+  }
+
   public async testConnection() {
     try {
       await this.db.execute(sql`SELECT 1`);
+      await this.ensureCourseDetailColumns();
       console.log("Database connection successful.");
     } catch (error) {
       console.error("Database connection failed:", error);
@@ -33,6 +60,8 @@ export default class DB implements I_DB {
    * departments, instructors, sections, and mapping tables.
    */
   private async upsertCourses(courses: OIT_CourseData[]) {
+    await this.ensureCourseDetailColumns();
+
     // Extract unique departments from courses
     const departmentMap = new Set<string>();
     for (const course of courses) {
@@ -115,6 +144,13 @@ export default class DB implements I_DB {
           dists: course.dists,
           gradingBasis: course.grading_basis,
           hasFinal: course.has_final,
+          examPct: course.exam_pct,
+          psetPct: course.pset_pct,
+          gradingKnown: course.grading_known,
+          webAddress: course.web_address,
+          restrictions: course.restrictions,
+          detailsJson: course.details_json,
+          detailsFetchedAt: course.details_fetched_at,
         })
         .onConflictDoUpdate({
           target: schema.courses.id,
@@ -126,12 +162,17 @@ export default class DB implements I_DB {
             dists: course.dists,
             gradingBasis: course.grading_basis,
             hasFinal: course.has_final,
+            examPct: course.exam_pct,
+            psetPct: course.pset_pct,
+            gradingKnown: course.grading_known,
+            webAddress: course.web_address,
+            restrictions: course.restrictions,
+            detailsJson: course.details_json,
+            detailsFetchedAt: course.details_fetched_at,
           },
         });
 
-      await this.db
-        .delete(schema.sections)
-        .where(sql`${schema.sections.courseId} = ${course.id}`);
+      await this.db.delete(schema.sections).where(sql`${schema.sections.courseId} = ${course.id}`);
 
       for (const section of course.sections) {
         await this.db.insert(schema.sections).values({
@@ -230,7 +271,9 @@ export default class DB implements I_DB {
       }
     }
 
-    console.log(`\nHistorical update complete! Processed ${totalCourses} courses across ${terms.length} terms.`);
+    console.log(
+      `\nHistorical update complete! Processed ${totalCourses} courses across ${terms.length} terms.`
+    );
   }
 
   public async updateEvals() {

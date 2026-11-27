@@ -63,10 +63,9 @@ export const externalUserIdentities = pgTable(
       .default(sql`now()`),
   },
   (t) => ({
-    providerExternalUserIdUnique: uniqueIndex("external_user_identities_provider_external_user_id_idx").on(
-      t.provider,
-      t.externalUserId
-    ),
+    providerExternalUserIdUnique: uniqueIndex(
+      "external_user_identities_provider_external_user_id_idx"
+    ).on(t.provider, t.externalUserId),
   })
 );
 
@@ -173,6 +172,15 @@ export const courses = pgTable("courses", {
   dists: text("dists").array(),
   gradingBasis: text("grading_basis").notNull(),
   hasFinal: boolean("has_final"),
+
+  // Derived from OIT_CourseDetails; NULL means unknown (never 0%).
+  examPct: smallint("exam_pct"),
+  psetPct: smallint("pset_pct"),
+  gradingKnown: boolean("grading_known").notNull().default(false),
+  webAddress: text("web_address"),
+  restrictions: text("restrictions"),
+  detailsJson: jsonb("details_json"),
+  detailsFetchedAt: timestamp("details_fetched_at", { withTimezone: true }),
 });
 
 export const courseRelations = relations(courses, ({ many }) => ({
@@ -255,7 +263,9 @@ export const evaluations = pgTable(
     ratingSource: text("rating_source"),
     metadata: jsonb("metadata"),
   },
-  (table) => [uniqueIndex("evaluations_listing_id_eval_term_idx").on(table.listingId, table.evalTerm)]
+  (table) => [
+    uniqueIndex("evaluations_listing_id_eval_term_idx").on(table.listingId, table.evalTerm),
+  ]
 );
 
 export const evaluationRelations = relations(evaluations, ({ many }) => ({
