@@ -4,10 +4,11 @@ import type { McpServer } from "@modelcontextprotocol/server";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import { eq, ilike, sql, asc, desc, and } from "drizzle-orm";
+import { eq, ilike, sql, asc, desc, and, lte, gte, inArray } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
 import { formatSection, termCodeToName, daysToBitmask, timeToValue } from "../helpers.js";
 import { buildResolutionError, resolveCourseInput } from "../resolvers.js";
+import { readStoredDetailsMetadata, readStoredGrading } from "../../oit/grading.js";
 import type { AuthContext } from "../context.js";
 
 /**
@@ -59,7 +60,7 @@ export function registerCourseTools(
     "search_courses",
     {
       description:
-        "Search for courses by department, text query, or distribution area. Returns course code, title, description, and status. Results are capped (default 50), so use the query parameter to narrow results when searching for a specific course (e.g., use query '418' instead of browsing an entire department). Use scheduleId to exclude courses that conflict with the user's existing schedule.",
+        "Search for courses by department, text query, distribution area, meeting times, instructor, grading mix (exam/pset weights), evaluation rating, or review keyword. Returns decision cards including grading breakdown (unknown stays unknown and is never treated as 0% exams), latest rating, course website, and restrictions. Results are capped (default 50). Use scheduleId to exclude courses that conflict with the user's existing schedule.",
       inputSchema: z.object({
         term: z
           .number()
@@ -111,6 +112,38 @@ export function registerCourseTools(
           .describe(
             "Instructor name (partial match, e.g. 'Dondero'). Filters to courses taught by this instructor."
           ),
+        maxExamPct: z
+          .number()
+          .min(0)
+          .max(100)
+          .optional()
+          .describe(
+            "Maximum combined exam + quiz percentage (0-100). Matches ONLY courses with confirmed grading metadata (gradingKnown=true); unknown grading is excluded so missing data never matches 0% exams."
+          ),
+        minPsetPct: z
+          .number()
+          .min(0)
+          .max(100)
+          .optional()
+          .describe(
+            "Minimum combined problem set + programming assignment percentage (0-100). Matches ONLY courses with confirmed grading metadata."
+          ),
+        excludeUnknownGrading: z
+          .boolean()
+          .optional()
+          .describe("When true, returns only courses with confirmed OIT grading percentages."),
+        minRating: z
+          .number()
+          .min(1)
+          .max(5)
+          .optional()
+          .describe("Minimum latest historical evaluation rating (1.0-5.0)."),
+        reviewKeyword: z
+          .string()
+          .optional()
+          .describe(
+            "Case-insensitive keyword to match in historical student evaluation comments or summaries (e.g., 'midterm', 'take-home', 'pset')."
+          ),
         scheduleId: z
           .number()
           .optional()
@@ -134,6 +167,11 @@ export function registerCourseTools(
       startAfter,
       startBefore,
       instructor,
+      maxExamPct,
+      minPsetPct,
+      excludeUnknownGrading,
+      minRating,
+      reviewKeyword,
       scheduleId,
       limit: maxResults,
       offset,
@@ -184,11 +222,51 @@ export function registerCourseTools(
           sql`${schema.courses.id} IN (SELECT ${schema.courseInstructorMap.courseId} FROM ${schema.courseInstructorMap} INNER JOIN ${schema.instructors} ON ${schema.courseInstructorMap.instructorId} = ${schema.instructors.netid} WHERE ${schema.instructors.fullName} ILIKE ${"%" + instructor + "%"})`
         );
       }
+      if (excludeUnknownGrading || maxExamPct != null || minPsetPct != null) {
+        conditions.push(eq(schema.courses.gradingKnown, true));
+      }
+      if (maxExamPct != null) {
+        conditions.push(lte(schema.courses.examPct, Math.floor(maxExamPct)));
+      }
+      if (minPsetPct != null) {
+        conditions.push(gte(schema.courses.psetPct, Math.ceil(minPsetPct)));
+      }
+      if (minRating != null) {
+        conditions.push(
+          sql`${schema.courses.listingId} IN (
+            SELECT DISTINCT ON (${schema.evaluations.listingId}) ${schema.evaluations.listingId}
+            FROM ${schema.evaluations}
+            WHERE ${schema.evaluations.rating} IS NOT NULL
+            ORDER BY ${schema.evaluations.listingId}, ${schema.evaluations.evalTerm} DESC
+          )`
+        );
+        conditions.push(
+          sql`(
+            SELECT ${schema.evaluations.rating}
+            FROM ${schema.evaluations}
+            WHERE ${schema.evaluations.listingId} = ${schema.courses.listingId}
+              AND ${schema.evaluations.rating} IS NOT NULL
+            ORDER BY ${schema.evaluations.evalTerm} DESC
+            LIMIT 1
+          ) >= ${minRating}`
+        );
+      }
+      if (reviewKeyword && reviewKeyword.trim().length > 0) {
+        const pattern = `%${reviewKeyword.trim()}%`;
+        conditions.push(
+          sql`${schema.courses.listingId} IN (
+            SELECT DISTINCT ${schema.evaluations.listingId}
+            FROM ${schema.evaluations}
+            WHERE ${schema.evaluations.summary} ILIKE ${pattern}
+               OR array_to_string(${schema.evaluations.comments}, ' ') ILIKE ${pattern}
+          )`
+        );
+      }
 
       // Fetch more results when schedule filtering is active (some will be filtered out)
       const fetchLimit = scheduleId ? resultLimit * 3 : resultLimit;
 
-      const courses = await db
+      const rawCourses = await db
         .select({
           id: schema.courses.id,
           listingId: schema.courses.listingId,
@@ -198,13 +276,80 @@ export function registerCourseTools(
           description: schema.courses.description,
           status: schema.courses.status,
           dists: schema.courses.dists,
+          gradingBasis: schema.courses.gradingBasis,
           hasFinal: schema.courses.hasFinal,
+          examPct: schema.courses.examPct,
+          psetPct: schema.courses.psetPct,
+          gradingKnown: schema.courses.gradingKnown,
+          webAddress: schema.courses.webAddress,
+          restrictions: schema.courses.restrictions,
+          detailsJson: schema.courses.detailsJson,
+          detailsFetchedAt: schema.courses.detailsFetchedAt,
         })
         .from(schema.courses)
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(asc(schema.courses.code))
         .offset(resultOffset)
         .limit(fetchLimit);
+
+      // Attach latest evaluation rating in a single batched query
+      const latestRatings = new Map<string, { rating: number | null; evalTerm: string | null }>();
+      const listingIds = [...new Set(rawCourses.map((c) => c.listingId))];
+      if (listingIds.length > 0) {
+        const evalRows = await db
+          .select({
+            listingId: schema.evaluations.listingId,
+            evalTerm: schema.evaluations.evalTerm,
+            rating: schema.evaluations.rating,
+          })
+          .from(schema.evaluations)
+          .where(inArray(schema.evaluations.listingId, listingIds))
+          .orderBy(desc(schema.evaluations.evalTerm));
+
+        for (const ev of evalRows) {
+          if (!latestRatings.has(ev.listingId) && ev.rating != null) {
+            latestRatings.set(ev.listingId, { rating: ev.rating, evalTerm: ev.evalTerm });
+          }
+        }
+      }
+
+      const formatCard = (course: (typeof rawCourses)[number]) => {
+        const grading = readStoredGrading(course);
+        const ratingInfo = latestRatings.get(course.listingId);
+        return {
+          id: course.id,
+          listingId: course.listingId,
+          term: course.term,
+          code: course.code,
+          title: course.title,
+          description: course.description,
+          status: course.status,
+          dists: course.dists,
+          gradingBasis: course.gradingBasis,
+          hasFinal: course.hasFinal,
+          grading: {
+            known: grading.known,
+            examPct: grading.examPct,
+            psetPct: grading.psetPct,
+            totalPct: grading.totalPct,
+            hasAnyExam: grading.hasAnyExam,
+            breakdown: grading.breakdown.map((b) => ({
+              label: b.label,
+              category: b.category,
+              percent: b.percent,
+            })),
+          },
+          webAddress: course.webAddress ?? null,
+          restrictions: course.restrictions ?? null,
+          latestRating: ratingInfo?.rating ?? null,
+          latestRatingTerm: ratingInfo?.evalTerm ?? null,
+          detailsFetchedAt: course.detailsFetchedAt
+            ? new Date(course.detailsFetchedAt).toISOString()
+            : null,
+        };
+      };
+
+      const courses = rawCourses.map(formatCard);
 
       // If scheduleId is provided and junction context available, post-filter for conflicts
       if (scheduleId != null && junctionCtx) {
@@ -293,7 +438,6 @@ export function registerCourseTools(
         // Filter out courses already in schedule and courses that conflict
         const filtered = [];
         for (const course of courses) {
-          // Skip courses already in schedule (match by listing_id + term)
           const sections = await db
             .select({
               title: schema.sections.title,
@@ -332,12 +476,23 @@ export function registerCourseTools(
           if (filtered.length >= resultLimit) break;
         }
 
+        const gradingKnownCount = filtered.filter((c) => c.grading.known).length;
+
         return {
           content: [
             {
               type: "text" as const,
               text: JSON.stringify(
-                { count: filtered.length, scheduleFiltered: true, scheduleId, courses: filtered },
+                {
+                  count: filtered.length,
+                  scheduleFiltered: true,
+                  scheduleId,
+                  coverage: {
+                    gradingKnownCount,
+                    gradingUnknownCount: filtered.length - gradingKnownCount,
+                  },
+                  courses: filtered,
+                },
                 null,
                 2
               ),
@@ -346,11 +501,24 @@ export function registerCourseTools(
         };
       }
 
+      const gradingKnownCount = courses.filter((c) => c.grading.known).length;
+
       return {
         content: [
           {
             type: "text" as const,
-            text: JSON.stringify({ count: courses.length, courses }, null, 2),
+            text: JSON.stringify(
+              {
+                count: courses.length,
+                coverage: {
+                  gradingKnownCount,
+                  gradingUnknownCount: courses.length - gradingKnownCount,
+                },
+                courses,
+              },
+              null,
+              2
+            ),
           },
         ],
       };
@@ -361,7 +529,7 @@ export function registerCourseTools(
     "get_course_details",
     {
       description:
-        "Get full details for a specific course including description, grading basis, distribution areas, and whether it has a final exam. Provide EITHER courseId OR code, not both.",
+        "Get full details for a specific course including description, full OIT grading breakdown (exam/pset/paper/project percentages; unknown stays unknown), course website/syllabus link, prerequisites/restrictions text, reading list, distribution areas, instructors, and meeting times. Provide EITHER courseId OR code, not both.",
       inputSchema: z.object({
         courseId: z
           .string()
@@ -417,6 +585,8 @@ export function registerCourseTools(
         .orderBy(asc(schema.sections.id));
 
       const meetingTimes = sections.map(formatSection);
+      const grading = readStoredGrading(course);
+      const metadata = readStoredDetailsMetadata(course.detailsJson);
 
       return {
         content: [
@@ -427,7 +597,26 @@ export function registerCourseTools(
                 courseId: course.id,
                 listingId: course.listingId,
                 term: course.term,
-                ...course,
+                code: course.code,
+                title: course.title,
+                description: course.description,
+                status: course.status,
+                dists: course.dists,
+                gradingBasis: course.gradingBasis,
+                hasFinal: course.hasFinal,
+                grading,
+                webAddress: course.webAddress ?? metadata?.webAddress ?? null,
+                restrictions: course.restrictions ?? metadata?.otherRestrictions ?? null,
+                otherRequirements: metadata?.otherRequirements ?? null,
+                otherInformation: metadata?.otherInformation ?? null,
+                readingWritingAssignment: metadata?.readingWritingAssignment ?? null,
+                addConsent: metadata?.addConsent ?? null,
+                dropConsent: metadata?.dropConsent ?? null,
+                readingList: metadata?.readingList ?? [],
+                seatReservations: metadata?.seatReservations ?? [],
+                detailsFetchedAt: course.detailsFetchedAt
+                  ? new Date(course.detailsFetchedAt).toISOString()
+                  : (metadata?.fetchedAt ?? null),
                 instructors,
                 meetingTimes,
               },
@@ -525,16 +714,16 @@ export function registerCourseTools(
     "discover_courses",
     {
       description:
-        "Discover interesting courses by filter: 'new' (first-time offerings), 'small_seminar' (low enrollment cap), 'no_final' (no final exam), 'open' (has open sections).",
+        "Discover interesting courses by filter: 'new' (first-time offerings), 'small_seminar' (low enrollment cap), 'no_final' (no seated final exam), 'no_exams' (confirmed 0% exams/quizzes), 'pset_heavy' (confirmed >=60% problem sets/programming), 'open' (has open sections).",
       inputSchema: z.object({
         filter: z
-          .enum(["new", "small_seminar", "no_final", "open"])
+          .enum(["new", "small_seminar", "no_final", "no_exams", "pset_heavy", "open"])
           .describe("Discovery filter to apply"),
         term: z
           .number()
           .optional()
           .describe(
-            "Term code to limit results to a specific semester (e.g., 1264 for Spring 2026)."
+            "Term code to limit results to a specific semester (e.g., 1274 for Spring 2027)."
           ),
         department: z.string().optional().describe("Limit to a department (e.g., COS)"),
         limit: z.number().optional().describe("Max results (default 25)"),
@@ -551,6 +740,12 @@ export function registerCourseTools(
         conditions.push(sql`${schema.courses.listingId}::int >= 17000`);
       } else if (filter === "no_final") {
         conditions.push(eq(schema.courses.hasFinal, false));
+      } else if (filter === "no_exams") {
+        conditions.push(eq(schema.courses.gradingKnown, true));
+        conditions.push(eq(schema.courses.examPct, 0));
+      } else if (filter === "pset_heavy") {
+        conditions.push(eq(schema.courses.gradingKnown, true));
+        conditions.push(gte(schema.courses.psetPct, 60));
       }
 
       if (filter === "small_seminar" || filter === "open") {
@@ -562,7 +757,7 @@ export function registerCourseTools(
         conditions.push(sql`${schema.courses.id} IN (${subquery})`);
       }
 
-      const courses = await db
+      const rawCourses = await db
         .select({
           id: schema.courses.id,
           code: schema.courses.code,
@@ -570,11 +765,25 @@ export function registerCourseTools(
           status: schema.courses.status,
           dists: schema.courses.dists,
           hasFinal: schema.courses.hasFinal,
+          examPct: schema.courses.examPct,
+          psetPct: schema.courses.psetPct,
+          gradingKnown: schema.courses.gradingKnown,
+          detailsJson: schema.courses.detailsJson,
         })
         .from(schema.courses)
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(asc(schema.courses.code))
         .limit(resultLimit);
+
+      const courses = rawCourses.map((c) => ({
+        id: c.id,
+        code: c.code,
+        title: c.title,
+        status: c.status,
+        dists: c.dists,
+        hasFinal: c.hasFinal,
+        grading: readStoredGrading(c),
+      }));
 
       return {
         content: [
@@ -621,7 +830,7 @@ export function registerCourseTools(
     "compare_courses",
     {
       description:
-        "Compare 2-5 courses side by side. Returns details, instructors, meeting times, ratings, and enrollment for each.",
+        "Compare 2-5 courses side by side. Returns details, grading breakdown, restrictions, course website, instructors, meeting times, ratings, and enrollment for each.",
       inputSchema: z.object({
         codes: z
           .array(z.string())
@@ -679,6 +888,8 @@ export function registerCourseTools(
             .orderBy(desc(schema.evaluations.evalTerm))
             .limit(1);
 
+          const grading = readStoredGrading(course);
+
           return {
             code: course.code,
             title: course.title,
@@ -688,6 +899,9 @@ export function registerCourseTools(
             dists: course.dists,
             gradingBasis: course.gradingBasis,
             hasFinal: course.hasFinal,
+            grading,
+            webAddress: course.webAddress ?? null,
+            restrictions: course.restrictions ?? null,
             instructors,
             meetingTimes: sections.map(formatSection),
             enrollment: {

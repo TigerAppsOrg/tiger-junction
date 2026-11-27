@@ -3,9 +3,17 @@ import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { z } from "zod";
 import { eq, ilike, and, asc, sql } from "drizzle-orm";
 import * as schema from "../../db/schema.js";
-import { formatSection, termCodeToName } from "../helpers.js";
+import { readStoredGrading } from "../../oit/grading.js";
+import { formatSection } from "../helpers.js";
 import { resolveCourseInput } from "../resolvers.js";
 import type { AuthContext } from "../context.js";
+import {
+  evaluateProposedSchedule,
+  sectionTypePrefix,
+  VERIFY_SCHEDULE_DESCRIPTION,
+  verifyScheduleInputSchema,
+  type ResolvedScheduleCourse,
+} from "../schedule-solver.js";
 
 interface TimeSlot {
   days: number;
@@ -16,11 +24,6 @@ interface TimeSlot {
 function timeSlotsOverlap(a: TimeSlot, b: TimeSlot): boolean {
   if ((a.days & b.days) === 0) return false;
   return a.startTime < b.endTime && b.startTime < a.endTime;
-}
-
-function sectionTypePrefix(title: string): string {
-  const match = title.match(/^([A-Z]+)/);
-  return match ? match[1] : title;
 }
 
 async function resolveAuthorizedEngineUserId(
@@ -341,47 +344,21 @@ export function registerScheduleTools(
   server.registerTool(
     "verify_schedule",
     {
-      description:
-        "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
-      inputSchema: z.object({
-        courseCodes: z
-          .array(z.string())
-          .min(1)
-          .max(10)
-          .describe(
-            "Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"
-          ),
-        term: z
-          .number()
-          .optional()
-          .describe("Term code. If omitted, uses the most recent term each course is offered."),
-      }),
+      description: VERIFY_SCHEDULE_DESCRIPTION,
+      inputSchema: verifyScheduleInputSchema,
     },
-    async ({ courseCodes, term }) => {
+    async (args) => {
       const issues: string[] = [];
-      const resolvedCourses: {
-        code: string;
-        courseId: string;
-        term: number;
-        status: string;
-        sections: {
-          title: string;
-          type: string;
-          days: number;
-          startTime: number;
-          endTime: number;
-          status: string;
-          cap: number;
-          tot: number;
-        }[];
-      }[] = [];
+      const requiredCourses: ResolvedScheduleCourse[] = [];
+      const requiredIds = new Set<string>();
 
-      // Resolve each course code
-      for (const code of courseCodes) {
-        const resolved = await resolveCourseInput(db, { code, term });
+      const loadCourse = async (
+        code: string,
+        effectiveTerm?: number
+      ): Promise<{ course?: ResolvedScheduleCourse & { id: string }; error?: string }> => {
+        const resolved = await resolveCourseInput(db, { code, term: effectiveTerm });
         if (!resolved.value) {
-          issues.push(resolved.error ?? `Course not found: "${code}"`);
-          continue;
+          return { error: resolved.error ?? `Course not found: "${code}"` };
         }
 
         const rows = await db
@@ -390,6 +367,11 @@ export function registerScheduleTools(
             code: schema.courses.code,
             term: schema.courses.term,
             status: schema.courses.status,
+            gradingKnown: schema.courses.gradingKnown,
+            examPct: schema.courses.examPct,
+            psetPct: schema.courses.psetPct,
+            hasFinal: schema.courses.hasFinal,
+            detailsJson: schema.courses.detailsJson,
           })
           .from(schema.courses)
           .where(eq(schema.courses.id, resolved.value.id))
@@ -397,14 +379,7 @@ export function registerScheduleTools(
 
         const course = rows[0];
         if (!course) {
-          issues.push(`Course not found for resolved id: "${resolved.value.id}"`);
-          continue;
-        }
-
-        // Check for duplicate courses
-        if (resolvedCourses.some((c) => c.courseId === course.id)) {
-          issues.push(`Duplicate course: ${course.code}`);
-          continue;
+          return { error: `Course not found for resolved id: "${resolved.value.id}"` };
         }
 
         const sections = await db
@@ -420,107 +395,71 @@ export function registerScheduleTools(
           .from(schema.sections)
           .where(eq(schema.sections.courseId, course.id));
 
-        resolvedCourses.push({
-          code: course.code,
-          courseId: course.id,
-          term: course.term,
-          status: course.status,
-          sections: sections.map((s) => ({
-            ...s,
-            type: sectionTypePrefix(s.title),
-            cap: s.cap ?? 0,
-            tot: s.tot ?? 0,
-          })),
-        });
-      }
+        const grading = readStoredGrading(course);
 
-      // Check: too many courses
-      if (resolvedCourses.length > 7) {
-        issues.push(
-          `Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`
-        );
-      }
+        return {
+          course: {
+            id: course.id,
+            code: course.code,
+            term: course.term,
+            status: course.status,
+            grading: {
+              known: grading.known,
+              examPct: grading.examPct,
+              psetPct: grading.psetPct,
+            },
+            sections: sections.map((s) => ({
+              title: s.title,
+              type: sectionTypePrefix(s.title),
+              days: s.days,
+              startTime: s.startTime,
+              endTime: s.endTime,
+              status: s.status,
+              cap: s.cap ?? 0,
+              tot: s.tot ?? 0,
+            })),
+          },
+        };
+      };
 
-      // Check: mixed terms
-      const terms = [...new Set(resolvedCourses.map((c) => c.term))];
-      if (terms.length > 1) {
-        const termNames = terms.map((t) => `${termCodeToName(t)} (${t})`).join(", ");
-        issues.push(`Mixed terms: courses span multiple semesters: ${termNames}`);
-      }
-
-      // Check: canceled courses
-      for (const course of resolvedCourses) {
-        if (course.status === "canceled") {
-          issues.push(`Canceled course: ${course.code} is canceled`);
+      for (const code of args.courseCodes) {
+        const loaded = await loadCourse(code, args.term);
+        if (!loaded.course) {
+          issues.push(loaded.error ?? `Course not found: "${code}"`);
+          continue;
         }
+        if (requiredIds.has(loaded.course.id)) {
+          issues.push(`Duplicate course: ${loaded.course.code}`);
+          continue;
+        }
+        requiredIds.add(loaded.course.id);
+        requiredCourses.push(loaded.course);
       }
 
-      // Check: section completeness — each section type must have at least one open option
-      for (const course of resolvedCourses) {
-        const byType = new Map<string, typeof course.sections>();
-        for (const s of course.sections) {
-          if (!byType.has(s.type)) byType.set(s.type, []);
-          byType.get(s.type)!.push(s);
-        }
-
-        for (const [type, sections] of byType) {
-          const allClosed = sections.every((s) => s.status === "closed");
-          const allCanceled = sections.every((s) => s.status === "canceled");
-          if (allCanceled) {
-            issues.push(
-              `No available ${type} sections: all ${type} sections for ${course.code} are canceled`
-            );
-          } else if (allClosed) {
-            issues.push(
-              `All ${type} sections full: all ${type} sections for ${course.code} are closed (${sections[0].tot}/${sections[0].cap} enrolled)`
-            );
+      const candidateCourses: ResolvedScheduleCourse[] = [];
+      const unresolvedCandidateCodes: string[] = [];
+      if (args.candidateCodes && args.candidateCodes.length > 0) {
+        const candidateTerm =
+          args.term ?? (requiredCourses.length > 0 ? requiredCourses[0].term : undefined);
+        const seenCandidateIds = new Set<string>(requiredIds);
+        for (const code of args.candidateCodes) {
+          const loaded = await loadCourse(code, candidateTerm);
+          if (!loaded.course) {
+            unresolvedCandidateCodes.push(code);
+            continue;
           }
-        }
-
-        if (course.sections.length === 0) {
-          issues.push(`No sections: ${course.code} has no sections listed`);
-        }
-      }
-
-      // Check: time conflicts between courses
-      // For each course, get all possible section combinations (one per type)
-      // Then check if any required section type from one course conflicts with all options of a type from another
-      for (let i = 0; i < resolvedCourses.length; i++) {
-        for (let j = i + 1; j < resolvedCourses.length; j++) {
-          const a = resolvedCourses[i];
-          const b = resolvedCourses[j];
-
-          // Group sections by type for each course
-          const aByType = new Map<string, typeof a.sections>();
-          for (const s of a.sections) {
-            if (!aByType.has(s.type)) aByType.set(s.type, []);
-            aByType.get(s.type)!.push(s);
-          }
-
-          const bByType = new Map<string, typeof b.sections>();
-          for (const s of b.sections) {
-            if (!bByType.has(s.type)) bByType.set(s.type, []);
-            bByType.get(s.type)!.push(s);
-          }
-
-          // Check if any section type from course A conflicts with all options of a type from course B
-          for (const [aType, aSections] of aByType) {
-            for (const [bType, bSections] of bByType) {
-              // Check if ALL combinations conflict (meaning no valid pairing exists)
-              const allConflict = aSections.every((aS) =>
-                bSections.every((bS) => timeSlotsOverlap(aS, bS))
-              );
-              if (allConflict && aSections[0].days !== 0 && bSections[0].days !== 0) {
-                issues.push(
-                  `Time conflict: ${a.code} ${aType} sections all conflict with ${b.code} ${bType} sections`
-                );
-              }
-            }
-          }
+          if (seenCandidateIds.has(loaded.course.id)) continue;
+          seenCandidateIds.add(loaded.course.id);
+          candidateCourses.push(loaded.course);
         }
       }
 
-      const valid = issues.length === 0;
+      const evaluation = evaluateProposedSchedule({
+        requiredCourses,
+        candidateCourses,
+        initialIssues: issues,
+        args,
+      });
 
       return {
         content: [
@@ -528,16 +467,8 @@ export function registerScheduleTools(
             type: "text" as const,
             text: JSON.stringify(
               {
-                valid,
-                courseCount: resolvedCourses.length,
-                term:
-                  terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
-                courses: resolvedCourses.map((c) => ({
-                  code: c.code,
-                  status: c.status,
-                  sectionTypes: [...new Set(c.sections.map((s) => s.type))],
-                })),
-                issues: valid ? "Schedule is valid — no issues detected" : issues,
+                ...evaluation,
+                ...(unresolvedCandidateCodes.length > 0 ? { unresolvedCandidateCodes } : {}),
               },
               null,
               2

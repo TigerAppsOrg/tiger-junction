@@ -1,9 +1,20 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { inArray } from "drizzle-orm";
 import { z } from "zod";
+import * as schema from "../../db/schema.js";
+import { readStoredGrading } from "../../oit/grading.js";
 import { termCodeToName, valueToDays, valueToTime, recalValueToMinutes } from "../helpers.js";
 import type { AuthContext } from "../context.js";
 import { isSectionSelected } from "../schedule-selection.js";
+import {
+  evaluateProposedSchedule,
+  sectionTypePrefix,
+  VERIFY_SCHEDULE_DESCRIPTION,
+  verifyScheduleInputSchema,
+  type ResolvedScheduleCourse,
+} from "../schedule-solver.js";
 
 // Supabase status encoding: 0=open, 1=closed, 2=canceled
 const STATUS_MAP: Record<number, string> = { 0: "open", 1: "closed", 2: "canceled" };
@@ -20,29 +31,6 @@ interface TimeSlot {
 function timeSlotsOverlap(a: TimeSlot, b: TimeSlot): boolean {
   if ((a.days & b.days) === 0) return false;
   return a.startTime < b.endTime && b.startTime < a.endTime;
-}
-
-function sectionTypePrefix(title: string): string {
-  const match = title.match(/^([A-Z]+)/);
-  return match ? match[1] : title;
-}
-
-function formatSectionForDisplay(s: {
-  title: string;
-  days: number;
-  start_time: number;
-  end_time: number;
-  room?: string | null;
-  status: number | null;
-}) {
-  return {
-    sectionTitle: s.title,
-    days: valueToDays(s.days),
-    startTime: valueToTime(recalValueToMinutes(s.start_time)),
-    endTime: valueToTime(recalValueToMinutes(s.end_time)),
-    room: s.room ?? null,
-    status: statusName(s.status),
-  };
 }
 
 /**
@@ -80,9 +68,10 @@ async function resolveSupabaseUserId(
 export function registerJunctionScheduleTools(
   server: McpServer,
   supabase: SupabaseClient,
-  authContext?: AuthContext
+  authContext?: AuthContext,
+  db?: NodePgDatabase
 ) {
-  // ── get_user_schedules ──────────────────────────────────────────────
+  // ── get_user_schedules ───────────────────────────────────────────────
   server.registerTool(
     "get_user_schedules",
     {
@@ -145,7 +134,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── get_schedule_details ────────────────────────────────────────────
+  // ── get_schedule_details ─────────────────────────────────────────────
   server.registerTool(
     "get_schedule_details",
     {
@@ -310,56 +299,37 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── verify_schedule ─────────────────────────────────────────────────
+  // ── verify_schedule ──────────────────────────────────────────────────
   server.registerTool(
     "verify_schedule",
     {
-      description:
-        "Validate a proposed schedule of courses. Checks for: time conflicts between sections, mixed terms, missing section types (e.g., no precept selected when required), closed/canceled sections, duplicate courses, and exceeding 7 courses. Returns valid=true or a list of issues.",
-      inputSchema: z.object({
-        courseCodes: z
-          .array(z.string())
-          .min(1)
-          .max(10)
-          .describe(
-            "Array of course codes to validate together (e.g., ['COS 226', 'MAT 202', 'ECO 100'])"
-          ),
-        term: z
-          .number()
-          .optional()
-          .describe("Term code. If omitted, uses the most recent term each course is offered."),
-      }),
+      description: VERIFY_SCHEDULE_DESCRIPTION,
+      inputSchema: verifyScheduleInputSchema,
     },
-    async ({ courseCodes, term }) => {
-      const issues: string[] = [];
-      const resolvedCourses: {
-        code: string;
-        courseId: number;
-        term: number;
-        status: string;
-        sections: {
-          title: string;
-          type: string;
-          days: number;
-          startTime: number;
-          endTime: number;
-          status: string;
-          cap: number;
-          tot: number;
-        }[];
-      }[] = [];
+    async (args) => {
+      interface LoadedSupabaseCourse extends ResolvedScheduleCourse {
+        supabaseId: number;
+        engineCourseId: string | null;
+      }
 
-      for (const code of courseCodes) {
+      const issues: string[] = [];
+      const requiredCourses: LoadedSupabaseCourse[] = [];
+      const requiredIds = new Set<number>();
+
+      const loadSupabaseCourse = async (
+        code: string,
+        effectiveTerm?: number
+      ): Promise<{ course?: LoadedSupabaseCourse; error?: string }> => {
         // Query Supabase courses by code (handle both "COS 330" and "COS330")
         const noSpace = code.replace(/\s+/g, "");
         const withSpace = code.replace(/([A-Za-z])(\d)/, "$1 $2");
         let courseQuery = supabase
           .from("courses")
-          .select("id, code, term, status")
+          .select("id, listing_id, code, term, status")
           .or(`code.ilike.${noSpace},code.ilike.${withSpace}`);
 
-        if (term != null) {
-          courseQuery = courseQuery.eq("term", term);
+        if (effectiveTerm != null) {
+          courseQuery = courseQuery.eq("term", effectiveTerm);
         }
 
         const { data: matchedCourses } = await courseQuery
@@ -367,125 +337,119 @@ export function registerJunctionScheduleTools(
           .limit(1);
 
         if (!matchedCourses || matchedCourses.length === 0) {
-          issues.push(`Course not found: "${code}"`);
-          continue;
+          return { error: `Course not found: "${code}"` };
         }
 
         const course = matchedCourses[0];
         const courseStatus = statusName(course.status);
 
-        // Check for duplicates
-        if (resolvedCourses.some((c) => c.courseId === course.id)) {
-          issues.push(`Duplicate course: ${course.code}`);
-          continue;
-        }
-
-        // Fetch sections
         const { data: sections } = await supabase
           .from("sections")
           .select("title, days, start_time, end_time, status, cap, tot")
           .eq("course_id", course.id);
 
-        resolvedCourses.push({
-          code: course.code,
-          courseId: course.id,
-          term: course.term,
-          status: courseStatus,
-          sections: (sections ?? []).map((s) => ({
-            title: s.title,
-            type: sectionTypePrefix(s.title),
-            days: s.days,
-            startTime: s.start_time,
-            endTime: s.end_time,
-            status: statusName(s.status),
-            cap: s.cap ?? 0,
-            tot: s.tot ?? 0,
-          })),
-        });
-      }
+        return {
+          course: {
+            supabaseId: course.id,
+            engineCourseId: course.listing_id ? `${course.listing_id}-${course.term}` : null,
+            code: course.code,
+            term: course.term,
+            status: courseStatus,
+            sections: (sections ?? []).map((s) => ({
+              title: s.title,
+              type: sectionTypePrefix(s.title),
+              days: s.days,
+              startTime: recalValueToMinutes(s.start_time),
+              endTime: recalValueToMinutes(s.end_time),
+              status: statusName(s.status),
+              cap: s.cap ?? 0,
+              tot: s.tot ?? 0,
+            })),
+          },
+        };
+      };
 
-      // Check: too many courses
-      if (resolvedCourses.length > 7) {
-        issues.push(
-          `Too many courses: ${resolvedCourses.length} courses selected (max recommended is 7)`
-        );
-      }
-
-      // Check: mixed terms
-      const terms = [...new Set(resolvedCourses.map((c) => c.term))];
-      if (terms.length > 1) {
-        const termNames = terms.map((t) => `${termCodeToName(t)} (${t})`).join(", ");
-        issues.push(`Mixed terms: courses span multiple semesters: ${termNames}`);
-      }
-
-      // Check: canceled courses
-      for (const course of resolvedCourses) {
-        if (course.status === "canceled") {
-          issues.push(`Canceled course: ${course.code} is canceled`);
+      for (const code of args.courseCodes) {
+        const loaded = await loadSupabaseCourse(code, args.term);
+        if (!loaded.course) {
+          issues.push(loaded.error ?? `Course not found: "${code}"`);
+          continue;
         }
+        if (requiredIds.has(loaded.course.supabaseId)) {
+          issues.push(`Duplicate course: ${loaded.course.code}`);
+          continue;
+        }
+        requiredIds.add(loaded.course.supabaseId);
+        requiredCourses.push(loaded.course);
       }
 
-      // Check: section completeness
-      for (const course of resolvedCourses) {
-        const byType = new Map<string, typeof course.sections>();
-        for (const s of course.sections) {
-          if (!byType.has(s.type)) byType.set(s.type, []);
-          byType.get(s.type)!.push(s);
-        }
-
-        for (const [type, sections] of byType) {
-          const allClosed = sections.every((s) => s.status === "closed");
-          const allCanceled = sections.every((s) => s.status === "canceled");
-          if (allCanceled) {
-            issues.push(
-              `No available ${type} sections: all ${type} sections for ${course.code} are canceled`
-            );
-          } else if (allClosed) {
-            issues.push(
-              `All ${type} sections full: all ${type} sections for ${course.code} are closed (${sections[0].tot}/${sections[0].cap} enrolled)`
-            );
+      const candidateCourses: LoadedSupabaseCourse[] = [];
+      const unresolvedCandidateCodes: string[] = [];
+      if (args.candidateCodes && args.candidateCodes.length > 0) {
+        const candidateTerm =
+          args.term ?? (requiredCourses.length > 0 ? requiredCourses[0].term : undefined);
+        const seenIds = new Set<number>(requiredIds);
+        for (const code of args.candidateCodes) {
+          const loaded = await loadSupabaseCourse(code, candidateTerm);
+          if (!loaded.course) {
+            unresolvedCandidateCodes.push(code);
+            continue;
           }
-        }
-
-        if (course.sections.length === 0) {
-          issues.push(`No sections: ${course.code} has no sections listed`);
+          if (seenIds.has(loaded.course.supabaseId)) continue;
+          seenIds.add(loaded.course.supabaseId);
+          candidateCourses.push(loaded.course);
         }
       }
 
-      // Check: time conflicts between courses
-      for (let i = 0; i < resolvedCourses.length; i++) {
-        for (let j = i + 1; j < resolvedCourses.length; j++) {
-          const a = resolvedCourses[i];
-          const b = resolvedCourses[j];
+      // Enrich with engine DB grading metadata when available
+      if (db) {
+        const allCourses = [...requiredCourses, ...candidateCourses];
+        const engineIds = [
+          ...new Set(
+            allCourses
+              .map((c) => c.engineCourseId)
+              .filter((id): id is string => typeof id === "string" && id.length > 0)
+          ),
+        ];
 
-          const aByType = new Map<string, typeof a.sections>();
-          for (const s of a.sections) {
-            if (!aByType.has(s.type)) aByType.set(s.type, []);
-            aByType.get(s.type)!.push(s);
-          }
+        if (engineIds.length > 0) {
+          try {
+            const gradingRows = await db
+              .select({
+                id: schema.courses.id,
+                gradingKnown: schema.courses.gradingKnown,
+                examPct: schema.courses.examPct,
+                psetPct: schema.courses.psetPct,
+                hasFinal: schema.courses.hasFinal,
+                detailsJson: schema.courses.detailsJson,
+              })
+              .from(schema.courses)
+              .where(inArray(schema.courses.id, engineIds));
 
-          const bByType = new Map<string, typeof b.sections>();
-          for (const s of b.sections) {
-            if (!bByType.has(s.type)) bByType.set(s.type, []);
-            bByType.get(s.type)!.push(s);
-          }
-
-          for (const [aType, aSections] of aByType) {
-            for (const [bType, bSections] of bByType) {
-              const allConflict = aSections.every((aS) =>
-                bSections.every((bS) => timeSlotsOverlap(aS, bS))
-              );
-              if (allConflict && aSections[0].days !== 0 && bSections[0].days !== 0) {
-                issues.push(
-                  `Time conflict: ${a.code} ${aType} sections all conflict with ${b.code} ${bType} sections`
-                );
+            const gradingMap = new Map(gradingRows.map((row) => [row.id, readStoredGrading(row)]));
+            for (const c of allCourses) {
+              if (!c.engineCourseId) continue;
+              const g = gradingMap.get(c.engineCourseId);
+              if (g) {
+                c.grading = {
+                  known: g.known,
+                  examPct: g.examPct,
+                  psetPct: g.psetPct,
+                };
               }
             }
+          } catch {
+            // Gracefully fall back to unknown grading if engine DB lookup fails
           }
         }
       }
 
-      const valid = issues.length === 0;
+      const evaluation = evaluateProposedSchedule({
+        requiredCourses,
+        candidateCourses,
+        initialIssues: issues,
+        args,
+      });
 
       return {
         content: [
@@ -493,16 +457,8 @@ export function registerJunctionScheduleTools(
             type: "text" as const,
             text: JSON.stringify(
               {
-                valid,
-                courseCount: resolvedCourses.length,
-                term:
-                  terms.length === 1 ? { code: terms[0], name: termCodeToName(terms[0]) } : null,
-                courses: resolvedCourses.map((c) => ({
-                  code: c.code,
-                  status: c.status,
-                  sectionTypes: [...new Set(c.sections.map((s) => s.type))],
-                })),
-                issues: valid ? "Schedule is valid — no issues detected" : issues,
+                ...evaluation,
+                ...(unresolvedCandidateCodes.length > 0 ? { unresolvedCandidateCodes } : {}),
               },
               null,
               2
@@ -513,7 +469,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── WRITE TOOLS ─────────────────────────────────────────────────────
+  // ── WRITE TOOLS ───────────────────────────────────────────────────────
 
   // Helper: verify schedule ownership and return the schedule row
   async function verifyScheduleOwnership(
@@ -628,7 +584,7 @@ export function registerJunctionScheduleTools(
     return { complete, color, sections: sectionCategories, confirms };
   }
 
-  // ── create_schedule ─────────────────────────────────────────────────
+  // ── create_schedule ──────────────────────────────────────────────────
   server.registerTool(
     "create_schedule",
     {
@@ -675,7 +631,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── add_course_to_schedule ──────────────────────────────────────────
+  // ── add_course_to_schedule ───────────────────────────────────────────
   server.registerTool(
     "add_course_to_schedule",
     {
@@ -761,7 +717,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── remove_course_from_schedule ─────────────────────────────────────
+  // ── remove_course_from_schedule ──────────────────────────────────────
   server.registerTool(
     "remove_course_from_schedule",
     {
@@ -796,7 +752,7 @@ export function registerJunctionScheduleTools(
         };
       }
 
-      const { error, count } = await supabase
+      const { error } = await supabase
         .from("course_schedule_associations")
         .delete()
         .eq("schedule_id", scheduleId)
@@ -820,7 +776,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── rename_schedule ─────────────────────────────────────────────────
+  // ── rename_schedule ──────────────────────────────────────────────────
   server.registerTool(
     "rename_schedule",
     {
@@ -867,7 +823,7 @@ export function registerJunctionScheduleTools(
     }
   );
 
-  // ── delete_schedule ─────────────────────────────────────────────────
+  // ── delete_schedule ──────────────────────────────────────────────────
   server.registerTool(
     "delete_schedule",
     {

@@ -22,9 +22,9 @@ jobs:
       - name: Install engine dependencies
         working-directory: apps/engine
         run: bun install --frozen-lockfile
-      - name: Test OIT import response handling
+      - name: Test engine OIT import, grading, and schedule solver
         working-directory: apps/engine
-        run: bun test src/tests/oit-import.test.ts
+        run: bun test src/tests/oit-import.test.ts src/tests/schedule-selection.test.ts src/tests/grading.test.ts src/tests/schedule-solver.test.ts src/tests/mcp-grading-tools.test.ts
 
   TestBuild:
     runs-on: ubuntu-latest
