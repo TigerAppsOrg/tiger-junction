@@ -1,0 +1,8 @@
+node_modules
+.env
+.env.*
+!.env.example
+
+# Never commit live sessions or captured auth traffic.
+*cookies*.json
+*.har
